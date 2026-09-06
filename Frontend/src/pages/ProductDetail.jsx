@@ -4,12 +4,14 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { SHOP_PRODUCTS } from '../utils/products'
 import { useCart } from '../hooks/useCart'
 import { useWishlist } from '../hooks/useWishlist'
+import { useAuth } from '../hooks/useAuth'
 import { formatCurrency } from '../utils/formatCurrency'
 import Button from '../components/Button'
 
 export default function ProductDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const { user } = useAuth()
   const { addItem } = useCart()
   const { toggle: toggleWishlist, isWishlisted } = useWishlist()
   const sizeChartRef = useRef(null)
@@ -18,7 +20,7 @@ export default function ProductDetail() {
   const relatedProducts = SHOP_PRODUCTS.filter((p) => p.id !== product.id).slice(0, 4)
 
   const getMediaLabel = (type, idx) => {
-    if (type === 'video') return '360 view of the Product'
+    if (type === 'video') return '360° Interactive'
     if (idx === 0) return 'Front'
     if (idx === 1) return 'Back'
     return `View ${idx + 1}`
@@ -33,29 +35,31 @@ export default function ProductDetail() {
     mediaItems.push({ type: 'image', src: product.image, id: 'img-0', label: 'Front' })
   }
   if (product.video) {
-    mediaItems.push({ type: 'video', src: product.video, id: 'video-0', label: '360 view of the Product' })
+    mediaItems.push({ type: 'video', src: product.video, id: 'video-0', label: '360° Interactive' })
   }
 
   const [activeMedia, setActiveMedia] = useState(mediaItems[0] || null)
-  const [selectedSize, setSelectedSize] = useState('One Size (XS-M)')
-  const [selectedColor, setSelectedColor] = useState(product.colors?.[0] || { name: 'Black', hex: '#000000' })
+  const [selectedSize, setSelectedSize] = useState(product.sizes ? product.sizes[0] : 'Standard')
+  const [selectedColor, setSelectedColor] = useState(product.colors ? product.colors[0] : { name: 'Standard', hex: '#FFFFFF' })
   const [quantity, setQuantity] = useState(1)
-  const [activeTab, setActiveTab] = useState('details')
+  const [activeTab, setActiveTab] = useState('features')
   const [toastMessage, setToastMessage] = useState(null)
   const [isAdding, setIsAdding] = useState(false)
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-    const initialItems = []
-    if (product.images && product.images.length > 0) {
-      product.images.forEach((img, idx) => initialItems.push({ type: 'image', src: img, id: `img-${idx}`, label: getMediaLabel('image', idx) }))
-    } else if (product.image) {
-      initialItems.push({ type: 'image', src: product.image, id: 'img-0', label: 'Front' })
+    const p = SHOP_PRODUCTS.find((item) => item.id === id) || SHOP_PRODUCTS[0]
+    const items = []
+    if (p.images && p.images.length > 0) {
+      p.images.forEach((img, idx) => {
+        items.push({ type: 'image', src: img, id: `img-${idx}`, label: getMediaLabel('image', idx) })
+      })
+    } else if (p.image) {
+      items.push({ type: 'image', src: p.image, id: 'img-0', label: 'Front' })
     }
-    if (product.video) {
-      initialItems.push({ type: 'video', src: product.video, id: 'video-0', label: '360 view of the Product' })
+    if (p.video) {
+      items.push({ type: 'video', src: p.video, id: 'video-0', label: '360° Interactive' })
     }
-    setActiveMedia(initialItems[0] || null)
+    setActiveMedia(items[0] || null)
     if (product.sizes && product.sizes.length > 0) {
       setSelectedSize(product.sizes[0])
     }
@@ -66,6 +70,10 @@ export default function ProductDetail() {
   }, [id, product])
 
   const handleAddToCart = () => {
+    if (!user?.uid) {
+      navigate('/login')
+      return
+    }
     setIsAdding(true)
     addItem({
       inventoryId: `${product.id}-${selectedSize}-${selectedColor.name}`,
@@ -88,6 +96,10 @@ export default function ProductDetail() {
   }
 
   const handleBuyNow = () => {
+    if (!user?.uid) {
+      navigate('/login')
+      return
+    }
     addItem({
       inventoryId: `${product.id}-${selectedSize}-${selectedColor.name}`,
       quantity,

@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useNavigate } from 'react-router'
 import { cartService } from '../services/cartService'
 import { CartContext } from './CartContext'
 import { useAuth } from '../hooks/useAuth'
 
 function getCartStorageKey(user) {
   if (user?.uid) return `tdv_cart_user_${user.uid}`
-  return null
+  return 'tdv_cart_guest'
 }
 
 function loadLocalCart(storageKey) {
@@ -20,37 +21,56 @@ function loadLocalCart(storageKey) {
 
 export function CartProvider({ children }) {
   const { user } = useAuth()
+  const navigate = useNavigate()
   const storageKey = useMemo(() => getCartStorageKey(user), [user])
-  const [items, setItems] = useState(() => (storageKey ? loadLocalCart(storageKey) : []))
+  const [items, setItems] = useState(() => loadLocalCart(storageKey))
   const [loading, setLoading] = useState(false)
   const activeUserUidRef = useRef(user?.uid || null)
+  const prevUidRef = useRef(user?.uid || null)
 
   // Sync state and load authoritative backend cart when user changes
   useEffect(() => {
-    activeUserUidRef.current = user?.uid || null
+    const prevUid = prevUidRef.current
+    const curUid = user?.uid || null
+    activeUserUidRef.current = curUid
+    prevUidRef.current = curUid
 
-    if (!user?.uid) {
-      setItems([])
+    if (!curUid) {
+      // Switched to guest mode (logged out)
+      if (prevUid) {
+        // Preserve current cart items so details do not disappear on logout
+        setItems((current) => {
+          localStorage.setItem('tdv_cart_guest', JSON.stringify(current))
+          return current
+        })
+      } else {
+        const cachedGuest = loadLocalCart('tdv_cart_guest')
+        setItems(cachedGuest)
+      }
+      setLoading(false)
       return
     }
 
-    // 1. Initial optimistic load from user-isolated cache
+    // Switched to logged-in user mode
     const cached = loadLocalCart(storageKey)
-    setItems(cached)
+    const guestItems = loadLocalCart('tdv_cart_guest')
+    const initialItems = cached && cached.length > 0 ? cached : (guestItems || [])
+    setItems(initialItems)
 
-    // 2. Fetch authoritative cart from backend for this user
+    // Fetch authoritative cart from backend for this user
     let isCancelled = false
     setLoading(true)
 
     cartService
       .get()
       .then((res) => {
-        if (isCancelled || activeUserUidRef.current !== user.uid) return
+        if (isCancelled || activeUserUidRef.current !== curUid) return
         const backendItems = res?.data?.data?.cart?.items || res?.data?.cart?.items
         if (Array.isArray(backendItems)) {
-          setItems(backendItems)
+          const finalItems = backendItems.length > 0 ? backendItems : initialItems
+          setItems(finalItems)
           if (storageKey) {
-            localStorage.setItem(storageKey, JSON.stringify(backendItems))
+            localStorage.setItem(storageKey, JSON.stringify(finalItems))
           }
         }
       })
@@ -68,7 +88,7 @@ export function CartProvider({ children }) {
     }
   }, [user?.uid, storageKey])
 
-  // Save current items to user-specific cache
+  // Save current items to active storage cache
   useEffect(() => {
     if (storageKey) {
       localStorage.setItem(storageKey, JSON.stringify(items))
@@ -77,7 +97,7 @@ export function CartProvider({ children }) {
 
   const refresh = useCallback(async () => {
     if (!user?.uid) {
-      setItems([])
+      setItems(loadLocalCart('tdv_cart_guest'))
       return
     }
     setLoading(true)
@@ -99,6 +119,11 @@ export function CartProvider({ children }) {
 
   const addItem = useCallback(
     async (arg1, qtyParam, colorParam, sizeParam) => {
+      if (!user?.uid) {
+        navigate('/login')
+        return false
+      }
+
       let inventoryId, quantity, rawProduct, selectedColor, selectedSize
 
       if (arg1 && typeof arg1 === 'object' && ('product' in arg1 || 'inventoryId' in arg1)) {
@@ -136,8 +161,9 @@ export function CartProvider({ children }) {
       // Optimistic update
       setItems((prev) => {
         const existingIndex = prev.findIndex((i) => i.inventoryId === id || i.id === id || i.product?.id === cleanProduct.id)
+        let updated
         if (existingIndex > -1) {
-          const updated = [...prev]
+          updated = [...prev]
           const cur = updated[existingIndex]
           updated[existingIndex] = {
             ...cur,
@@ -145,19 +171,23 @@ export function CartProvider({ children }) {
             product: cleanProduct,
             subtotal: price * (cur.quantity + quantity),
           }
-          return updated
+        } else {
+          updated = [
+            ...prev,
+            {
+              id: `temp-${id}-${Date.now()}`,
+              inventoryId: id,
+              quantity,
+              price,
+              subtotal: price * quantity,
+              product: cleanProduct,
+            },
+          ]
         }
-        return [
-          ...prev,
-          {
-            id: `temp-${id}-${Date.now()}`,
-            inventoryId: id,
-            quantity,
-            price,
-            subtotal: price * quantity,
-            product: cleanProduct,
-          },
-        ]
+        if (storageKey) {
+          localStorage.setItem(storageKey, JSON.stringify(updated))
+        }
+        return updated
       })
 
       // Backend sync
@@ -180,43 +210,59 @@ export function CartProvider({ children }) {
           const backendItems = res?.data?.data?.cart?.items || res?.data?.cart?.items
           if (Array.isArray(backendItems) && activeUserUidRef.current === user.uid) {
             setItems(backendItems)
+            if (storageKey) {
+              localStorage.setItem(storageKey, JSON.stringify(backendItems))
+            }
           }
         } catch {
           /* optimistic fallback retained */
         }
       }
     },
-    [user?.uid]
+    [user?.uid, storageKey]
   )
 
   const removeItem = useCallback(
     async (itemId) => {
-      setItems((prev) => prev.filter((i) => i.id !== itemId && i.inventoryId !== itemId))
+      setItems((prev) => {
+        const next = prev.filter((i) => i.id !== itemId && i.inventoryId !== itemId && i.product?.id !== itemId)
+        if (storageKey) {
+          localStorage.setItem(storageKey, JSON.stringify(next))
+        }
+        return next
+      })
       if (user?.uid) {
         try {
           const res = await cartService.removeItem(itemId)
           const backendItems = res?.data?.data?.cart?.items || res?.data?.cart?.items
           if (Array.isArray(backendItems) && activeUserUidRef.current === user.uid) {
             setItems(backendItems)
+            if (storageKey) {
+              localStorage.setItem(storageKey, JSON.stringify(backendItems))
+            }
           }
         } catch {
           /* optimistic */
         }
       }
     },
-    [user?.uid]
+    [user?.uid, storageKey]
   )
 
   const updateQuantity = useCallback(
     async (itemId, quantity) => {
       const validQty = Math.max(1, parseInt(quantity, 10) || 1)
-      setItems((prev) =>
-        prev.map((i) =>
-          i.id === itemId || i.inventoryId === itemId
+      setItems((prev) => {
+        const next = prev.map((i) =>
+          i.id === itemId || i.inventoryId === itemId || i.product?.id === itemId
             ? { ...i, quantity: validQty, subtotal: (i.price || i.product?.price || 0) * validQty }
             : i
         )
-      )
+        if (storageKey) {
+          localStorage.setItem(storageKey, JSON.stringify(next))
+        }
+        return next
+      })
 
       if (user?.uid) {
         try {
@@ -224,17 +270,23 @@ export function CartProvider({ children }) {
           const backendItems = res?.data?.data?.cart?.items || res?.data?.cart?.items
           if (Array.isArray(backendItems) && activeUserUidRef.current === user.uid) {
             setItems(backendItems)
+            if (storageKey) {
+              localStorage.setItem(storageKey, JSON.stringify(backendItems))
+            }
           }
         } catch {
           /* optimistic */
         }
       }
     },
-    [user?.uid]
+    [user?.uid, storageKey]
   )
 
   const clearCart = useCallback(async () => {
     setItems([])
+    if (storageKey) {
+      localStorage.setItem(storageKey, JSON.stringify([]))
+    }
     if (user?.uid) {
       try {
         await cartService.clear()
@@ -242,7 +294,7 @@ export function CartProvider({ children }) {
         /* optimistic */
       }
     }
-  }, [user?.uid])
+  }, [user?.uid, storageKey])
 
   const itemCount = useMemo(
     () => items.reduce((sum, i) => sum + (i.quantity || 0), 0),
@@ -275,4 +327,5 @@ export function CartProvider({ children }) {
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>
 }
+
 

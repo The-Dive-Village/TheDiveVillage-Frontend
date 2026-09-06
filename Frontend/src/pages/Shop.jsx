@@ -1,9 +1,10 @@
-import { useState, useMemo, useRef, useEffect } from 'react'
+import { useState, useMemo, useRef } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { motion, AnimatePresence } from 'framer-motion'
 import { SHOP_PRODUCTS } from '../utils/products'
 import { useCart } from '../hooks/useCart'
 import { useWishlist } from '../hooks/useWishlist'
+import { useAuth } from '../hooks/useAuth'
 import Button from '../components/Button'
 import picture3 from '../assets/Picture3.png'
 import divingVid from '@video-optimized/diving.mp4'
@@ -19,6 +20,8 @@ const CATEGORIES = [
 ]
 
 export default function Shop() {
+  const { user } = useAuth()
+  const navigate = useNavigate()
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
   const [sortBy, setSortBy] = useState('featured')
@@ -29,6 +32,10 @@ export default function Shop() {
   const handleQuickAdd = (product, e) => {
     e.preventDefault()
     e.stopPropagation()
+    if (!user?.uid) {
+      navigate('/login')
+      return
+    }
     const firstColor = product.colors?.[0]?.name || 'Standard'
     const firstSize = product.sizes?.[0] || 'Standard'
     addItem({

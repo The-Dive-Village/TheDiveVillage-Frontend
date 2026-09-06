@@ -1,4 +1,4 @@
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import { motion, useReducedMotion } from 'framer-motion'
 import Badge from './Badge'
 import Button from './Button'
@@ -6,8 +6,11 @@ import SafeImage from './SafeImage'
 import { formatCurrency } from '../utils/formatCurrency'
 import { useCart } from '../hooks/useCart'
 import { useWishlist } from '../hooks/useWishlist'
+import { useAuth } from '../hooks/useAuth'
 
 export default function ProductCard({ product }) {
+  const { user } = useAuth()
+  const navigate = useNavigate()
   const { addItem } = useCart()
   const { toggle: toggleWishlist, isWishlisted } = useWishlist()
   const reduce = useReducedMotion()
@@ -15,6 +18,10 @@ export default function ProductCard({ product }) {
   const onAdd = (e) => {
     e.preventDefault()
     e.stopPropagation()
+    if (!user?.uid) {
+      navigate('/login')
+      return
+    }
     addItem({
       inventoryId: product.inventoryId || product.id,
       quantity: 1,

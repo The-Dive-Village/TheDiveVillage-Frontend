@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { useSearchParams } from 'react-router'
 import { motion } from 'framer-motion'
 import InteractiveDiveMap from '../components/InteractiveDiveMap'
+import { padiLocationService } from '../services/padiLocationService'
 import 'react-phone-number-input/style.css'
 import PhoneInput from 'react-phone-number-input'
 
@@ -123,12 +124,43 @@ export default function BookUs() {
     return d.toISOString().split('T')[0]
   }, [])
 
-  // Step 1: Location, Date & Group Size
-  const [location, setLocation] = useState('Andaman Islands (Havelock)')
+  // Step 1: Country, Location, Date & Group Size
+  const [country, setCountry] = useState('')
+  const [selectedLocation, setSelectedLocation] = useState(null)
+  const [locationId, setLocationId] = useState('')
+  const [location, setLocation] = useState('')
   const [date, setDate] = useState('')
   const [dateError, setDateError] = useState('')
   const [stepError, setStepError] = useState('')
   const [groupSize, setGroupSize] = useState(1)
+
+  // Derived PADI dataset lookups
+  const countries = useMemo(() => padiLocationService.getCountries(), [])
+  const availableLocations = useMemo(() => padiLocationService.getLocationsByCountry(country), [country])
+
+  // Step 1 Handlers
+  const handleCountryChange = (newCountry) => {
+    setCountry(newCountry)
+    setSelectedLocation(null)
+    setLocationId('')
+    setLocation('')
+    setStepError('')
+  }
+
+  const handleLocationChange = (newLocationId) => {
+    setLocationId(newLocationId)
+    const found = availableLocations.find(
+      (l) => String(l.id) === String(newLocationId) || String(l.padiId) === String(newLocationId)
+    )
+    if (found) {
+      setSelectedLocation(found)
+      setLocation(found.name)
+    } else {
+      setSelectedLocation(null)
+      setLocation('')
+    }
+    setStepError('')
+  }
 
   // Step 2: Participant Info List
   const [participants, setParticipants] = useState([
@@ -220,7 +252,7 @@ export default function BookUs() {
                   <div key={idx} className="flex justify-between items-center bg-white p-3 rounded-2xl border border-navy/5">
                     <div>
                       <span className="font-bold text-navy block">{p.name || `Participant ${idx + 1}`}</span>
-                      <span className="text-[11px] text-navy/50">Age: {p.age || 'N/A'} • {EXPERIENCE_LABELS[p.experienceLevel]}</span>
+                      <span className="text-[11px] text-navy/50">Age: {p.age || 'N/A'} • {CERTIFICATION_OPTIONS.find(c => c.key === p.experienceLevel)?.label || p.experienceLevel || 'None'}</span>
                     </div>
                     <span className="font-bold text-accent text-xs bg-accent/10 px-3 py-1 rounded-full">
                       {prog?.name || 'Custom Package'}
@@ -312,20 +344,94 @@ export default function BookUs() {
                       <p className="text-xs text-navy/60 mt-1">Where and when would you like to dive?</p>
                     </div>
 
+                    {/* 1. SELECT DIVE COUNTRY */}
                     <div>
                       <label className="mb-2 block text-xs font-bold text-navy/70 uppercase tracking-wider">
-                        Selected Dive Location
+                        Select Dive Country
                       </label>
-                      <input
-                        type="text"
-                        value={location}
-                        onChange={(e) => setLocation(e.target.value)}
-                        placeholder="Select location"
-                        required
-                        className="w-full rounded-2xl bg-[#F0F2F5] px-5 py-4 text-sm font-bold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition"
-                      />
+                      <div className="relative">
+                        <select
+                          value={country}
+                          onChange={(e) => handleCountryChange(e.target.value)}
+                          required
+                          className="w-full rounded-2xl bg-[#F0F2F5] px-5 py-4 pr-10 text-sm font-bold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition cursor-pointer appearance-none"
+                        >
+                          <option value="">Select a country</option>
+                          {countries.map((c) => (
+                            <option key={c} value={c}>
+                              {c}
+                            </option>
+                          ))}
+                        </select>
+                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-navy/60">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="6 9 12 15 18 9" />
+                          </svg>
+                        </div>
+                      </div>
                     </div>
 
+                    {/* 2. SELECT DIVE LOCATION */}
+                    <div>
+                      <label className="mb-2 block text-xs font-bold text-navy/70 uppercase tracking-wider">
+                        Select Dive Location
+                      </label>
+                      <div className="relative">
+                        <select
+                          value={locationId}
+                          disabled={!country}
+                          onChange={(e) => handleLocationChange(e.target.value)}
+                          required
+                          className="w-full rounded-2xl bg-[#F0F2F5] px-5 py-4 pr-10 text-sm font-bold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition cursor-pointer appearance-none disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {!country ? (
+                            <option value="">Select a country first</option>
+                          ) : (
+                            <>
+                              <option value="">Select a dive location</option>
+                              {availableLocations.map((loc) => (
+                                <option key={loc.id} value={loc.id}>
+                                  {loc.label || loc.name}
+                                </option>
+                              ))}
+                            </>
+                          )}
+                        </select>
+                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-navy/60">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="6 9 12 15 18 9" />
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 3. SELECTED LOCATION PREVIEW CARD */}
+                    {selectedLocation && (
+                      <div className="rounded-2xl bg-[#F0F2F5]/80 border border-navy/10 p-4 space-y-1.5 transition-all">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-accent bg-navy px-2.5 py-0.5 rounded-full">
+                            {selectedLocation.membershipLevel || 'PADI Dive Center'}
+                          </span>
+                          <span className="text-[10px] font-mono font-bold text-navy/40">
+                            PADI ID: #{selectedLocation.padiId || selectedLocation.id}
+                          </span>
+                        </div>
+                        <p className="font-heading text-sm font-bold text-navy">
+                          {selectedLocation.name}
+                        </p>
+                        {selectedLocation.address && (
+                          <p className="text-xs text-navy/60 flex items-center gap-1.5">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
+                              <circle cx="12" cy="9" r="2.5" />
+                            </svg>
+                            <span>{selectedLocation.address}</span>
+                          </p>
+                        )}
+                      </div>
+                    )}
+
+                    {/* 4. PREFERRED DATE & NUMBER OF PEOPLE */}
                     <div className="grid sm:grid-cols-2 gap-6">
                       <div>
                         <label className="mb-2 block text-xs font-bold text-navy/70 uppercase tracking-wider">
@@ -367,7 +473,11 @@ export default function BookUs() {
                           min="1"
                           max="20"
                           value={groupSize}
-                          onChange={(e) => setGroupSize(e.target.value)}
+                          onChange={(e) => {
+                            const val = Math.max(1, parseInt(e.target.value, 10) || 1)
+                            setGroupSize(val)
+                            setStepError('')
+                          }}
                           required
                           className="w-full rounded-2xl bg-[#F0F2F5] px-5 py-4 text-sm font-bold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition"
                         />
@@ -705,12 +815,21 @@ export default function BookUs() {
                     type="button"
                     onClick={() => {
                       if (currentStep === 1) {
-                        if (!location) {
-                          setStepError("Please enter a dive location.");
+                        if (!country) {
+                          setStepError("Please select a dive country.");
+                          return
+                        }
+                        if (!locationId && !selectedLocation && !location) {
+                          setStepError("Please select a dive location.");
                           return
                         }
                         if (!date || date < todayStr || date > maxDateStr) {
                           setDateError("Please Select a Proper Date");
+                          setStepError("Please select a valid date for your dive.");
+                          return
+                        }
+                        if (!groupSize || parseInt(groupSize, 10) < 1) {
+                          setStepError("Please enter a valid number of participants (minimum 1).");
                           return
                         }
                         setDateError("");
@@ -753,13 +872,26 @@ export default function BookUs() {
           </div>
 
           {/* Interactive Globe Map Column */}
-          <div className="lg:col-span-5 relative w-full aspect-[4/5] lg:aspect-auto h-full rounded-[36px] overflow-hidden bg-navy flex flex-col pt-8 shadow-card border border-navy/10">
-            <div className="text-center px-4 z-10 mb-2">
+          <div className="lg:col-span-5 relative w-full aspect-[4/5] lg:aspect-auto min-h-[520px] h-full rounded-[36px] overflow-hidden bg-navy flex flex-col pt-8 shadow-card border border-navy/10">
+            <div className="text-center px-4 z-10 mb-2 pointer-events-none">
               <span className="text-accent text-[10px] font-bold uppercase tracking-widest">Interactive 3D Globe</span>
               <h3 className="font-heading text-2xl font-bold text-white">Select Dive Location</h3>
             </div>
-            <div className="flex-1 relative">
-              <InteractiveDiveMap onSiteSelect={handleSiteSelect} />
+            <div className="flex-1 w-full relative min-h-0 flex flex-col">
+              <InteractiveDiveMap
+                onSiteSelect={handleSiteSelect}
+                selectedCountry={country}
+                countryLocations={availableLocations}
+                selectedLocation={selectedLocation}
+                onLocationSelect={(loc) => {
+                  if (loc) {
+                    setLocationId(String(loc.id))
+                    setSelectedLocation(loc)
+                    setLocation(loc.label || loc.name)
+                    setStepError('')
+                  }
+                }}
+              />
             </div>
           </div>
 
