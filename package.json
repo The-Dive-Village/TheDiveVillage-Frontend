@@ -1,11 +1,15 @@
 {
   "name": "thedivevillage-monorepo",
   "private": true,
+  "type": "module",
   "workspaces": [
     "Frontend"
   ],
   "scripts": {
     "build": "npm run build --workspace=Frontend",
     "dev": "npm run dev --workspace=Frontend"
+  },
+  "engines": {
+    "node": ">=20.0.0"
   }
 }
