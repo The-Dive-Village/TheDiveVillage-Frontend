@@ -1,13 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { IMAGES } from '../utils/images'
-
-const DIVE_SITES = [
-  { id: 1, name: 'Great Barrier Reef', lon: 145.8, lat: -16.5, height: 1500000, desc: 'The world\'s largest coral reef system.', depth: '5m - 30m', life: 'Manta Rays, Reef Sharks', img: IMAGES.scubaFeat1 },
-  { id: 2, name: 'Blue Hole, Belize', lon: -87.53, lat: 17.31, height: 1000000, desc: 'A giant marine sinkhole off the coast of Belize.', depth: '5m - 40m', life: 'Caribbean Reef Sharks', img: IMAGES.snorkelingFeat1 },
-  { id: 3, name: 'Palau, Micronesia', lon: 134.48, lat: 7.35, height: 1500000, desc: 'Famous for Blue Corner and jellyfish lake.', depth: '10m - 30m', life: 'Eagle Rays, Snappers', img: IMAGES.surfingFeat1 },
-  { id: 4, name: 'Maldives', lon: 73.22, lat: 3.2, height: 2000000, desc: 'Stunning atolls and crystal clear warm waters.', depth: '10m - 30m', life: 'Whale Sharks, Turtles', img: IMAGES.scubaFeat2 },
-]
+import { COUNTRY_CENTROIDS } from '../data/countryCentroids'
+import { getLocationDisplayName } from '../services/padiLocationService'
 
 // Memoization cache for generated marker SVG data URIs
 const svgCache = new Map()
@@ -23,17 +16,17 @@ const escapeXml = (str) => {
     .replace(/'/g, '&apos;')
 }
 
-// Generate high-resolution SVG billboard for default global dive sites
+// Generate high-resolution SVG billboard pin for countries (exact TDV glowing badge style)
 const createSitePinSvg = (name) => {
   const cacheKey = `site_${name}`
   if (svgCache.has(cacheKey)) return svgCache.get(cacheKey)
 
   const safeName = escapeXml(name)
-  const textWidth = Math.max(110, Math.round(name.length * 8.5 + 24))
+  const textWidth = Math.max(100, Math.round(name.length * 8.2 + 24))
   const svgWidth = textWidth + 24
   const centerX = svgWidth / 2
 
-  const svg = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(`
+  const svg = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(`
     <svg width="${svgWidth}" height="76" viewBox="0 0 ${svgWidth} 76" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <filter id="badgeShadow" x="-30%" y="-30%" width="160%" height="160%">
@@ -87,7 +80,7 @@ const createPadiPinSvg = (name, isSelected = false, isDimmed = false) => {
     overallOpacity = '1.0'
   }
 
-  const svg = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(`
+  const svg = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(`
     <svg width="${svgWidth}" height="80" viewBox="0 0 ${svgWidth} 80" xmlns="http://www.w3.org/2000/svg" opacity="${overallOpacity}">
       <defs>
         <filter id="padiGlow" x="-40%" y="-40%" width="180%" height="180%">
@@ -121,20 +114,20 @@ const createPadiPinSvg = (name, isSelected = false, isDimmed = false) => {
 }
 
 export default function InteractiveDiveMap({
-  onSiteSelect,
   selectedCountry = '',
   countryLocations = [],
   selectedLocation = null,
-  onLocationSelect
+  onLocationSelect,
+  onCountrySelect
 }) {
   const containerRef = useRef(null)
   const viewerRef = useRef(null)
-  const [selectedSite, setSelectedSite] = useState(null)
 
   const countryLocationsRef = useRef(countryLocations)
   const selectedLocationRef = useRef(selectedLocation)
   const selectedCountryRef = useRef(selectedCountry)
   const onLocationSelectRef = useRef(onLocationSelect)
+  const onCountrySelectRef = useRef(onCountrySelect)
   const isProgrammaticFlightRef = useRef(false)
 
   const prevCountryRef = useRef(selectedCountry)
@@ -144,6 +137,7 @@ export default function InteractiveDiveMap({
   selectedLocationRef.current = selectedLocation
   selectedCountryRef.current = selectedCountry
   onLocationSelectRef.current = onLocationSelect
+  onCountrySelectRef.current = onCountrySelect
 
   // Deterministic camera flight to Global Overview
   const flyToGlobalOverview = () => {
@@ -170,36 +164,47 @@ export default function InteractiveDiveMap({
   }
 
   // Deterministic camera flight to Country Bounding Extent
-  const flyToCountryBounds = (locs) => {
+  const flyToCountryBounds = (locs, countryName) => {
     const viewer = viewerRef.current
-    if (!viewer || viewer.isDestroyed() || !window.Cesium || !locs || locs.length === 0) return
+    if (!viewer || viewer.isDestroyed() || !window.Cesium) return
 
-    let minLat = 90
-    let maxLat = -90
-    let minLon = 180
-    let maxLon = -180
+    let centerLon = 80.0
+    let centerLat = 15.0
+    let targetAltitude = 2500000
 
-    locs.forEach((l) => {
-      if (l.latitude < minLat) minLat = l.latitude
-      if (l.latitude > maxLat) maxLat = l.latitude
-      if (l.longitude < minLon) minLon = l.longitude
-      if (l.longitude > maxLon) maxLon = l.longitude
-    })
+    if (locs && locs.length > 0) {
+      let minLat = 90
+      let maxLat = -90
+      let minLon = 180
+      let maxLon = -180
 
-    const centerLon = (minLon + maxLon) / 2
-    const centerLat = (minLat + maxLat) / 2
-    const latSpan = maxLat - minLat
-    const lonSpan = maxLon - minLon
-    const maxSpan = Math.max(latSpan, lonSpan)
+      locs.forEach((l) => {
+        if (l.latitude < minLat) minLat = l.latitude
+        if (l.latitude > maxLat) maxLat = l.latitude
+        if (l.longitude < minLon) minLon = l.longitude
+        if (l.longitude > maxLon) maxLon = l.longitude
+      })
 
-    // Calculate altitude to frame all dive locations in the country dead-center
-    let targetAltitude
-    if (locs.length === 1 || maxSpan < 0.1) {
-      targetAltitude = 350000
-    } else if (maxSpan < 4) {
-      targetAltitude = Math.max(450000, maxSpan * 160000 + 200000)
-    } else {
-      targetAltitude = Math.min(4800000, Math.max(800000, maxSpan * 125000 + 350000))
+      centerLon = (minLon + maxLon) / 2
+      centerLat = (minLat + maxLat) / 2
+      const latSpan = maxLat - minLat
+      const lonSpan = maxLon - minLon
+      const maxSpan = Math.max(latSpan, lonSpan)
+
+      if (locs.length === 1 || maxSpan < 0.1) {
+        targetAltitude = 350000
+      } else if (maxSpan < 4) {
+        targetAltitude = Math.max(450000, maxSpan * 160000 + 200000)
+      } else {
+        targetAltitude = Math.min(4800000, Math.max(800000, maxSpan * 125000 + 350000))
+      }
+    } else if (countryName) {
+      const centroid = COUNTRY_CENTROIDS.find((c) => c.name.toLowerCase() === countryName.toLowerCase())
+      if (centroid) {
+        centerLon = centroid.lon
+        centerLat = centroid.lat
+        targetAltitude = 2800000
+      }
     }
 
     isProgrammaticFlightRef.current = true
@@ -250,7 +255,7 @@ export default function InteractiveDiveMap({
     })
   }
 
-  // 1. Update PADI markers & Country framing when country or locations change
+  // 1. Update PADI markers & Country visibility when country or locations change
   useEffect(() => {
     const viewer = viewerRef.current
     if (!viewer || viewer.isDestroyed() || !window.Cesium) return
@@ -261,83 +266,85 @@ export default function InteractiveDiveMap({
     )
     entitiesToRemove.forEach((e) => viewer.entities.remove(e))
 
-    // B. Toggle default global sites visibility
-    DIVE_SITES.forEach((site) => {
-      const siteEntity = viewer.entities.getById(`site-${site.id}`)
-      if (siteEntity) {
-        siteEntity.show = !selectedCountry
+    // B. Toggle country pins visibility
+    COUNTRY_CENTROIDS.forEach((c) => {
+      const countryEntity = viewer.entities.getById(`country-${c.name}`)
+      if (countryEntity) {
+        countryEntity.show = !selectedCountry
       }
     })
 
-    // Filter valid coordinates
+    // Filter valid coordinates for selected country
     const validLocs = countryLocations.filter(
       (l) => l.latitude != null && l.longitude != null && !isNaN(l.latitude) && !isNaN(l.longitude)
     )
 
     const hasSelection = Boolean(selectedLocation)
 
-    // C. Add all PADI dive location markers with Google Earth NearFar distance scaling
-    validLocs.forEach((loc) => {
-      const isSel = selectedLocation && String(selectedLocation.id) === String(loc.id)
-      const isDimmed = hasSelection && !isSel
-      const displayName = loc.name || loc.title || 'Dive Center'
-      const textWidth = Math.max(92, Math.round(displayName.length * 7.5 + 24))
-      const svgWidth = textWidth + 30
+    // C. When country is selected, add all PADI dive location markers
+    if (selectedCountry) {
+      validLocs.forEach((loc) => {
+        const isSel = selectedLocation && String(selectedLocation.id) === String(loc.id)
+        const isDimmed = hasSelection && !isSel
+        const displayName = getLocationDisplayName(loc)
+        const textWidth = Math.max(92, Math.round(displayName.length * 7.5 + 24))
+        const svgWidth = textWidth + 30
 
-      viewer.entities.add({
-        id: `padi-${loc.id}`,
-        name: loc.name,
-        position: window.Cesium.Cartesian3.fromDegrees(loc.longitude, loc.latitude),
-        billboard: {
-          image: createPadiPinSvg(displayName, isSel, isDimmed),
-          width: svgWidth,
-          height: 80,
-          verticalOrigin: window.Cesium.VerticalOrigin.BOTTOM,
-          eyeOffset: new window.Cesium.Cartesian3(0, 0, isSel ? -250 : -80),
-          disableDepthTestDistance: Number.POSITIVE_INFINITY,
-          scaleByDistance: new window.Cesium.NearFarScalar(2.0e4, 1.0, 1.2e7, 0.5),
-          translucencyByDistance: new window.Cesium.NearFarScalar(2.0e4, 1.0, 1.5e7, 0.85)
-        },
-        properties: {
-          padiLocation: loc
-        }
-      })
-    })
-
-    // D. Add subtle glowing country territory envelope on globe surface
-    if (validLocs.length > 0) {
-      let minLat = 90
-      let maxLat = -90
-      let minLon = 180
-      let maxLon = -180
-
-      validLocs.forEach((l) => {
-        if (l.latitude < minLat) minLat = l.latitude
-        if (l.latitude > maxLat) maxLat = l.latitude
-        if (l.longitude < minLon) minLon = l.longitude
-        if (l.longitude > maxLon) maxLon = l.longitude
-      })
-
-      const latPadding = Math.max(0.8, (maxLat - minLat) * 0.25)
-      const lonPadding = Math.max(0.8, (maxLon - minLon) * 0.25)
-
-      try {
         viewer.entities.add({
-          id: 'country-envelope',
-          rectangle: {
-            coordinates: window.Cesium.Rectangle.fromDegrees(
-              Math.max(-180, minLon - lonPadding),
-              Math.max(-85, minLat - latPadding),
-              Math.min(180, maxLon + lonPadding),
-              Math.min(85, maxLat + latPadding)
-            ),
-            material: new window.Cesium.Color(0.0, 0.68, 0.78, 0.06),
-            outline: true,
-            outlineColor: new window.Cesium.Color(0.0, 0.9, 1.0, 0.35),
-            outlineWidth: 2
+          id: `padi-${loc.id}`,
+          name: loc.name,
+          position: window.Cesium.Cartesian3.fromDegrees(loc.longitude, loc.latitude),
+          billboard: {
+            image: createPadiPinSvg(displayName, isSel, isDimmed),
+            width: svgWidth,
+            height: 80,
+            verticalOrigin: window.Cesium.VerticalOrigin.BOTTOM,
+            eyeOffset: new window.Cesium.Cartesian3(0, 0, isSel ? -250 : -80),
+            disableDepthTestDistance: Number.POSITIVE_INFINITY,
+            scaleByDistance: new window.Cesium.NearFarScalar(2.0e4, 1.0, 1.2e7, 0.5),
+            translucencyByDistance: new window.Cesium.NearFarScalar(2.0e4, 1.0, 1.5e7, 0.85)
+          },
+          properties: {
+            padiLocation: loc
           }
         })
-      } catch {}
+      })
+
+      // D. Add subtle glowing country territory envelope on globe surface
+      if (validLocs.length > 0) {
+        let minLat = 90
+        let maxLat = -90
+        let minLon = 180
+        let maxLon = -180
+
+        validLocs.forEach((l) => {
+          if (l.latitude < minLat) minLat = l.latitude
+          if (l.latitude > maxLat) maxLat = l.latitude
+          if (l.longitude < minLon) minLon = l.longitude
+          if (l.longitude > maxLon) maxLon = l.longitude
+        })
+
+        const latPadding = Math.max(0.8, (maxLat - minLat) * 0.25)
+        const lonPadding = Math.max(0.8, (maxLon - minLon) * 0.25)
+
+        try {
+          viewer.entities.add({
+            id: 'country-envelope',
+            rectangle: {
+              coordinates: window.Cesium.Rectangle.fromDegrees(
+                Math.max(-180, minLon - lonPadding),
+                Math.max(-85, minLat - latPadding),
+                Math.min(180, maxLon + lonPadding),
+                Math.min(85, maxLat + latPadding)
+              ),
+              material: new window.Cesium.Color(0.0, 0.68, 0.78, 0.06),
+              outline: true,
+              outlineColor: new window.Cesium.Color(0.0, 0.9, 1.0, 0.35),
+              outlineWidth: 2
+            }
+          })
+        } catch {}
+      }
     }
 
     // E. Deterministic Camera Flight Transitions
@@ -347,20 +354,20 @@ export default function InteractiveDiveMap({
     prevLocationRef.current = selectedLocation
 
     if (countryChanged) {
-      if (selectedCountry && validLocs.length > 0) {
+      if (selectedCountry) {
         if (!selectedLocation) {
-          flyToCountryBounds(validLocs)
+          flyToCountryBounds(validLocs, selectedCountry)
         } else {
           flyToLocationPoint(selectedLocation)
         }
-      } else if (!selectedCountry) {
+      } else {
         flyToGlobalOverview()
       }
     } else if (locationChanged) {
       if (selectedLocation) {
         flyToLocationPoint(selectedLocation)
-      } else if (selectedCountry && validLocs.length > 0) {
-        flyToCountryBounds(validLocs)
+      } else if (selectedCountry) {
+        flyToCountryBounds(validLocs, selectedCountry)
       }
     }
   }, [selectedCountry, countryLocations, selectedLocation])
@@ -410,30 +417,48 @@ export default function InteractiveDiveMap({
         resizeObserver.observe(containerRef.current)
       }
 
-      // Premium visual configuration & Brightness clarity
+      const dpr = Math.min(window.devicePixelRatio || 1, 2)
+      const isMobile = window.innerWidth < 768
+
+      // Device Pixel Ratio: Sharp on desktop (1.75 max), fast & smooth on mobile (1.25 max)
+      viewer.resolutionScale = isMobile ? Math.min(dpr, 1.25) : Math.min(dpr, 1.75)
+
+      // Enhance base satellite imagery layer clarity, coastline contrast, and ocean vibrancy
+      const tuneImageryLayer = (layer) => {
+        if (!layer) return
+        layer.brightness = 1.05
+        layer.contrast = 1.16
+        layer.gamma = 1.04
+        layer.saturation = 1.12
+      }
+
+      const baseLayer = viewer.imageryLayers.get(0)
+      if (baseLayer) tuneImageryLayer(baseLayer)
+      viewer.imageryLayers.layerAdded.addEventListener(tuneImageryLayer)
+
+      // Progressive tile loading, tile caching & sharp rendering
       viewer.scene.globe.baseColor = window.Cesium.Color.fromCssColorString('#021426')
-      // Disable sun/night darkness so the Earth is always brightly & uniformly lit everywhere
       viewer.scene.globe.enableLighting = false
       viewer.scene.globe.showGroundAtmosphere = true
-      
+      viewer.scene.globe.depthTestAgainstTerrain = false
+      viewer.scene.globe.tileCacheSize = 600
+      viewer.scene.globe.loadingDescendantLimit = 20
+      viewer.scene.globe.preloadAncestors = true
+      viewer.scene.globe.preloadSiblings = false
+      viewer.scene.globe.maximumScreenSpaceError = isMobile ? 1.5 : 1.0
+
+      // Sky atmosphere & fog configuration for geographic clarity
       if (viewer.scene.skyAtmosphere) {
         viewer.scene.skyAtmosphere.show = true
-        viewer.scene.skyAtmosphere.brightnessShift = 0.15
+        viewer.scene.skyAtmosphere.brightnessShift = 0.12
+        viewer.scene.skyAtmosphere.saturationShift = 0.05
       }
       if (viewer.scene.fog) {
         viewer.scene.fog.enabled = true
-        viewer.scene.fog.density = 0.0001
+        viewer.scene.fog.density = 0.00008
+        viewer.scene.fog.screenSpaceErrorFactor = 2.0
       }
-      
-      // High-resolution satellite tiles and crisp terrain
-      viewer.scene.globe.maximumScreenSpaceError = 1.25
-      viewer.scene.globe.tileCacheSize = 250
 
-      // Responsive pixel ratio: crisp on desktop, smooth on mobile
-      const dpr = window.devicePixelRatio || 1
-      const isMobile = window.innerWidth < 768
-      viewer.resolutionScale = isMobile ? Math.min(dpr, 1.25) : Math.min(dpr, 2.0)
-      
       if (viewer.scene.postProcessStages?.fxaa) {
         viewer.scene.postProcessStages.fxaa.enabled = true
       }
@@ -444,6 +469,37 @@ export default function InteractiveDiveMap({
       viewer.scene.screenSpaceCameraController.inertiaSpin = 0.85
       viewer.scene.screenSpaceCameraController.inertiaTranslate = 0.85
       viewer.scene.screenSpaceCameraController.inertiaZoom = 0.8
+
+      // Adaptive Screen Space Error: High FPS during camera flight/drag, razor sharp detail when settled
+      const handleMoveStart = () => {
+        if (viewer && !viewer.isDestroyed()) {
+          viewer.scene.globe.maximumScreenSpaceError = isMobile ? 3.0 : 2.5
+        }
+      }
+      const handleMoveEnd = () => {
+        if (viewer && !viewer.isDestroyed()) {
+          viewer.scene.globe.maximumScreenSpaceError = isMobile ? 1.5 : 1.0
+        }
+      }
+
+      viewer.camera.moveStart.addEventListener(handleMoveStart)
+      viewer.camera.moveEnd.addEventListener(handleMoveEnd)
+
+      // Asynchronously load World Terrain with water masks without blocking fast initial render
+      try {
+        if (typeof window.Cesium.createWorldTerrainAsync === 'function') {
+          window.Cesium.createWorldTerrainAsync({
+            requestVertexNormals: true,
+            requestWaterMask: true
+          })
+            .then((terrainProvider) => {
+              if (viewer && !viewer.isDestroyed()) {
+                viewer.terrainProvider = terrainProvider
+              }
+            })
+            .catch(() => {})
+        }
+      } catch (err) {}
 
       // Initial clean overview
       viewer.camera.flyTo({
@@ -456,27 +512,33 @@ export default function InteractiveDiveMap({
         duration: 0
       })
 
-      // Add default global Dive Site pins
-      DIVE_SITES.forEach((site) => {
-        const textWidth = Math.max(110, Math.round(site.name.length * 8.5 + 24))
+      // Add Country Billboard Pins for Initial World View
+      COUNTRY_CENTROIDS.forEach((country) => {
+        const textWidth = Math.max(100, Math.round(country.name.length * 8.2 + 24))
         const svgWidth = textWidth + 24
 
         viewer.entities.add({
-          id: `site-${site.id}`,
-          position: window.Cesium.Cartesian3.fromDegrees(site.lon, site.lat),
+          id: `country-${country.name}`,
+          name: country.name,
+          position: window.Cesium.Cartesian3.fromDegrees(country.lon, country.lat),
+          show: !selectedCountryRef.current,
           billboard: {
-            image: createSitePinSvg(site.name),
+            image: createSitePinSvg(country.name),
             width: svgWidth,
             height: 76,
             verticalOrigin: window.Cesium.VerticalOrigin.BOTTOM,
             eyeOffset: new window.Cesium.Cartesian3(0, 0, -50),
             disableDepthTestDistance: Number.POSITIVE_INFINITY,
-            scaleByDistance: new window.Cesium.NearFarScalar(2.0e4, 1.0, 1.5e7, 0.55)
+            scaleByDistance: new window.Cesium.NearFarScalar(1.0e6, 1.0, 1.8e7, 0.48),
+            translucencyByDistance: new window.Cesium.NearFarScalar(1.0e6, 1.0, 2.0e7, 0.8)
+          },
+          properties: {
+            countryName: country.name
           }
         })
       })
 
-      // User Interaction & Marker Click Handler
+      // User Interaction & Click Handlers
       handler = new window.Cesium.ScreenSpaceEventHandler(viewer.scene.canvas)
 
       // Hover cursor management
@@ -489,13 +551,13 @@ export default function InteractiveDiveMap({
         }
       }, window.Cesium.ScreenSpaceEventType.MOUSE_MOVE)
 
-      // Marker Click Selection
+      // Click Selection Handler
       handler.setInputAction((click) => {
         const pickedObject = viewer.scene.pick(click.position)
         if (window.Cesium.defined(pickedObject) && pickedObject.id) {
           const idStr = String(pickedObject.id.id || '')
 
-          // Clicked a PADI Dive Location marker
+          // 1. Clicked a PADI Dive Location marker
           if (idStr.startsWith('padi-')) {
             const locId = idStr.replace('padi-', '')
             const loc = countryLocationsRef.current.find(
@@ -508,36 +570,14 @@ export default function InteractiveDiveMap({
             return
           }
 
-          // Clicked a default global site marker
-          if (idStr.startsWith('site-')) {
-            const siteId = parseInt(idStr.split('-')[1], 10)
-            const site = DIVE_SITES.find((s) => s.id === siteId)
-            if (site) {
-              setSelectedSite(site)
-              onSiteSelect?.(site)
-              isProgrammaticFlightRef.current = true
-              viewer.camera.flyTo({
-                destination: window.Cesium.Cartesian3.fromDegrees(site.lon, site.lat, site.height),
-                orientation: {
-                  heading: 0.0,
-                  pitch: window.Cesium.Math.toRadians(-65),
-                  roll: 0.0
-                },
-                duration: 2.0,
-                easingFunction: window.Cesium.EasingFunction.CUBIC_IN_OUT,
-                complete: () => {
-                  isProgrammaticFlightRef.current = false
-                },
-                cancel: () => {
-                  isProgrammaticFlightRef.current = false
-                }
-              })
+          // 2. Clicked a Country Pin Badge
+          if (idStr.startsWith('country-') || pickedObject.id.properties?.countryName) {
+            const countryName = pickedObject.id.properties?.countryName?.getValue() || idStr.replace('country-', '')
+            if (countryName) {
+              onCountrySelectRef.current?.(countryName)
             }
             return
           }
-        } else {
-          setSelectedSite(null)
-          onSiteSelect?.(null)
         }
       }, window.Cesium.ScreenSpaceEventType.LEFT_CLICK)
 
@@ -586,38 +626,6 @@ export default function InteractiveDiveMap({
 
       {/* Cesium Container */}
       <div ref={containerRef} className="w-full h-full" />
-
-      {/* Glassmorphism Side-Panel UI */}
-      <AnimatePresence>
-        {selectedSite && (
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -50 }}
-            className="absolute top-4 left-4 z-10 w-[90%] sm:w-[350px] p-6 rounded-3xl glass-premium border border-white/20 shadow-2xl flex flex-col pointer-events-auto"
-          >
-            <button
-              onClick={() => setSelectedSite(null)}
-              className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/30 transition"
-            >
-              ✕
-            </button>
-
-            <span className="text-xs font-bold uppercase tracking-widest text-accent mb-1 block">
-              Dive Site
-            </span>
-            <h3 className="font-heading text-2xl font-bold text-white mb-2">{selectedSite.name}</h3>
-
-            <button onClick={() => {
-              setSelectedSite(null)
-              onSiteSelect?.(null)
-              flyToGlobalOverview()
-            }} className="w-full mt-6 rounded-full bg-accent py-3 text-sm font-bold text-navy transition hover:bg-white shrink-0">
-              Back to Overview
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* Instruction Overlay */}
       <div className="absolute top-6 right-6 pointer-events-none z-10">

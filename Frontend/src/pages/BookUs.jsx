@@ -3,112 +3,17 @@ import { useSearchParams } from 'react-router'
 import { motion } from 'framer-motion'
 import InteractiveDiveMap from '../components/InteractiveDiveMap'
 import { padiLocationService } from '../services/padiLocationService'
+import {
+  COURSE_CATALOG,
+  CERTIFICATION_OPTIONS,
+  getEligibleCourses,
+  validateParticipantBooking,
+} from '../utils/courseEligibility'
 import 'react-phone-number-input/style.css'
 import PhoneInput from 'react-phone-number-input'
 
-// Master 44-Program Catalog with Exact Eligibility Constraints
-export const PROGRAMS_CATALOG = [
-  { id: 'try-dive', name: 'Try Dive', category: 'Programs', minAge: 8, maxAge: null, certReq: 'none', certLabel: 'No certification required' },
-  { id: 'dsd-lite', name: 'DSD Lite', category: 'Programs', minAge: 8, maxAge: null, certReq: 'none', certLabel: 'No certification required' },
-  { id: 'padi-dsd', name: 'PADI Discover Scuba Dive', category: 'Programs', minAge: 10, maxAge: null, certReq: 'none', certLabel: 'No certification required' },
-  { id: 'discover-snorkeling', name: 'Discover Snorkeling', category: 'Snorkeling', minAge: 7, maxAge: null, certReq: 'none', certLabel: 'No certification required' },
-  { id: 'padi-bubblemaker', name: 'PADI Bubblemaker', category: 'Programs', minAge: 8, maxAge: 10, certReq: 'none', certLabel: 'No certification required' },
-  { id: 'add-dive-after-dsd', name: 'Additional Dive after DSD', category: 'Programs', minAge: 10, maxAge: null, certReq: 'completed_dsd', certLabel: 'Must have completed DSD / qualifying intro dive' },
-  { id: 'padi-skin-diver', name: 'PADI Skin Diver', category: 'Courses', minAge: 8, maxAge: null, certReq: 'none', certLabel: 'No certification required' },
-  { id: 'padi-scuba-diver', name: 'PADI Scuba Diver', category: 'Courses', minAge: 10, maxAge: null, certReq: 'none', certLabel: 'No prior scuba certification required' },
-  { id: 'padi-open-water', name: 'PADI Open Water Diver', category: 'Courses', minAge: 10, maxAge: null, certReq: 'none', certLabel: 'No prior scuba certification required' },
-  { id: 'padi-adventure-diver', name: 'PADI Adventure Diver', category: 'Courses', minAge: 10, maxAge: null, certReq: 'open_water', certLabel: 'Open Water Diver / Junior Open Water Diver' },
-  { id: 'padi-advanced-ow', name: 'PADI Advanced Open Water', category: 'Courses', minAge: 12, maxAge: null, certReq: 'open_water', certLabel: 'Open Water Diver / Junior Open Water Diver' },
-  { id: 'efr-primary-secondary', name: 'EFR Primary & Secondary Care', category: 'Courses', minAge: 7, maxAge: null, certReq: 'none', certLabel: 'No scuba certification required' },
-  { id: 'padi-rescue-diver', name: 'PADI Rescue Diver', category: 'Courses', minAge: 12, maxAge: null, certReq: 'advanced_open_water', certLabel: 'Advanced / Adventure Diver + EFR' },
-  { id: 'padi-reactivate', name: 'PADI Reactivate (with dive)', category: 'Courses', minAge: 10, maxAge: null, certReq: 'certified_diver', certLabel: 'Existing scuba certification' },
-  { id: 'full-refresher', name: 'Full Refresher (with dive)', category: 'Courses', minAge: 10, maxAge: null, certReq: 'certified_diver', certLabel: 'Existing scuba certification' },
-  { id: 'lite-refresher', name: 'Lite Refresher (confined only)', category: 'Courses', minAge: 10, maxAge: null, certReq: 'certified_diver', certLabel: 'Existing scuba certification' },
-  { id: 'peak-buoyancy', name: 'Peak Performance Buoyancy', category: 'Specialities', minAge: 10, maxAge: null, certReq: 'open_water', certLabel: 'Open Water Diver / Junior Open Water Diver' },
-  { id: 'project-aware', name: 'Project AWARE', category: 'Specialities', minAge: 10, maxAge: null, certReq: 'none', certLabel: 'No scuba certification required' },
-  { id: 'deep-diver', name: 'Deep Diver', category: 'Specialities', minAge: 15, maxAge: null, certReq: 'advanced_open_water', certLabel: 'Adventure / Advanced Diver' },
-  { id: 'wreck-diver', name: 'Wreck Diver', category: 'Specialities', minAge: 15, maxAge: null, certReq: 'open_water', certLabel: 'Open Water / prerequisite certification' },
-  { id: 'night-diver', name: 'Night Diver', category: 'Specialities', minAge: 12, maxAge: null, certReq: 'open_water', certLabel: 'Open Water Diver / Junior Open Water Diver' },
-  { id: 'enriched-air-nitrox', name: 'Enriched Air Nitrox', category: 'Specialities', minAge: 12, maxAge: null, certReq: 'open_water', certLabel: 'Open Water Diver / Junior Open Water Diver' },
-  { id: '1-dive', name: '1 Dive', category: 'Fun Dives', minAge: 10, maxAge: null, certReq: 'certified_diver', certLabel: 'Certified diver' },
-  { id: '2-dives', name: '2 Dives', category: 'Fun Dives', minAge: 10, maxAge: null, certReq: 'certified_diver', certLabel: 'Certified diver' },
-  { id: '4-dives', name: '4 Dives', category: 'Fun Dives', minAge: 10, maxAge: null, certReq: 'certified_diver', certLabel: 'Certified diver' },
-  { id: '6-dives', name: '6 Dives', category: 'Fun Dives', minAge: 10, maxAge: null, certReq: 'certified_diver', certLabel: 'Certified diver' },
-  { id: '8-dives', name: '8 Dives', category: 'Fun Dives', minAge: 10, maxAge: null, certReq: 'certified_diver', certLabel: 'Certified diver' },
-  { id: '10-dives', name: '10 Dives', category: 'Fun Dives', minAge: 10, maxAge: null, certReq: 'certified_diver', certLabel: 'Certified diver' },
-  { id: '12-dives', name: '12 Dives', category: 'Fun Dives', minAge: 10, maxAge: null, certReq: 'certified_diver', certLabel: 'Certified diver' },
-  { id: 'post-12-dives', name: 'Post 12 (extra 2 dives)', category: 'Fun Dives', minAge: 10, maxAge: null, certReq: 'certified_diver', certLabel: 'Certified diver + existing dive package' },
-  { id: 'night-dive', name: 'Night Dive', category: 'Fun Dives', minAge: 12, maxAge: null, certReq: 'open_water', certLabel: 'Open Water Diver / Junior Open Water Diver' },
-  { id: 'dawn-dive', name: 'Dawn Dive', category: 'Fun Dives', minAge: 10, maxAge: null, certReq: 'certified_diver', certLabel: 'Certified diver' },
-  { id: 'padi-dsd-ow-combo', name: 'PADI DSD + Open Water', category: 'Combos', minAge: 10, maxAge: null, certReq: 'none', certLabel: 'No prior certification required' },
-  { id: 'padi-ow-aow-combo', name: 'PADI OW + Advanced', category: 'Combos', minAge: 12, maxAge: null, certReq: 'none', certLabel: 'No prior certification required' },
-  { id: 'efr-rescue-combo', name: 'EFR + Rescue Diver', category: 'Combos', minAge: 12, maxAge: null, certReq: 'advanced_open_water', certLabel: 'Advanced Diver + EFR' },
-  { id: 'padi-divemaster', name: 'PADI Divemaster', category: 'Pro Courses', minAge: 18, maxAge: null, certReq: 'rescue_efr', certLabel: 'Rescue + EFR + required experience' },
-  { id: 'efr-rescue-dm-combo', name: 'EFR + Rescue + Divemaster', category: 'Pro Courses', minAge: 18, maxAge: null, certReq: 'advanced_open_water', certLabel: 'Advanced Open Water required' },
-  { id: 'efr-rescue-dm-prereqs', name: 'EFR + Rescue + DM (prereqs)', category: 'Pro Courses', minAge: 18, maxAge: null, certReq: 'rescue_efr', certLabel: 'Rescue / EFR / experience required' },
-  { id: 'zero-to-hero', name: 'Zero to Hero (OW to DM)', category: 'Pro Courses', minAge: 18, maxAge: null, certReq: 'none', certLabel: 'No prior certification required' },
-  { id: 'padi-basic-freediver', name: 'PADI Basic Freediver', category: 'Freediving', minAge: 12, maxAge: null, certReq: 'none', certLabel: 'No prior freediving certification required' },
-  { id: 'padi-freediver', name: 'PADI Freediver', category: 'Freediving', minAge: 15, maxAge: null, certReq: 'none', certLabel: 'No prior freediving certification required' },
-  { id: 'reef-explorer', name: 'Reef Explorer', category: 'Snorkeling', minAge: 7, maxAge: null, certReq: 'none', certLabel: 'No certification required' },
-  { id: 'ocean-explorer', name: 'Ocean Explorer', category: 'Snorkeling', minAge: 7, maxAge: null, certReq: 'none', certLabel: 'No certification required' },
-  { id: 'drift-diver', name: 'Drift Diver', category: 'Specialities', minAge: 15, maxAge: null, certReq: 'open_water', certLabel: 'Open Water / prerequisite certification' },
-]
-
-export const CERTIFICATION_OPTIONS = [
-  { key: 'none', label: 'None (No prior certification required)' },
-  { key: 'completed_dsd', label: 'Completed DSD / Introductory Dive' },
-  { key: 'open_water', label: 'Open Water Diver / Junior Open Water' },
-  { key: 'advanced_open_water', label: 'Advanced Open Water / Junior Advanced' },
-  { key: 'rescue_efr', label: 'Rescue Diver + EFR Certified' },
-  { key: 'certified_diver', label: 'Existing Certified Diver (Fun Dives)' },
-  { key: 'freediver', label: 'Basic Freediver / Freediver' },
-]
-
-export function getEligiblePrograms(ageInput, certInput = 'none') {
-  const age = parseInt(ageInput, 10)
-  
-  // Rule 0: Age below 7 (0-6) -> NOT ALLOWED (0 programs)
-  if (isNaN(age) || age < 7) {
-    return []
-  }
-
-  return PROGRAMS_CATALOG.filter((prog) => {
-    // Age Rule: Must satisfy minAge
-    if (prog.minAge !== null && age < prog.minAge) {
-      return false
-    }
-
-    // Age Rule: For maxAge (e.g. Bubblemaker 8-10)
-    if (prog.maxAge !== null && age > prog.maxAge) {
-      return false
-    }
-
-    // Certification Prerequisite Check:
-    if (prog.certReq === 'none') return true
-
-    if (prog.certReq === 'completed_dsd') {
-      return ['completed_dsd', 'open_water', 'advanced_open_water', 'rescue_efr', 'certified_diver'].includes(certInput)
-    }
-
-    if (prog.certReq === 'open_water') {
-      return ['open_water', 'advanced_open_water', 'rescue_efr', 'certified_diver'].includes(certInput)
-    }
-
-    if (prog.certReq === 'advanced_open_water') {
-      return ['advanced_open_water', 'rescue_efr', 'certified_diver'].includes(certInput)
-    }
-
-    if (prog.certReq === 'rescue_efr') {
-      return ['rescue_efr'].includes(certInput)
-    }
-
-    if (prog.certReq === 'certified_diver') {
-      return ['open_water', 'advanced_open_water', 'rescue_efr', 'certified_diver'].includes(certInput)
-    }
-
-    return true
-  })
-}
+// Backwards-compatible export alias for any legacy imports
+export const PROGRAMS_CATALOG = COURSE_CATALOG
 
 export default function BookUs() {
   const [searchParams] = useSearchParams()
@@ -154,7 +59,8 @@ export default function BookUs() {
     )
     if (found) {
       setSelectedLocation(found)
-      setLocation(found.name)
+      const placeName = padiLocationService.getLocationDisplayName(found)
+      setLocation(placeName || found.name)
     } else {
       setSelectedLocation(null)
       setLocation('')
@@ -164,7 +70,14 @@ export default function BookUs() {
 
   // Step 2: Participant Info List
   const [participants, setParticipants] = useState([
-    { id: 1, name: '', age: '', experienceLevel: 'beginner', selectedProgram: initialProgram || '' }
+    {
+      id: 1,
+      name: '',
+      age: '',
+      hasCertification: false,
+      certifications: [],
+      selectedProgram: initialProgram || ''
+    }
   ])
 
   // Step 4: Contact Details
@@ -180,14 +93,15 @@ export default function BookUs() {
   // Sync group size changes to participants array
   useEffect(() => {
     const count = Math.max(1, parseInt(groupSize, 10) || 1)
-    setParticipants(prev => {
+    setParticipants((prev) => {
       if (prev.length === count) return prev
       if (prev.length < count) {
         const extra = Array.from({ length: count - prev.length }, (_, i) => ({
           id: prev.length + i + 1,
           name: '',
           age: '',
-          experienceLevel: 'beginner',
+          hasCertification: false,
+          certifications: [],
           selectedProgram: ''
         }))
         return [...prev, ...extra]
@@ -197,17 +111,20 @@ export default function BookUs() {
   }, [groupSize])
 
   const handleParticipantChange = (index, field, value) => {
-    setParticipants(prev => {
+    setParticipants((prev) => {
       const updated = [...prev]
       updated[index] = { ...updated[index], [field]: value }
-      
-      // Reset selected program if age/exp changes and selected program is no longer eligible
-      if (field === 'age' || field === 'experienceLevel') {
-        const eligible = getEligiblePrograms(
-          field === 'age' ? value : updated[index].age,
-          field === 'experienceLevel' ? value : updated[index].experienceLevel
-        )
-        const isCurrentEligible = eligible.some(p => p.id === updated[index].selectedProgram)
+
+      // If hasCertification is toggled to false, clear selected certifications
+      if (field === 'hasCertification' && !value) {
+        updated[index].certifications = []
+      }
+
+      // Reset selected program if age, hasCertification, or certifications change and current program is no longer eligible
+      if (field === 'age' || field === 'hasCertification' || field === 'certifications') {
+        const p = updated[index]
+        const eligible = getEligibleCourses(p.age, p.hasCertification, p.certifications)
+        const isCurrentEligible = eligible.some((course) => course.id === p.selectedProgram)
         if (!isCurrentEligible) {
           updated[index].selectedProgram = eligible[0]?.id || ''
         }
@@ -216,14 +133,43 @@ export default function BookUs() {
     })
   }
 
-  const handleSiteSelect = (site) => {
-    if (site && site.name) {
-      setLocation(site.name)
-    }
+  const handleToggleCertification = (index, certId) => {
+    setParticipants((prev) => {
+      const updated = [...prev]
+      const currentCerts = updated[index].certifications || []
+      const newCerts = currentCerts.includes(certId)
+        ? currentCerts.filter((c) => c !== certId)
+        : [...currentCerts, certId]
+
+      updated[index] = {
+        ...updated[index],
+        hasCertification: newCerts.length > 0 || updated[index].hasCertification,
+        certifications: newCerts
+      }
+
+      const p = updated[index]
+      const eligible = getEligibleCourses(p.age, p.hasCertification, p.certifications)
+      const isCurrentEligible = eligible.some((course) => course.id === p.selectedProgram)
+      if (!isCurrentEligible) {
+        updated[index].selectedProgram = eligible[0]?.id || ''
+      }
+      return updated
+    })
   }
 
   const handleSubmit = (e) => {
     e.preventDefault()
+
+    // Pre-submission validation: Confirm every participant satisfies age & prerequisites
+    for (const p of participants) {
+      const validation = validateParticipantBooking(p)
+      if (!validation.valid) {
+        setStepError(validation.error || 'Participant eligibility validation failed.')
+        setCurrentStep(2)
+        return
+      }
+    }
+
     setSubmitted(true)
   }
 
@@ -244,18 +190,25 @@ export default function BookUs() {
               <span className="text-navy/60 font-semibold">Location & Date:</span>
               <span className="font-bold text-navy">{location} {date ? `(${date})` : ''}</span>
             </div>
-            <div className="space-y-2 pt-1">
+            <div className="space-y-2.5 pt-1">
               <span className="text-navy/60 font-semibold block">Participants & Selected Programs:</span>
               {participants.map((p, idx) => {
-                const prog = PROGRAMS_CATALOG.find(pr => pr.id === p.selectedProgram)
+                const prog = COURSE_CATALOG.find((pr) => pr.id === p.selectedProgram)
+                const certNames = (p.certifications || [])
+                  .map((id) => CERTIFICATION_OPTIONS.find((c) => c.id === id)?.name)
+                  .filter(Boolean)
+                const certSummary = p.hasCertification
+                  ? (certNames.length ? certNames.join(', ') : 'Certified Diver')
+                  : 'No Prior Certification (Beginner / Pathway)'
+
                 return (
-                  <div key={idx} className="flex justify-between items-center bg-white p-3 rounded-2xl border border-navy/5">
+                  <div key={idx} className="flex justify-between items-center bg-white p-3.5 rounded-2xl border border-navy/5">
                     <div>
                       <span className="font-bold text-navy block">{p.name || `Participant ${idx + 1}`}</span>
-                      <span className="text-[11px] text-navy/50">Age: {p.age || 'N/A'} • {CERTIFICATION_OPTIONS.find(c => c.key === p.experienceLevel)?.label || p.experienceLevel || 'None'}</span>
+                      <span className="text-[11px] text-navy/50">Age: {p.age || 'N/A'} • {certSummary}</span>
                     </div>
                     <span className="font-bold text-accent text-xs bg-accent/10 px-3 py-1 rounded-full">
-                      {prog?.name || 'Custom Package'}
+                      {prog?.name || 'Selected Course'}
                     </span>
                   </div>
                 )
@@ -389,11 +342,17 @@ export default function BookUs() {
                           ) : (
                             <>
                               <option value="">Select a dive location</option>
-                              {availableLocations.map((loc) => (
-                                <option key={loc.id} value={loc.id}>
-                                  {loc.label || loc.name}
-                                </option>
-                              ))}
+                              {availableLocations.map((loc) => {
+                                const placeName = padiLocationService.getLocationDisplayName(loc)
+                                const optionLabel = placeName && loc.name && placeName.toLowerCase() !== loc.name.toLowerCase()
+                                  ? `${placeName} — ${loc.name}`
+                                  : (placeName || loc.name)
+                                return (
+                                  <option key={loc.id} value={loc.id}>
+                                    {optionLabel}
+                                  </option>
+                                )
+                              })}
                             </>
                           )}
                         </select>
@@ -486,7 +445,7 @@ export default function BookUs() {
                   </motion.div>
                 )}
 
-                {/* STEP 2: Name, Age & Certification Level for Each Person */}
+                {/* STEP 2: Name, Age & Certification Eligibility for Each Person */}
                 {currentStep === 2 && (
                   <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
                     <div>
@@ -496,102 +455,179 @@ export default function BookUs() {
                     </div>
 
                     <div className="space-y-6 max-h-[550px] overflow-y-auto pr-1">
-                      {participants.map((p, idx) => (
-                        <div key={p.id} className="rounded-3xl bg-[#FAFAFA] border border-navy/10 p-5 sm:p-6 space-y-4">
-                          <div className="flex justify-between items-center border-b border-navy/5 pb-3">
-                            <span className="font-heading font-bold text-navy text-lg flex items-center gap-2">
-                              <span className="w-6 h-6 rounded-full bg-navy text-white text-xs flex items-center justify-center font-bold">
-                                {idx + 1}
+                      {participants.map((p, idx) => {
+                        const ageNum = parseInt(p.age, 10)
+                        const isAgeValid = !isNaN(ageNum) && ageNum >= 7
+                        const eligibleCourses = isAgeValid ? getEligibleCourses(p.age, p.hasCertification, p.certifications) : []
+
+                        return (
+                          <div key={p.id} className="rounded-3xl bg-[#FAFAFA] border border-navy/10 p-5 sm:p-6 space-y-5">
+                            <div className="flex justify-between items-center border-b border-navy/5 pb-3">
+                              <span className="font-heading font-bold text-navy text-lg flex items-center gap-2">
+                                <span className="w-6 h-6 rounded-full bg-navy text-white text-xs flex items-center justify-center font-bold">
+                                  {idx + 1}
+                                </span>
+                                Person {idx + 1} Details
                               </span>
-                              Person {idx + 1} Details
-                            </span>
-                            <span className="text-[11px] text-navy/50 font-bold uppercase tracking-wider">
-                              Participant #{idx + 1}
-                            </span>
-                          </div>
-
-                          <div className="grid sm:grid-cols-2 gap-4">
-                            <div>
-                              <label className="mb-2 block text-xs font-bold text-navy/70">Full Name</label>
-                              <input
-                                type="text"
-                                placeholder={`Name of Person ${idx + 1}`}
-                                value={p.name}
-                                onChange={(e) => handleParticipantChange(idx, 'name', e.target.value)}
-                                required
-                                className="w-full rounded-2xl bg-white border border-navy/10 px-4 py-3.5 text-sm text-navy outline-none focus:ring-2 focus:ring-accent/50 transition"
-                              />
+                              <span className="text-[11px] text-navy/50 font-bold uppercase tracking-wider">
+                                Participant #{idx + 1}
+                              </span>
                             </div>
 
-                            <div>
-                              <label className="mb-2 block text-xs font-bold text-navy/70">Age (Years)</label>
-                              <input
-                                type="number"
-                                min="1"
-                                max="100"
-                                placeholder="e.g. 12"
-                                value={p.age}
-                                onChange={(e) => handleParticipantChange(idx, 'age', e.target.value)}
-                                required
-                                className="w-full rounded-2xl bg-white border border-navy/10 px-4 py-3.5 text-sm text-navy outline-none focus:ring-2 focus:ring-accent/50 transition"
-                              />
+                            {/* Name and Age Inputs */}
+                            <div className="grid sm:grid-cols-2 gap-4">
+                              <div>
+                                <label className="mb-2 block text-xs font-bold text-navy/70">Full Name</label>
+                                <input
+                                  type="text"
+                                  placeholder={`Name of Person ${idx + 1}`}
+                                  value={p.name}
+                                  onChange={(e) => handleParticipantChange(idx, 'name', e.target.value)}
+                                  required
+                                  className="w-full rounded-2xl bg-white border border-navy/10 px-4 py-3.5 text-sm font-bold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition"
+                                />
+                              </div>
+
+                              <div>
+                                <label className="mb-2 block text-xs font-bold text-navy/70">Age (Years)</label>
+                                <input
+                                  type="number"
+                                  min="1"
+                                  max="100"
+                                  placeholder="e.g. 12"
+                                  value={p.age}
+                                  onChange={(e) => handleParticipantChange(idx, 'age', e.target.value)}
+                                  required
+                                  className="w-full rounded-2xl bg-white border border-navy/10 px-4 py-3.5 text-sm font-bold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition"
+                                />
+                              </div>
                             </div>
-                          </div>
 
-                          <div>
-                            <label className="mb-2 block text-xs font-bold text-navy/70">Prior Scuba / Freediving Certification Level</label>
-                            <select
-                              value={p.experienceLevel || 'none'}
-                              onChange={(e) => handleParticipantChange(idx, 'experienceLevel', e.target.value)}
-                              required
-                              className="w-full rounded-2xl bg-white border border-navy/10 px-4 py-3.5 text-sm text-navy outline-none focus:ring-2 focus:ring-accent/50 transition appearance-none"
-                            >
-                              {CERTIFICATION_OPTIONS.map((opt) => (
-                                <option key={opt.key} value={opt.key}>{opt.label}</option>
-                              ))}
-                            </select>
-                          </div>
+                            {/* Before age is entered */}
+                            {p.age === '' && (
+                              <div className="rounded-2xl bg-navy/[0.03] border border-navy/10 p-4 text-xs font-medium text-navy/70 flex items-center gap-2.5">
+                                <span className="text-base">ℹ️</span>
+                                <span>Enter your age to see the courses available to you.</span>
+                              </div>
+                            )}
 
-                          {/* Dynamic Age Band Helper Banner */}
-                          {p.age !== '' && (
-                            parseInt(p.age, 10) < 7 ? (
-                              <div className="rounded-2xl bg-navy/[0.04] border border-navy/10 p-4 text-xs font-medium text-navy/80 flex items-start gap-3">
-                                <div className="w-5 h-5 rounded-full bg-navy/10 text-navy shrink-0 flex items-center justify-center font-bold text-[11px] mt-0.5">
-                                  !
-                                </div>
+                            {/* Age below 7 notice */}
+                            {p.age !== '' && !isAgeValid && (
+                              <div className="rounded-2xl bg-red-50 border border-red-200 p-4 text-xs font-medium text-red-600 flex items-start gap-3">
+                                <span className="text-base">⚠️</span>
                                 <div>
-                                  <span className="font-bold text-navy block mb-0.5">Age Eligibility Notice (Age 0–6)</span>
-                                  <span className="text-navy/70 leading-relaxed">
-                                    Minimum age for ocean & water programs is 7 years. No programs are currently available for this age group.
+                                  <span className="font-bold block mb-0.5">Age Notice (Under 7)</span>
+                                  <span>Minimum age for water & ocean programs is 7 years (Discover Snorkeling). There aren't any courses available for this age yet.</span>
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Once Age is Valid: Certification Choice */}
+                            {isAgeValid && (
+                              <div className="space-y-4 pt-1">
+                                <div>
+                                  <label className="mb-2.5 block text-xs font-bold text-navy/80 uppercase tracking-wider">
+                                    Do you already have a diving certification?
+                                  </label>
+                                  <div className="grid sm:grid-cols-2 gap-3">
+                                    <button
+                                      type="button"
+                                      onClick={() => handleParticipantChange(idx, 'hasCertification', false)}
+                                      className={`p-4 rounded-2xl border text-left transition-all flex items-center justify-between gap-3 ${
+                                        !p.hasCertification
+                                          ? 'bg-navy text-white border-navy shadow-sm'
+                                          : 'bg-white text-navy border-navy/15 hover:border-navy/30'
+                                      }`}
+                                    >
+                                      <div>
+                                        <span className="font-bold text-sm block">No, I don't have a certification</span>
+                                        <span className={`text-[11px] block mt-0.5 ${!p.hasCertification ? 'text-white/70' : 'text-navy/50'}`}>
+                                          Beginner, Discover Scuba & Pathway options
+                                        </span>
+                                      </div>
+                                      <div className={`w-5 h-5 rounded-full border flex items-center justify-center shrink-0 ${
+                                        !p.hasCertification ? 'border-accent bg-accent text-navy' : 'border-navy/20'
+                                      }`}>
+                                        {!p.hasCertification && <span className="text-[10px] font-bold">✓</span>}
+                                      </div>
+                                    </button>
+
+                                    <button
+                                      type="button"
+                                      onClick={() => handleParticipantChange(idx, 'hasCertification', true)}
+                                      className={`p-4 rounded-2xl border text-left transition-all flex items-center justify-between gap-3 ${
+                                        p.hasCertification
+                                          ? 'bg-navy text-white border-navy shadow-sm'
+                                          : 'bg-white text-navy border-navy/15 hover:border-navy/30'
+                                      }`}
+                                    >
+                                      <div>
+                                        <span className="font-bold text-sm block">Yes, I have a certification</span>
+                                        <span className={`text-[11px] block mt-0.5 ${p.hasCertification ? 'text-white/70' : 'text-navy/50'}`}>
+                                          Advanced, Rescue, Specialities & Fun Dives
+                                        </span>
+                                      </div>
+                                      <div className={`w-5 h-5 rounded-full border flex items-center justify-center shrink-0 ${
+                                        p.hasCertification ? 'border-accent bg-accent text-navy' : 'border-navy/20'
+                                      }`}>
+                                        {p.hasCertification && <span className="text-[10px] font-bold">✓</span>}
+                                      </div>
+                                    </button>
+                                  </div>
+                                </div>
+
+                                {/* If Certified: Show Which Certification Do You Have */}
+                                {p.hasCertification && (
+                                  <div className="space-y-2.5 pt-2">
+                                    <label className="block text-xs font-bold text-navy/80 uppercase tracking-wider">
+                                      Which certification(s) do you currently have?
+                                    </label>
+                                    <div className="grid sm:grid-cols-2 gap-2">
+                                      {CERTIFICATION_OPTIONS.map((opt) => {
+                                        const isSelected = (p.certifications || []).includes(opt.id)
+                                        return (
+                                          <button
+                                            key={opt.id}
+                                            type="button"
+                                            onClick={() => handleToggleCertification(idx, opt.id)}
+                                            className={`p-3 rounded-xl border text-left text-xs font-bold transition flex items-center justify-between gap-2 ${
+                                              isSelected
+                                                ? 'bg-accent/15 text-navy border-accent/60 shadow-sm'
+                                                : 'bg-white text-navy/80 border-navy/10 hover:border-navy/30 hover:bg-navy/[0.02]'
+                                            }`}
+                                          >
+                                            <span className="truncate">{opt.name}</span>
+                                            <span className={`w-4 h-4 rounded-md border flex items-center justify-center shrink-0 text-[10px] ${
+                                              isSelected ? 'bg-navy text-white border-navy font-bold' : 'border-navy/20'
+                                            }`}>
+                                              {isSelected ? '✓' : ''}
+                                            </span>
+                                          </button>
+                                        )
+                                      })}
+                                    </div>
+                                  </div>
+                                )}
+
+                                {/* Dynamic Eligibility Summary Badge */}
+                                <div className="rounded-2xl bg-emerald-500/10 border border-emerald-500/20 p-3.5 text-xs text-emerald-800 font-medium flex items-center justify-between gap-2">
+                                  <div className="flex items-center gap-2">
+                                    <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0 animate-pulse" />
+                                    <span>
+                                      {!p.hasCertification
+                                        ? `Beginner mode: ${eligibleCourses.length} course(s) & pathways unlocked for age ${p.age}`
+                                        : `${eligibleCourses.length} course(s) unlocked for age ${p.age} with your certification(s)`}
+                                    </span>
+                                  </div>
+                                  <span className="font-bold text-[11px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/15">
+                                    {eligibleCourses.length} Available
                                   </span>
                                 </div>
                               </div>
-                            ) : (
-                              <div className="rounded-2xl bg-navy/[0.03] border border-navy/10 p-4 text-xs font-medium text-navy/80 flex items-start gap-3">
-                                <div className="w-2 h-2 rounded-full bg-emerald-500 shrink-0 mt-1.5 animate-pulse" />
-                                <div>
-                                  <span className="font-bold text-navy block mb-0.5">
-                                    {parseInt(p.age, 10) === 7 && 'Age 7 Pathway: Snorkeling & Ocean Discovery'}
-                                    {(parseInt(p.age, 10) === 8 || parseInt(p.age, 10) === 9) && 'Age 8–9 Pathway: Try Dive, DSD Lite & Junior Scuba'}
-                                    {(parseInt(p.age, 10) === 10 || parseInt(p.age, 10) === 11) && 'Age 10–11 Pathway: PADI DSD, Open Water & Entry Courses'}
-                                    {(parseInt(p.age, 10) >= 12 && parseInt(p.age, 10) <= 14) && 'Age 12–14 Pathway: Advanced Open Water, Rescue & Nitrox'}
-                                    {(parseInt(p.age, 10) >= 15 && parseInt(p.age, 10) <= 17) && 'Age 15–17 Pathway: Deep, Wreck & Technical Specialities'}
-                                    {parseInt(p.age, 10) >= 18 && 'Age 18+ Pathway: All Courses & Professional Divemaster Track'}
-                                  </span>
-                                  <span className="text-navy/70 leading-relaxed">
-                                    {parseInt(p.age, 10) === 7 && 'Eligible for Discover Snorkeling, Reef Explorer & Ocean Explorer.'}
-                                    {(parseInt(p.age, 10) === 8 || parseInt(p.age, 10) === 9) && 'Eligible for Try Dive, DSD Lite, Bubblemaker, Skin Diver & Snorkeling.'}
-                                    {(parseInt(p.age, 10) === 10 || parseInt(p.age, 10) === 11) && 'Eligible for PADI DSD, Open Water Diver, Scuba Diver & Specialities.'}
-                                    {(parseInt(p.age, 10) >= 12 && parseInt(p.age, 10) <= 14) && 'Eligible for Advanced Open Water, Rescue Diver, Nitrox & Freediving.'}
-                                    {(parseInt(p.age, 10) >= 15 && parseInt(p.age, 10) <= 17) && 'Eligible for Deep Diver, Wreck Diver, Drift Diver & Freediver.'}
-                                    {parseInt(p.age, 10) >= 18 && 'Eligible for All Courses & Professional Divemaster Pathway.'}
-                                  </span>
-                                </div>
-                              </div>
-                            )
-                          )}
-                        </div>
-                      ))}
+                            )}
+                          </div>
+                        )
+                      })}
                     </div>
                   </motion.div>
                 )}
@@ -607,9 +643,14 @@ export default function BookUs() {
 
                     <div className="space-y-8 max-h-[550px] overflow-y-auto pr-1">
                       {participants.map((p, idx) => {
-                        const eligible = getEligiblePrograms(p.age, p.experienceLevel)
-                        const certObj = CERTIFICATION_OPTIONS.find(c => c.key === (p.experienceLevel || 'none'))
-                        
+                        const eligible = getEligibleCourses(p.age, p.hasCertification, p.certifications)
+                        const certNames = (p.certifications || [])
+                          .map((id) => CERTIFICATION_OPTIONS.find((c) => c.id === id)?.name)
+                          .filter(Boolean)
+                        const certSummary = p.hasCertification
+                          ? (certNames.length ? certNames.join(', ') : 'Certified Diver')
+                          : 'No Prior Certification (Beginner / Pathway)'
+
                         return (
                           <div key={p.id} className="rounded-3xl bg-[#FAFAFA] border border-navy/10 p-5 sm:p-6 space-y-5">
                             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-navy/10 pb-4">
@@ -618,7 +659,7 @@ export default function BookUs() {
                                   {p.name || `Person ${idx + 1}`}
                                 </h4>
                                 <p className="text-xs text-navy/60 mt-0.5">
-                                  Age: <span className="font-bold text-navy">{p.age || 'Not specified'}</span> • Cert: <span className="font-bold text-navy">{certObj?.label || 'None'}</span>
+                                  Age: <span className="font-bold text-navy">{p.age || 'Not specified'}</span> • Cert: <span className="font-bold text-navy">{certSummary}</span>
                                 </p>
                               </div>
                               <span className="text-[11px] font-bold px-3.5 py-1 rounded-full bg-navy/[0.06] text-navy border border-navy/10">
@@ -655,7 +696,7 @@ export default function BookUs() {
                                     <option value="" disabled>Select an eligible course...</option>
                                     {eligible.map((prog) => (
                                       <option key={prog.id} value={prog.id}>
-                                        {prog.name} [{prog.category}] (Age {prog.minAge}+) — {prog.certLabel}
+                                        {prog.name} [{prog.category}] (Age {prog.minimumAge}+) — {prog.certLabel}
                                       </option>
                                     ))}
                                   </select>
@@ -666,7 +707,7 @@ export default function BookUs() {
 
                                 {/* Interactive Program Cards Grid */}
                                 <div className="grid sm:grid-cols-2 gap-3 pt-2">
-                                  {eligible.slice(0, 6).map((prog) => {
+                                  {eligible.map((prog) => {
                                     const isSelected = p.selectedProgram === prog.id
                                     return (
                                       <div
@@ -700,7 +741,7 @@ export default function BookUs() {
                                           <span className={`px-2.5 py-0.5 rounded-full font-semibold ${
                                             isSelected ? 'bg-white/10 text-white/90' : 'bg-navy/[0.05] text-navy/70'
                                           }`}>
-                                            Age {prog.minAge}+
+                                            Age {prog.minimumAge}+
                                           </span>
                                           <span className={`truncate max-w-[170px] ${
                                             isSelected ? 'text-white/70' : 'text-navy/50'
@@ -712,11 +753,6 @@ export default function BookUs() {
                                     )
                                   })}
                                 </div>
-                                {eligible.length > 6 && (
-                                  <p className="text-[11px] text-navy/50 italic text-center pt-1">
-                                    Showing top matches above. Use the dropdown menu to view all {eligible.length} eligible options.
-                                  </p>
-                                )}
                               </div>
                             )}
                           </div>
@@ -741,7 +777,7 @@ export default function BookUs() {
                         type="text"
                         placeholder="Your full name"
                         value={contact.name}
-                        onChange={(e) => setContact(prev => ({ ...prev, name: e.target.value }))}
+                        onChange={(e) => setContact((prev) => ({ ...prev, name: e.target.value }))}
                         required
                         className="w-full rounded-2xl bg-[#F0F2F5] px-5 py-4 text-sm font-bold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition placeholder:text-navy/30"
                       />
@@ -754,7 +790,7 @@ export default function BookUs() {
                           type="email"
                           placeholder="you@example.com"
                           value={contact.email}
-                          onChange={(e) => setContact(prev => ({ ...prev, email: e.target.value }))}
+                          onChange={(e) => setContact((prev) => ({ ...prev, email: e.target.value }))}
                           required
                           className="w-full rounded-2xl bg-[#F0F2F5] px-5 py-4 text-sm font-bold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition placeholder:text-navy/30"
                         />
@@ -766,8 +802,8 @@ export default function BookUs() {
                           defaultCountry="IN"
                           placeholder="8971001010"
                           value={contact.phone}
-                          onChange={(val) => setContact(prev => ({ ...prev, phone: val }))}
-                          className="w-full rounded-2xl bg-[#F0F2F5] px-5 py-4 text-sm font-bold text-navy outline-none focus-within:ring-2 focus-within:ring-accent/50 transition [&_.PhoneInputCountryIcon]:rounded-sm [&_.PhoneInputInput]:bg-transparent [&_.PhoneInputInput]:outline-none [&_.PhoneInputInput]:border-none [&_.PhoneInputCountrySelect]:outline-none [&_.PhoneInputCountryIcon--border]:border-none [&_.PhoneInputInput]:ml-3"
+                          onChange={(val) => setContact((prev) => ({ ...prev, phone: val }))}
+                          className="w-full rounded-2xl bg-[#F0F2F5] px-5 py-4 text-sm font-bold text-navy outline-none focus-within:ring-2 focus-within:ring-accent/50 transition [&_.PhoneInputCountryIcon]:rounded-sm [&_.PhoneInputInput]:bg-transparent [&_.PhoneInputInput]:outline-none [&_.PhoneInputInput]:border-none [&_.PhoneInputCountrySelect]:outline-none [&_.PhoneInputCountryIcon--border]:border-none [&_.PhoneInputInput]:ml-3 font-bold"
                         />
                       </div>
                     </div>
@@ -777,7 +813,7 @@ export default function BookUs() {
                       <textarea
                         placeholder="Any medical conditions, dietary preferences, gear sizes, or custom requests?"
                         value={contact.requests}
-                        onChange={(e) => setContact(prev => ({ ...prev, requests: e.target.value }))}
+                        onChange={(e) => setContact((prev) => ({ ...prev, requests: e.target.value }))}
                         rows="3"
                         className="w-full rounded-2xl bg-[#F0F2F5] px-5 py-4 text-sm font-bold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition placeholder:text-navy/30 resize-y"
                       ></textarea>
@@ -802,7 +838,7 @@ export default function BookUs() {
                     type="button"
                     onClick={() => {
                       setStepError('')
-                      setCurrentStep(prev => prev - 1)
+                      setCurrentStep((prev) => prev - 1)
                     }}
                     className="rounded-full px-6 py-3.5 text-sm font-bold text-navy hover:bg-[#F0F2F5] transition"
                   >
@@ -816,54 +852,67 @@ export default function BookUs() {
                     onClick={() => {
                       if (currentStep === 1) {
                         if (!country) {
-                          setStepError("Please select a dive country.");
+                          setStepError('Please select a dive country.')
                           return
                         }
                         if (!locationId && !selectedLocation && !location) {
-                          setStepError("Please select a dive location.");
+                          setStepError('Please select a dive location.')
                           return
                         }
                         if (!date || date < todayStr || date > maxDateStr) {
-                          setDateError("Please Select a Proper Date");
-                          setStepError("Please select a valid date for your dive.");
+                          setDateError('Please Select a Proper Date')
+                          setStepError('Please select a valid date for your dive.')
                           return
                         }
                         if (!groupSize || parseInt(groupSize, 10) < 1) {
-                          setStepError("Please enter a valid number of participants (minimum 1).");
+                          setStepError('Please enter a valid number of participants (minimum 1).')
                           return
                         }
-                        setDateError("");
-                        setStepError("");
+                        setDateError('')
+                        setStepError('')
                       }
                       if (currentStep === 2) {
-                        const hasEmpty = participants.some(p => !p.name || !p.age)
+                        const hasEmpty = participants.some((p) => !p.name || !p.age)
                         if (hasEmpty) {
-                          setStepError("Please fill in the Name and Age for all participants.");
+                          setStepError('Please fill in the Name and Age for all participants.')
                           return
                         }
-                        setStepError("");
+                        const hasInvalidAge = participants.some((p) => parseInt(p.age, 10) < 7)
+                        if (hasInvalidAge) {
+                          setStepError('Minimum age for booking water & dive programs is 7 years.')
+                          return
+                        }
+                        setStepError('')
                       }
                       if (currentStep === 3) {
-                        const hasUnselected = participants.some(p => !p.selectedProgram)
+                        const hasUnselected = participants.some((p) => !p.selectedProgram)
                         if (hasUnselected) {
-                          setStepError("Please select an eligible program for each participant.");
+                          setStepError('Please select an eligible program for each participant.')
                           return
                         }
-                        setStepError("");
+                        // Validate eligibility for each participant
+                        for (const p of participants) {
+                          const val = validateParticipantBooking(p)
+                          if (!val.valid) {
+                            setStepError(val.error || 'Eligibility validation failed.')
+                            return
+                          }
+                        }
+                        setStepError('')
                       }
-                      setStepError("")
-                      setCurrentStep(prev => prev + 1)
+                      setStepError('')
+                      setCurrentStep((prev) => prev + 1)
                     }}
-                    className="rounded-full bg-navy px-8 py-3.5 text-sm font-bold text-white transition hover:bg-accent hover:text-navy shadow-md flex items-center gap-2"
+                    className="rounded-full bg-navy px-8 py-4 text-sm font-bold text-white transition hover:bg-accent hover:text-navy shadow-md ml-auto"
                   >
-                    Next Step →
+                    Continue →
                   </button>
                 ) : (
                   <button
                     type="submit"
-                    className="rounded-full bg-accent px-8 py-3.5 text-sm font-bold text-navy transition hover:bg-white border border-transparent hover:border-accent shadow-md flex items-center gap-2"
+                    className="rounded-full bg-accent px-8 py-4 text-sm font-bold text-navy transition hover:bg-navy hover:text-white shadow-md ml-auto"
                   >
-                    Confirm Booking Request ✓
+                    Confirm Booking Request
                   </button>
                 )}
               </div>
@@ -879,15 +928,16 @@ export default function BookUs() {
             </div>
             <div className="flex-1 w-full relative min-h-0 flex flex-col">
               <InteractiveDiveMap
-                onSiteSelect={handleSiteSelect}
                 selectedCountry={country}
                 countryLocations={availableLocations}
                 selectedLocation={selectedLocation}
+                onCountrySelect={handleCountryChange}
                 onLocationSelect={(loc) => {
                   if (loc) {
                     setLocationId(String(loc.id))
                     setSelectedLocation(loc)
-                    setLocation(loc.label || loc.name)
+                    const placeName = padiLocationService.getLocationDisplayName(loc)
+                    setLocation(placeName || loc.name)
                     setStepError('')
                   }
                 }}
