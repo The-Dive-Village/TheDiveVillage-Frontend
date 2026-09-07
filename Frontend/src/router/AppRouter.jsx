@@ -76,6 +76,7 @@ export default function AppRouter() {
           <Route path="profile" element={<Profile />} />
           <Route path="orders" element={<Orders />} />
           <Route path="wishlist" element={<Wishlist />} />
+          <Route path="cart" element={<Cart />} />
         </Route>
 
         <Route

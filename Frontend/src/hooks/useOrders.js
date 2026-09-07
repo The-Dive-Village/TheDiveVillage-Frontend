@@ -12,6 +12,16 @@ export default function useOrders(orderId) {
   return useFetch(fetcher, [fetcher], { immediate: Boolean(orderId) })
 }
 
+export function useMyOrders() {
+  const fetcher = useCallback(async () => {
+    const { data } = await orderService.getMyOrders()
+    const orders = data?.data?.orders || data?.orders || data
+    return Array.isArray(orders) ? orders : []
+  }, [])
+
+  return useFetch(fetcher, [fetcher])
+}
+
 export function useAdminOrders() {
   const fetcher = useCallback(async () => {
     const { data } = await orderService.adminList()
@@ -20,3 +30,4 @@ export function useAdminOrders() {
 
   return useFetch(fetcher, [fetcher])
 }
+

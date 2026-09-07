@@ -116,7 +116,7 @@ export default function Profile() {
         <div className="pt-6 border-t border-navy/10 flex justify-end">
           <button
             onClick={handleLogout}
-            className="rounded-full bg-white border border-navy/20 px-8 py-4 text-sm font-bold text-navy transition hover:bg-slate-50 shadow-sm"
+            className="rounded-full bg-white border-2 border-navy/20 hover:border-navy hover:bg-navy hover:text-white px-8 py-3.5 text-sm font-bold text-navy transition-all duration-200 shadow-xs cursor-pointer"
           >
             Sign Out
           </button>

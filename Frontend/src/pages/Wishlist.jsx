@@ -2,10 +2,12 @@ import { useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { useWishlist } from '../hooks/useWishlist'
 import { useCart } from '../hooks/useCart'
+import { useAuth } from '../hooks/useAuth'
 import { formatCurrency } from '../utils/formatCurrency'
 import Button from '../components/Button'
 
 export default function Wishlist() {
+  const { user } = useAuth()
   const { items, count, remove } = useWishlist()
   const { addItem } = useCart()
   const navigate = useNavigate()
@@ -16,6 +18,10 @@ export default function Wishlist() {
   }, [items])
 
   const handleAddAllToCart = () => {
+    if (!user?.uid) {
+      navigate('/login')
+      return
+    }
     items.forEach((item) => {
       addItem({
         inventoryId: item.inventoryId || `${item.id}-default`,
@@ -74,7 +80,7 @@ export default function Wishlist() {
               
               {addedAllToast && (
                 <div className="rounded-2xl bg-emerald-50 border border-emerald-200 p-4 shadow-soft text-emerald-800 text-xs font-bold flex justify-between items-center">
-                  <span>🎉 All wishlist items added to your cart!</span>
+                  <span>All wishlist items added to your cart!</span>
                   <Link to="/cart" className="underline text-emerald-900">View Cart →</Link>
                 </div>
               )}
@@ -108,6 +114,10 @@ export default function Wishlist() {
                       <button
                         type="button"
                         onClick={() => {
+                          if (!user?.uid) {
+                            navigate('/login')
+                            return
+                          }
                           addItem({
                             inventoryId: item.inventoryId || `${item.id}-default`,
                             quantity: 1,
@@ -122,7 +132,7 @@ export default function Wishlist() {
                         }}
                         className="flex-1 sm:flex-none rounded-full bg-navy hover:bg-accent text-white hover:text-navy px-5 py-2.5 text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm"
                       >
-                        Add to Cart 🛒
+                        Add to Cart
                       </button>
 
                       <button
@@ -161,12 +171,12 @@ export default function Wishlist() {
                     onClick={handleAddAllToCart}
                     className="w-full rounded-full bg-accent hover:bg-navy text-navy hover:text-white font-bold py-3.5 px-6 text-sm transition-all duration-200 shadow-md flex items-center justify-center gap-2 cursor-pointer"
                   >
-                    Add All Items to Cart ⚡
+                    Add All Items to Cart
                   </button>
 
                   <Link
                     to="/shop"
-                    className="w-full text-center block rounded-full bg-[#F0F2F5] hover:bg-navy hover:text-white text-navy font-bold py-3 px-6 text-xs transition"
+                    className="w-full text-center block rounded-full bg-white border-2 border-navy/20 hover:border-navy hover:bg-navy hover:text-white text-navy font-bold py-3 px-6 text-xs transition-all duration-200 shadow-xs cursor-pointer"
                   >
                     Continue Shopping
                   </Link>

@@ -349,13 +349,13 @@ function AudioToggle({ isMuted, onToggle }) {
 
 function JoystickControl({ joystickVelocity }) {
   const location = useLocation()
-  if (location.pathname.startsWith('/shop') || location.pathname.startsWith('/contact')) {
-    return null
-  }
-
   const containerRef = useRef(null)
   const isDragging = useRef(false)
   const [thumbPos, setThumbPos] = useState({ x: 0, y: 0 })
+
+  if (location.pathname.startsWith('/shop') || location.pathname.startsWith('/contact')) {
+    return null
+  }
 
   const MAX_RADIUS = 14
 

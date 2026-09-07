@@ -6,6 +6,7 @@ const LINKS = [
   { to: '/dashboard/profile', label: 'Profile' },
   { to: '/dashboard/orders', label: 'Orders' },
   { to: '/dashboard/wishlist', label: 'Wishlist' },
+  { to: '/dashboard/cart', label: 'Cart' },
 ]
 
 export default function DashboardLayout() {
