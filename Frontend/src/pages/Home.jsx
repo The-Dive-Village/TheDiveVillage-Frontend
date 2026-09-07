@@ -35,7 +35,7 @@ const HIGHLIGHTS_DATA = [
   {
     id: 'courses',
     title: 'Certified Courses',
-    desc: 'From your very first breath underwater to professional divemaster certifications.',
+    desc: 'From your very first breath under the water to professional divemaster certifications.',
     image: IMAGES.hero,
     link: '/services',
     btnText: 'Explore'
@@ -62,7 +62,7 @@ const TESTIMONIALS = [
   {
     name: "Alex Johnson",
     role: "PADI Open Water Diver",
-    text: "The Dive Village completely changed my perspective on the ocean. The instructors were incredibly patient, and the focus on safety made my first dive an unforgettable and peaceful experience.",
+    text: "The Dive Village completely changed my perspective on the ocean. The instructors were incredibly patient, and the focus on safety made my first dive unforgettable.",
     image: CAROUSEL_IMAGES[1]
   },
   {
@@ -74,7 +74,7 @@ const TESTIMONIALS = [
   {
     name: "David Chen",
     role: "Advanced Adventurer",
-    text: "From the seamless booking process to the personalized dive charters, everything was flawless. A vibrant community that genuinely feels like a second home beneath the waves.",
+    text: "From the seamless booking process to the personalized dive charters, everything was flawless. A vibrant community that genuinely feels like a second home.",
     image: CAROUSEL_IMAGES[0]
   }
 ]
@@ -103,7 +103,7 @@ export default function Home() {
                 <span className="block text-[#FFCD00]">COMMUNITY.</span>
               </h1>
               <div className="mt-6 h-1 w-20 bg-[#FFCD00]"></div>
-              <p className="mt-8 max-w-2xl text-lg sm:text-xl md:text-2xl font-medium text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] leading-relaxed">
+              <p className="mt-8 max-w-2xl text-lg sm:text-xl md:text-2xl font-medium text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] leading-relaxed text-justify">
                 The life-changing magic of the ocean<br />Is a feeling meant to be shared.
               </p>
               <div className="mt-10 flex flex-wrap items-center gap-6">
@@ -148,8 +148,8 @@ export default function Home() {
             <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-white drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)] leading-tight">
               Explore Our <span className="text-[#FFCD00] italic">Programs</span>
             </h2>
-            <p className="mt-4 max-w-2xl mx-auto text-base sm:text-lg text-white/90 font-medium drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
-              From your very first breath underwater to professional divemaster certifications.
+            <p className="mt-4 max-w-2xl mx-auto text-base sm:text-lg text-white/90 font-medium drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] text-justify">
+              From your very first breath under the water to professional dive master certifications.
             </p>
           </SectionReveal>
           <SectionReveal>
@@ -167,7 +167,7 @@ export default function Home() {
             <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-white drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)] leading-tight">
               The Ocean <span className="text-[#FFCD00] italic">Welcomes All</span>
             </h2>
-            <p className="mt-4 max-w-2xl mx-auto text-base sm:text-lg text-white/90 font-medium drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
+            <p className="mt-4 max-w-2xl mx-auto text-base sm:text-lg text-white/90 font-medium drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] text-justify">
               You don't need to be an athlete or an expert to dive<br />Only curious enough to explore.
             </p>
           </SectionReveal>
@@ -184,7 +184,7 @@ export default function Home() {
                 t: 'Families & Groups',
                 img: img2,
                 bgImg: CAROUSEL_IMAGES[1],
-                desc: "Shared memories. Deeper connections. Perfect experiences for the people who matter most."
+                desc: "Shared memories.\nDeeper connections.\nPerfect experiences for the people who matter most."
               },
               {
                 t: 'Professionals',
@@ -235,7 +235,7 @@ export default function Home() {
                       <div className="w-8 h-[3px] bg-[#FFCD00] mb-4 shadow-sm shrink-0"></div>
 
                       {/* Description text - consistent height block */}
-                      <p className="text-white/90 text-sm font-medium mb-6 leading-relaxed text-left drop-shadow-sm min-h-[72px] flex items-start">
+                      <p className="text-white/90 text-sm font-medium mb-6 leading-relaxed text-justify drop-shadow-sm min-h-[72px] flex items-start whitespace-pre-line">
                         {item.desc}
                       </p>
 
@@ -268,7 +268,7 @@ export default function Home() {
             <h2 className="font-heading text-3xl sm:text-5xl font-bold text-white drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)]">
               What Our Divers Say
             </h2>
-            <p className="mt-4 text-white/80 drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
+            <p className="mt-4 text-white/80 drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] text-justify">
               Don't just take our word for it.<br />Hear from the community of ocean lovers who have dived with us.
             </p>
           </SectionReveal>
@@ -284,7 +284,7 @@ export default function Home() {
                       </svg>
                     ))}
                   </div>
-                  <p className="text-white/90 italic mb-8 leading-relaxed">"{t.text}"</p>
+                  <p className="text-white/90 italic mb-8 leading-relaxed text-justify">"{t.text}"</p>
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white/30">
                       <SafeImage src={t.image} alt={t.name} className="w-full h-full object-cover" />
@@ -311,7 +311,7 @@ export default function Home() {
             <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight drop-shadow-lg mb-4">From Airport to Airport<br />
               <span className="text-accent font-bold">We've Got You Covered</span>
             </h2>
-            <p className="text-base sm:text-lg text-white/80 font-medium leading-relaxed drop-shadow-md">
+            <p className="text-base sm:text-lg text-white/80 font-medium leading-relaxed drop-shadow-md text-justify">
               Relax and immerse yourself in the ocean.<br />We handle every detail of your island holiday from arrival to departure.
             </p>
           </SectionReveal>
@@ -385,7 +385,7 @@ export default function Home() {
                     </h3>
 
                     {/* Description Text */}
-                    <p className="text-white/70 text-xs sm:text-sm font-medium leading-relaxed mb-6 text-left min-h-[40px]">
+                    <p className="text-white/70 text-xs sm:text-sm font-medium leading-relaxed mb-6 text-justify min-h-[40px]">
                       {item.desc}
                     </p>
 
@@ -584,7 +584,7 @@ function InteractiveHighlights() {
                   <h3 className="font-heading text-2xl sm:text-3xl font-bold text-white leading-tight mb-3 pointer-events-none">
                     {current.title}
                   </h3>
-                  <p className="text-white/80 text-xs sm:text-sm mb-6 line-clamp-3 pointer-events-none">
+                  <p className="text-white/80 text-xs sm:text-sm mb-6 line-clamp-3 pointer-events-none text-justify">
                     {current.desc}
                   </p>
                   <button
@@ -645,7 +645,7 @@ function AutoCarousel({ images, showContent = true }) {
               Come for the adventure.<br />
               <span className="text-white/60">Stay for the calm.</span>
             </h3>
-            <p className="text-white/80 font-medium text-base sm:text-lg mb-8 max-w-sm">
+            <p className="text-white/80 font-medium text-base sm:text-lg mb-8 max-w-sm text-justify">
               Leave with stories that last a lifetime.
             </p>
             <Button

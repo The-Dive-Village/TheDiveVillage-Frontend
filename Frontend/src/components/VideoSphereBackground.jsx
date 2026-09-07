@@ -7,6 +7,7 @@ import { useLocation } from 'react-router'
 import videoFile from '@video-optimized/Hero.mp4'
 import divingFile from '@video-optimized/diving.mp4'
 import bookFile from '@video-optimized/Book.mp4'
+import underwaterAudio from '../assets/Underwater.mp3.mpeg'
 
 function VideoSphere({ videoSrc, isMuted, joystickVelocity }) {
   const meshRef = useRef()
@@ -258,10 +259,22 @@ export default function VideoSphereBackground() {
   const [isMuted, setIsMuted] = useState(true)
   const location = useLocation()
   const joystickVelocity = useRef({ x: 0, y: 0 })
+  const audioRef = useRef(null)
 
   useEffect(() => {
     setMounted(true)
   }, [])
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = 0.5
+      if (!isMuted) {
+        audioRef.current.play().catch((err) => console.log('Background audio play failed:', err))
+      } else {
+        audioRef.current.pause()
+      }
+    }
+  }, [isMuted])
 
   if (!mounted) return null // Prevent SSR/hydration mismatches if any
 
@@ -270,6 +283,7 @@ export default function VideoSphereBackground() {
 
   return (
     <>
+      <audio ref={audioRef} src={underwaterAudio} loop playsInline />
       <div className="absolute inset-0 -z-10">
         <div className="sticky top-0 h-[100dvh] w-full bg-navy overflow-hidden">
           <Canvas camera={{ position: [0, 0, 0.1], fov: 95 }}>
