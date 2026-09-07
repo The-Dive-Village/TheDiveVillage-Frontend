@@ -7,7 +7,6 @@ import { useLocation } from 'react-router'
 import videoFile from '@video-optimized/Hero.mp4'
 import divingFile from '@video-optimized/diving.mp4'
 import bookFile from '@video-optimized/Book.mp4'
-import underwaterAudio from '../assets/Underwater.mp3.mpeg'
 
 function VideoSphere({ videoSrc, isMuted, joystickVelocity }) {
   const meshRef = useRef()
