@@ -45,7 +45,7 @@ export default function ProgramsPreview() {
           <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight drop-shadow-lg">
             Explore <span className="text-accent italic font-bold">The Dive Village</span>
           </h2>
-          <p className="mt-4 max-w-xl mx-auto text-base sm:text-lg text-white/90 font-medium drop-shadow-md">
+          <p className="mt-4 max-w-xl mx-auto text-base sm:text-lg text-white/90 font-medium drop-shadow-md text-justify">
             From your very first breath underwater to professional divemaster certifications.
           </p>
           <Link
@@ -110,7 +110,7 @@ function Card({ program }) {
         {/* Accent Bar */}
         <div className="w-8 h-1 bg-accent rounded-full mb-4"></div>
 
-        <p className="text-white/80 text-sm leading-relaxed font-medium mb-8 flex-1">
+        <p className="text-white/80 text-sm leading-relaxed font-medium mb-8 flex-1 text-justify">
           {program.desc}
         </p>
 

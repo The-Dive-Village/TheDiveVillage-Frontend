@@ -92,7 +92,7 @@ export default function GalleryPreview() {
           <h2 className="font-heading text-h2 font-bold text-white">
             The Dive Village <em className="font-heading italic font-bold text-accent">Gallery</em>
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-white/80">
+          <p className="mx-auto mt-4 max-w-2xl text-white/80 text-justify">
             Where the sea is your classroom, playground, and escape.
           </p>
         </SectionReveal>
