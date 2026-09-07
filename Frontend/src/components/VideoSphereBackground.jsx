@@ -5,22 +5,28 @@ import { OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
 import { useLocation } from 'react-router'
 import videoFile from '@video-optimized/Hero.mp4'
+import divingFile from '@video-optimized/diving.mp4'
 import bookFile from '@video-optimized/Book.mp4'
 import underwaterAudio from '../assets/Underwater.mp3'
 
 function useDirectVideoTexture(src, isMuted = true, playbackRate = 0.5) {
   const [texture, setTexture] = useState(null)
+  const [isReady, setIsReady] = useState(false)
   const videoRef = useRef(null)
 
   useEffect(() => {
     if (!src) return
 
+    setIsReady(false)
     const video = document.createElement('video')
     video.src = src
     video.crossOrigin = 'anonymous'
+    video.muted = true
+    video.defaultMuted = true
     video.playsInline = true
-    video.setAttribute('webkit-playsinline', 'true')
-    video.muted = isMuted
+    video.setAttribute('muted', '')
+    video.setAttribute('playsinline', '')
+    video.setAttribute('webkit-playsinline', '')
     video.loop = true
     video.autoplay = true
     video.preload = 'auto'
@@ -33,22 +39,33 @@ function useDirectVideoTexture(src, isMuted = true, playbackRate = 0.5) {
     vidTexture.magFilter = THREE.LinearFilter
     vidTexture.generateMipmaps = false
 
+    const onPlaying = () => setIsReady(true)
+    const onLoadedData = () => {
+      if (video.readyState >= 2) setIsReady(true)
+    }
+
+    video.addEventListener('playing', onPlaying)
+    video.addEventListener('loadeddata', onLoadedData)
+    video.addEventListener('canplay', onLoadedData)
+
     const playPromise = video.play()
     if (playPromise !== undefined) {
-      playPromise.catch((err) => {
+      playPromise.then(() => {
+        setIsReady(true)
+      }).catch((err) => {
         console.warn('Video autoplay deferred:', err?.message || err)
       })
     }
 
     const handleUserInteraction = () => {
       if (videoRef.current && videoRef.current.paused) {
-        videoRef.current.play().catch(() => {})
+        videoRef.current.play().then(() => setIsReady(true)).catch(() => {})
       }
     }
     window.addEventListener('pointerdown', handleUserInteraction, { once: true })
     window.addEventListener('touchstart', handleUserInteraction, { once: true })
 
-    // Tab visibility handling: pause when tab hidden, resume when visible
+    // Tab visibility handling
     const handleVisibilityChange = () => {
       if (!videoRef.current) return
       if (document.hidden) {
@@ -65,13 +82,16 @@ function useDirectVideoTexture(src, isMuted = true, playbackRate = 0.5) {
       window.removeEventListener('pointerdown', handleUserInteraction)
       window.removeEventListener('touchstart', handleUserInteraction)
       document.removeEventListener('visibilitychange', handleVisibilityChange)
+      video.removeEventListener('playing', onPlaying)
+      video.removeEventListener('loadeddata', onLoadedData)
+      video.removeEventListener('canplay', onLoadedData)
       video.pause()
       video.removeAttribute('src')
       video.load()
       vidTexture.dispose()
       videoRef.current = null
     }
-  }, [src])
+  }, [src, playbackRate])
 
   useEffect(() => {
     if (videoRef.current) {
@@ -82,16 +102,23 @@ function useDirectVideoTexture(src, isMuted = true, playbackRate = 0.5) {
     }
   }, [isMuted])
 
-  return texture
+  return { texture, isReady }
 }
 
 function VideoSphere({ videoSrc, isMuted, joystickVelocity }) {
   const meshRef = useRef()
+  const meshRef2 = useRef()
+  const meshRef3 = useRef()
   const targetRotation = useRef({ x: 0, y: 0 })
+  const targetOpacity2 = useRef(0)
+  const targetOpacity3 = useRef(0)
   const location = useLocation()
+  const isHome = location.pathname === '/'
   const isAbout = location.pathname === '/about'
 
-  const texture = useDirectVideoTexture(videoSrc, isMuted, 0.5)
+  const { texture, isReady } = useDirectVideoTexture(videoSrc, isMuted, 0.5)
+  const { texture: texture2, isReady: isReady2 } = useDirectVideoTexture(isHome ? bookFile : null, isMuted, 0.5)
+  const { texture: texture3, isReady: isReady3 } = useDirectVideoTexture(isHome ? divingFile : null, isMuted, 0.5)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -101,6 +128,31 @@ function VideoSphere({ videoSrc, isMuted, joystickVelocity }) {
 
       const aboutEl = document.getElementById('about-section')
       const programsEl = document.getElementById('programs-section')
+      const diveSectionEl = document.getElementById('who-can-dive-section')
+      const testimonialsEl = document.getElementById('testimonials-section')
+
+      if (isHome) {
+        const fadeStart = window.innerHeight * 0.85
+        const fadeEnd = window.innerHeight * 0.25
+
+        if (diveSectionEl) {
+          const diveRect = diveSectionEl.getBoundingClientRect()
+          if (diveRect.top < fadeStart) {
+            targetOpacity2.current = diveRect.top < fadeEnd ? 1 : 1 - (diveRect.top - fadeEnd) / (fadeStart - fadeEnd)
+          } else {
+            targetOpacity2.current = 0
+          }
+        }
+
+        if (testimonialsEl) {
+          const testRect = testimonialsEl.getBoundingClientRect()
+          if (testRect.top < fadeStart) {
+            targetOpacity3.current = testRect.top < fadeEnd ? 1 : 1 - (testRect.top - fadeEnd) / (fadeStart - fadeEnd)
+          } else {
+            targetOpacity3.current = 0
+          }
+        }
+      }
 
       if (!aboutEl || !programsEl) {
         const maxScroll = document.documentElement.scrollHeight - window.innerHeight
@@ -138,7 +190,7 @@ function VideoSphere({ videoSrc, isMuted, joystickVelocity }) {
     handleScroll()
     
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [isAbout])
+  }, [isAbout, isHome])
 
   // --- DRAG LOGIC ---
   const isDragging = useRef(false)
@@ -182,6 +234,10 @@ function VideoSphere({ videoSrc, isMuted, joystickVelocity }) {
 
   useFrame((state, delta) => {
     if (meshRef.current) {
+      if (texture) texture.needsUpdate = true
+      if (texture2) texture2.needsUpdate = true
+      if (texture3) texture3.needsUpdate = true
+
       if (joystickVelocity && joystickVelocity.current) {
         dragOffset.current.y += joystickVelocity.current.x * delta * 0.4
         dragOffset.current.x += joystickVelocity.current.y * delta * 0.4
@@ -192,14 +248,40 @@ function VideoSphere({ videoSrc, isMuted, joystickVelocity }) {
       
       meshRef.current.rotation.y += (finalTargetY - meshRef.current.rotation.y) * delta * 5
       meshRef.current.rotation.x += (finalTargetX - meshRef.current.rotation.x) * delta * 5
+
+      if (meshRef2.current && isHome) {
+        meshRef2.current.rotation.y = meshRef.current.rotation.y - (Math.PI / 2.5)
+        meshRef2.current.rotation.x = meshRef.current.rotation.x - (Math.PI / 1.68)
+        meshRef2.current.material.opacity += (targetOpacity2.current - meshRef2.current.material.opacity) * delta * 5
+      }
+
+      if (meshRef3.current && isHome) {
+        meshRef3.current.rotation.y = meshRef.current.rotation.y
+        meshRef3.current.rotation.x = meshRef.current.rotation.x + (Math.PI / 10)
+        meshRef3.current.material.opacity += (targetOpacity3.current - meshRef3.current.material.opacity) * delta * 5
+      }
     }
   })
 
   return (
-    <mesh ref={meshRef} scale={[-1, 1, 1]}>
-      <sphereGeometry args={[500, 60, 40]} />
-      <meshBasicMaterial map={texture} side={THREE.BackSide} />
-    </mesh>
+    <group>
+      <mesh ref={meshRef} scale={[-1, 1, 1]} visible={isReady}>
+        <sphereGeometry args={[500, 60, 40]} />
+        <meshBasicMaterial map={texture} side={THREE.BackSide} />
+      </mesh>
+      {isHome && (
+        <>
+          <mesh ref={meshRef2} scale={[-0.99, 0.99, 0.99]} visible={isReady2}>
+            <sphereGeometry args={[500, 60, 40]} />
+            <meshBasicMaterial map={texture2} side={THREE.BackSide} transparent={true} opacity={0} depthWrite={false} />
+          </mesh>
+          <mesh ref={meshRef3} scale={[-0.98, 0.98, 0.98]} visible={isReady3}>
+            <sphereGeometry args={[500, 60, 40]} />
+            <meshBasicMaterial map={texture3} side={THREE.BackSide} transparent={true} opacity={0} depthWrite={false} />
+          </mesh>
+        </>
+      )}
+    </group>
   )
 }
 

@@ -2,95 +2,40 @@ import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import preloaderVideo from '@video-optimized/preloader.mp4'
 
-const DIVING_PUNS = [
-  'Equalizing pressure...',
-  'Checking tanks & oxygen...',
-  'Adjusting buoyancy...',
-  'Descending into blue paradise...',
-  'All systems go for launch! 🤿',
-]
-
 function DiverAnimation({ src, className }) {
   const videoRef = useRef(null)
-  const canvasRef = useRef(null)
 
   useEffect(() => {
     const video = videoRef.current
-    const canvas = canvasRef.current
-    if (!video || !canvas) return
-
-    const ctx = canvas.getContext('2d', { willReadFrequently: true })
-    let animId
-
-    const render = () => {
-      if (video.readyState >= 2) {
-        const w = video.videoWidth || 640
-        const h = video.videoHeight || 360
-        if (canvas.width !== w || canvas.height !== h) {
-          canvas.width = w
-          canvas.height = h
-        }
-        ctx.drawImage(video, 0, 0, w, h)
-        const frame = ctx.getImageData(0, 0, w, h)
-        const data = frame.data
-        const len = data.length
-        for (let i = 0; i < len; i += 4) {
-          const r = data[i]
-          const g = data[i + 1]
-          const b = data[i + 2]
-          // Cleanly key out all off-white/light grey background pixels
-          if (r > 200 && g > 200 && b > 200) {
-            data[i + 3] = 0
-          } else if (r > 175 && g > 175 && b > 175) {
-            // Anti-aliased feathering on edges
-            const factor = (200 - Math.max(r, g, b)) / 25
-            data[i + 3] = Math.round(data[i + 3] * Math.max(0, Math.min(1, factor)))
-          }
-        }
-        ctx.putImageData(frame, 0, 0)
-      }
-      animId = requestAnimationFrame(render)
-    }
-
+    if (!video) return
+    video.muted = true
+    video.defaultMuted = true
+    video.setAttribute('muted', '')
+    video.setAttribute('playsinline', '')
+    video.setAttribute('webkit-playsinline', '')
     video.play().catch(() => {})
-    animId = requestAnimationFrame(render)
-
-    return () => {
-      cancelAnimationFrame(animId)
-    }
   }, [src])
 
   return (
-    <>
-      <video
-        ref={videoRef}
-        src={src}
-        autoPlay
-        loop
-        muted
-        playsInline
-        style={{ position: 'absolute', width: '1px', height: '1px', opacity: 0, pointerEvents: 'none' }}
-      />
-      <canvas ref={canvasRef} className={className} />
-    </>
+    <video
+      ref={videoRef}
+      src={src}
+      autoPlay
+      loop
+      muted
+      playsInline
+      className={`${className} mix-blend-multiply pointer-events-none`}
+      style={{ filter: 'contrast(1.45) brightness(1.06)' }}
+    />
   )
 }
 
 export default function Preloader({ onComplete }) {
   const [progress, setProgress] = useState(0)
 
-  // Determine current status message based on progress bracket
-  const getStatusText = (pct) => {
-    if (pct < 20) return DIVING_PUNS[0]
-    if (pct < 45) return DIVING_PUNS[1]
-    if (pct < 70) return DIVING_PUNS[2]
-    if (pct < 90) return DIVING_PUNS[3]
-    return DIVING_PUNS[4]
-  }
-
   useEffect(() => {
-    // 4.2 seconds total duration for a relaxed, deliberate, premium transition
-    const totalDuration = 4200
+    // 4.0 seconds total duration for a relaxed, deliberate, premium transition
+    const totalDuration = 4000
     const intervalTime = 30
     const increment = 100 / (totalDuration / intervalTime)
 
@@ -133,9 +78,9 @@ export default function Preloader({ onComplete }) {
         />
       </div>
 
-      {/* Dynamic Status & Percentage */}
+      {/* Status & Percentage - ONLY "Preparing to dive..." */}
       <div className="flex items-center justify-between w-56 sm:w-72 text-[11px] font-bold text-[#003865]/80 tracking-wider">
-        <span className="truncate pr-2">{getStatusText(progress)}</span>
+        <span className="truncate pr-2">Preparing to dive...</span>
         <span className="shrink-0">{Math.round(progress)}%</span>
       </div>
     </motion.div>
