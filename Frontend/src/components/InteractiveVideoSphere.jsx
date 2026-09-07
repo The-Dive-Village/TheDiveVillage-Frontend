@@ -4,17 +4,66 @@ import { OrbitControls, useVideoTexture } from '@react-three/drei'
 import * as THREE from 'three'
 import videoFile from '@video-optimized/Hero.mp4'
 
+function useDirectVideoTexture(src) {
+  const [texture, setTexture] = useState(null)
+  const videoRef = useRef(null)
+
+  useEffect(() => {
+    if (!src) return
+
+    const video = document.createElement('video')
+    video.src = src
+    video.crossOrigin = 'anonymous'
+    video.playsInline = true
+    video.setAttribute('webkit-playsinline', 'true')
+    video.muted = true
+    video.loop = true
+    video.autoplay = true
+    video.preload = 'auto'
+    videoRef.current = video
+
+    const vidTexture = new THREE.VideoTexture(video)
+    vidTexture.colorSpace = THREE.SRGBColorSpace
+    vidTexture.minFilter = THREE.LinearFilter
+    vidTexture.magFilter = THREE.LinearFilter
+    vidTexture.generateMipmaps = false
+
+    const playPromise = video.play()
+    if (playPromise !== undefined) {
+      playPromise.catch((err) => {
+        console.warn('Video autoplay deferred:', err?.message || err)
+      })
+    }
+
+    const handleUserInteraction = () => {
+      if (videoRef.current && videoRef.current.paused) {
+        videoRef.current.play().catch(() => {})
+      }
+    }
+    window.addEventListener('pointerdown', handleUserInteraction, { once: true })
+    window.addEventListener('touchstart', handleUserInteraction, { once: true })
+
+    setTexture(vidTexture)
+
+    return () => {
+      window.removeEventListener('pointerdown', handleUserInteraction)
+      window.removeEventListener('touchstart', handleUserInteraction)
+      video.pause()
+      video.removeAttribute('src')
+      video.load()
+      vidTexture.dispose()
+      videoRef.current = null
+    }
+  }, [src])
+
+  return texture
+}
+
 function SphereMesh({ autoRotate }) {
   const meshRef = useRef()
-  const texture = useVideoTexture(videoFile, {
-    crossOrigin: 'Anonymous',
-    muted: true,
-    loop: true,
-    start: true,
-    playsInline: true,
-  })
-  
-  texture.colorSpace = THREE.SRGBColorSpace
+  const texture = useDirectVideoTexture(videoFile)
+
+  if (!texture) return null
 
   return (
     <mesh ref={meshRef} scale={[-1, 1, 1]}>

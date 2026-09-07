@@ -10,7 +10,7 @@ const DIVING_PUNS = [
   'All systems go for launch! 🤿',
 ]
 
-function TransparentDiverVideo({ src, className }) {
+function DiverAnimation({ src, className }) {
   const videoRef = useRef(null)
   const canvasRef = useRef(null)
 
@@ -23,23 +23,28 @@ function TransparentDiverVideo({ src, className }) {
     let animId
 
     const render = () => {
-      if (video && video.readyState >= 2) {
-        const w = video.videoWidth || 400
-        const h = video.videoHeight || 225
+      if (video.readyState >= 2) {
+        const w = video.videoWidth || 640
+        const h = video.videoHeight || 360
         if (canvas.width !== w || canvas.height !== h) {
           canvas.width = w
           canvas.height = h
         }
         ctx.drawImage(video, 0, 0, w, h)
         const frame = ctx.getImageData(0, 0, w, h)
-        const len = frame.data.length / 4
-        for (let i = 0; i < len; i++) {
-          const r = frame.data[i * 4]
-          const g = frame.data[i * 4 + 1]
-          const b = frame.data[i * 4 + 2]
-          // Make light off-white background pixels (RGB > 210) 100% transparent
-          if (r > 210 && g > 210 && b > 210) {
-            frame.data[i * 4 + 3] = 0
+        const data = frame.data
+        const len = data.length
+        for (let i = 0; i < len; i += 4) {
+          const r = data[i]
+          const g = data[i + 1]
+          const b = data[i + 2]
+          // Cleanly key out all off-white/light grey background pixels
+          if (r > 200 && g > 200 && b > 200) {
+            data[i + 3] = 0
+          } else if (r > 175 && g > 175 && b > 175) {
+            // Anti-aliased feathering on edges
+            const factor = (200 - Math.max(r, g, b)) / 25
+            data[i + 3] = Math.round(data[i + 3] * Math.max(0, Math.min(1, factor)))
           }
         }
         ctx.putImageData(frame, 0, 0)
@@ -64,7 +69,7 @@ function TransparentDiverVideo({ src, className }) {
         loop
         muted
         playsInline
-        className="hidden"
+        style={{ position: 'absolute', width: '1px', height: '1px', opacity: 0, pointerEvents: 'none' }}
       />
       <canvas ref={canvasRef} className={className} />
     </>
@@ -74,8 +79,18 @@ function TransparentDiverVideo({ src, className }) {
 export default function Preloader({ onComplete }) {
   const [progress, setProgress] = useState(0)
 
+  // Determine current status message based on progress bracket
+  const getStatusText = (pct) => {
+    if (pct < 20) return DIVING_PUNS[0]
+    if (pct < 45) return DIVING_PUNS[1]
+    if (pct < 70) return DIVING_PUNS[2]
+    if (pct < 90) return DIVING_PUNS[3]
+    return DIVING_PUNS[4]
+  }
+
   useEffect(() => {
-    const totalDuration = 4200 // 4.2 seconds
+    // 4.2 seconds total duration for a relaxed, deliberate, premium transition
+    const totalDuration = 4200
     const intervalTime = 30
     const increment = 100 / (totalDuration / intervalTime)
 
@@ -86,7 +101,7 @@ export default function Preloader({ onComplete }) {
           clearInterval(timer)
           setTimeout(() => {
             if (onComplete) onComplete()
-          }, 300)
+          }, 350)
           return 100
         }
         return next
@@ -102,11 +117,11 @@ export default function Preloader({ onComplete }) {
       exit={{ y: '-100%', transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] } }}
       className="fixed inset-0 z-[99999] bg-white flex flex-col items-center justify-center p-6 select-none font-body shadow-2xl"
     >
-      {/* Diver Silhouette - Transparent Background Keyed canvas */}
-      <div className="w-48 sm:w-60 md:w-72 mb-6 flex items-center justify-center">
-        <TransparentDiverVideo
+      {/* Diver Graphic / Animation */}
+      <div className="w-56 sm:w-68 md:w-80 mb-6 flex items-center justify-center overflow-hidden">
+        <DiverAnimation
           src={preloaderVideo}
-          className="w-full h-auto object-contain"
+          className="w-full h-auto max-h-[160px] object-contain"
         />
       </div>
 
@@ -118,9 +133,9 @@ export default function Preloader({ onComplete }) {
         />
       </div>
 
-      {/* Status & Percentage */}
+      {/* Dynamic Status & Percentage */}
       <div className="flex items-center justify-between w-56 sm:w-72 text-[11px] font-bold text-[#003865]/80 tracking-wider">
-        <span className="truncate pr-2">Preparing to dive...</span>
+        <span className="truncate pr-2">{getStatusText(progress)}</span>
         <span className="shrink-0">{Math.round(progress)}%</span>
       </div>
     </motion.div>

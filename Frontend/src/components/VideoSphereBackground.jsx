@@ -1,111 +1,108 @@
 import { useState, useEffect, Suspense, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { OrbitControls, useVideoTexture } from '@react-three/drei'
+import { OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
 import { useLocation } from 'react-router'
 import videoFile from '@video-optimized/Hero.mp4'
-import divingFile from '@video-optimized/diving.mp4'
 import bookFile from '@video-optimized/Book.mp4'
 import underwaterAudio from '../assets/Underwater.mp3'
 
+function useDirectVideoTexture(src, isMuted = true, playbackRate = 0.5) {
+  const [texture, setTexture] = useState(null)
+  const videoRef = useRef(null)
+
+  useEffect(() => {
+    if (!src) return
+
+    const video = document.createElement('video')
+    video.src = src
+    video.crossOrigin = 'anonymous'
+    video.playsInline = true
+    video.setAttribute('webkit-playsinline', 'true')
+    video.muted = isMuted
+    video.loop = true
+    video.autoplay = true
+    video.preload = 'auto'
+    video.playbackRate = playbackRate
+    videoRef.current = video
+
+    const vidTexture = new THREE.VideoTexture(video)
+    vidTexture.colorSpace = THREE.SRGBColorSpace
+    vidTexture.minFilter = THREE.LinearFilter
+    vidTexture.magFilter = THREE.LinearFilter
+    vidTexture.generateMipmaps = false
+
+    const playPromise = video.play()
+    if (playPromise !== undefined) {
+      playPromise.catch((err) => {
+        console.warn('Video autoplay deferred:', err?.message || err)
+      })
+    }
+
+    const handleUserInteraction = () => {
+      if (videoRef.current && videoRef.current.paused) {
+        videoRef.current.play().catch(() => {})
+      }
+    }
+    window.addEventListener('pointerdown', handleUserInteraction, { once: true })
+    window.addEventListener('touchstart', handleUserInteraction, { once: true })
+
+    // Tab visibility handling: pause when tab hidden, resume when visible
+    const handleVisibilityChange = () => {
+      if (!videoRef.current) return
+      if (document.hidden) {
+        videoRef.current.pause()
+      } else {
+        videoRef.current.play().catch(() => {})
+      }
+    }
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+
+    setTexture(vidTexture)
+
+    return () => {
+      window.removeEventListener('pointerdown', handleUserInteraction)
+      window.removeEventListener('touchstart', handleUserInteraction)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+      video.pause()
+      video.removeAttribute('src')
+      video.load()
+      vidTexture.dispose()
+      videoRef.current = null
+    }
+  }, [src])
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.muted = isMuted
+      if (videoRef.current.paused && !document.hidden) {
+        videoRef.current.play().catch(() => {})
+      }
+    }
+  }, [isMuted])
+
+  return texture
+}
+
 function VideoSphere({ videoSrc, isMuted, joystickVelocity }) {
   const meshRef = useRef()
-  const meshRef2 = useRef()
-  const meshRef3 = useRef()
   const targetRotation = useRef({ x: 0, y: 0 })
-  const targetOpacity2 = useRef(0)
-  const targetOpacity3 = useRef(0)
   const location = useLocation()
-  const isHome = location.pathname === '/'
+  const isAbout = location.pathname === '/about'
 
-  const texture = useVideoTexture(videoSrc, {
-    crossOrigin: 'Anonymous',
-    muted: true,
-    loop: true,
-    start: true,
-    playsInline: true,
-  })
-  texture.colorSpace = THREE.SRGBColorSpace
-
-  const texture2 = useVideoTexture(bookFile, {
-    crossOrigin: 'Anonymous',
-    muted: true,
-    loop: true,
-    start: true,
-    playsInline: true,
-  })
-  texture2.colorSpace = THREE.SRGBColorSpace
-
-  const texture3 = useVideoTexture(divingFile, {
-    crossOrigin: 'Anonymous',
-    muted: true,
-    loop: true,
-    start: true,
-    playsInline: true,
-  })
-  texture3.colorSpace = THREE.SRGBColorSpace
-
-  useEffect(() => {
-    if (texture && texture.image) {
-      texture.image.muted = isMuted
-      texture.image.playbackRate = 0.5
-    }
-  }, [isMuted, texture])
-
-  useEffect(() => {
-    if (texture2 && texture2.image) {
-      texture2.image.muted = isMuted
-      texture2.image.playbackRate = 0.5
-    }
-  }, [isMuted, texture2])
-
-  useEffect(() => {
-    if (texture3 && texture3.image) {
-      texture3.image.muted = isMuted
-      texture3.image.playbackRate = 0.5
-    }
-  }, [isMuted, texture3])
+  const texture = useDirectVideoTexture(videoSrc, isMuted, 0.5)
 
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY
-      const isAbout = location.pathname === '/about'
-      const INITIAL_YAW = Math.PI / 2.65 - (Math.PI * 1.1) // Shifted a little right from previous
-      // Tilt book.mp4 (About page) more downwards to center it
+      const INITIAL_YAW = Math.PI / 2.65 - (Math.PI * 1.1)
       const INITIAL_PITCH = isAbout ? -(Math.PI / 6) : (Math.PI / 16)
 
       const aboutEl = document.getElementById('about-section')
       const programsEl = document.getElementById('programs-section')
-      
-      const diveSectionEl = document.getElementById('who-can-dive-section')
-      const testimonialsEl = document.getElementById('testimonials-section')
-
-      if (isHome) {
-        const fadeStart = window.innerHeight * 0.85
-        const fadeEnd = window.innerHeight * 0.25
-
-        if (diveSectionEl) {
-          const diveRect = diveSectionEl.getBoundingClientRect()
-          if (diveRect.top < fadeStart) {
-            targetOpacity2.current = diveRect.top < fadeEnd ? 1 : 1 - (diveRect.top - fadeEnd) / (fadeStart - fadeEnd)
-          } else {
-            targetOpacity2.current = 0
-          }
-        }
-
-        if (testimonialsEl) {
-          const testRect = testimonialsEl.getBoundingClientRect()
-          if (testRect.top < fadeStart) {
-            targetOpacity3.current = testRect.top < fadeEnd ? 1 : 1 - (testRect.top - fadeEnd) / (fadeStart - fadeEnd)
-          } else {
-            targetOpacity3.current = 0
-          }
-        }
-      }
 
       if (!aboutEl || !programsEl) {
-        // Fallback if elements aren't mounted yet
         const maxScroll = document.documentElement.scrollHeight - window.innerHeight
         const scrollProgress = maxScroll > 0 ? scrollY / maxScroll : 0
         targetRotation.current.y = INITIAL_YAW
@@ -116,43 +113,32 @@ function VideoSphere({ videoSrc, isMuted, joystickVelocity }) {
       const aboutRect = aboutEl.getBoundingClientRect()
       const programsRect = programsEl.getBoundingClientRect()
       
-      // Calculate absolute positions relative to the top of the document
       const aboutTop = scrollY + aboutRect.top
       const programsTop = scrollY + programsRect.top
 
       if (scrollY < aboutTop) {
-        // 1. Before About Section
-        // Move slightly downwards
         const progress = aboutTop > 0 ? scrollY / aboutTop : 0
         targetRotation.current.y = INITIAL_YAW
         targetRotation.current.x = INITIAL_PITCH + progress * (Math.PI / 8)
       } else if (scrollY >= aboutTop && scrollY < programsTop) {
-        // 2. Between About Section and Programs Section
-        // Hold vertical pitch, move horizontally
         targetRotation.current.x = INITIAL_PITCH + (Math.PI / 8)
-        
         const distance = programsTop - aboutTop
         const progress = distance > 0 ? (scrollY - aboutTop) / distance : 0
         targetRotation.current.y = INITIAL_YAW + progress * (Math.PI / 1.5)
       } else {
-        // 3. After Programs Section
-        // Hold horizontal yaw, resume moving downwards to sea bed
         targetRotation.current.y = INITIAL_YAW + Math.PI / 1.5
-        
         const maxScroll = document.documentElement.scrollHeight - window.innerHeight
         const distanceRemaining = maxScroll - programsTop
         const progress = distanceRemaining > 0 ? (scrollY - programsTop) / distanceRemaining : 1
-        
-        // Pitch downwards sharply to show sea bed
         targetRotation.current.x = INITIAL_PITCH + (Math.PI / 8) + progress * (Math.PI / 2)
       }
     }
     
     window.addEventListener('scroll', handleScroll, { passive: true })
-    handleScroll() // Initialize
+    handleScroll()
     
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  }, [isAbout])
 
   // --- DRAG LOGIC ---
   const isDragging = useRef(false)
@@ -161,24 +147,18 @@ function VideoSphere({ videoSrc, isMuted, joystickVelocity }) {
 
   useEffect(() => {
     const onPointerDown = (e) => {
-      // Do not initiate drag if the user is clicking on an interactive element
       if (e.target.closest('button, a, input, textarea, select, [role="button"], .joystick-container')) {
         return
       }
-      
       isDragging.current = true
       previousPointer.current = { x: e.clientX, y: e.clientY }
     }
     
     const onPointerMove = (e) => {
       if (!isDragging.current) return
-      
-      // Calculate delta
       const dx = e.clientX - previousPointer.current.x
       const dy = e.clientY - previousPointer.current.y
       previousPointer.current = { x: e.clientX, y: e.clientY }
-      
-      // Update drag offsets
       dragOffset.current.y += dx * 0.005 
       dragOffset.current.x += dy * 0.005
     }
@@ -202,55 +182,24 @@ function VideoSphere({ videoSrc, isMuted, joystickVelocity }) {
 
   useFrame((state, delta) => {
     if (meshRef.current) {
-      // Apply Joystick Velocity
       if (joystickVelocity && joystickVelocity.current) {
-        // Multiply by delta for framerate independence, and a speed factor
         dragOffset.current.y += joystickVelocity.current.x * delta * 0.4
         dragOffset.current.x += joystickVelocity.current.y * delta * 0.4
       }
 
-      // Combine programmatic scroll rotation with user's manual drag offset
       const finalTargetX = targetRotation.current.x + dragOffset.current.x
       const finalTargetY = targetRotation.current.y + dragOffset.current.y
       
-      // Smoothly interpolate the mesh rotation towards the combined target
       meshRef.current.rotation.y += (finalTargetY - meshRef.current.rotation.y) * delta * 5
       meshRef.current.rotation.x += (finalTargetX - meshRef.current.rotation.x) * delta * 5
-
-      if (meshRef2.current && isHome) {
-        meshRef2.current.rotation.y = meshRef.current.rotation.y - (Math.PI / 2.5)
-        meshRef2.current.rotation.x = meshRef.current.rotation.x - (Math.PI / 1.68)
-        meshRef2.current.material.opacity += (targetOpacity2.current - meshRef2.current.material.opacity) * delta * 5
-      }
-
-      if (meshRef3.current && isHome) {
-        meshRef3.current.rotation.y = meshRef.current.rotation.y
-        meshRef3.current.rotation.x = meshRef.current.rotation.x + (Math.PI / 10)
-        meshRef3.current.material.opacity += (targetOpacity3.current - meshRef3.current.material.opacity) * delta * 5
-      }
     }
   })
 
   return (
-    <group>
-      <mesh ref={meshRef} scale={[-1, 1, 1]}>
-        <sphereGeometry args={[500, 60, 40]} />
-        <meshBasicMaterial map={texture} side={THREE.BackSide} />
-      </mesh>
-      {/* Secondary mesh for crossfade texture */}
-      {isHome && (
-        <>
-          <mesh ref={meshRef2} scale={[-0.99, 0.99, 0.99]}>
-            <sphereGeometry args={[500, 60, 40]} />
-            <meshBasicMaterial map={texture2} side={THREE.BackSide} transparent={true} opacity={0} depthWrite={false} />
-          </mesh>
-          <mesh ref={meshRef3} scale={[-0.98, 0.98, 0.98]}>
-            <sphereGeometry args={[500, 60, 40]} />
-            <meshBasicMaterial map={texture3} side={THREE.BackSide} transparent={true} opacity={0} depthWrite={false} />
-          </mesh>
-        </>
-      )}
-    </group>
+    <mesh ref={meshRef} scale={[-1, 1, 1]}>
+      <sphereGeometry args={[500, 60, 40]} />
+      <meshBasicMaterial map={texture} side={THREE.BackSide} />
+    </mesh>
   )
 }
 
