@@ -1,70 +1,48 @@
-# Vercel Deployment Guide
+# 🚀 Vercel Deployment Guide
 
-This guide outlines the steps to deploy **The Dive Village Frontend** to Vercel.
-
----
-
-## ⚠️ Important: Large Video Asset Warning (Hobby Plan Limit)
-
-The project includes a large 360° interactive video file:
-`Frontend/src/assets/VID_20260525_095921_00_220.mp4` (~172.6 MB)
-
-*   **Vercel Hobby Plan Limit:** Vercel free accounts have a strict **100 MB** source/deployment size limit. Attempting to deploy the repository with this file will result in a build failure due to size restrictions.
-*   **Vercel Pro/Enterprise:** If you are using a paid Vercel plan, you can deploy as-is.
-
-### Recommended Hobby Plan Workaround
-If you are deploying on a Hobby plan, upload the video file to an external hosting provider (e.g., **Vercel Blob**, **Cloudinary**, **AWS S3**, or similar) and replace the local import with a remote URL:
-
-1. Upload `Frontend/src/assets/VID_20260525_095921_00_220.mp4` to your hosting provider.
-2. Modify [`Frontend/src/components/InteractiveVideoSphere.jsx`](file:///c:/Users/lenovo-1/Documents/GitHub/TheDiveVillage-Frontend/Frontend/src/components/InteractiveVideoSphere.jsx):
-   ```diff
-   -import videoFile from '../assets/VID_20260525_095921_00_220.mp4'
-   +const videoFile = "https://your-cdn-url.com/path-to-video.mp4"
-   ```
-3. Modify [`Frontend/src/components/VideoSphereBackground.jsx`](file:///c:/Users/lenovo-1/Documents/GitHub/TheDiveVillage-Frontend/Frontend/src/components/VideoSphereBackground.jsx):
-   ```diff
-   -import videoFile from '../assets/VID_20260525_095921_00_220.mp4'
-   +const videoFile = "https://your-cdn-url.com/path-to-video.mp4"
-   ```
-4. Delete the local video file from your repository to bring the deployment size well under the 100 MB limit.
+This guide outlines everything you need to deploy **The Dive Village Frontend** to Vercel seamlessly with zero hassle.
 
 ---
 
-## Deployment Methods
+## ⚡ Quick 1-Click Deployment
 
-You can deploy the app using either of the following methods:
-
-### Method A: Zero-Config Deployment (Recommended)
-This repository is configured with NPM workspaces and a root-level `vercel.json` file.
-1. Connect your GitHub repository to Vercel.
-2. Select the repository root directory as the deployment root (this is the default).
-3. Vercel will automatically read the root configuration, install dependencies via workspaces, build the React app, and deploy the build outputs.
-
-### Method B: Subdirectory Deployment (Alternative)
-If you prefer to configure Vercel to build only the `Frontend` subdirectory directly:
-1. Connect your repository to Vercel.
-2. In the Vercel project configuration, set **Root Directory** to `Frontend`.
-3. Vercel will build the frontend using the nested configurations, utilizing the SPA routing configuration defined in [`Frontend/vercel.json`](file:///c:/Users/lenovo-1/Documents/GitHub/TheDiveVillage-Frontend/Frontend/vercel.json).
+1. **Push to GitHub**: Make sure all changes on `TheDiveVillage-Frontend` are committed and pushed to your GitHub repository.
+2. **Import to Vercel**:
+   - Go to [vercel.com](https://vercel.com) and click **"Add New..." > "Project"**.
+   - Select and import your **`TheDiveVillage-Frontend`** GitHub repository.
+3. **Configure Settings**:
+   - **Framework Preset**: Vite (detected automatically)
+   - **Root Directory**: `./` (Default - root monorepo config handles workspaces automatically)
+   - **Build Command**: `npm run build --workspace=Frontend` (configured in `vercel.json`)
+   - **Output Directory**: `Frontend/dist` (configured in `vercel.json`)
+4. **Environment Variables**: Add your backend URL and Firebase configuration (see list below).
+5. **Deploy**: Click **Deploy**!
 
 ---
 
-## Environment Variables to Configure
+## 🔑 Environment Variables
 
-To make sure Firebase features and API calls function correctly, add the following environment variables in your Vercel Dashboard under **Project Settings > Environment Variables**:
+In your Vercel Dashboard, go to **Project Settings > Environment Variables** and add the following:
 
-| Variable Name | Description / Value |
-| :--- | :--- |
-| `VITE_API_BASE_URL` | Base URL of your backend API (e.g. `https://api.thedivevillage.com`) |
-| `VITE_FIREBASE_API_KEY` | Your Firebase project API Key |
-| `VITE_FIREBASE_AUTH_DOMAIN` | Your Firebase Auth Domain |
-| `VITE_FIREBASE_PROJECT_ID` | Your Firebase Project ID |
-| `VITE_FIREBASE_STORAGE_BUCKET` | Your Firebase Storage Bucket |
-| `VITE_FIREBASE_MESSAGING_SENDER_ID` | Your Firebase Messaging Sender ID |
-| `VITE_FIREBASE_APP_ID` | Your Firebase App ID |
+| Variable Name | Description | Example / Fallback |
+| :--- | :--- | :--- |
+| `VITE_API_BASE_URL` | Your Backend API base URL | `https://api.thedivevillage.com` (or your deployed backend) |
+| `VITE_FIREBASE_API_KEY` | Firebase Web API Key | `AIzaSy...` |
+| `VITE_FIREBASE_AUTH_DOMAIN` | Firebase Auth Domain | `thedivevillage.firebaseapp.com` |
+| `VITE_FIREBASE_PROJECT_ID` | Firebase Project ID | `thedivevillage` |
+| `VITE_FIREBASE_STORAGE_BUCKET` | Firebase Storage Bucket | `thedivevillage.firebasestorage.app` |
+| `VITE_FIREBASE_MESSAGING_SENDER_ID` | Firebase Sender ID | `1234567890` |
+| `VITE_FIREBASE_APP_ID` | Firebase App ID | `1:1234567890:web:abcdef` |
+
+*(Note: If Firebase environment variables are not provided, the app will gracefully run in guest/demo mode without crashing).*
 
 ---
 
-## Troubleshooting SPA 404 Pages
-Since this is a client-side Single Page Application (SPA), loading sub-routes (e.g., `/shop`, `/dashboard`) directly or refreshing them would normally return a `404 Not Found` error. 
+## 🛠️ Built-in Production Optimizations
 
-The configurations we added in `vercel.json` and `Frontend/vercel.json` automatically handle this by rewriting all requests back to `/index.html`, allowing `react-router` to resolve the route. No further action is required.
+This repo is pre-configured with:
+- **SPA Deep-Linking & Routing**: `vercel.json` rewrites all client-side routes (e.g. `/shop`, `/book-us`, `/about`, `/services`) to `/index.html`, eliminating `404 Not Found` errors on page reloads.
+- **Aggressive Asset Caching**: Static chunks and media under `/assets/` are served with `Cache-Control: public, max-age=31536000, immutable` for maximum speed.
+- **Optimized Assets**: Lightweight compressed video and image assets are configured for smooth streaming across devices.
+- **Clean URLs**: Clean URL resolution is enabled out-of-the-box.
+

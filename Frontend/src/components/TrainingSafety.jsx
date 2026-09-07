@@ -72,50 +72,15 @@ export default function TrainingSafety() {
         </div>
 
         {/* The 4 promises animating sequentially (0.2 to 1.0) */}
-        {SAFETY_PROMISES.map((promise, i) => {
-          const step = 0.8 / SAFETY_PROMISES.length // 0.2 per box
-          const start = 0.2 + (i * step)
-          const end = start + step
-          
-          // Fade in smoothly, stay, fade out quickly as it slides
-          const opacity = useTransform(
-            scrollYProgress,
-            [start, start + 0.05, end - 0.05, end],
-            [0, 1, 1, 0]
-          )
-
-          // Slide off alternately to the left (-1200px) or right (1200px)
-          const exitX = i % 2 === 0 ? -1200 : 1200
-          
-          const x = useTransform(
-            scrollYProgress,
-            [start, start + 0.05, end - 0.05, end],
-            [0, 0, 0, exitX]
-          )
-          
-          // Slight scale up on entry
-          const scale = useTransform(
-            scrollYProgress,
-            [start, start + 0.05, end - 0.05, end],
-            [0.8, 1, 1, 0.9]
-          )
-
-          return (
-            <motion.div
-              key={promise.title}
-              style={{ opacity, x, scale }}
-              className="absolute w-full max-w-3xl px-6 z-20 mt-20"
-            >
-              <div className="rounded-3xl bg-black/40 backdrop-blur-md border border-white/10 p-8 sm:p-12 text-center shadow-2xl">
-                <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-[#FFCD00] text-navy">
-                  <CheckIcon />
-                </div>
-                <h3 className="font-heading text-2xl sm:text-3xl font-bold mb-4">{promise.title}</h3>
-                <p className="text-lg text-white/90 leading-relaxed font-medium">{promise.desc}</p>
-              </div>
-            </motion.div>
-          )
-        })}
+        {SAFETY_PROMISES.map((promise, i) => (
+          <SafetyPromiseCard
+            key={promise.title}
+            promise={promise}
+            i={i}
+            scrollYProgress={scrollYProgress}
+            totalCount={SAFETY_PROMISES.length}
+          />
+        ))}
 
         {/* Closing phrase at the very bottom of the sticky container */}
         <motion.div 
@@ -131,6 +96,46 @@ export default function TrainingSafety() {
   )
 }
 
+function SafetyPromiseCard({ promise, i, scrollYProgress, totalCount }) {
+  const step = 0.8 / totalCount
+  const start = 0.2 + (i * step)
+  const end = start + step
+
+  const opacity = useTransform(
+    scrollYProgress,
+    [start, start + 0.05, end - 0.05, end],
+    [0, 1, 1, 0]
+  )
+
+  const exitX = i % 2 === 0 ? -1200 : 1200
+  const x = useTransform(
+    scrollYProgress,
+    [start, start + 0.05, end - 0.05, end],
+    [0, 0, 0, exitX]
+  )
+
+  const scale = useTransform(
+    scrollYProgress,
+    [start, start + 0.05, end - 0.05, end],
+    [0.8, 1, 1, 0.9]
+  )
+
+  return (
+    <motion.div
+      style={{ opacity, x, scale }}
+      className="absolute w-full max-w-3xl px-6 z-20 mt-20"
+    >
+      <div className="rounded-3xl bg-black/40 backdrop-blur-md border border-white/10 p-8 sm:p-12 text-center shadow-2xl">
+        <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-[#FFCD00] text-navy">
+          <CheckIcon />
+        </div>
+        <h3 className="font-heading text-2xl sm:text-3xl font-bold mb-4">{promise.title}</h3>
+        <p className="text-lg text-white/90 leading-relaxed font-medium">{promise.desc}</p>
+      </div>
+    </motion.div>
+  )
+}
+
 function CheckIcon() {
   return (
     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" aria-hidden>
@@ -138,3 +143,4 @@ function CheckIcon() {
     </svg>
   )
 }
+
