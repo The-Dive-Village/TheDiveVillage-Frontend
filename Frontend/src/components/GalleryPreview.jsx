@@ -22,23 +22,27 @@ export default function GalleryPreview() {
 
   const goToGallery = () => navigate('/gallery')
 
-  // Auto scroll from left to right
+  // Auto scroll from left to right using smooth requestAnimationFrame
   useEffect(() => {
-    const el = scrollContainerRef.current
-    if (!el) return
+    let animId
+    let lastTime = performance.now()
 
-    const interval = setInterval(() => {
+    const loop = (currentTime) => {
+      const delta = (currentTime - lastTime) / 1000
+      lastTime = currentTime
+
       if (!isDragging.current && !isHovered && scrollContainerRef.current) {
-        // Decrease scrollLeft to shift content left to right
-        scrollContainerRef.current.scrollLeft -= 1.5
+        // Shift smoothly at ~60px/s
+        scrollContainerRef.current.scrollLeft -= 60 * delta
         if (scrollContainerRef.current.scrollLeft <= 5) {
-          // Wrap around to middle position for infinite loop
           scrollContainerRef.current.scrollLeft = scrollContainerRef.current.scrollWidth / 3
         }
       }
-    }, 20)
+      animId = requestAnimationFrame(loop)
+    }
 
-    return () => clearInterval(interval)
+    animId = requestAnimationFrame(loop)
+    return () => cancelAnimationFrame(animId)
   }, [isHovered])
 
   // Initialize scroll position in the middle so left-to-right scrolling works instantly

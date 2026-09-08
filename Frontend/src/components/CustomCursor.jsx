@@ -16,12 +16,12 @@ export default function CustomCursor() {
     let isHovered = false
     let activeProximityEl = null
 
-    const PROXIMITY_RADIUS = 35 // Radius in px around buttons/clickable elements
+    let dirtyProximity = true
 
     const checkProximity = (x, y) => {
       if (x < 0 || y < 0) return null
 
-      // 1. Direct hit check at (x, y)
+      // 1. Direct hit check at (x, y) - Instant O(1) without forced reflow
       const target = document.elementFromPoint(x, y)
       if (target) {
         const interactiveEl = target.closest(
@@ -34,39 +34,14 @@ export default function CustomCursor() {
         } catch {}
       }
 
-      // 2. Radius proximity check around buttons and clickable elements
-      const clickables = document.querySelectorAll(
-        'button, a, select, input[type="button"], input[type="submit"], [role="button"], .cursor-pointer'
-      )
-
-      let closest = null
-      let minDistance = Infinity
-
-      for (let i = 0; i < clickables.length; i++) {
-        const rect = clickables[i].getBoundingClientRect()
-        // Check if cursor is within expanded bounding box by PROXIMITY_RADIUS
-        if (
-          x >= rect.left - PROXIMITY_RADIUS &&
-          x <= rect.right + PROXIMITY_RADIUS &&
-          y >= rect.top - PROXIMITY_RADIUS &&
-          y <= rect.bottom + PROXIMITY_RADIUS
-        ) {
-          const centerX = rect.left + rect.width / 2
-          const centerY = rect.top + rect.height / 2
-          const dist = Math.hypot(x - centerX, y - centerY)
-          if (dist < minDistance) {
-            minDistance = dist
-            closest = clickables[i]
-          }
-        }
-      }
-      return closest
+      return null
     }
 
     const onMouseMove = (e) => {
       mouseX = e.clientX
       mouseY = e.clientY
       isHidden = false
+      dirtyProximity = true
     }
 
     const onMouseLeave = () => {
@@ -75,6 +50,7 @@ export default function CustomCursor() {
 
     const onMouseEnter = () => {
       isHidden = false
+      dirtyProximity = true
     }
 
     const onClick = (e) => {
@@ -86,19 +62,22 @@ export default function CustomCursor() {
     }
 
     const updatePosition = () => {
-      const nearestEl = checkProximity(mouseX, mouseY)
+      if (dirtyProximity) {
+        const nearestEl = checkProximity(mouseX, mouseY)
 
-      if (nearestEl !== activeProximityEl) {
-        if (activeProximityEl) {
-          activeProximityEl.classList.remove('proximity-active')
+        if (nearestEl !== activeProximityEl) {
+          if (activeProximityEl) {
+            activeProximityEl.classList.remove('proximity-active')
+          }
+          if (nearestEl) {
+            nearestEl.classList.add('proximity-active')
+          }
+          activeProximityEl = nearestEl
         }
-        if (nearestEl) {
-          nearestEl.classList.add('proximity-active')
-        }
-        activeProximityEl = nearestEl
+
+        isHovered = !!activeProximityEl
+        dirtyProximity = false
       }
-
-      isHovered = !!activeProximityEl
 
       const normalTransformStr = `translate3d(${mouseX}px, ${mouseY}px, 0) rotate(45deg)`
       const hoverTransformStr = `translate3d(${mouseX}px, ${mouseY}px, 0) rotate(45deg) scaleX(-1)`

@@ -112,13 +112,15 @@ function VideoSphere({ videoSrc, isMuted, joystickVelocity }) {
   const targetRotation = useRef({ x: 0, y: 0 })
   const targetOpacity2 = useRef(0)
   const targetOpacity3 = useRef(0)
+  const [loadSecondary, setLoadSecondary] = useState(false)
   const location = useLocation()
   const isHome = location.pathname === '/'
   const isAbout = location.pathname === '/about'
 
   const { texture, isReady } = useDirectVideoTexture(videoSrc, isMuted, 0.5)
-  const { texture: texture2, isReady: isReady2 } = useDirectVideoTexture(isHome ? bookFile : null, isMuted, 0.5)
-  const { texture: texture3, isReady: isReady3 } = useDirectVideoTexture(isHome ? divingFile : null, isMuted, 0.5)
+  // Only load secondary videos (Book.mp4, diving.mp4) lazily on user scroll to avoid heavy initial downloads on homepage
+  const { texture: texture2, isReady: isReady2 } = useDirectVideoTexture(isHome && loadSecondary ? bookFile : null, isMuted, 0.5)
+  const { texture: texture3, isReady: isReady3 } = useDirectVideoTexture(isHome && loadSecondary ? divingFile : null, isMuted, 0.5)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -132,6 +134,10 @@ function VideoSphere({ videoSrc, isMuted, joystickVelocity }) {
       const testimonialsEl = document.getElementById('testimonials-section')
 
       if (isHome) {
+        if (!loadSecondary && scrollY > 150) {
+          setLoadSecondary(true)
+        }
+
         const triggerThreshold = window.innerHeight * 0.7
 
         if (diveSectionEl) {
@@ -183,7 +189,7 @@ function VideoSphere({ videoSrc, isMuted, joystickVelocity }) {
     handleScroll()
     
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [isAbout, isHome])
+  }, [isAbout, isHome, loadSecondary])
 
   // --- DRAG LOGIC ---
   const isDragging = useRef(false)
@@ -213,7 +219,7 @@ function VideoSphere({ videoSrc, isMuted, joystickVelocity }) {
     }
 
     window.addEventListener('pointerdown', onPointerDown)
-    window.addEventListener('pointermove', onPointerMove, { passive: false })
+    window.addEventListener('pointermove', onPointerMove, { passive: true })
     window.addEventListener('pointerup', onPointerUp)
     window.addEventListener('pointercancel', onPointerUp)
 
@@ -319,7 +325,19 @@ export default function VideoSphereBackground() {
       <audio ref={audioRef} src={underwaterAudio} loop playsInline />
       <div className="absolute inset-0 -z-10">
         <div className="sticky top-0 h-[100dvh] w-full bg-navy overflow-hidden">
-          <Canvas camera={{ position: [0, 0, 0.1], fov: 95 }}>
+          <Canvas
+            camera={{ position: [0, 0, 0.1], fov: 95 }}
+            gl={{ powerPreference: 'high-performance', antialias: true }}
+            onCreated={({ gl }) => {
+              gl.domElement.addEventListener('webglcontextlost', (e) => {
+                e.preventDefault()
+                console.warn('THREE.WebGLRenderer: Context Lost. Handling gracefully.')
+              }, false)
+              gl.domElement.addEventListener('webglcontextrestored', () => {
+                console.info('THREE.WebGLRenderer: Context Restored.')
+              }, false)
+            }}
+          >
             <Suspense fallback={null}>
               <VideoSphere videoSrc={currentVideo} key={currentVideo} isMuted={isMuted} joystickVelocity={joystickVelocity} />
             </Suspense>

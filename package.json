@@ -6,7 +6,7 @@
     "Frontend"
   ],
   "scripts": {
-    "build": "npm run build --workspace=Frontend",
+    "build": "(git lfs pull || true) && npm run build --workspace=Frontend",
     "dev": "npm run dev --workspace=Frontend"
   },
   "engines": {
