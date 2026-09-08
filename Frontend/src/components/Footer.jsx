@@ -1,5 +1,5 @@
 import { Link } from 'react-router'
-import Logo from './Logo'
+import footerLogoImg from '../assets/footer logo.png'
 
 const QUICK = [
   { to: '/about', label: 'About Us' },
@@ -29,19 +29,34 @@ export default function Footer() {
   return (
     <footer className="bg-navy/40 backdrop-blur-xl border-t border-white/20 text-white mt-auto relative z-10 pointer-events-auto">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-2 lg:grid-cols-4 lg:px-8">
-        <div>
-          <Logo light compact />
-          <p className="mt-4 max-w-xs text-sm leading-relaxed text-white/75">
-            More than a destination —<br />
-            it's a community.
-          </p>
+        <div className="flex flex-col items-start justify-between">
+          <div className="flex flex-col items-center w-fit">
+            <Link to="/" className="inline-block transition duration-300 hover:opacity-90">
+              <img
+                src={footerLogoImg}
+                alt="The Dive Village"
+                className="h-24 sm:h-28 lg:h-32 xl:h-36 w-auto object-contain brightness-0 invert drop-shadow-md"
+              />
+            </Link>
+            <div className="mt-3 w-fit text-white/80">
+              <p className="text-xs sm:text-sm font-light tracking-normal whitespace-nowrap text-center">
+                More than a destination
+              </p>
+              <div className="flex w-full justify-between text-xs sm:text-sm font-light tracking-normal mt-0.5 whitespace-nowrap">
+                <span>It</span>
+                <span>is</span>
+                <span>a</span>
+                <span>community.</span>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div>
+        <div className="flex flex-col">
           <h3 className="font-heading text-sm font-bold uppercase tracking-widest text-accent">
             Quick Links
           </h3>
-          <ul className="mt-4 space-y-2">
+          <ul className="mt-4 flex flex-1 flex-col justify-between space-y-2.5 sm:space-y-0">
             {QUICK.map((l) => (
               <li key={l.label}>
                 <Link
@@ -55,11 +70,11 @@ export default function Footer() {
           </ul>
         </div>
 
-        <div>
+        <div className="flex flex-col">
           <h3 className="font-heading text-sm font-bold uppercase tracking-widest text-accent">
             Legal
           </h3>
-          <ul className="mt-4 space-y-2">
+          <ul className="mt-4 flex flex-1 flex-col justify-between space-y-5 sm:space-y-0">
             {LEGAL.map((l) => (
               <li key={l.label}>
                 <Link
@@ -73,11 +88,11 @@ export default function Footer() {
           </ul>
         </div>
 
-        <div>
+        <div className="flex flex-col">
           <h3 className="font-heading text-sm font-bold uppercase tracking-widest text-accent">
             Contact
           </h3>
-          <ul className="mt-4 space-y-3 text-sm text-white/80">
+          <ul className="mt-4 flex flex-1 flex-col justify-between space-y-4 sm:space-y-0 text-sm text-white/80">
             <li>
               <a href="tel:+918971001010" className="transition duration-hover hover:text-accent">
                 +91 89710 01010
@@ -93,10 +108,10 @@ export default function Footer() {
             </li>
             <li>
               <a
-                href="https://www.google.com/maps/place/2JG4%2B8WP,+C-101,+1st+Cross+Rd,+Ranka+Nagar,+Kaval+Bairasandra,+Bengaluru,+Karnataka+560032/@13.0259006,77.6070295,20.34z/data=!4m9!1m2!2m1!1sradhidhamma!3m5!1s0x3bae17a78cde34a9:0x7c9daf2e21647c11!8m2!3d13.0258219!4d77.6072606!16s%2Fg%2F11fy_3kdm6?entry=ttu&g_ep=EgoyMDI2MDgzMS4wIKXMDSoASAFQAw%3D%3D"
+                href="https://www.google.com/maps/place/2JG4%2B8WP,+C-101,+1st+Cross+Rd,+Ranka+Nagar,+Kaval+Bairasandra,+Bengaluru,+Karnataka 560032/@13.0259006,77.6070295,20.34z/data=!4m9!1m2!2m1!1sradhidhamma!3m5!1s0x3bae17a78cde34a9:0x7c9daf2e21647c11!8m2!3d13.0258219!4d77.6072606!16s%2Fg%2F11fy_3kdm6?entry=ttu&g_ep=EgoyMDI2MDgzMS4wIKXMDSoASAFQAw%3D%3D"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="transition duration-hover hover:text-accent"
+                className="transition duration-hover hover:text-accent leading-relaxed"
               >
                 No,11, 1st Cross Rd, Ranka Nagar, Kaval Bairasandra, Bengaluru, Karnataka 560032
               </a>

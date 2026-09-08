@@ -11,6 +11,10 @@ import img1 from '../assets/1.png'
 import img2 from '../assets/2.png'
 import img3 from '../assets/3.png'
 import img4 from '../assets/4.png'
+import travelVid from '../assets/New folder/Travel.mp4'
+import stayImg from '../assets/New folder/Stay.jpg'
+import foodImg from '../assets/New folder/food.jpg'
+import itineraryVid from '../assets/New folder/Itinerary.mp4'
 const ProgramsPreview = lazy(() => import('../components/ProgramsPreview'))
 
 const GalleryPreview = lazy(() => import('../components/GalleryPreview'))
@@ -283,7 +287,7 @@ export default function Home() {
       </section >
 
       {/* 7. TESTIMONIALS (COMMUNITY VOICES) */}
-      <section className="relative py-24 sm:py-32 pointer-events-auto">
+      <section id="testimonials-section" className="relative py-24 sm:py-32 pointer-events-auto">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionReveal className="text-center max-w-2xl mx-auto mb-12">
             <span className="text-[#FFCD00] font-bold tracking-widest uppercase text-xs mb-3 block">
@@ -309,7 +313,7 @@ export default function Home() {
           <StaggerGrid className="grid md:grid-cols-3 gap-8 items-stretch">
             {approvedReviews.slice(0, 3).map((t, i) => (
               <StaggerItem key={t.id || i} className="h-full">
-                <div className="h-full flex flex-col justify-between bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20 shadow-card hover:-translate-y-2 transition duration-500">
+                <div className="h-full flex flex-col justify-between bg-white/30 backdrop-blur-xl rounded-3xl p-8 border border-white/40 shadow-2xl hover:bg-white/40 hover:-translate-y-2 transition duration-500">
                   <div>
                     <div className="flex gap-1 mb-6">
                       {[...Array(t.rating || 5)].map((_, j) => (
@@ -318,15 +322,15 @@ export default function Home() {
                         </svg>
                       ))}
                     </div>
-                    <p className="text-white/90 italic mb-8 leading-relaxed text-justify">"{t.text}"</p>
+                    <p className="text-[#003865] font-medium italic mb-8 leading-relaxed text-justify">"{t.text}"</p>
                   </div>
                   <div className="flex items-center gap-4 mt-auto">
-                    <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white/30 shrink-0">
+                    <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[#003865]/20 shrink-0">
                       <SafeImage src={t.image} alt={t.name} className="w-full h-full object-cover" />
                     </div>
                     <div>
-                      <h4 className="font-bold text-white text-sm">{t.name}</h4>
-                      <span className="text-xs text-white/60">{t.role}</span>
+                      <h4 className="font-bold text-[#003865] text-sm">{t.name}</h4>
+                      <span className="text-xs text-[#003865]/70">{t.role}</span>
                     </div>
                   </div>
                 </div>
@@ -337,7 +341,7 @@ export default function Home() {
       </section>
 
       {/* 6. AIRPORT TO AIRPORT - HOSPITALITY */}
-      < section className="relative py-24 text-white sm:py-32 pointer-events-auto" >
+      <section className="relative py-24 text-white sm:py-32 pointer-events-auto">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionReveal className="text-center mb-16 max-w-3xl mx-auto">
             <span className="inline-block bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-1.5 text-xs font-bold text-accent uppercase tracking-widest mb-4 shadow-sm">
@@ -357,7 +361,7 @@ export default function Home() {
                 num: '01',
                 title: 'Travel Logistics',
                 desc: 'Seamless transfers and hassle-free travel.',
-                img: CAROUSEL_IMAGES[4],
+                video: travelVid,
                 icon: (
                   <svg className="w-5 h-5 text-[#00AEC7]" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" />
@@ -368,7 +372,7 @@ export default function Home() {
                 num: '02',
                 title: 'Comfortable Stays',
                 desc: 'Handpicked accommodations for your perfect escape.',
-                img: CAROUSEL_IMAGES[5],
+                img: stayImg,
                 icon: (
                   <svg className="w-5 h-5 text-[#00AEC7]" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M7 13c1.66 0 3-1.34 3-3S8.66 7 7 7s-3 1.34-3 3 1.34 3 3 3zm12-6h-8v7H3V5H1v15h2v-3h18v3h2v-9c0-2.21-1.79-4-4-4z" />
@@ -379,7 +383,7 @@ export default function Home() {
                 num: '03',
                 title: 'Local Cuisine',
                 desc: 'Savor authentic flavors crafted by local chefs.',
-                img: CAROUSEL_IMAGES[0],
+                img: foodImg,
                 icon: (
                   <svg className="w-5 h-5 text-[#00AEC7]" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.55 3.89 3.54 4.23L6.5 22h3l-.04-8.77C11.45 12.89 13 11.12 13 9V2h-2v7zm9-7h-1c-1.66 0-3 1.34-3 3v5c0 1.66 1.34 3 3 3h1v9h2V2h-2z" />
@@ -390,6 +394,7 @@ export default function Home() {
                 num: '04',
                 title: 'Personal Itineraries',
                 desc: 'Custom experiences tailored to your travel style.',
+                video: itineraryVid,
                 img: CAROUSEL_IMAGES[1],
                 icon: (
                   <svg className="w-5 h-5 text-[#00AEC7]" fill="currentColor" viewBox="0 0 24 24">
@@ -401,7 +406,7 @@ export default function Home() {
               <StaggerItem key={i}>
                 <div
                   onClick={() => navigate('/contact')}
-                  className="group relative h-full rounded-[32px] bg-[#00223D]/85 backdrop-blur-xl border border-[#00AEC7]/30 p-6 sm:p-7 shadow-2xl transition-all duration-500 hover:-translate-y-3 hover:border-[#00AEC7] hover:shadow-[0_20px_50px_rgba(0,174,199,0.3)] flex flex-col justify-between cursor-pointer"
+                  className="group relative h-full rounded-[32px] bg-[#00223D]/30 backdrop-blur-md border border-white/20 p-6 sm:p-7 shadow-2xl transition-all duration-500 hover:-translate-y-3 hover:bg-[#00223D]/50 hover:border-[#00AEC7] hover:shadow-[0_20px_50px_rgba(0,174,199,0.3)] flex flex-col justify-between cursor-pointer"
                 >
                   <div className="flex flex-col flex-1">
                     {/* Top Bar: Icon Box & Number */}
@@ -424,13 +429,24 @@ export default function Home() {
                       {item.desc}
                     </p>
 
-                    {/* Ocean Image Frame */}
+                    {/* Media Frame (Video or Image) */}
                     <div className="relative aspect-[16/10] w-full rounded-2xl overflow-hidden bg-black/30 mb-6 border border-white/10 shadow-inner">
-                      <img
-                        src={item.img}
-                        alt={item.title}
-                        className="w-full h-full object-cover transition duration-700 group-hover:scale-105"
-                      />
+                      {item.video ? (
+                        <video
+                          src={item.video}
+                          autoPlay
+                          loop
+                          muted
+                          playsInline
+                          className="w-full h-full object-cover transition duration-700 group-hover:scale-105"
+                        />
+                      ) : (
+                        <img
+                          src={item.img}
+                          alt={item.title}
+                          className="w-full h-full object-cover transition duration-700 group-hover:scale-105"
+                        />
+                      )}
                       <div className="absolute inset-0 bg-gradient-to-t from-[#00223D]/60 via-transparent to-transparent pointer-events-none" />
                     </div>
                   </div>
@@ -751,7 +767,7 @@ function InteractiveHighlights() {
                 <button
                   type="button"
                   onClick={(e) => handleNavigate(e, current.link)}
-                  className="w-full py-2.5 px-4 rounded-full bg-[#FFCD00] text-[#001428] font-bold text-xs uppercase tracking-wider transition-all duration-300 hover:bg-white shadow-lg pointer-events-auto cursor-pointer relative z-30 flex items-center justify-center gap-2 group/btn"
+                  className="w-full py-2.5 px-4 rounded-full bg-white/20 backdrop-blur-md border border-white/40 text-white font-bold text-xs uppercase tracking-wider transition-all duration-300 hover:bg-[#FFCD00] hover:text-[#001428] hover:border-[#FFCD00] shadow-lg pointer-events-auto cursor-pointer relative z-30 flex items-center justify-center gap-2 group/btn"
                 >
                   <span>{current.btnText || 'Explore'}</span>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover/btn:translate-x-1">

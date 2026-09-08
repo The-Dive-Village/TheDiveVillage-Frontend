@@ -7,9 +7,11 @@ import { useLocation } from 'react-router'
 import videoFile from '@video-optimized/Hero.mp4'
 import divingFile from '@video-optimized/diving.mp4'
 import bookFile from '@video-optimized/Book.mp4'
+import turtleVideo from '../assets/New folder/Turtle Anna.mp4'
+import nightDiveVideo from '../assets/nightdive.mp4'
 import underwaterAudio from '../assets/Underwater.mp3'
 
-function useDirectVideoTexture(src, isMuted = true, playbackRate = 0.5) {
+function useDirectVideoTexture(src, playbackRate = 0.5) {
   const [texture, setTexture] = useState(null)
   const [isReady, setIsReady] = useState(false)
   const videoRef = useRef(null)
@@ -23,6 +25,7 @@ function useDirectVideoTexture(src, isMuted = true, playbackRate = 0.5) {
     video.crossOrigin = 'anonymous'
     video.muted = true
     video.defaultMuted = true
+    video.volume = 0
     video.playsInline = true
     video.setAttribute('muted', '')
     video.setAttribute('playsinline', '')
@@ -59,7 +62,7 @@ function useDirectVideoTexture(src, isMuted = true, playbackRate = 0.5) {
 
     const handleUserInteraction = () => {
       if (videoRef.current && videoRef.current.paused) {
-        videoRef.current.play().then(() => setIsReady(true)).catch(() => {})
+        videoRef.current.play().then(() => setIsReady(true)).catch(() => { })
       }
     }
     window.addEventListener('pointerdown', handleUserInteraction, { once: true })
@@ -71,7 +74,7 @@ function useDirectVideoTexture(src, isMuted = true, playbackRate = 0.5) {
       if (document.hidden) {
         videoRef.current.pause()
       } else {
-        videoRef.current.play().catch(() => {})
+        videoRef.current.play().catch(() => { })
       }
     }
     document.addEventListener('visibilitychange', handleVisibilityChange)
@@ -93,19 +96,10 @@ function useDirectVideoTexture(src, isMuted = true, playbackRate = 0.5) {
     }
   }, [src, playbackRate])
 
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.muted = isMuted
-      if (videoRef.current.paused && !document.hidden) {
-        videoRef.current.play().catch(() => {})
-      }
-    }
-  }, [isMuted])
-
   return { texture, isReady }
 }
 
-function VideoSphere({ videoSrc, isMuted, joystickVelocity }) {
+function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
   const meshRef = useRef()
   const meshRef2 = useRef()
   const meshRef3 = useRef()
@@ -116,34 +110,53 @@ function VideoSphere({ videoSrc, isMuted, joystickVelocity }) {
   const isHome = location.pathname === '/'
   const isAbout = location.pathname === '/about'
 
-  const { texture, isReady } = useDirectVideoTexture(videoSrc, isMuted, 0.5)
-  const { texture: texture2, isReady: isReady2 } = useDirectVideoTexture(isHome ? bookFile : null, isMuted, 0.5)
-  const { texture: texture3, isReady: isReady3 } = useDirectVideoTexture(isHome ? divingFile : null, isMuted, 0.5)
+  const { texture, isReady } = useDirectVideoTexture(videoSrc, 0.5)
+  const { texture: texture2, isReady: isReady2 } = useDirectVideoTexture(isHome && !isNightDive ? bookFile : null, 0.5)
+  const { texture: texture3, isReady: isReady3 } = useDirectVideoTexture(isHome && !isNightDive ? turtleVideo : null, 0.5)
+
+  // Flip turtle video texture horizontally so it displays correctly on the sphere
+  useEffect(() => {
+    if (texture3) {
+      texture3.wrapS = THREE.RepeatWrapping
+      texture3.repeat.x = -1
+      texture3.offset.x = 1
+      texture3.needsUpdate = true
+    }
+  }, [texture3])
 
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY
       const INITIAL_YAW = Math.PI / 2.65 - (Math.PI * 1.1)
-      const INITIAL_PITCH = isAbout ? -(Math.PI / 6) : (Math.PI / 16)
+      const INITIAL_PITCH = isAbout ? -(Math.PI / 6) : (Math.PI / 5)
 
       const aboutEl = document.getElementById('about-section')
       const programsEl = document.getElementById('programs-section')
       const diveSectionEl = document.getElementById('who-can-dive-section')
       const testimonialsEl = document.getElementById('testimonials-section')
 
+      const galleryEl = document.getElementById('gallery-section') || document.getElementById('gallery')
+
       if (isHome) {
         const triggerThreshold = window.innerHeight * 0.7
+        const isGalleryInView = galleryEl && galleryEl.getBoundingClientRect().top < triggerThreshold
 
-        if (diveSectionEl) {
-          const diveRect = diveSectionEl.getBoundingClientRect()
-          // Automatically blend 2nd video when reaching Who Can Dive section
-          targetOpacity2.current = diveRect.top < triggerThreshold ? 1 : 0
-        }
+        if (isGalleryInView) {
+          // When Dive Gallery comes into view, transition back to the first video (Hero.mp4)
+          targetOpacity2.current = 0
+          targetOpacity3.current = 0
+        } else {
+          if (diveSectionEl) {
+            const diveRect = diveSectionEl.getBoundingClientRect()
+            // Automatically blend 2nd video when reaching Who Can Dive section
+            targetOpacity2.current = diveRect.top < triggerThreshold ? 1 : 0
+          }
 
-        if (testimonialsEl) {
-          const testRect = testimonialsEl.getBoundingClientRect()
-          // Automatically blend 3rd video when reaching Testimonials section
-          targetOpacity3.current = testRect.top < triggerThreshold ? 1 : 0
+          if (testimonialsEl) {
+            const testRect = testimonialsEl.getBoundingClientRect()
+            // Automatically blend 3rd video when reaching Testimonials section
+            targetOpacity3.current = testRect.top < triggerThreshold ? 1 : 0
+          }
         }
       }
 
@@ -157,7 +170,7 @@ function VideoSphere({ videoSrc, isMuted, joystickVelocity }) {
 
       const aboutRect = aboutEl.getBoundingClientRect()
       const programsRect = programsEl.getBoundingClientRect()
-      
+
       const aboutTop = scrollY + aboutRect.top
       const programsTop = scrollY + programsRect.top
 
@@ -175,13 +188,13 @@ function VideoSphere({ videoSrc, isMuted, joystickVelocity }) {
         const maxScroll = document.documentElement.scrollHeight - window.innerHeight
         const distanceRemaining = maxScroll - programsTop
         const progress = distanceRemaining > 0 ? (scrollY - programsTop) / distanceRemaining : 1
-        targetRotation.current.x = INITIAL_PITCH + (Math.PI / 8) + progress * (Math.PI / 2)
+        targetRotation.current.x = INITIAL_PITCH + (Math.PI / 8) + progress * (Math.PI / 16)
       }
     }
-    
+
     window.addEventListener('scroll', handleScroll, { passive: true })
     handleScroll()
-    
+
     return () => window.removeEventListener('scroll', handleScroll)
   }, [isAbout, isHome])
 
@@ -198,16 +211,16 @@ function VideoSphere({ videoSrc, isMuted, joystickVelocity }) {
       isDragging.current = true
       previousPointer.current = { x: e.clientX, y: e.clientY }
     }
-    
+
     const onPointerMove = (e) => {
       if (!isDragging.current) return
       const dx = e.clientX - previousPointer.current.x
       const dy = e.clientY - previousPointer.current.y
       previousPointer.current = { x: e.clientX, y: e.clientY }
-      dragOffset.current.y += dx * 0.005 
+      dragOffset.current.y += dx * 0.005
       dragOffset.current.x += dy * 0.005
     }
-    
+
     const onPointerUp = () => {
       isDragging.current = false
     }
@@ -238,7 +251,7 @@ function VideoSphere({ videoSrc, isMuted, joystickVelocity }) {
 
       const finalTargetX = targetRotation.current.x + dragOffset.current.x
       const finalTargetY = targetRotation.current.y + dragOffset.current.y
-      
+
       meshRef.current.rotation.y += (finalTargetY - meshRef.current.rotation.y) * delta * 5
       meshRef.current.rotation.x += (finalTargetX - meshRef.current.rotation.x) * delta * 5
 
@@ -249,8 +262,8 @@ function VideoSphere({ videoSrc, isMuted, joystickVelocity }) {
       }
 
       if (meshRef3.current && isHome) {
-        meshRef3.current.rotation.y = meshRef.current.rotation.y
-        meshRef3.current.rotation.x = meshRef.current.rotation.x + (Math.PI / 10)
+        meshRef3.current.rotation.y = meshRef.current.rotation.y + (Math.PI * 1.45)
+        meshRef3.current.rotation.x = meshRef.current.rotation.x - (Math.PI * 1.3)
         meshRef3.current.material.opacity += (targetOpacity3.current - meshRef3.current.material.opacity) * delta * 2.5
       }
     }
@@ -262,7 +275,7 @@ function VideoSphere({ videoSrc, isMuted, joystickVelocity }) {
         <sphereGeometry args={[500, 60, 40]} />
         <meshBasicMaterial map={texture} side={THREE.BackSide} />
       </mesh>
-      {isHome && (
+      {isHome && !isNightDive && (
         <>
           <mesh ref={meshRef2} scale={[-0.99, 0.99, 0.99]} visible={isReady2}>
             <sphereGeometry args={[500, 60, 40]} />
@@ -281,13 +294,50 @@ function VideoSphere({ videoSrc, isMuted, joystickVelocity }) {
 export default function VideoSphereBackground() {
   const [mounted, setMounted] = useState(false)
   const [isMuted, setIsMuted] = useState(true)
+  const [isNightDive, setIsNightDive] = useState(false)
   const location = useLocation()
   const joystickVelocity = useRef({ x: 0, y: 0 })
   const audioRef = useRef(null)
+  const nightVideoRef = useRef(null)
 
   useEffect(() => {
     setMounted(true)
   }, [])
+
+  // Watch for night-dive class on body
+  useEffect(() => {
+    const checkNightDive = () => setIsNightDive(document.body.classList.contains('night-dive'))
+    checkNightDive()
+    const observer = new MutationObserver(checkNightDive)
+    observer.observe(document.body, { attributes: true, attributeFilter: ['class'] })
+    return () => observer.disconnect()
+  }, [])
+
+  // Control night dive video playback
+  useEffect(() => {
+    const video = nightVideoRef.current
+    if (video) {
+      video.muted = true
+      video.defaultMuted = true
+      if (isNightDive) {
+        const playPromise = video.play()
+        if (playPromise !== undefined) {
+          playPromise.catch((err) => {
+            console.warn('Night dive video play notice:', err)
+            const handleInteract = () => {
+              if (video) video.play().catch(() => {})
+              window.removeEventListener('pointerdown', handleInteract)
+              window.removeEventListener('touchstart', handleInteract)
+            }
+            window.addEventListener('pointerdown', handleInteract, { once: true })
+            window.addEventListener('touchstart', handleInteract, { once: true })
+          })
+        }
+      } else {
+        video.pause()
+      }
+    }
+  }, [isNightDive])
 
   useEffect(() => {
     if (audioRef.current) {
@@ -303,7 +353,7 @@ export default function VideoSphereBackground() {
   if (!mounted) return null // Prevent SSR/hydration mismatches if any
 
   const isAbout = location.pathname === '/about'
-  const currentVideo = isAbout ? bookFile : videoFile
+  const currentVideo = isNightDive ? nightDiveVideo : (isAbout ? bookFile : videoFile)
 
   const isHiddenJoystickPath =
     location.pathname.startsWith('/services') ||
@@ -319,22 +369,56 @@ export default function VideoSphereBackground() {
       <audio ref={audioRef} src={underwaterAudio} loop playsInline />
       <div className="absolute inset-0 -z-10">
         <div className="sticky top-0 h-[100dvh] w-full bg-navy overflow-hidden">
-          <Canvas camera={{ position: [0, 0, 0.1], fov: 95 }}>
-            <Suspense fallback={null}>
-              <VideoSphere videoSrc={currentVideo} key={currentVideo} isMuted={isMuted} joystickVelocity={joystickVelocity} />
-            </Suspense>
-            <OrbitControls
-              enableZoom={false}
-              enablePan={false}
-              enableDamping={true}
-              dampingFactor={0.05}
-              autoRotate={false}
-              rotateSpeed={-0.5} // Invert rotation since we are inside the sphere
-            />
-          </Canvas>
+          <video
+            ref={(el) => {
+              if (el) {
+                el.muted = true
+                el.defaultMuted = true
+                nightVideoRef.current = el
+              }
+            }}
+            src={nightDiveVideo}
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              opacity: isNightDive ? 1 : 0,
+              pointerEvents: 'none',
+              transition: 'opacity 0.5s ease-in-out',
+              zIndex: isNightDive ? 10 : -1,
+            }}
+          />
+          <div style={{ width: '100%', height: '100%' }}>
+            <Canvas camera={{ position: [0, 0, 0.1], fov: 95 }}>
+              <Suspense fallback={null}>
+                <VideoSphere
+                  videoSrc={currentVideo}
+                  key={currentVideo}
+                  isNightDive={isNightDive}
+                  joystickVelocity={joystickVelocity}
+                />
+              </Suspense>
+              <OrbitControls
+                enableZoom={false}
+                enablePan={false}
+                enableDamping={true}
+                dampingFactor={0.05}
+                autoRotate={false}
+                rotateSpeed={-0.5}
+              />
+            </Canvas>
+          </div>
         </div>
       </div>
-      {!isHiddenJoystickPath && <JoystickControl joystickVelocity={joystickVelocity} />}
+      {!isNightDive && !isHiddenJoystickPath && <JoystickControl joystickVelocity={joystickVelocity} />}
       <AudioToggle isMuted={isMuted} onToggle={() => setIsMuted(!isMuted)} />
     </>
   )
@@ -345,7 +429,7 @@ function AudioToggle({ isMuted, onToggle }) {
     <button
       onClick={onToggle}
       className="fixed bottom-6 right-6 z-[9000] flex h-6 w-6 items-center justify-center rounded-full border border-white/20 bg-white/10 backdrop-blur-md text-white shadow-soft transition-all duration-300 hover:scale-110 hover:border-accent hover:text-accent"
-      aria-label={isMuted ? 'Unmute video' : 'Mute video'}
+      aria-label={isMuted ? 'Play underwater ambiance' : 'Mute underwater ambiance'}
     >
       {!isMuted ? (
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -415,18 +499,18 @@ function JoystickControl({ joystickVelocity }) {
     const rect = containerRef.current.getBoundingClientRect()
     const centerX = rect.left + rect.width / 2
     const centerY = rect.top + rect.height / 2
-    
+
     let dx = e.clientX - centerX
     let dy = e.clientY - centerY
-    
+
     const distance = Math.sqrt(dx * dx + dy * dy)
     if (distance > MAX_RADIUS) {
       dx = (dx / distance) * MAX_RADIUS
       dy = (dy / distance) * MAX_RADIUS
     }
-    
+
     setThumbPos({ x: dx, y: dy })
-    
+
     // Normalize velocity between -1 and 1
     if (joystickVelocity) {
       joystickVelocity.current = {
@@ -441,7 +525,7 @@ function JoystickControl({ joystickVelocity }) {
       <span className="text-[10px] font-bold text-white/70 uppercase tracking-widest bg-navy/50 px-2 py-1 rounded-md backdrop-blur-md">
         360° Toggle
       </span>
-      <div 
+      <div
         ref={containerRef}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
@@ -451,9 +535,9 @@ function JoystickControl({ joystickVelocity }) {
       >
         <div
           className="w-8 h-8 rounded-full bg-white/80 shadow-soft border border-white/50"
-          style={{ 
-            transform: `translate(${thumbPos.x}px, ${thumbPos.y}px)`, 
-            transition: isDragging.current ? 'none' : 'transform 0.2s ease-out' 
+          style={{
+            transform: `translate(${thumbPos.x}px, ${thumbPos.y}px)`,
+            transition: isDragging.current ? 'none' : 'transform 0.2s ease-out'
           }}
         />
       </div>

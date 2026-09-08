@@ -120,7 +120,7 @@ function Card({ program }) {
           onClick={(e) => {
             e.stopPropagation()
           }}
-          className="w-full py-3.5 px-6 rounded-full bg-accent hover:bg-white text-navy font-bold text-xs sm:text-sm tracking-wider uppercase transition-all duration-300 shadow-md flex items-center justify-center gap-2 group-hover:shadow-lg mt-auto"
+          className="w-full py-3.5 px-6 rounded-full bg-white/20 backdrop-blur-md border border-white/40 hover:bg-[#FFCD00] hover:text-[#001428] hover:border-[#FFCD00] text-white font-bold text-xs sm:text-sm tracking-wider uppercase transition-all duration-300 shadow-md flex items-center justify-center gap-2 group-hover:shadow-lg mt-auto"
         >
           <span>{program.btnText}</span>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-1">

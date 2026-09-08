@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { Link } from 'react-router'
+import { motion, useReducedMotion } from 'framer-motion'
 import PhoneInput from 'react-phone-number-input'
 import 'react-phone-number-input/style.css'
 import { IMAGES, CAROUSEL_IMAGES } from '../utils/images'
+import bookVideo from '@video-optimized/Book.mp4'
 import InteractiveVideoSphere from '../components/InteractiveVideoSphere'
 import SEOHead from '../components/SEOHead'
 
@@ -17,6 +19,7 @@ export default function Contact() {
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
+  const reduce = useReducedMotion()
 
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }))
@@ -60,30 +63,72 @@ export default function Contact() {
   }
 
   return (
-    <div className="bg-[#FAFAFA] min-h-screen text-navy font-body pt-24 sm:pt-32 pb-24" style={{ textShadow: 'none' }}>
+    <div className="bg-[#FAFAFA] min-h-screen text-navy font-body overflow-x-hidden" style={{ textShadow: 'none' }}>
       <SEOHead
         title="Contact Us & Custom Dive Charters | The Dive Village"
         description="Get in touch with The Dive Village for custom scuba itineraries, PADI course enquiries, private boat charters, and island travel logistics."
         keywords="contact dive village, scuba diving inquiry, PADI course booking, custom dive charter, island travel assistance"
         canonicalUrl="https://thedivevillage.com/contact"
       />
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        
-        {/* Header */}
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 mb-16">
-          <div>
-            <span className="inline-block bg-black/5 rounded-full px-4 py-1.5 text-xs font-bold text-navy/60 uppercase tracking-widest mb-6">Plan Trip</span>
-            <h1 className="font-heading text-6xl sm:text-7xl lg:text-8xl font-bold tracking-tight text-navy leading-none">Contact Us</h1>
-          </div>
-          <p className="max-w-xs text-sm font-medium text-navy/70 leading-relaxed lg:pb-4">
-            Tell us when and where you'd like to go and we'll confirm availability within 24 hours.
-          </p>
+
+      {/* 1. HEADER VIDEO HERO (COURSE-PAGE STYLE) */}
+      <section className="relative h-[75vh] min-h-[540px] w-full flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <video
+            src={bookVideo}
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#001428]/60 via-[#001428]/40 to-[#FAFAFA]"></div>
         </div>
 
+        <div className="relative z-10 flex flex-col items-center text-center px-4 max-w-4xl mx-auto pt-16">
+          <motion.span
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="inline-block bg-white/10 backdrop-blur-md rounded-full px-4 py-1.5 text-xs font-bold text-accent uppercase tracking-widest mb-6 border border-white/20 shadow-sm"
+          >
+            Plan Your Journey
+          </motion.span>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.1 }}
+            className="text-5xl sm:text-7xl lg:text-8xl font-serif text-white tracking-tight leading-none drop-shadow-[0_4px_25px_rgba(0,0,0,0.6)]"
+            style={{ textShadow: '0 4px 20px rgba(0,0,0,0.3)' }}
+          >
+            Contact <span className="font-bold italic text-accent">Us</span>
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="mt-6 text-base sm:text-xl font-medium text-white/90 max-w-xl leading-relaxed drop-shadow-md text-center"
+          >
+            Tell us when and where you'd like to dive and we'll confirm availability within 24 hours.
+          </motion.p>
+        </div>
+      </section>
+
+      {/* 2. MAIN FORM & INTERACTIVE SPHERE SECTION */}
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+        
         {/* Main Split Section */}
-        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-stretch">
           {/* Form */}
-          <div className="w-full">
+          <div className="w-full bg-white rounded-[36px] p-6 sm:p-10 border border-navy/5 shadow-card">
+            <div className="mb-8">
+              <span className="text-accent font-bold tracking-widest uppercase text-xs mb-2 block">Direct Inquiry</span>
+              <h2 className="font-heading text-3xl sm:text-4xl font-bold text-navy">Send Us a Message</h2>
+              <p className="text-xs sm:text-sm text-navy/70 mt-1">Fill out the details below and our team will get back to you promptly.</p>
+            </div>
+
             {success && (
               <div className="mb-8 rounded-2xl bg-emerald-50 p-4 text-sm font-semibold text-emerald-700 border border-emerald-100">
                 ✅ Your message has been sent to our team! We will get back to you shortly.
@@ -140,7 +185,7 @@ export default function Contact() {
                     name="subject"
                     value={formData.subject}
                     onChange={handleChange}
-                    className="w-full rounded-2xl bg-[#F0F2F5] px-5 py-4 text-sm text-navy outline-none focus:ring-2 focus:ring-accent/50 transition appearance-none"
+                    className="w-full rounded-2xl bg-[#F0F2F5] px-5 py-4 text-sm text-navy outline-none focus:ring-2 focus:ring-accent/50 transition appearance-none cursor-pointer"
                   >
                     <option value="General Enquiry">General Enquiry</option>
                     <option value="Post Update">Post Update</option>
@@ -165,104 +210,149 @@ export default function Contact() {
                 ></textarea>
               </div>
 
-              <div className="pt-4 flex items-center gap-3">
+              <div className="pt-2 flex items-center gap-3">
                 <button
                   type="submit"
                   disabled={loading}
-                  className="rounded-full bg-black px-8 py-4 text-sm font-bold text-white transition hover:bg-black/80 disabled:opacity-50"
+                  className="rounded-full bg-navy px-8 py-4 text-sm font-bold text-white transition hover:bg-accent hover:text-navy disabled:opacity-50 cursor-pointer shadow-md"
                 >
                   {loading ? 'Sending...' : 'Reserve Your Spot'}
                 </button>
-                <button type="submit" disabled={loading} className="w-12 h-12 rounded-full bg-black flex items-center justify-center text-white transition hover:bg-black/80 disabled:opacity-50">
-                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>
+                <button 
+                  type="submit" 
+                  disabled={loading} 
+                  className="w-12 h-12 rounded-full bg-navy flex items-center justify-center text-white transition hover:bg-accent hover:text-navy disabled:opacity-50 cursor-pointer shadow-md"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>
                 </button>
               </div>
             </form>
           </div>
 
-          {/* Right Video */}
-          <div className="relative w-full aspect-[3/4] lg:aspect-auto h-full rounded-[40px] overflow-hidden">
+          {/* Right Video / Interactive Sphere */}
+          <div className="relative w-full aspect-[3/4] lg:aspect-auto min-h-[460px] rounded-[36px] overflow-hidden shadow-card border border-navy/5">
             <InteractiveVideoSphere autoRotate={false} />
           </div>
         </div>
 
         {/* Info Blocks */}
-        <div className="mt-32 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 text-center max-w-6xl mx-auto">
-          <div className="flex flex-col items-center">
-            <div className="w-12 h-12 rounded-full border border-navy/10 flex items-center justify-center mb-6">
-               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+        <div className="mt-24 sm:mt-32 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 text-center max-w-6xl mx-auto">
+          <div className="flex flex-col items-center bg-white p-8 rounded-3xl border border-navy/5 shadow-card hover:shadow-float transition">
+            <div className="w-12 h-12 rounded-full bg-navy/5 text-navy flex items-center justify-center mb-5">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
             </div>
             <h4 className="font-bold text-navy mb-2">Call & WhatsApp</h4>
-            <a href="tel:+918971001010" className="text-xs text-navy/60 hover:text-navy transition">+91 89710 01010</a>
+            <a href="tel:+918971001010" className="text-xs text-navy/70 hover:text-accent font-semibold transition">+91 89710 01010</a>
           </div>
           
-          <div className="flex flex-col items-center">
-            <div className="w-12 h-12 rounded-full border border-navy/10 flex items-center justify-center mb-6">
-               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="M22 6l-10 7L2 6"/></svg>
+          <div className="flex flex-col items-center bg-white p-8 rounded-3xl border border-navy/5 shadow-card hover:shadow-float transition">
+            <div className="w-12 h-12 rounded-full bg-navy/5 text-navy flex items-center justify-center mb-5">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="M22 6l-10 7L2 6"/></svg>
             </div>
             <h4 className="font-bold text-navy mb-2">Write to Us</h4>
-            <a href="mailto:sanjeev.bajaj@thedivevillage.co" className="text-xs text-navy/60 hover:text-navy transition">sanjeev.bajaj@thedivevillage.co</a>
+            <a href="mailto:sanjeev.bajaj@thedivevillage.co" className="text-xs text-navy/70 hover:text-accent font-semibold transition truncate max-w-full">sanjeev.bajaj@thedivevillage.co</a>
           </div>
 
-          <div className="flex flex-col items-center">
-            <div className="w-12 h-12 rounded-full border border-navy/10 flex items-center justify-center mb-6">
-               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <div className="flex flex-col items-center bg-white p-8 rounded-3xl border border-navy/5 shadow-card hover:shadow-float transition">
+            <div className="w-12 h-12 rounded-full bg-navy/5 text-navy flex items-center justify-center mb-5">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
             </div>
             <h4 className="font-bold text-navy mb-2">Visit Us</h4>
             <a
               href="https://www.google.com/maps/place/2JG4%2B8WP,+C-101,+1st+Cross+Rd,+Ranka+Nagar,+Kaval+Bairasandra,+Bengaluru,+Karnataka+560032/@13.0259006,77.6070295,20.34z/data=!4m9!1m2!2m1!1sradhidhamma!3m5!1s0x3bae17a78cde34a9:0x7c9daf2e21647c11!8m2!3d13.0258219!4d77.6072606!16s%2Fg%2F11fy_3kdm6?entry=ttu&g_ep=EgoyMDI2MDgzMS4wIKXMDSoASAFQAw%3D%3D"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs text-navy/60 hover:text-navy hover:underline transition text-center leading-relaxed"
+              className="text-xs text-navy/70 hover:text-accent font-semibold transition text-center leading-relaxed"
             >
-              No,11, 1st Cross Rd, Ranka Nagar, Kaval Bairasandra, Bengaluru, Karnataka 560032
+              No,11, 1st Cross Rd, Ranka Nagar, Bengaluru 560032
             </a>
           </div>
 
-          <div className="flex flex-col items-center">
-            <div className="w-12 h-12 rounded-full border border-navy/10 flex items-center justify-center mb-6">
-               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          <div className="flex flex-col items-center bg-white p-8 rounded-3xl border border-navy/5 shadow-card hover:shadow-float transition">
+            <div className="w-12 h-12 rounded-full bg-navy/5 text-navy flex items-center justify-center mb-5">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
             </div>
             <h4 className="font-bold text-navy mb-2">Availability</h4>
-            <span className="text-xs text-navy/70">Always open to guide your dive</span>
+            <span className="text-xs text-navy/80 font-bold">Always open to guide your dive</span>
             <span className="text-xs text-navy/60">Reach out anytime</span>
           </div>
         </div>
 
         {/* Social Links */}
-        <div className="mt-16 flex justify-center gap-6">
-          <a href="#" className="w-10 h-10 rounded-full bg-navy/5 flex items-center justify-center text-navy/70 hover:bg-accent hover:text-navy transition" aria-label="Instagram">
-             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        <div className="mt-16 flex justify-center gap-4 sm:gap-6">
+          <a href="#" className="w-11 h-11 rounded-full bg-white border border-navy/10 shadow-sm flex items-center justify-center text-navy/70 hover:bg-accent hover:text-navy hover:border-accent transition" aria-label="Instagram">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
           </a>
-          <a href="#" className="w-10 h-10 rounded-full bg-navy/5 flex items-center justify-center text-navy/70 hover:bg-accent hover:text-navy transition" aria-label="Facebook">
-             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3.81l.39-4h-4.2V7a1 1 0 011-1h3z"/></svg>
+          <a href="#" className="w-11 h-11 rounded-full bg-white border border-navy/10 shadow-sm flex items-center justify-center text-navy/70 hover:bg-accent hover:text-navy hover:border-accent transition" aria-label="Facebook">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3.81l.39-4h-4.2V7a1 1 0 011-1h3z"/></svg>
           </a>
-          <a href="#" className="w-10 h-10 rounded-full bg-navy/5 flex items-center justify-center text-navy/70 hover:bg-accent hover:text-navy transition" aria-label="LinkedIn">
-             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+          <a href="#" className="w-11 h-11 rounded-full bg-white border border-navy/10 shadow-sm flex items-center justify-center text-navy/70 hover:bg-accent hover:text-navy hover:border-accent transition" aria-label="LinkedIn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
           </a>
-          <a href="#" className="w-10 h-10 rounded-full bg-navy/5 flex items-center justify-center text-navy/70 hover:bg-accent hover:text-navy transition" aria-label="YouTube">
-             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22.54 6.42a2.78 2.78 0 00-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 00-1.94 2A29 29 0 001 11.75a29 29 0 00.46 5.33 2.78 2.78 0 001.94 2c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 001.94-2 29 29 0 00.46-5.33 29 29 0 00-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></svg>
+          <a href="#" className="w-11 h-11 rounded-full bg-white border border-navy/10 shadow-sm flex items-center justify-center text-navy/70 hover:bg-accent hover:text-navy hover:border-accent transition" aria-label="YouTube">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22.54 6.42a2.78 2.78 0 00-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 00-1.94 2A29 29 0 001 11.75a29 29 0 00.46 5.33 2.78 2.78 0 001.94 2c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 001.94-2 29 29 0 00.46-5.33 29 29 0 00-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></svg>
           </a>
-          <a href="#" className="w-10 h-10 rounded-full bg-navy/5 flex items-center justify-center text-navy/70 hover:bg-accent hover:text-navy transition" aria-label="WhatsApp">
-             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
+          <a href="#" className="w-11 h-11 rounded-full bg-white border border-navy/10 shadow-sm flex items-center justify-center text-navy/70 hover:bg-accent hover:text-navy hover:border-accent transition" aria-label="WhatsApp">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
           </a>
         </div>
 
-        {/* Bottom Banner */}
-        <div className="mt-32 rounded-[40px] bg-[#F0F2F5] p-10 lg:p-16">
-           <div className="grid lg:grid-cols-2 gap-12">
-             <div className="flex flex-col justify-center">
-               <span className="inline-block self-start bg-black/5 rounded-full px-4 py-1.5 text-xs font-bold text-navy/60 uppercase tracking-widest mb-6">Start now</span>
-               <h2 className="font-heading text-4xl sm:text-5xl font-bold text-navy leading-tight tracking-tight mb-4">Discover your next<br/>perfect ocean escape</h2>
-               <p className="text-sm font-medium text-navy/70 leading-relaxed max-w-sm">
-                 Plan your trip in minutes and enjoy every moment of your dive adventure.
-               </p>
-             </div>
-             <div className="h-64 lg:h-96 w-full rounded-[40px] overflow-hidden shadow-float relative group">
-                <img src={CAROUSEL_IMAGES[3]} alt="Ocean Escape" className="w-full h-full object-cover transition duration-700 group-hover:scale-105" />
-                <div className="absolute inset-0 bg-navy/10 mix-blend-multiply pointer-events-none transition duration-500 group-hover:bg-transparent" />
-             </div>
-           </div>
+        {/* Bottom CTA Banner */}
+        <div className="mt-24 sm:mt-32 rounded-[40px] bg-[#001E36] text-white p-8 sm:p-12 lg:p-16 relative overflow-hidden shadow-2xl border border-white/10">
+          <div className="absolute -right-20 -top-20 w-96 h-96 bg-accent/15 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -left-20 -bottom-20 w-80 h-80 bg-[#00AEC7]/15 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-12 items-center relative z-10">
+            <div className="lg:col-span-7 flex flex-col justify-center">
+              <span className="inline-block self-start bg-white/10 border border-white/20 rounded-full px-4 py-1.5 text-xs font-bold text-accent uppercase tracking-widest mb-6">
+                Start Now
+              </span>
+              <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight tracking-tight mb-4">
+                Discover Your Next <span className="font-serif italic font-normal text-accent">Ocean Escape</span>
+              </h2>
+              <p className="text-base sm:text-lg font-medium text-white/80 leading-relaxed max-w-lg mb-8">
+                Ready to take the plunge? Plan your trip in minutes and enjoy every moment of your dive adventure with certified PADI experts.
+              </p>
+              
+              <div className="flex flex-wrap items-center gap-4">
+                <Link
+                  to="/book-us"
+                  className="rounded-full bg-[#FFCD00] text-navy font-bold px-8 py-4 text-sm uppercase tracking-wider transition-all duration-300 hover:bg-white hover:scale-105 shadow-lg flex items-center gap-2 cursor-pointer"
+                >
+                  <span>Book Your Dive Now</span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M5 12h14" />
+                    <path d="m12 5 7 7-7 7" />
+                  </svg>
+                </Link>
+                <Link
+                  to="/services"
+                  className="rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold px-6 py-4 text-sm uppercase tracking-wider transition duration-300 hover:bg-white/20 hover:border-white/40 cursor-pointer"
+                >
+                  Explore Programs
+                </Link>
+              </div>
+            </div>
+
+            <div className="lg:col-span-5 h-72 sm:h-80 lg:h-96 w-full rounded-[32px] overflow-hidden shadow-float relative group border border-white/15">
+              <img
+                src={CAROUSEL_IMAGES[3]}
+                alt="Ocean Escape"
+                className="w-full h-full object-cover transition duration-700 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-navy/60 via-transparent to-transparent pointer-events-none" />
+              <div className="absolute bottom-4 left-4 right-4 bg-navy/85 backdrop-blur-md p-4 rounded-2xl border border-white/20 flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-bold text-accent uppercase tracking-wider">PADI Certified Center</p>
+                  <p className="text-sm font-bold text-white">Daily Boat Dives & Courses</p>
+                </div>
+                <span className="flex h-3 w-3 relative">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
 
       </div>

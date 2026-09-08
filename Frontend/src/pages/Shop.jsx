@@ -7,6 +7,7 @@ import { useWishlist } from '../hooks/useWishlist'
 import { useAuth } from '../hooks/useAuth'
 import Button from '../components/Button'
 import SEOHead from '../components/SEOHead'
+import CustomerReviews from '../components/CustomerReviews'
 import picture3 from '../assets/Picture3.png'
 import divingVid from '@video-optimized/diving.mp4'
 import pop1 from '../assets/Products/pop1.jpeg'
@@ -219,7 +220,7 @@ export default function Shop() {
         {filteredProducts.length === 0 ? (
           <div className="bg-white rounded-3xl p-16 text-center shadow-card border border-navy/5 my-8">
             <h3 className="font-heading text-2xl font-bold mb-2">No products matched.</h3>
-            <Button onClick={() => { setSelectedCategory('all'); setSearchQuery('') }} className="bg-navy text-[#003865]">Reset Filters</Button>
+            <Button onClick={() => { setSelectedCategory('all'); setSearchQuery('') }} className="bg-navy text-white">Reset Filters</Button>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -239,6 +240,9 @@ export default function Shop() {
           </div>
         )}
       </section>
+
+      {/* 4. CUSTOMER REVIEWS & SHOWCASE */}
+      <CustomerReviews />
     </div>
   )
 }
@@ -262,9 +266,34 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
     let active = true
     const el = viewerRef.current
     if (el) {
-      if (el.loaded) setIsLoaded(true)
+      const applyMatte = () => {
+        try {
+          if (el.model && el.model.materials) {
+            el.model.materials.forEach((mat) => {
+              if (typeof mat.setDoubleSided === 'function') {
+                mat.setDoubleSided(true)
+              } else {
+                mat.doubleSided = true
+              }
+              const pbr = mat.pbrMetallicRoughness
+              if (pbr) {
+                pbr.setRoughnessFactor(0.82)
+                pbr.setMetallicFactor(0.0)
+              }
+            })
+          }
+        } catch (e) {}
+      }
+
+      if (el.loaded) {
+        setIsLoaded(true)
+        applyMatte()
+      }
       const handleLoad = () => {
-        if (active) setIsLoaded(true)
+        if (active) {
+          setIsLoaded(true)
+          applyMatte()
+        }
       }
       el.addEventListener('load', handleLoad)
     }
@@ -301,7 +330,7 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
             />
             {product.glb && (
               <div
-                className={`absolute inset-0 w-full h-full z-10 bg-gradient-to-b from-[#F8FAFC] to-[#E2E8F0] flex items-center justify-center transition-opacity duration-300 ${
+                className={`absolute inset-0 w-full h-full z-10 bg-gradient-to-b from-[#FFFFFF] via-[#F8FAFC] to-[#EDF2F7] flex items-center justify-center transition-opacity duration-300 ${
                   show3D ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
                 }`}
               >
@@ -318,9 +347,11 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
                   camera-target="auto auto auto"
                   disable-zoom
                   interaction-prompt="none"
-                  shadow-intensity="1"
-                  shadow-softness="0.8"
-                  exposure="1.0"
+                  environment-image="neutral"
+                  exposure="1.35"
+                  shadow-intensity="0.4"
+                  shadow-softness="0.9"
+                  tone-mapping="commerce"
                   bounds="tight"
                   style={{ width: '100%', height: '100%' }}
                 />

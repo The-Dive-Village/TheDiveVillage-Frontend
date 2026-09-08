@@ -1,14 +1,12 @@
-import { useEffect, useState } from 'react'
-
-export default function ThemeToggle({ isNightDive, onToggle }) {
+export default function ThemeToggle({ isNightDive }) {
   return (
-    <label className="switch hidden lg:block !m-0" style={{ fontSize: '14px' }}>
+    <span className="switch hidden lg:inline-block !m-0 pointer-events-none" style={{ fontSize: '14px' }}>
       <input 
-        className="switch__input" 
+        className="switch__input pointer-events-none" 
         type="checkbox" 
         role="switch" 
-        checked={isNightDive} 
-        onChange={onToggle} 
+        checked={!!isNightDive} 
+        readOnly 
       />
       <span className="switch__icon">
         <span className="switch__icon-part switch__icon-part--1"></span>
@@ -23,7 +21,7 @@ export default function ThemeToggle({ isNightDive, onToggle }) {
         <span className="switch__icon-part switch__icon-part--10"></span>
         <span className="switch__icon-part switch__icon-part--11"></span>
       </span>
-      <span className="switch__sr">Dark Mode</span>
-    </label>
+      <span className="switch__sr">Night Dive Mode</span>
+    </span>
   )
 }

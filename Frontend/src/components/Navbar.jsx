@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { Link, NavLink, useLocation } from 'react-router'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import Logo from './Logo'
@@ -38,10 +39,13 @@ export default function Navbar() {
   }, [])
 
   const toggleNightDive = () => {
-    if (isNightDive) {
+    const isNight = document.body.classList.contains('night-dive')
+    if (isNight) {
       document.body.classList.remove('night-dive')
+      setIsNightDive(false)
     } else {
       document.body.classList.add('night-dive')
+      setIsNightDive(true)
     }
   }
 
@@ -56,12 +60,12 @@ export default function Navbar() {
   const bgSoft = isDarkBackground ? 'bg-transparent' : 'bg-transparent'
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-[9999] w-full border-b transition-all duration-300 ${
-      location.pathname === '/'
-        ? 'bg-navy/35 backdrop-blur-md border-white/15 shadow-md'
-        : 'bg-[#00223D]/95 backdrop-blur-xl border-white/15 shadow-lg'
-    }`}>
-      <div className="mx-auto grid grid-cols-[1fr_auto_1fr] h-[60px] sm:h-[68px] lg:h-[72px] w-full max-w-7xl items-center px-4 sm:px-6 lg:px-8">
+    <header className="fixed top-0 left-0 right-0 z-[9999] w-full px-2 sm:px-4 lg:px-6 pointer-events-none flex flex-col items-center">
+      <div className={`pointer-events-auto mx-auto grid grid-cols-[1fr_auto_1fr] h-[58px] sm:h-[64px] lg:h-[68px] w-full max-w-7xl 2xl:max-w-[1700px] items-center px-4 sm:px-8 lg:px-12 rounded-full border shadow-[0_12px_40px_rgba(0,0,0,0.5)] transition-all duration-300 ${
+        location.pathname === '/'
+          ? 'bg-[#001428]/35 backdrop-blur-md backdrop-saturate-125 border-white/25'
+          : 'bg-[#003865]/90 backdrop-blur-md backdrop-saturate-125 border-white/25 shadow-[0_12px_40px_rgba(0,56,101,0.4)]'
+      }`}>
         
         {/* Left Side: Home, Book Us, Contact Us */}
         <div className="flex items-center justify-start gap-4 lg:gap-8 pl-1 sm:pl-2">
@@ -126,10 +130,17 @@ export default function Navbar() {
             <span className="hidden xl:inline text-xs sm:text-sm font-bold tracking-wide whitespace-nowrap">Get In Touch</span>
           </button>
 
-          <div className="flex h-9 sm:h-10 items-center justify-center gap-1.5 rounded-xl border border-white/30 px-3 text-white transition duration-hover hover:bg-white/10 hover:border-white shrink-0">
-            <ThemeToggle isNightDive={isNightDive} onToggle={toggleNightDive} />
-            <span className="hidden xl:inline text-xs sm:text-sm font-bold tracking-wide whitespace-nowrap">Night Dive</span>
-          </div>
+          <button
+            type="button"
+            onClick={toggleNightDive}
+            className="flex h-9 sm:h-10 items-center justify-center gap-1.5 rounded-xl border border-white/30 px-3 text-white transition duration-hover hover:bg-white/10 hover:border-white shrink-0 cursor-pointer"
+            aria-label="Toggle Night Dive mode"
+          >
+            <ThemeToggle isNightDive={isNightDive} />
+            <span className="hidden sm:inline text-xs sm:text-sm font-bold tracking-wide whitespace-nowrap select-none">
+              {isNightDive ? 'Day Dive' : 'Night Dive'}
+            </span>
+          </button>
 
           <Link
             to={isAuthenticated ? '/dashboard/profile' : '/login'}
@@ -167,48 +178,50 @@ export default function Navbar() {
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className={`overflow-hidden border-t ${borderColor} ${isDarkBackground ? 'bg-navy/90 backdrop-blur-md' : 'bg-white/90 backdrop-blur-md'}`}
+            className={`pointer-events-auto mt-2 w-full max-w-7xl 2xl:max-w-[1700px] overflow-hidden rounded-3xl border border-white/20 shadow-2xl ${isDarkBackground ? 'bg-[#001428]/95 backdrop-blur-3xl' : 'bg-white/95 backdrop-blur-3xl'}`}
           >
-            <nav className="flex flex-col gap-1 px-4 py-4" aria-label="Mobile">
-              {NAV.map((item) => (
-                <NavLink
-                  key={item.to}
-                  to={item.to}
-                  end={item.end}
-                  onClick={() => setOpen(false)}
-                  className={({ isActive }) =>
-                    `rounded-xl px-4 py-3 font-heading text-[15px] font-bold transition duration-hover ${
-                      item.highlight
-                        ? 'bg-accent/20 text-accent'
-                        : isActive
-                        ? (isDarkBackground ? 'bg-white/10 text-white' : 'bg-navy/5 text-navy')
-                        : `${textColor} ${hoverBg}`
-                    }`
-                  }
+            <div className="px-6 py-4">
+              <nav className="flex flex-col gap-1" aria-label="Mobile">
+                {NAV.map((item) => (
+                  <NavLink
+                    key={item.to}
+                    to={item.to}
+                    end={item.end}
+                    onClick={() => setOpen(false)}
+                    className={({ isActive }) =>
+                      `rounded-xl px-4 py-3 font-heading text-[15px] font-bold transition duration-hover ${
+                        item.highlight
+                          ? 'bg-accent/20 text-accent'
+                          : isActive
+                          ? (isDarkBackground ? 'bg-white/10 text-white' : 'bg-navy/5 text-navy')
+                          : `${textColor} ${hoverBg}`
+                      }`
+                    }
+                  >
+                    {item.label}
+                  </NavLink>
+                ))}
+                <button
+                  onClick={() => {
+                    setOpen(false)
+                    setIsCallModalOpen(true)
+                  }}
+                  className={`rounded-xl px-4 py-3 font-heading text-[15px] font-bold transition duration-hover text-left flex items-center gap-2 text-accent bg-accent/10`}
                 >
-                  {item.label}
-                </NavLink>
-              ))}
-              <button
-                onClick={() => {
-                  setOpen(false)
-                  setIsCallModalOpen(true)
-                }}
-                className={`rounded-xl px-4 py-3 font-heading text-[15px] font-bold transition duration-hover text-left flex items-center gap-2 text-accent bg-accent/10`}
-              >
-                <PhoneIcon />
-                Call / Connect Options
-              </button>
-              <button 
-                onClick={() => {
-                  toggleNightDive()
-                  setOpen(false)
-                }}
-                className={`rounded-xl px-4 py-3 font-heading text-[15px] font-bold transition duration-hover text-left ${textColor} ${hoverBg}`}
-              >
-                {isNightDive ? '☀️ Switch to Day Dive' : '🌙 Switch to Night Dive'}
-              </button>
-            </nav>
+                  <PhoneIcon />
+                  Call / Connect Options
+                </button>
+                <button 
+                  onClick={() => {
+                    toggleNightDive()
+                    setOpen(false)
+                  }}
+                  className={`rounded-xl px-4 py-3 font-heading text-[15px] font-bold transition duration-hover text-left ${textColor} ${hoverBg}`}
+                >
+                  {isNightDive ? '☀️ Switch to Day Dive' : '🌙 Switch to Night Dive'}
+                </button>
+              </nav>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -341,26 +354,28 @@ function CallModal({ isOpen, onClose }) {
     }
   ]
 
-  return (
+  if (typeof document === 'undefined') return null
+
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 pointer-events-auto">
-          {/* Transparent Glassmorphism Website Backdrop */}
+        <div className="fixed inset-0 z-[100000] flex items-center justify-center p-4 pointer-events-auto">
+          {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-navy/30 backdrop-blur-xl cursor-pointer"
+            className="fixed inset-0 bg-black/60 backdrop-blur-md cursor-pointer"
           />
 
-          {/* White Modal Box with Dark Blue Theme Accents */}
+          {/* Modal Box */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="relative w-full max-w-md bg-white rounded-[36px] p-6 sm:p-8 shadow-[0_24px_64px_rgba(0,56,101,0.25)] border border-navy/10 z-10 text-navy pointer-events-auto"
+            className="relative w-full max-w-md bg-white rounded-[32px] p-6 sm:p-8 shadow-2xl border border-navy/10 z-10 text-navy pointer-events-auto max-h-[90vh] overflow-y-auto"
           >
             {/* Header */}
             <div className="flex items-center justify-between border-b border-navy/10 pb-4 mb-6">
@@ -381,7 +396,7 @@ function CallModal({ isOpen, onClose }) {
               </button>
             </div>
 
-            {/* Options Grid (Dark Blue Navy Theme Only) */}
+            {/* Options Grid */}
             <div className="space-y-3">
               {options.map((opt) => (
                 <a
@@ -410,6 +425,7 @@ function CallModal({ isOpen, onClose }) {
           </motion.div>
         </div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   )
 }

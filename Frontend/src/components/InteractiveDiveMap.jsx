@@ -16,29 +16,22 @@ const escapeXml = (str) => {
     .replace(/'/g, '&apos;')
 }
 
-// Generate high-resolution SVG billboard pin for countries (exact TDV glowing badge style)
-const createSitePinSvg = (name) => {
-  const cacheKey = `site_${name}`
+// Generate high-resolution SVG billboard pin for countries
+const createSitePinSvg = () => {
+  const cacheKey = 'site_pin_icon'
   if (svgCache.has(cacheKey)) return svgCache.get(cacheKey)
 
-  const safeName = escapeXml(name)
-  const textWidth = Math.max(100, Math.round(name.length * 8.2 + 24))
-  const svgWidth = textWidth + 24
-  const centerX = svgWidth / 2
-
   const svg = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(`
-    <svg width="${svgWidth}" height="76" viewBox="0 0 ${svgWidth} 76" xmlns="http://www.w3.org/2000/svg">
+    <svg width="44" height="52" viewBox="0 0 44 52" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <filter id="badgeShadow" x="-30%" y="-30%" width="160%" height="160%">
-          <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000000" flood-opacity="0.75"/>
-          <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#00E5FF" flood-opacity="0.35"/>
+          <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000000" flood-opacity="0.8"/>
+          <feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#00E5FF" flood-opacity="0.55"/>
         </filter>
       </defs>
-      <rect x="12" y="4" width="${textWidth}" height="28" rx="14" fill="#021426" stroke="rgba(0,229,255,0.75)" stroke-width="1.5" filter="url(#badgeShadow)"/>
-      <text x="${centerX}" y="22.5" fill="#ffffff" font-size="12" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="700" text-anchor="middle" letter-spacing="0.3">${safeName}</text>
       
-      <g transform="translate(${centerX - 14}, 38)" filter="url(#badgeShadow)">
-        <path d="M14 2C8.477 2 4 6.477 4 12c0 8 10 16 10 16s10-8 10-16c0-5.523-4.477-10-10-10z" fill="#00E5FF" stroke="#ffffff" stroke-width="1.8"/>
+      <g transform="translate(8, 6)" filter="url(#badgeShadow)">
+        <path d="M14 2C8.477 2 4 6.477 4 12c0 8 10 18 10 18s10-10 10-18c0-5.523-4.477-10-10-10z" fill="#00E5FF" stroke="#ffffff" stroke-width="2"/>
         <polygon points="14,6.5 16,11 20.5,11.5 17,15 18,19.5 14,17 10,19.5 11,15 7.5,11.5 12,11" fill="#00223D"/>
       </g>
     </svg>
@@ -47,65 +40,46 @@ const createSitePinSvg = (name) => {
   return svg
 }
 
-// Generate premium Google Earth style glowing SVG billboard for PADI dive locations
-const createPadiPinSvg = (name, isSelected = false, isDimmed = false) => {
-  const cacheKey = `padi_${name}_${isSelected ? '1' : '0'}_${isDimmed ? '1' : '0'}`
+// Generate premium Google Earth style glowing SVG billboard pin for PADI dive locations
+const createPadiPinSvg = (isSelected = false, isDimmed = false) => {
+  const cacheKey = `padi_pin_${isSelected ? '1' : '0'}_${isDimmed ? '1' : '0'}`
   if (svgCache.has(cacheKey)) return svgCache.get(cacheKey)
 
-  const rawDisplayName = name.length > 28 ? name.substring(0, 26) + '...' : name
-  const safeDisplayName = escapeXml(rawDisplayName)
-  const textWidth = Math.max(92, Math.round(rawDisplayName.length * 7.5 + 24))
-  const svgWidth = textWidth + 30
-  const centerX = svgWidth / 2
-
-  let bgFill = '#00223D'
-  let textColor = '#FFFFFF'
-  let borderColor = 'rgba(0, 229, 255, 0.85)'
   let pinColor = '#00AEC7'
   let pinStroke = '#FFFFFF'
-  let pinScale = '1.0'
+  let iconFill = '#FFFFFF'
   let glowColor = '#00E5FF'
-  let glowOpacity = '0.5'
+  let glowOpacity = '0.6'
   let overallOpacity = isDimmed ? '0.55' : '1.0'
+  let pinScale = isSelected ? '1.25' : '1.0'
 
   if (isSelected) {
-    bgFill = '#FFCD00'
-    textColor = '#00223D'
-    borderColor = '#FFFFFF'
     pinColor = '#FFCD00'
     pinStroke = '#00223D'
-    pinScale = '1.3'
+    iconFill = '#00223D'
     glowColor = '#FFD700'
     glowOpacity = '0.9'
     overallOpacity = '1.0'
   }
 
   const svg = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(`
-    <svg width="${svgWidth}" height="80" viewBox="0 0 ${svgWidth} 80" xmlns="http://www.w3.org/2000/svg" opacity="${overallOpacity}">
+    <svg width="48" height="56" viewBox="0 0 48 56" xmlns="http://www.w3.org/2000/svg" opacity="${overallOpacity}">
       <defs>
         <filter id="padiGlow" x="-40%" y="-40%" width="180%" height="180%">
           <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#000000" flood-opacity="0.8"/>
-          <feDropShadow dx="0" dy="0" stdDeviation="7" flood-color="${glowColor}" flood-opacity="${glowOpacity}"/>
+          <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="${glowColor}" flood-opacity="${glowOpacity}"/>
         </filter>
-        ${isSelected ? `
-        <filter id="pulseGlow" x="-50%" y="-50%" width="200%" height="200%">
-          <feDropShadow dx="0" dy="0" stdDeviation="9" flood-color="#FFCD00" flood-opacity="0.9"/>
-        </filter>` : ''}
       </defs>
       
       ${isSelected ? `
       <!-- Pulse radar ring behind active pin -->
-      <circle cx="${centerX}" cy="54" r="18" fill="none" stroke="#FFCD00" stroke-width="1.8" opacity="0.75" stroke-dasharray="3,3"/>
+      <circle cx="24" cy="40" r="14" fill="none" stroke="#FFCD00" stroke-width="2" opacity="0.8" stroke-dasharray="3,3"/>
       ` : ''}
 
-      <!-- Badge Title Pill -->
-      <rect x="15" y="4" width="${textWidth}" height="28" rx="14" fill="${bgFill}" stroke="${borderColor}" stroke-width="${isSelected ? '2.5' : '1.3'}" filter="url(#padiGlow)"/>
-      <text x="${centerX}" y="22.5" fill="${textColor}" font-size="${isSelected ? '12.5' : '11'}" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="${isSelected ? '800' : '700'}" text-anchor="middle" letter-spacing="0.2">${safeDisplayName}</text>
-      
       <!-- Pin Drop Marker -->
-      <g transform="translate(${centerX - 14}, 36) scale(${pinScale})" filter="url(#padiGlow)">
-        <path d="M14 2C8.477 2 4 6.477 4 12c0 8 10 16 10 16s10-8 10-16c0-5.523-4.477-10-10-10z" fill="${pinColor}" stroke="${pinStroke}" stroke-width="1.8"/>
-        <polygon points="14,6.5 16,11 20.5,11.5 17,15 18,19.5 14,17 10,19.5 11,15 7.5,11.5 12,11" fill="${isSelected ? '#00223D' : '#FFFFFF'}"/>
+      <g transform="translate(10, 8) scale(${pinScale})" filter="url(#padiGlow)">
+        <path d="M14 2C8.477 2 4 6.477 4 12c0 8 10 18 10 18s10-10 10-18c0-5.523-4.477-10-10-10z" fill="${pinColor}" stroke="${pinStroke}" stroke-width="2"/>
+        <polygon points="14,6.5 16,11 20.5,11.5 17,15 18,19.5 14,17 10,19.5 11,15 7.5,11.5 12,11" fill="${iconFill}"/>
       </g>
     </svg>
   `)
@@ -295,12 +269,11 @@ export default function InteractiveDiveMap({
           name: loc.name,
           position: window.Cesium.Cartesian3.fromDegrees(loc.longitude, loc.latitude),
           billboard: {
-            image: createPadiPinSvg(displayName, isSel, isDimmed),
-            width: svgWidth,
-            height: 80,
+            image: createPadiPinSvg(isSel, isDimmed),
+            width: isSel ? 48 : 38,
+            height: isSel ? 56 : 46,
             verticalOrigin: window.Cesium.VerticalOrigin.BOTTOM,
             eyeOffset: new window.Cesium.Cartesian3(0, 0, isSel ? -250 : -80),
-            disableDepthTestDistance: Number.POSITIVE_INFINITY,
             scaleByDistance: new window.Cesium.NearFarScalar(2.0e4, 1.0, 1.2e7, 0.5),
             translucencyByDistance: new window.Cesium.NearFarScalar(2.0e4, 1.0, 1.5e7, 0.85)
           },
@@ -523,12 +496,11 @@ export default function InteractiveDiveMap({
           position: window.Cesium.Cartesian3.fromDegrees(country.lon, country.lat),
           show: !selectedCountryRef.current,
           billboard: {
-            image: createSitePinSvg(country.name),
-            width: svgWidth,
-            height: 76,
+            image: createSitePinSvg(),
+            width: 38,
+            height: 46,
             verticalOrigin: window.Cesium.VerticalOrigin.BOTTOM,
             eyeOffset: new window.Cesium.Cartesian3(0, 0, -50),
-            disableDepthTestDistance: Number.POSITIVE_INFINITY,
             scaleByDistance: new window.Cesium.NearFarScalar(1.0e6, 1.0, 1.8e7, 0.48),
             translucencyByDistance: new window.Cesium.NearFarScalar(1.0e6, 1.0, 2.0e7, 0.8)
           },

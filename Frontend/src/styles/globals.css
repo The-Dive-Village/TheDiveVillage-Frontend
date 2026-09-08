@@ -300,12 +300,15 @@
 /* --- NIGHT DIVE MODE (DARK THEME OVERRIDES) --- */
 .night-dive,
 .night-dive body,
-.night-dive .glass-premium,
+.night-dive .glass-premium {
+  background-color: #030a12 !important;
+  color: #f8fafc !important;
+}
+
 .night-dive section,
 .night-dive footer,
 .night-dive header,
 .night-dive main {
-  background-color: #030a12 !important;
   color: #f8fafc !important;
 }
 
@@ -375,6 +378,31 @@
 
 .night-dive {
   filter: brightness(0.95) contrast(1.05);
+}
+
+/* Button & interactive element contrast in Night Dive */
+.night-dive button.bg-\[\#FFCD00\],
+.night-dive a.bg-\[\#FFCD00\],
+.night-dive .bg-\[\#FFCD00\],
+.night-dive .bg-\[\#FFCD00\] *,
+.night-dive .bg-accent,
+.night-dive .bg-accent *,
+.night-dive button.bg-accent,
+.night-dive a.bg-accent {
+  color: #00223D !important;
+}
+
+.night-dive button.bg-black,
+.night-dive button[type="submit"].bg-black {
+  background-color: #00AEC7 !important;
+  color: #00223D !important;
+  border-color: #00AEC7 !important;
+}
+
+.night-dive button.bg-black:hover,
+.night-dive button[type="submit"].bg-black:hover {
+  background-color: #ffffff !important;
+  color: #00223D !important;
 }
 
 :root {

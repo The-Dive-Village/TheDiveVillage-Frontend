@@ -9,6 +9,7 @@ import { formatCurrency } from '../utils/formatCurrency'
 import Button from '../components/Button'
 import Product3DViewer from '../components/Product3DViewer'
 import SEOHead from '../components/SEOHead'
+import CustomerReviews from '../components/CustomerReviews'
 
 export default function ProductDetail() {
   const { id } = useParams()
@@ -33,15 +34,19 @@ export default function ProductDetail() {
     relatedProducts = SHOP_PRODUCTS.filter((p) => p.id !== product.id).slice(0, 4)
   }
 
-  // Construct media items: 3D Model appears FIRST by default, followed by Front and Back images
+  // Construct media items: 3D Model appears FIRST by default, followed by Front, Back, Open 1, Open 2, etc.
   const buildMediaItems = (p) => {
     const items = []
     if (p.glb) {
       items.push({ type: 'glb', src: p.glb, id: 'glb-0', label: '3D Model' })
     }
     if (p.images && p.images.length > 0) {
-      if (p.images[0]) items.push({ type: 'image', src: p.images[0], id: 'img-front', label: 'Front' })
-      if (p.images[1]) items.push({ type: 'image', src: p.images[1], id: 'img-back', label: 'Back' })
+      const defaultLabels = ['Front', 'Back', 'Open 1', 'Open 2', 'Interior']
+      p.images.forEach((img, idx) => {
+        if (!img) return
+        const label = p.imageLabels && p.imageLabels[idx] ? p.imageLabels[idx] : (defaultLabels[idx] || `View ${idx + 1}`)
+        items.push({ type: 'image', src: img, id: `img-${idx}`, label })
+      })
     } else if (p.image) {
       items.push({ type: 'image', src: p.image, id: 'img-front', label: 'Front' })
     }
@@ -173,18 +178,18 @@ export default function ProductDetail() {
         </nav>
 
         {/* Main Product Details Split */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-20">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 mb-20 items-start">
           
           {/* Left Column: Integrated Multi-Media Showcase (Photos + Video + 3D Model) */}
-          <div className="lg:col-span-7 flex flex-col gap-6">
-            <div className="flex gap-4 flex-col-reverse sm:flex-row">
+          <div className="lg:col-span-6 flex flex-col gap-6">
+            <div className="flex gap-4 flex-col-reverse sm:flex-row items-start">
               {/* Thumbnail Selectors */}
-              <div className="flex sm:flex-col gap-4 overflow-x-auto sm:overflow-visible shrink-0">
+              <div className="flex sm:flex-col gap-3 overflow-x-auto sm:overflow-visible shrink-0">
                 {mediaItems.map((item, i) => (
                   <div key={item.id || i} className="flex flex-col items-center gap-1 shrink-0">
                     <button
                       onClick={() => setActiveMedia(item)}
-                      className={`flex-shrink-0 w-20 h-24 rounded-2xl overflow-hidden border-2 transition relative cursor-pointer ${
+                      className={`flex-shrink-0 w-16 h-20 sm:w-18 sm:h-22 rounded-2xl overflow-hidden border-2 transition relative cursor-pointer ${
                         activeMedia?.id === item.id || activeMedia?.src === item.src
                           ? 'border-navy shadow-md ring-2 ring-navy/20'
                           : 'border-transparent hover:border-navy/30 bg-[#F0F2F5]'
@@ -196,19 +201,19 @@ export default function ProductDetail() {
                         <div className="relative w-full h-full bg-black flex items-center justify-center">
                           <video src={item.src} className="w-full h-full object-cover opacity-70 pointer-events-none" muted />
                           <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-                            <span className="w-7 h-7 rounded-full bg-accent text-navy flex items-center justify-center text-xs font-bold shadow-sm">
+                            <span className="w-6 h-6 rounded-full bg-accent text-navy flex items-center justify-center text-xs font-bold shadow-sm">
                               ▶
                             </span>
                           </div>
                         </div>
                       ) : (
-                        <div className="relative w-full h-full bg-[#001E36] flex flex-col items-center justify-center text-[#FFCD00] p-1.5 border border-[#FFCD00]/30 shadow-inner">
-                          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" /><polyline points="3.27 6.96 12 12.01 20.73 6.96" /><line x1="12" y1="22.08" x2="12" y2="12" /></svg>
-                          <span className="text-[9px] font-bold tracking-wider uppercase text-white mt-1">3D MODEL</span>
+                        <div className="relative w-full h-full bg-[#001E36] flex flex-col items-center justify-center text-[#FFCD00] p-1 border border-[#FFCD00]/30 shadow-inner">
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" /><polyline points="3.27 6.96 12 12.01 20.73 6.96" /><line x1="12" y1="22.08" x2="12" y2="12" /></svg>
+                          <span className="text-[8px] font-bold tracking-wider uppercase text-white mt-1">3D MODEL</span>
                         </div>
                       )}
                     </button>
-                    <span className="text-[11px] font-bold text-navy/80 tracking-tight text-center max-w-[80px] leading-tight">
+                    <span className="text-[10px] font-bold text-navy/80 tracking-tight text-center max-w-[72px] leading-tight">
                       {item.label}
                     </span>
                   </div>
@@ -216,7 +221,7 @@ export default function ProductDetail() {
               </div>
 
               {/* Main Product Card Media Display */}
-              <div className="flex-1 rounded-[32px] overflow-hidden bg-white border border-navy/5 aspect-[4/5] relative shadow-card group">
+              <div className="flex-1 w-full rounded-[28px] overflow-hidden bg-white border border-navy/10 aspect-square sm:aspect-[4/4] max-h-[460px] relative shadow-card group">
                 {activeMedia?.type === 'glb' ? (
                   <Product3DViewer src={activeMedia.src} alt={product.title} />
                 ) : activeMedia?.type === 'video' ? (
@@ -228,22 +233,21 @@ export default function ProductDetail() {
                       muted
                       loop
                       playsInline
-                      className="w-full h-full object-cover rounded-[32px]"
+                      className="w-full h-full object-cover rounded-[28px]"
                     />
-                    <div className="absolute top-6 right-6 bg-navy/90 backdrop-blur-md px-4 py-2 text-xs font-bold text-[#FFCD00] rounded-full shadow-lg z-10 border border-[#FFCD00]/40 flex items-center gap-2 pointer-events-none">
+                    <div className="absolute top-4 right-4 bg-navy/90 backdrop-blur-md px-3.5 py-1.5 text-xs font-bold text-[#FFCD00] rounded-full shadow-lg z-10 border border-[#FFCD00]/40 flex items-center gap-2 pointer-events-none">
                       <span className="w-2.5 h-2.5 rounded-full bg-[#FFCD00] animate-ping" />
                       <span>360 view of the Product</span>
                     </div>
                   </>
                 ) : (
-                  <img
+                  <InteractiveProductImage
                     src={activeMedia?.src || product.image}
                     alt={product.title}
-                    className="w-full h-full object-contain p-6 transition duration-500 group-hover:scale-105"
                   />
                 )}
                 {product.tag && (
-                  <span className="absolute top-6 left-6 bg-white/95 backdrop-blur-md px-3.5 py-1 text-xs font-bold text-navy rounded-full shadow-sm z-10 pointer-events-none">
+                  <span className="absolute top-4 left-4 bg-white/95 backdrop-blur-md px-3 py-1 text-xs font-bold text-navy rounded-full shadow-sm z-10 pointer-events-none">
                     {product.tag}
                   </span>
                 )}
@@ -252,7 +256,7 @@ export default function ProductDetail() {
           </div>
 
           {/* Right Column: Product Specifications & Actions */}
-          <div className="lg:col-span-5 flex flex-col justify-start">
+          <div className="lg:col-span-6 flex flex-col justify-start">
             
             {/* Category & Stock Header */}
             <div className="flex items-center gap-3 mb-3">
@@ -503,6 +507,9 @@ export default function ProductDetail() {
           )}
         </div>
 
+        {/* Customer Reviews & Live Water Testing Showcase */}
+        <CustomerReviews className="!px-0 !py-0 mb-20" />
+
         {/* You May Also Like / Recommendations */}
         <div>
           <div className="flex justify-between items-center mb-8">
@@ -560,3 +567,88 @@ export default function ProductDetail() {
     </div>
   )
 }
+
+function InteractiveProductImage({ src, alt }) {
+  const [scale, setScale] = useState(1)
+  const [position, setPosition] = useState({ x: 0, y: 0 })
+  const startDist = useRef(0)
+  const startScale = useRef(1)
+  const startPos = useRef({ x: 0, y: 0 })
+  const startTouch = useRef({ x: 0, y: 0 })
+  const isDragging = useRef(false)
+
+  const handleTouchStart = (e) => {
+    if (e.touches.length === 2) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX
+      const dy = e.touches[0].clientY - e.touches[1].clientY
+      startDist.current = Math.hypot(dx, dy)
+      startScale.current = scale
+
+      const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2
+      const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2
+      startTouch.current = { x: midX, y: midY }
+      startPos.current = { ...position }
+      isDragging.current = true
+    }
+  }
+
+  const handleTouchMove = (e) => {
+    if (e.touches.length === 2 && isDragging.current) {
+      e.preventDefault()
+      const dx = e.touches[0].clientX - e.touches[1].clientX
+      const dy = e.touches[0].clientY - e.touches[1].clientY
+      const dist = Math.hypot(dx, dy)
+      const newScale = Math.min(Math.max(startScale.current * (dist / (startDist.current || 1)), 0.8), 3.5)
+      setScale(newScale)
+
+      const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2
+      const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2
+      const deltaX = midX - startTouch.current.x
+      const deltaY = midY - startTouch.current.y
+      setPosition({
+        x: startPos.current.x + deltaX,
+        y: startPos.current.y + deltaY,
+      })
+    }
+  }
+
+  const handleTouchEnd = () => {
+    isDragging.current = false
+    if (scale <= 1) {
+      setPosition({ x: 0, y: 0 })
+      setScale(1)
+    }
+  }
+
+  return (
+    <div
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      className="w-full h-full flex items-center justify-center overflow-hidden touch-none relative select-none"
+    >
+      <img
+        src={src}
+        alt={alt}
+        className="w-full h-full object-contain p-6 transition-transform duration-75 will-change-transform pointer-events-none select-none"
+        style={{
+          transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
+        }}
+        draggable={false}
+      />
+      {scale > 1 && (
+        <button
+          type="button"
+          onClick={() => {
+            setScale(1)
+            setPosition({ x: 0, y: 0 })
+          }}
+          className="absolute bottom-4 right-4 bg-navy/80 hover:bg-navy text-white text-[10px] font-bold px-3 py-1.5 rounded-full backdrop-blur-md border border-white/20 z-10 shadow-md transition cursor-pointer"
+        >
+          Reset Zoom
+        </button>
+      )}
+    </div>
+  )
+}
+
