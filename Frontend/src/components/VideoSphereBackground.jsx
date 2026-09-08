@@ -106,10 +106,12 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
   const targetRotation = useRef({ x: 0, y: 0 })
   const targetOpacity2 = useRef(0)
   const targetOpacity3 = useRef(0)
+  const [loadSecondary, setLoadSecondary] = useState(false)
   const location = useLocation()
   const isHome = location.pathname === '/'
   const isAbout = location.pathname === '/about'
 
+<<<<<<< HEAD
   const { texture, isReady } = useDirectVideoTexture(videoSrc, 0.5)
   const { texture: texture2, isReady: isReady2 } = useDirectVideoTexture(isHome && !isNightDive ? bookFile : null, 0.5)
   const { texture: texture3, isReady: isReady3 } = useDirectVideoTexture(isHome && !isNightDive ? turtleVideo : null, 0.5)
@@ -123,6 +125,12 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
       texture3.needsUpdate = true
     }
   }, [texture3])
+=======
+  const { texture, isReady } = useDirectVideoTexture(videoSrc, isMuted, 0.5)
+  // Only load secondary videos (Book.mp4, diving.mp4) lazily on user scroll to avoid heavy initial downloads on homepage
+  const { texture: texture2, isReady: isReady2 } = useDirectVideoTexture(isHome && loadSecondary ? bookFile : null, isMuted, 0.5)
+  const { texture: texture3, isReady: isReady3 } = useDirectVideoTexture(isHome && loadSecondary ? divingFile : null, isMuted, 0.5)
+>>>>>>> 182d9bb331e44a4a99f3be86f1d680bbac8be789
 
   useEffect(() => {
     const handleScroll = () => {
@@ -138,6 +146,10 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
       const galleryEl = document.getElementById('gallery-section') || document.getElementById('gallery')
 
       if (isHome) {
+        if (!loadSecondary && scrollY > 150) {
+          setLoadSecondary(true)
+        }
+
         const triggerThreshold = window.innerHeight * 0.7
         const isGalleryInView = galleryEl && galleryEl.getBoundingClientRect().top < triggerThreshold
 
@@ -196,7 +208,7 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
     handleScroll()
 
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [isAbout, isHome])
+  }, [isAbout, isHome, loadSecondary])
 
   // --- DRAG LOGIC ---
   const isDragging = useRef(false)
@@ -226,7 +238,7 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
     }
 
     window.addEventListener('pointerdown', onPointerDown)
-    window.addEventListener('pointermove', onPointerMove, { passive: false })
+    window.addEventListener('pointermove', onPointerMove, { passive: true })
     window.addEventListener('pointerup', onPointerUp)
     window.addEventListener('pointercancel', onPointerUp)
 
@@ -369,6 +381,7 @@ export default function VideoSphereBackground() {
       <audio ref={audioRef} src={underwaterAudio} loop playsInline />
       <div className="absolute inset-0 -z-10">
         <div className="sticky top-0 h-[100dvh] w-full bg-navy overflow-hidden">
+<<<<<<< HEAD
           <video
             ref={(el) => {
               if (el) {
@@ -416,6 +429,33 @@ export default function VideoSphereBackground() {
               />
             </Canvas>
           </div>
+=======
+          <Canvas
+            camera={{ position: [0, 0, 0.1], fov: 95 }}
+            gl={{ powerPreference: 'high-performance', antialias: true }}
+            onCreated={({ gl }) => {
+              gl.domElement.addEventListener('webglcontextlost', (e) => {
+                e.preventDefault()
+                console.warn('THREE.WebGLRenderer: Context Lost. Handling gracefully.')
+              }, false)
+              gl.domElement.addEventListener('webglcontextrestored', () => {
+                console.info('THREE.WebGLRenderer: Context Restored.')
+              }, false)
+            }}
+          >
+            <Suspense fallback={null}>
+              <VideoSphere videoSrc={currentVideo} key={currentVideo} isMuted={isMuted} joystickVelocity={joystickVelocity} />
+            </Suspense>
+            <OrbitControls
+              enableZoom={false}
+              enablePan={false}
+              enableDamping={true}
+              dampingFactor={0.05}
+              autoRotate={false}
+              rotateSpeed={-0.5} // Invert rotation since we are inside the sphere
+            />
+          </Canvas>
+>>>>>>> 182d9bb331e44a4a99f3be86f1d680bbac8be789
         </div>
       </div>
       {!isNightDive && !isHiddenJoystickPath && <JoystickControl joystickVelocity={joystickVelocity} />}

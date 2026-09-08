@@ -34,7 +34,8 @@ export default function Preloader({ onComplete }) {
   const [progress, setProgress] = useState(0)
 
   useEffect(() => {
-    const totalDuration = 2000 // 2.0 seconds
+    // 3.2 seconds total duration for a relaxed, deliberate, premium transition (2.5 - 4.0s target)
+    const totalDuration = 3200
     const intervalTime = 30
     const increment = 100 / (totalDuration / intervalTime)
 

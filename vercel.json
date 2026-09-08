@@ -1,6 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "npm run build --workspace=Frontend",
+  "buildCommand": "(git lfs pull || true) && npm run build --workspace=Frontend",
   "outputDirectory": "Frontend/dist",
   "framework": "vite",
   "cleanUrls": true,

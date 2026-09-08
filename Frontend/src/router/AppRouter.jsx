@@ -37,9 +37,8 @@ export default function AppRouter() {
   const location = useLocation()
 
   return (
-    <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
-        <Route element={<PublicLayout />}>
+    <Routes location={location}>
+      <Route element={<PublicLayout />}>
           <Route
             index
             element={
@@ -96,6 +95,5 @@ export default function AppRouter() {
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-    </AnimatePresence>
   )
 }
