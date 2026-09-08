@@ -17,13 +17,14 @@ import imgCapBack from '../assets/Products/capb.png'
 import imgBagFront from '../assets/Products/bagf.png'
 import imgBagBack from '../assets/Products/bagb.png'
 
-import videoWomensShirt from '@video-optimized/Products/sweetheart.mp4'
-import videoWomensPants from '@video-optimized/Products/womens pants.mp4'
-import videoWomensStrap from '@video-optimized/Products/this_product_make_a_video_wher (2).mp4'
-import videoUnisexShorts from '@video-optimized/Products/unisex shorts.mp4'
-import videoUnisexShirt from '@video-optimized/Products/unisex unfront.mp4'
-import videoSkinSuit from '@video-optimized/Products/Dive suit.mp4'
-import videoCap from '@video-optimized/Products/cap.mp4'
+import glbBag from '../assets/3d model/backpack 3d model.glb'
+import glbCap from '../assets/3d model/baseball cap 3d model.glb'
+import glbUnisexShorts from '../assets/3d model/black dive shorts 3d model.glb'
+import glbWomensPants from '../assets/3d model/black leggings 3d model.glb'
+import glbUnisexShirt from '../assets/3d model/black long sleeve shirt 3d model.glb'
+import glbFullSuit from '../assets/3d model/black wetsuit 3d model.glb'
+import glbWomensShirt from '../assets/3d model/long sleeve shirt 3d model.glb'
+import glbWomensStrap from '../assets/3d model/wetsuit 3d model.glb'
 
 export const SHOP_PRODUCTS = [
   {
@@ -34,7 +35,7 @@ export const SHOP_PRODUCTS = [
     oldPrice: 2999,
     image: imgWomensShirtFront,
     images: [imgWomensShirtFront, imgWomensShirtBack],
-    video: videoWomensShirt,
+    glb: glbWomensShirt,
     category: 'Tops',
     tag: 'New Arrival',
     description: 'Stay protected and stylish in the water. Features a sweetheart neckline, premium stretch, and sun protection.',
@@ -44,7 +45,7 @@ export const SHOP_PRODUCTS = [
       '4-Way Stretch: Flexible fabric allows easy movement without restricting your mobility.',
       'Lightweight & Breathable: Lightweight fabric allows airflow and keeps you comfortable during extended wear.'
     ],
-    sizes: ['One Size (XS-M)'],
+    sizes: ['Type A (XS to M)', 'Type B (L to XXL)'],
     colors: [
       { name: 'Black', hex: '#000000' }
     ],
@@ -61,7 +62,7 @@ export const SHOP_PRODUCTS = [
     oldPrice: 3499,
     image: imgWomensPantsFront,
     images: [imgWomensPantsFront, imgWomensPantsBack],
-    video: videoWomensPants,
+    glb: glbWomensPants,
     category: 'Bottoms',
     tag: 'Bestseller',
     description: 'High-waisted dive pants offering full-length coverage and thigh-smoothing panels for ultimate comfort and confidence.',
@@ -71,7 +72,7 @@ export const SHOP_PRODUCTS = [
       'Thigh-Smoothing Panels: Designed to provide extra coverage and create a smoother appearance around the thighs.',
       'Full-Length Coverage: Offers extended coverage for your legs while providing comfort and protection during water activities.'
     ],
-    sizes: ['One Size (XS-M)'],
+    sizes: ['Type A (XS to M)', 'Type B (L to XXL)'],
     colors: [
       { name: 'Black', hex: '#000000' }
     ],
@@ -88,7 +89,7 @@ export const SHOP_PRODUCTS = [
     oldPrice: 2499,
     image: imgWomensStrapFront,
     images: [imgWomensStrapFront, imgWomensStrapBack],
-    video: videoWomensStrap,
+    glb: glbWomensStrap,
     category: 'Tops',
     tag: 'Essential',
     description: 'Supportive and comfortable dive top featuring heavy-duty Velcro straps and built-in chest support.',
@@ -98,7 +99,7 @@ export const SHOP_PRODUCTS = [
       'Stretch-Fit Fabric: Flexible fabric moves with your body for unrestricted movement while swimming or diving.',
       'Full-Body Coverage: Provides comfortable coverage across the torso and upper legs for added protection in the water.'
     ],
-    sizes: ['One Size (XS-M)'],
+    sizes: ['Type A (XS to M)', 'Type B (L to XXL)'],
     colors: [
       { name: 'Black', hex: '#000000' }
     ],
@@ -115,7 +116,7 @@ export const SHOP_PRODUCTS = [
     oldPrice: 2199,
     image: imgUnisexShortsFront,
     images: [imgUnisexShortsFront, imgUnisexShortsBack],
-    video: videoUnisexShorts,
+    glb: glbUnisexShorts,
     category: 'Bottoms',
     tag: 'Comfort',
     description: 'Experience seamless comfort with these dive shorts, designed without visible stitching to reduce irritation.',
@@ -125,7 +126,7 @@ export const SHOP_PRODUCTS = [
       'Stretch-Fit Fabric: Flexible fabric moves naturally with your body for unrestricted movement while swimming or diving.',
       'Lightweight & Quick-Dry: Lightweight fabric dries quickly after getting wet, keeping you comfortable in and out of the water.'
     ],
-    sizes: ['One Size (XS-M)'],
+    sizes: ['Type A (XS to M)', 'Type B (L to XXL)'],
     colors: [
       { name: 'Black', hex: '#000000' }
     ],
@@ -142,7 +143,7 @@ export const SHOP_PRODUCTS = [
     oldPrice: 2799,
     image: imgUnisexShirtFront,
     images: [imgUnisexShirtFront, imgUnisexShirtBack],
-    video: videoUnisexShirt,
+    glb: glbUnisexShirt,
     category: 'Tops',
     tag: 'Essential',
     description: 'A versatile, lightweight dive shirt featuring hidden neck seams and quick-dry fabric for all-day comfort.',
@@ -152,7 +153,7 @@ export const SHOP_PRODUCTS = [
       '4-Way Stretch: Flexible fabric moves with your body for unrestricted movement during swimming and diving.',
       'Lightweight & Breathable: Lightweight construction allows airflow and keeps you comfortable during extended wear.'
     ],
-    sizes: ['One Size (XS-M)'],
+    sizes: ['Type A (XS to M)', 'Type B (L to XXL)'],
     colors: [
       { name: 'Black', hex: '#000000' }
     ],
@@ -169,7 +170,7 @@ export const SHOP_PRODUCTS = [
     oldPrice: 8999,
     image: imgSkinSuitFront,
     images: [imgSkinSuitFront, imgSkinSuitBack],
-    video: videoSkinSuit,
+    glb: glbFullSuit,
     category: 'Skin Wear',
     tag: 'Premium',
     description: 'Ultimate full-body protection with grip panels on the knees and seat, front zip closure, and stirrup foot straps.',
@@ -179,7 +180,7 @@ export const SHOP_PRODUCTS = [
       'Stirrup Foot Straps: Integrated foot straps help keep the suit securely in place and prevent the legs from riding up during movement.',
       'Full-Body Coverage: Provides extended coverage from the neck to the ankles for added protection and comfort in the water.'
     ],
-    sizes: ['One Size (XS-M)'],
+    sizes: ['Type A (XS to M)', 'Type B (L to XXL)'],
     colors: [
       { name: 'Black', hex: '#000000' }
     ],
@@ -196,7 +197,7 @@ export const SHOP_PRODUCTS = [
     oldPrice: 1599,
     image: imgCapFront,
     images: [imgCapFront, imgCapBack],
-    video: videoCap,
+    glb: glbCap,
     category: 'Accessories',
     tag: 'New Arrival',
     description: 'Durable, quick-dry ocean cap with sun glare protection and adjustable strap for beach, boat, and water activities.',
@@ -206,7 +207,7 @@ export const SHOP_PRODUCTS = [
       'Adjustable Secure Strap: Custom fit rear strap ensures your cap stays secure even in windy boat conditions.',
       'Saltwater-Resistant Construction: Anti-corrosive eyelets and durable stitching engineered for maritime environments.'
     ],
-    sizes: ['One Size'],
+    sizes: ['One Size Fits Most'],
     colors: [
       { name: 'Black', hex: '#000000' }
     ],
@@ -223,7 +224,7 @@ export const SHOP_PRODUCTS = [
     oldPrice: 3999,
     image: imgBagFront,
     images: [imgBagFront, imgBagBack],
-    video: null,
+    glb: glbBag,
     category: 'Accessories',
     tag: 'Essential',
     description: 'Heavy-duty waterproof gear bag designed for carrying wetsuits, towels, dive equipment, and beach essentials.',
@@ -233,7 +234,7 @@ export const SHOP_PRODUCTS = [
       'Reinforced Carry Handles & Straps: Heavy-duty webbing and padded shoulder straps for comfortable transport.',
       'Quick-Drain & Breathable Mesh: Allows damp gear to air out easily while preventing odor accumulation.'
     ],
-    sizes: ['Standard'],
+    sizes: ['One Size Fits Most'],
     colors: [
       { name: 'Black', hex: '#000000' }
     ],
@@ -243,4 +244,3 @@ export const SHOP_PRODUCTS = [
     reviewCount: 19,
   }
 ]
-

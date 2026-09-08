@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { useSearchParams } from 'react-router'
 import { motion } from 'framer-motion'
 import InteractiveDiveMap from '../components/InteractiveDiveMap'
+import SEOHead from '../components/SEOHead'
 import { padiLocationService } from '../services/padiLocationService'
 import {
   COURSE_CATALOG,
@@ -236,6 +237,12 @@ export default function BookUs() {
 
   return (
     <div className="bg-[#FAFAFA] min-h-screen text-navy font-body pt-24 sm:pt-32 pb-24" style={{ textShadow: 'none' }}>
+      <SEOHead
+        title="Book Scuba Diving Courses & Expeditions Online | The Dive Village"
+        description="Book PADI scuba diving courses, Discovery dives, snorkeling trips, and freediving packages online with instant confirmation at The Dive Village."
+        keywords="book scuba dive online, PADI course reservation, dive charter booking, snorkeling trip reservation, dive village booking"
+        canonicalUrl="https://thedivevillage.com/book-us"
+      />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         
         {/* Page Header */}

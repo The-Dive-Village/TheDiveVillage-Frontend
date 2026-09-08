@@ -17,8 +17,12 @@ export default function Login() {
     setError('')
     setLoading(true)
     try {
-      await login(email, password)
-      navigate('/dashboard/profile')
+      const u = await login(email, password)
+      if (email === 'admin@tdv.com' || u?.role === 'admin') {
+        navigate('/admin')
+      } else {
+        navigate('/dashboard/profile')
+      }
     } catch (err) {
       setError(err.message || 'Failed to sign in. Please check your credentials.')
     } finally {

@@ -4,6 +4,7 @@ import PhoneInput from 'react-phone-number-input'
 import 'react-phone-number-input/style.css'
 import { IMAGES, CAROUSEL_IMAGES } from '../utils/images'
 import InteractiveVideoSphere from '../components/InteractiveVideoSphere'
+import SEOHead from '../components/SEOHead'
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -60,6 +61,12 @@ export default function Contact() {
 
   return (
     <div className="bg-[#FAFAFA] min-h-screen text-navy font-body pt-24 sm:pt-32 pb-24" style={{ textShadow: 'none' }}>
+      <SEOHead
+        title="Contact Us & Custom Dive Charters | The Dive Village"
+        description="Get in touch with The Dive Village for custom scuba itineraries, PADI course enquiries, private boat charters, and island travel logistics."
+        keywords="contact dive village, scuba diving inquiry, PADI course booking, custom dive charter, island travel assistance"
+        canonicalUrl="https://thedivevillage.com/contact"
+      />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         
         {/* Header */}

@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router'
 import { motion, useReducedMotion } from 'framer-motion'
 import Button from '../components/Button'
 import SafeImage from '../components/SafeImage'
+import SEOHead from '../components/SEOHead'
 import { IMAGES, CAROUSEL_IMAGES } from '../utils/images'
 import video2Bg from '@video-optimized/2.mp4'
 
@@ -30,6 +31,12 @@ export default function Services() {
 
   return (
     <div className="bg-[#FAFAFA] min-h-screen text-navy font-body pt-24 sm:pt-32 pb-24 overflow-x-hidden" style={{ textShadow: 'none' }}>
+      <SEOHead
+        title="Scuba Diving & Ocean Services | PADI Courses, Snorkeling & Charters | The Dive Village"
+        description="Explore professional scuba diving courses, PADI certifications, guided snorkeling safaris, freediving, and bespoke dive charters at The Dive Village."
+        keywords="scuba diving services, PADI diving courses, snorkeling excursions, freediving lessons, dive charters, marine gear rental"
+        canonicalUrl="https://thedivevillage.com/services"
+      />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         
         {/* 1. HEADER */}

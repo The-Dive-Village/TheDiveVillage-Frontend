@@ -7,6 +7,8 @@ import { useWishlist } from '../hooks/useWishlist'
 import { useAuth } from '../hooks/useAuth'
 import { formatCurrency } from '../utils/formatCurrency'
 import Button from '../components/Button'
+import Product3DViewer from '../components/Product3DViewer'
+import SEOHead from '../components/SEOHead'
 
 export default function ProductDetail() {
   const { id } = useParams()
@@ -17,26 +19,36 @@ export default function ProductDetail() {
   const sizeChartRef = useRef(null)
 
   const product = SHOP_PRODUCTS.find((p) => p.id === id) || SHOP_PRODUCTS[0]
-  const relatedProducts = SHOP_PRODUCTS.filter((p) => p.id !== product.id).slice(0, 4)
 
-  const getMediaLabel = (type, idx) => {
-    if (type === 'video') return '360° Interactive'
-    if (idx === 0) return 'Front'
-    if (idx === 1) return 'Back'
-    return `View ${idx + 1}`
+  let relatedProducts = []
+  if (product.id === 'product-dive-cap') {
+    const bag = SHOP_PRODUCTS.find((p) => p.id === 'product-ocean-bag')
+    const others = SHOP_PRODUCTS.filter((p) => p.id !== product.id && p.id !== 'product-ocean-bag').slice(0, 3)
+    relatedProducts = bag ? [bag, ...others] : others
+  } else if (product.id === 'product-ocean-bag') {
+    const cap = SHOP_PRODUCTS.find((p) => p.id === 'product-dive-cap')
+    const others = SHOP_PRODUCTS.filter((p) => p.id !== product.id && p.id !== 'product-dive-cap').slice(0, 3)
+    relatedProducts = cap ? [cap, ...others] : others
+  } else {
+    relatedProducts = SHOP_PRODUCTS.filter((p) => p.id !== product.id).slice(0, 4)
   }
 
-  const mediaItems = []
-  if (product.images && product.images.length > 0) {
-    product.images.forEach((img, idx) => {
-      mediaItems.push({ type: 'image', src: img, id: `img-${idx}`, label: getMediaLabel('image', idx) })
-    })
-  } else if (product.image) {
-    mediaItems.push({ type: 'image', src: product.image, id: 'img-0', label: 'Front' })
+  // Construct media items: 3D Model appears FIRST by default, followed by Front and Back images
+  const buildMediaItems = (p) => {
+    const items = []
+    if (p.glb) {
+      items.push({ type: 'glb', src: p.glb, id: 'glb-0', label: '3D Model' })
+    }
+    if (p.images && p.images.length > 0) {
+      if (p.images[0]) items.push({ type: 'image', src: p.images[0], id: 'img-front', label: 'Front' })
+      if (p.images[1]) items.push({ type: 'image', src: p.images[1], id: 'img-back', label: 'Back' })
+    } else if (p.image) {
+      items.push({ type: 'image', src: p.image, id: 'img-front', label: 'Front' })
+    }
+    return items
   }
-  if (product.video) {
-    mediaItems.push({ type: 'video', src: product.video, id: 'video-0', label: '360° Interactive' })
-  }
+
+  const mediaItems = buildMediaItems(product)
 
   const [activeMedia, setActiveMedia] = useState(mediaItems[0] || null)
   const [selectedSize, setSelectedSize] = useState(product.sizes ? product.sizes[0] : 'Standard')
@@ -48,26 +60,16 @@ export default function ProductDetail() {
 
   useEffect(() => {
     const p = SHOP_PRODUCTS.find((item) => item.id === id) || SHOP_PRODUCTS[0]
-    const items = []
-    if (p.images && p.images.length > 0) {
-      p.images.forEach((img, idx) => {
-        items.push({ type: 'image', src: img, id: `img-${idx}`, label: getMediaLabel('image', idx) })
-      })
-    } else if (p.image) {
-      items.push({ type: 'image', src: p.image, id: 'img-0', label: 'Front' })
-    }
-    if (p.video) {
-      items.push({ type: 'video', src: p.video, id: 'video-0', label: '360° Interactive' })
-    }
+    const items = buildMediaItems(p)
     setActiveMedia(items[0] || null)
-    if (product.sizes && product.sizes.length > 0) {
-      setSelectedSize(product.sizes[0])
+    if (p.sizes && p.sizes.length > 0) {
+      setSelectedSize(p.sizes[0])
     }
-    if (product.colors && product.colors.length > 0) {
-      setSelectedColor(product.colors[0])
+    if (p.colors && p.colors.length > 0) {
+      setSelectedColor(p.colors[0])
     }
     setQuantity(1)
-  }, [id, product])
+  }, [id])
 
   const handleAddToCart = () => {
     if (!user?.uid) {
@@ -128,6 +130,12 @@ export default function ProductDetail() {
 
   return (
     <div className="bg-[#FAFAFA] min-h-screen text-navy font-body pt-24 sm:pt-32 pb-24 overflow-x-hidden">
+      <SEOHead
+        title={`${product.title || product.name} | Ocean Apparel | The Dive Village`}
+        description={`${product.description}. Premium quality dive gear and eco-friendly apparel crafted by The Dive Village.`}
+        keywords={`${product.title || product.name}, dive apparel, ocean wear, scuba gear, sustainable marine clothing, ${product.category}`}
+        canonicalUrl={`https://thedivevillage.com/shop/${product.id}`}
+      />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         
         {/* Toast Notification */}
@@ -167,7 +175,7 @@ export default function ProductDetail() {
         {/* Main Product Details Split */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-20">
           
-          {/* Left Column: Integrated Multi-Media Showcase (Photos + Video) */}
+          {/* Left Column: Integrated Multi-Media Showcase (Photos + Video + 3D Model) */}
           <div className="lg:col-span-7 flex flex-col gap-6">
             <div className="flex gap-4 flex-col-reverse sm:flex-row">
               {/* Thumbnail Selectors */}
@@ -177,14 +185,14 @@ export default function ProductDetail() {
                     <button
                       onClick={() => setActiveMedia(item)}
                       className={`flex-shrink-0 w-20 h-24 rounded-2xl overflow-hidden border-2 transition relative cursor-pointer ${
-                        activeMedia?.src === item.src
+                        activeMedia?.id === item.id || activeMedia?.src === item.src
                           ? 'border-navy shadow-md ring-2 ring-navy/20'
                           : 'border-transparent hover:border-navy/30 bg-[#F0F2F5]'
                       }`}
                     >
                       {item.type === 'image' ? (
                         <img src={item.src} alt={item.label} className="w-full h-full object-cover bg-white" />
-                      ) : (
+                      ) : item.type === 'video' ? (
                         <div className="relative w-full h-full bg-black flex items-center justify-center">
                           <video src={item.src} className="w-full h-full object-cover opacity-70 pointer-events-none" muted />
                           <div className="absolute inset-0 flex items-center justify-center bg-black/40">
@@ -192,6 +200,11 @@ export default function ProductDetail() {
                               ▶
                             </span>
                           </div>
+                        </div>
+                      ) : (
+                        <div className="relative w-full h-full bg-[#001E36] flex flex-col items-center justify-center text-[#FFCD00] p-1.5 border border-[#FFCD00]/30 shadow-inner">
+                          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" /><polyline points="3.27 6.96 12 12.01 20.73 6.96" /><line x1="12" y1="22.08" x2="12" y2="12" /></svg>
+                          <span className="text-[9px] font-bold tracking-wider uppercase text-white mt-1">3D MODEL</span>
                         </div>
                       )}
                     </button>
@@ -202,9 +215,11 @@ export default function ProductDetail() {
                 ))}
               </div>
 
-              {/* Main Product Card Media Display (Fits Box Size) */}
+              {/* Main Product Card Media Display */}
               <div className="flex-1 rounded-[32px] overflow-hidden bg-white border border-navy/5 aspect-[4/5] relative shadow-card group">
-                {activeMedia?.type === 'video' ? (
+                {activeMedia?.type === 'glb' ? (
+                  <Product3DViewer src={activeMedia.src} alt={product.title} />
+                ) : activeMedia?.type === 'video' ? (
                   <>
                     <video
                       src={activeMedia.src}
@@ -296,11 +311,11 @@ export default function ProductDetail() {
               </div>
             )}
 
-            {/* 2. Size Information (One Size Fits All) */}
+            {/* 2. Size Information & Options */}
             <div className="mb-6">
               <div className="flex justify-between items-center mb-3">
                 <p className="text-xs font-bold uppercase tracking-wider text-navy/70">
-                  Size: <span className="font-bold text-navy normal-case text-sm ml-1">One Size (Fits XS - M)</span>
+                  Size: <span className="font-bold text-navy normal-case text-sm ml-1">{selectedSize}</span>
                 </p>
                 <button 
                   type="button"
@@ -317,14 +332,34 @@ export default function ProductDetail() {
                 </button>
               </div>
 
-              {/* Refined One Size Fits All Info Card */}
+              {/* Size Option Selector Buttons */}
+              {product.sizes && product.sizes.length > 1 && (
+                <div className="grid grid-cols-2 gap-3 mb-3">
+                  {product.sizes.map((sz) => (
+                    <button
+                      key={sz}
+                      type="button"
+                      onClick={() => setSelectedSize(sz)}
+                      className={`px-4 py-3 rounded-2xl text-xs font-bold transition border cursor-pointer ${
+                        selectedSize === sz
+                          ? 'bg-navy text-white border-navy shadow-md ring-2 ring-navy/20'
+                          : 'bg-white text-navy border-navy/20 hover:border-navy'
+                      }`}
+                    >
+                      {sz}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {/* Size Info Card */}
               <div className="flex items-center gap-3 rounded-2xl bg-navy/[0.04] border border-navy/10 px-4 py-3 text-xs text-navy/80 font-medium">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-navy/60 shrink-0">
                   <circle cx="12" cy="12" r="10" />
                   <line x1="12" y1="16" x2="12" y2="12" />
                   <line x1="12" y1="8" x2="12.01" y2="8" />
                 </svg>
-                <span><strong>Ultra-Stretch Fit:</strong> Engineered from 4-way stretch fabric to adaptively fit all sizes from <strong>XS to M</strong>.</span>
+                <span><strong>Adaptive Fit:</strong> 4-way ultra-stretch fabric. <strong>One size fits most</strong>.</span>
               </div>
             </div>
 
@@ -439,10 +474,10 @@ export default function ProductDetail() {
           {activeTab === 'sizeGuide' && (
             <div className="space-y-6">
               <div>
-                <h3 className="font-heading text-2xl font-bold text-navy mb-2">Universal Sizing Chart (XS to M)</h3>
+                <h3 className="font-heading text-2xl font-bold text-navy mb-2">Universal Sizing Chart</h3>
                 <div className="bg-[#F0F2F5] border border-navy/10 rounded-2xl p-4 mb-4">
                   <p className="text-xs sm:text-sm text-navy/80 leading-relaxed font-medium">
-                    ✨ <strong>One Size Fits All (High-Stretch Material):</strong> Our dive apparel is crafted from 4-way ultra-stretch performance fabric designed to expand and conform seamlessly to any body profile from <strong>XS to M</strong>.
+                    ✨ <strong>One Size Fits Most (Adaptive Stretch):</strong> Crafted from 4-way ultra-stretch performance fabric. Choose <strong>Type A</strong> for sizes XS to M or <strong>Type B</strong> for sizes L to XXL.
                   </p>
                 </div>
               </div>
@@ -450,7 +485,8 @@ export default function ProductDetail() {
                 <table className="w-full text-left text-xs sm:text-sm border-collapse">
                   <thead>
                     <tr className="bg-[#F0F2F5] text-navy font-bold">
-                      <th className="p-3.5 rounded-l-xl">Size</th>
+                      <th className="p-3.5 rounded-l-xl">Option</th>
+                      <th className="p-3.5">Fits Sizes</th>
                       <th className="p-3.5">Chest / Bust (in)</th>
                       <th className="p-3.5">Waist (in)</th>
                       <th className="p-3.5">Height (cm)</th>
@@ -458,9 +494,8 @@ export default function ProductDetail() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-navy/10 text-navy/80">
-                    <tr><td className="p-3.5 font-bold">XS</td><td className="p-3.5">32 - 34</td><td className="p-3.5">26 - 28</td><td className="p-3.5">155 - 165</td><td className="p-3.5">48 - 58</td></tr>
-                    <tr><td className="p-3.5 font-bold">S</td><td className="p-3.5">35 - 37</td><td className="p-3.5">28 - 30</td><td className="p-3.5">162 - 172</td><td className="p-3.5">55 - 68</td></tr>
-                    <tr><td className="p-3.5 font-bold">M</td><td className="p-3.5">38 - 40</td><td className="p-3.5">31 - 33</td><td className="p-3.5">170 - 180</td><td className="p-3.5">65 - 78</td></tr>
+                    <tr><td className="p-3.5 font-bold text-navy">Type A</td><td className="p-3.5 font-semibold">XS to M</td><td className="p-3.5">32 - 40</td><td className="p-3.5">26 - 33</td><td className="p-3.5">155 - 180</td><td className="p-3.5">48 - 78</td></tr>
+                    <tr><td className="p-3.5 font-bold text-navy">Type B</td><td className="p-3.5 font-semibold">L to XXL</td><td className="p-3.5">41 - 48</td><td className="p-3.5">34 - 42</td><td className="p-3.5">175 - 195</td><td className="p-3.5">75 - 105</td></tr>
                   </tbody>
                 </table>
               </div>

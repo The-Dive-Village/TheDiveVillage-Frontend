@@ -4,7 +4,9 @@ import { motion, useReducedMotion, AnimatePresence } from 'framer-motion'
 import Button from '../components/Button'
 import SafeImage from '../components/SafeImage'
 import SectionReveal, { StaggerGrid, StaggerItem } from '../components/SectionReveal'
+import SEOHead from '../components/SEOHead'
 import { IMAGES, CAROUSEL_IMAGES } from '../utils/images'
+import { useReviews } from '../contexts/ReviewsContext'
 import img1 from '../assets/1.png'
 import img2 from '../assets/2.png'
 import img3 from '../assets/3.png'
@@ -82,9 +84,37 @@ const TESTIMONIALS = [
 export default function Home() {
   const reduce = useReducedMotion()
   const navigate = useNavigate()
+  const { approvedReviews, addReview } = useReviews()
+  const [showReviewModal, setShowReviewModal] = useState(false)
+  const [reviewSubmitted, setReviewSubmitted] = useState(false)
+  const [revName, setRevName] = useState('')
+  const [revRole, setRevRole] = useState('')
+  const [revText, setRevText] = useState('')
+  const [revRating, setRevRating] = useState(5)
+
+  const handleReviewSubmit = (e) => {
+    e.preventDefault()
+    if (!revName.trim() || !revText.trim()) return
+    addReview({ name: revName, role: revRole, text: revText, rating: revRating })
+    setReviewSubmitted(true)
+    setTimeout(() => {
+      setReviewSubmitted(false)
+      setShowReviewModal(false)
+      setRevName('')
+      setRevRole('')
+      setRevText('')
+      setRevRating(5)
+    }, 2800)
+  }
 
   return (
     <div className="overflow-x-hidden relative isolate pointer-events-none">
+      <SEOHead
+        title="The Dive Village | Premier Scuba Diving Center, PADI Courses & Ocean Gear"
+        description="Experience world-class scuba diving, PADI certifications, guided snorkeling tours, and freediving with The Dive Village. Explore ocean gear and sustainable apparel."
+        keywords="scuba diving center, PADI certification courses, guided snorkeling tours, freediving school, ocean apparel, dive gear shop, eco diving village"
+        canonicalUrl="https://thedivevillage.com/"
+      />
 
       {/* 1. HERO */}
       <section className="relative -mt-16 flex min-h-screen items-end justify-start pb-8 pt-32 sm:-mt-[72px] sm:pb-16 sm:pt-[120px] pointer-events-none">
@@ -152,13 +182,13 @@ export default function Home() {
               From your very first breath under the water to professional dive master certifications.
             </p>
           </SectionReveal>
+        </div>
+        <div className="w-full max-w-[98vw] 2xl:max-w-[1800px] mx-auto px-1 sm:px-2">
           <SectionReveal>
             <InteractiveHighlights />
           </SectionReveal>
         </div>
       </section>
-
-
 
       {/* 4. WHO CAN DIVE */}
       < section id="who-can-dive-section" className="relative py-24 sm:py-32 pointer-events-auto" >
@@ -202,7 +232,7 @@ export default function Home() {
               <StaggerItem key={i}>
                 <div className="h-full group cursor-pointer relative mt-8 flex flex-col">
 
-                  {/* Floating transparent PNG image - 3rd image sticks to right edge, hover triggers slow up/down float */}
+                  {/* Floating transparent PNG image */}
                   <img
                     src={item.img}
                     alt={item.t}
@@ -212,34 +242,28 @@ export default function Home() {
                       }`}
                   />
 
-                  {/* Actual Card Background & Content - Panel 1, 2, 3, 4 images as background */}
+                  {/* Actual Card Background & Content */}
                   <div className="h-full w-full rounded-2xl overflow-hidden border border-white/30 relative flex flex-col p-6 sm:p-8 pt-56 sm:pt-60 z-10 transition duration-500 group-hover:border-white/60 shadow-2xl justify-end">
 
-                    {/* Panel Background Image (panel1, panel2, panel3, panel4) - Stable background without zoom */}
                     <img
                       src={item.bgImg}
                       alt={item.t}
                       className="absolute inset-0 w-full h-full object-cover z-0 opacity-90"
                     />
 
-                    {/* Bottom gradient overlay restricted strictly to bottom half of panel */}
                     <div className="absolute bottom-0 inset-x-0 h-1/2 bg-gradient-to-t from-navy/95 via-navy/70 to-transparent z-0 pointer-events-none" />
 
-                    {/* Content wrapper - lowered and aligned */}
                     <div className="relative z-10 flex flex-col justify-end h-full mt-auto">
                       <h3 className="font-heading text-lg sm:text-xl font-bold text-white uppercase tracking-wider mb-3 leading-tight text-left drop-shadow-md min-h-[56px] flex items-end">
                         {item.t}
                       </h3>
 
-                      {/* Yellow divider */}
                       <div className="w-8 h-[3px] bg-[#FFCD00] mb-4 shadow-sm shrink-0"></div>
 
-                      {/* Description text - consistent height block */}
                       <p className="text-white/90 text-sm font-medium mb-6 leading-relaxed text-justify drop-shadow-sm min-h-[72px] flex items-start whitespace-pre-line">
                         {item.desc}
                       </p>
 
-                      {/* Button - centered across all cards with glassmorphic style and #FFCD00 hover */}
                       <div className="mt-auto shrink-0 pt-1 flex justify-center w-full">
                         <div className="inline-flex items-center gap-2 font-body text-xs font-bold uppercase tracking-widest bg-white/15 backdrop-blur-xl border border-white/30 text-white rounded-full px-5 py-2.5 transition-all duration-300 group-hover:bg-[#FFCD00] group-hover:text-navy group-hover:border-[#FFCD00] shadow-md cursor-pointer">
                           <span>Dive In</span>
@@ -258,10 +282,10 @@ export default function Home() {
         </div>
       </section >
 
-      {/* 7. TESTIMONIALS */}
+      {/* 7. TESTIMONIALS (COMMUNITY VOICES) */}
       <section className="relative py-24 sm:py-32 pointer-events-auto">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionReveal className="text-center max-w-2xl mx-auto mb-16">
+          <SectionReveal className="text-center max-w-2xl mx-auto mb-12">
             <span className="text-[#FFCD00] font-bold tracking-widest uppercase text-xs mb-3 block">
               Community Voices
             </span>
@@ -271,22 +295,33 @@ export default function Home() {
             <p className="mt-4 text-white/80 drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] text-justify">
               Don't just take our word for it.<br />Hear from the community of ocean lovers who have dived with us.
             </p>
+            <div className="mt-6">
+              <button
+                type="button"
+                onClick={() => setShowReviewModal(true)}
+                className="inline-flex items-center gap-2 rounded-full bg-[#FFCD00] text-navy font-bold text-xs uppercase tracking-widest px-6 py-3 transition hover:scale-105 shadow-md cursor-pointer"
+              >
+                <span>+ Write a Review</span>
+              </button>
+            </div>
           </SectionReveal>
 
-          <StaggerGrid className="grid md:grid-cols-3 gap-8">
-            {TESTIMONIALS.map((t, i) => (
-              <StaggerItem key={i}>
-                <div className="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20 shadow-card hover:-translate-y-2 transition duration-500">
-                  <div className="flex gap-1 mb-6">
-                    {[...Array(5)].map((_, j) => (
-                      <svg key={j} className="w-5 h-5 text-[#FFCD00]" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                      </svg>
-                    ))}
+          <StaggerGrid className="grid md:grid-cols-3 gap-8 items-stretch">
+            {approvedReviews.slice(0, 3).map((t, i) => (
+              <StaggerItem key={t.id || i} className="h-full">
+                <div className="h-full flex flex-col justify-between bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20 shadow-card hover:-translate-y-2 transition duration-500">
+                  <div>
+                    <div className="flex gap-1 mb-6">
+                      {[...Array(t.rating || 5)].map((_, j) => (
+                        <svg key={j} className="w-5 h-5 text-[#FFCD00]" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                      ))}
+                    </div>
+                    <p className="text-white/90 italic mb-8 leading-relaxed text-justify">"{t.text}"</p>
                   </div>
-                  <p className="text-white/90 italic mb-8 leading-relaxed text-justify">"{t.text}"</p>
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white/30">
+                  <div className="flex items-center gap-4 mt-auto">
+                    <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white/30 shrink-0">
                       <SafeImage src={t.image} alt={t.name} className="w-full h-full object-cover" />
                     </div>
                     <div>
@@ -299,7 +334,7 @@ export default function Home() {
             ))}
           </StaggerGrid>
         </div>
-      </section >
+      </section>
 
       {/* 6. AIRPORT TO AIRPORT - HOSPITALITY */}
       < section className="relative py-24 text-white sm:py-32 pointer-events-auto" >
@@ -426,39 +461,167 @@ export default function Home() {
       </div >
 
 
+      {/* Review Submission Modal */}
+      <AnimatePresence>
+        {showReviewModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md pointer-events-auto">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="relative w-full max-w-lg rounded-3xl bg-[#00223D] border border-white/20 p-6 sm:p-8 shadow-2xl text-white"
+            >
+              <button
+                type="button"
+                onClick={() => setShowReviewModal(false)}
+                className="absolute top-5 right-5 w-8 h-8 rounded-full bg-white/10 text-white/70 hover:text-white flex items-center justify-center font-bold text-lg cursor-pointer transition"
+              >
+                ✕
+              </button>
+              <h3 className="font-heading text-2xl font-bold mb-2">Write a Review</h3>
+              <p className="text-xs text-white/70 mb-6">
+                Share your diving experience with our community. Your review will be submitted for admin approval before being displayed on the site.
+              </p>
+
+              {reviewSubmitted ? (
+                <div className="rounded-2xl bg-emerald-500/20 border border-emerald-500/40 p-6 text-center text-emerald-200">
+                  <p className="text-lg font-bold mb-2">✓ Review Submitted!</p>
+                  <p className="text-xs leading-relaxed">
+                    Thank you! Your review has been submitted and is pending administrator approval before appearing on the website.
+                  </p>
+                </div>
+              ) : (
+                <form onSubmit={handleReviewSubmit} className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider mb-1 text-white/80">Your Name *</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g. Sarah Connor"
+                      value={revName}
+                      onChange={(e) => setRevName(e.target.value)}
+                      className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-2.5 text-sm text-white outline-none focus:border-[#FFCD00]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider mb-1 text-white/80">Diver Title / Role</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Open Water Diver"
+                      value={revRole}
+                      onChange={(e) => setRevRole(e.target.value)}
+                      className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-2.5 text-sm text-white outline-none focus:border-[#FFCD00]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider mb-1 text-white/80">Rating</label>
+                    <div className="flex gap-2">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <button
+                          key={star}
+                          type="button"
+                          onClick={() => setRevRating(star)}
+                          className="text-2xl cursor-pointer transition transform hover:scale-110"
+                        >
+                          <span className={star <= revRating ? 'text-[#FFCD00]' : 'text-white/30'}>★</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider mb-1 text-white/80">Review *</label>
+                    <textarea
+                      required
+                      rows="4"
+                      placeholder="Tell us about your dive experience..."
+                      value={revText}
+                      onChange={(e) => setRevText(e.target.value)}
+                      className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-2.5 text-sm text-white outline-none focus:border-[#FFCD00]"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="w-full rounded-full bg-[#FFCD00] text-navy font-bold py-3 text-sm transition hover:bg-white cursor-pointer mt-2"
+                  >
+                    Submit Review for Approval
+                  </button>
+                </form>
+              )}
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
       {/* CLOSING CTA WITH CAROUSEL */}
-      < section className="py-16 sm:py-24 bg-transparent pointer-events-auto" >
+      <section className="py-16 sm:py-24 bg-transparent pointer-events-auto">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionReveal>
             <AutoCarousel images={CAROUSEL_IMAGES} />
           </SectionReveal>
         </div>
-      </section >
-    </div >
+      </section>
+    </div>
   )
 }
 
 function InteractiveHighlights() {
   const navigate = useNavigate()
-  const [rotation, setRotation] = useState(0)
+  const [scrollPos, setScrollPos] = useState(0)
   const isDragging = useRef(false)
   const dragStartX = useRef(0)
-  const rotationAtStart = useRef(0)
+  const scrollAtStart = useRef(0)
   const isHovered = useRef(false)
+  const containerRef = useRef(null)
+  const [containerWidth, setContainerWidth] = useState(1400)
+
+  // Measure container width dynamically to guarantee exactly 5 cards fit on screen
+  useEffect(() => {
+    if (!containerRef.current) return
+    const updateWidth = () => {
+      if (containerRef.current) {
+        setContainerWidth(containerRef.current.clientWidth)
+      }
+    }
+    updateWidth()
+    const ro = new ResizeObserver(updateWidth)
+    ro.observe(containerRef.current)
+    return () => ro.disconnect()
+  }, [])
+
+  // Repeat HIGHLIGHTS_DATA 6 times for ultra-smooth continuous infinite looping
+  const repeatedData = [
+    ...HIGHLIGHTS_DATA,
+    ...HIGHLIGHTS_DATA,
+    ...HIGHLIGHTS_DATA,
+    ...HIGHLIGHTS_DATA,
+    ...HIGHLIGHTS_DATA,
+    ...HIGHLIGHTS_DATA
+  ]
+
+  const itemsInSet = HIGHLIGHTS_DATA.length
+  const cardGap = 16 // px gap between cards
+
+  // Responsively show 5 cards on desktop, 3 on tablet, 2 on mobile
+  const cardsToShow = containerWidth < 640 ? 2 : (containerWidth < 960 ? 3 : 5)
+  const cardWidth = Math.floor((containerWidth - (cardsToShow - 1) * cardGap) / cardsToShow)
+  const singleSetWidth = itemsInSet * (cardWidth + cardGap)
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    let animationFrameId
+    const step = () => {
       if (!isDragging.current && !isHovered.current) {
-        setRotation((prev) => prev + 0.45)
+        setScrollPos((prev) => prev - 1.35) // Increased left-to-right auto-scroll speed
       }
-    }, 30)
-    return () => clearInterval(interval)
+      animationFrameId = requestAnimationFrame(step)
+    }
+    animationFrameId = requestAnimationFrame(step)
+    return () => cancelAnimationFrame(animationFrameId)
   }, [])
 
   const handlePointerDown = (e) => {
     isDragging.current = true
     dragStartX.current = e.clientX
-    rotationAtStart.current = rotation
+    scrollAtStart.current = scrollPos
     try {
       e.currentTarget.setPointerCapture(e.pointerId)
     } catch { }
@@ -467,7 +630,7 @@ function InteractiveHighlights() {
   const handlePointerMove = (e) => {
     if (!isDragging.current) return
     const deltaX = e.clientX - dragStartX.current
-    setRotation(rotationAtStart.current + deltaX * 0.25)
+    setScrollPos(scrollAtStart.current - deltaX)
   }
 
   const handlePointerUp = (e) => {
@@ -484,7 +647,7 @@ function InteractiveHighlights() {
       e.preventDefault()
       e.stopPropagation()
     }
-    setRotation((prev) => prev - 36)
+    setScrollPos((prev) => prev - (cardWidth + cardGap))
   }
 
   const handleNext = (e) => {
@@ -492,7 +655,7 @@ function InteractiveHighlights() {
       e.preventDefault()
       e.stopPropagation()
     }
-    setRotation((prev) => prev + 36)
+    setScrollPos((prev) => prev + (cardWidth + cardGap))
   }
 
   const handleNavigate = (e, targetLink) => {
@@ -505,24 +668,28 @@ function InteractiveHighlights() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
+  // Calculate seamless looping modulo offset
+  let normalizedScroll = scrollPos % singleSetWidth
+  if (normalizedScroll < 0) {
+    normalizedScroll += singleSetWidth
+  }
+
   return (
     <div
       onMouseEnter={() => { isHovered.current = true }}
       onMouseLeave={() => { isHovered.current = false }}
-      className="relative w-full max-w-[90vw] lg:max-w-6xl mx-auto my-12 pointer-events-auto px-4 sm:px-8"
+      className="relative w-full max-w-[1800px] mx-auto my-4 pointer-events-auto px-1 sm:px-2"
     >
-
-
-      {/* Navigation Arrows positioned slightly closer to carousel */}
+      {/* Sleek Floating Arrow Buttons outside cards */}
       <button
         type="button"
         onClick={handlePrev}
         onMouseEnter={(e) => { e.stopPropagation(); isHovered.current = true }}
         onMouseLeave={(e) => { e.stopPropagation(); isHovered.current = true }}
-        className="carousel-arrow-btn absolute -left-3 sm:-left-8 lg:-left-14 xl:-left-18 top-1/2 -translate-y-1/2 z-40 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-navy/90 border border-white/40 text-white flex items-center justify-center shadow-2xl backdrop-blur-xl cursor-pointer select-none"
+        className="carousel-arrow-btn absolute -left-1 sm:left-2 lg:left-3 top-1/2 -translate-y-1/2 z-40 w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#00182D]/90 border border-[#FFCD00]/50 text-[#FFCD00] hover:bg-[#FFCD00] hover:text-[#00182D] shadow-[0_0_20px_rgba(0,0,0,0.6)] backdrop-blur-xl flex items-center justify-center cursor-pointer select-none transition-all duration-300 hover:scale-110 active:scale-95"
         aria-label="Previous Slide"
       >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
           <path d="M15 18l-6-6 6-6" />
         </svg>
       </button>
@@ -532,73 +699,66 @@ function InteractiveHighlights() {
         onClick={handleNext}
         onMouseEnter={(e) => { e.stopPropagation(); isHovered.current = true }}
         onMouseLeave={(e) => { e.stopPropagation(); isHovered.current = true }}
-        className="carousel-arrow-btn absolute -right-3 sm:-right-8 lg:-right-14 xl:-right-18 top-1/2 -translate-y-1/2 z-40 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-navy/90 border border-white/40 text-white flex items-center justify-center shadow-2xl backdrop-blur-xl cursor-pointer select-none"
+        className="carousel-arrow-btn absolute -right-1 sm:right-2 lg:right-3 top-1/2 -translate-y-1/2 z-40 w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#00182D]/90 border border-[#FFCD00]/50 text-[#FFCD00] hover:bg-[#FFCD00] hover:text-[#00182D] shadow-[0_0_20px_rgba(0,0,0,0.6)] backdrop-blur-xl flex items-center justify-center cursor-pointer select-none transition-all duration-300 hover:scale-110 active:scale-95"
         aria-label="Next Slide"
       >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
           <path d="M9 18l6-6-6-6" />
         </svg>
       </button>
 
+      {/* Main Track Viewport */}
       <div
+        ref={containerRef}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerUp}
-        className="perspective-[1500px] w-full h-[450px] sm:h-[550px] flex items-center justify-center overflow-visible cursor-grab active:cursor-grabbing touch-none select-none"
-        style={{
-          WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 1.5%, black 98.5%, transparent 100%)',
-          maskImage: 'linear-gradient(to right, transparent 0%, black 1.5%, black 98.5%, transparent 100%)'
-        }}
+        className="w-full py-4 overflow-hidden cursor-grab active:cursor-grabbing touch-none select-none"
       >
         <div
-          className="relative w-full h-full preserve-3d transition-transform ease-out"
+          className="flex"
           style={{
-            transform: `rotateY(${rotation}deg)`,
-            transitionDuration: isDragging.current ? '0ms' : '300ms'
+            gap: `${cardGap}px`,
+            transform: `translateX(-${normalizedScroll}px)`,
+            width: `${repeatedData.length * (cardWidth + cardGap)}px`
           }}
         >
-          {[...HIGHLIGHTS_DATA, ...HIGHLIGHTS_DATA].map((current, i) => (
+          {repeatedData.map((current, i) => (
             <div
               key={`${current.id}-${i}`}
-              className="absolute inset-0 flex items-center justify-center backface-hidden pointer-events-auto"
-              style={{
-                transform: `rotateY(${i * 36}deg) translateZ(clamp(280px, 55vw, 600px))`
-              }}
+              onClick={(e) => handleNavigate(e, current.link)}
+              style={{ width: `${cardWidth}px` }}
+              className="h-[380px] sm:h-[420px] flex-shrink-0 rounded-2xl overflow-hidden shadow-2xl relative border border-white/20 bg-[#001E36] group cursor-pointer pointer-events-auto transition-all duration-500 hover:border-[#FFCD00]/70 hover:shadow-[0_10px_30px_rgba(0,0,0,0.8)] hover:-translate-y-1"
             >
-              <div
-                onClick={(e) => handleNavigate(e, current.link)}
-                className="w-[260px] sm:w-[320px] h-[360px] sm:h-[420px] rounded-2xl overflow-hidden shadow-2xl relative border border-white/20 bg-navy/10 group cursor-pointer pointer-events-auto z-20"
-              >
-                <img
-                  src={current.image}
-                  alt={current.title}
-                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-navy/95 via-navy/40 to-transparent opacity-90 transition duration-300 pointer-events-none" />
+              <img
+                src={current.image}
+                alt={current.title}
+                className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110 opacity-90"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#001428] via-[#001428]/40 to-transparent pointer-events-none" />
 
-                <div className="absolute inset-0 p-6 sm:p-8 flex flex-col justify-end pointer-events-auto">
-                  <span className="inline-block text-accent font-heading font-bold uppercase tracking-widest text-[10px] mb-2 pointer-events-none">
-                    Featured
-                  </span>
-                  <h3 className="font-heading text-2xl sm:text-3xl font-bold text-white leading-tight mb-3 pointer-events-none">
-                    {current.title}
-                  </h3>
-                  <p className="text-white/80 text-xs sm:text-sm mb-6 line-clamp-3 pointer-events-none text-justify">
-                    {current.desc}
-                  </p>
-                  <button
-                    type="button"
-                    onClick={(e) => handleNavigate(e, current.link)}
-                    className="program-panel-btn py-2.5 px-4 text-sm w-full rounded-full shadow-md pointer-events-auto cursor-pointer relative z-30 flex items-center justify-center gap-2 group/btn"
-                  >
-                    <span>{current.btnText || 'Explore'}</span>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover/btn:translate-x-1">
-                      <path d="M5 12h14"></path>
-                      <path d="m12 5 7 7-7 7"></path>
-                    </svg>
-                  </button>
-                </div>
+              <div className="absolute inset-0 p-5 sm:p-6 flex flex-col justify-end pointer-events-auto">
+                <span className="inline-flex items-center self-start text-[#FFCD00] font-heading font-bold text-[10px] uppercase tracking-widest bg-[#FFCD00]/15 px-2.5 py-0.5 rounded-full border border-[#FFCD00]/30 mb-2 pointer-events-none">
+                  Featured
+                </span>
+                <h3 className="font-heading text-lg sm:text-xl font-bold text-white leading-tight mb-2 pointer-events-none drop-shadow-md">
+                  {current.title}
+                </h3>
+                <p className="text-white/85 text-xs line-clamp-2 leading-relaxed mb-4 pointer-events-none text-justify">
+                  {current.desc}
+                </p>
+                <button
+                  type="button"
+                  onClick={(e) => handleNavigate(e, current.link)}
+                  className="w-full py-2.5 px-4 rounded-full bg-[#FFCD00] text-[#001428] font-bold text-xs uppercase tracking-wider transition-all duration-300 hover:bg-white shadow-lg pointer-events-auto cursor-pointer relative z-30 flex items-center justify-center gap-2 group/btn"
+                >
+                  <span>{current.btnText || 'Explore'}</span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover/btn:translate-x-1">
+                    <path d="M5 12h14"></path>
+                    <path d="m12 5 7 7-7 7"></path>
+                  </svg>
+                </button>
               </div>
             </div>
           ))}
@@ -652,7 +812,7 @@ function AutoCarousel({ images, showContent = true }) {
               as={Link}
               to="/book-us"
               variant="secondary"
-              className="!bg-white !text-navy !border-0 hover:!bg-accent hover:!text-white shadow-sm transition-all duration-300 hover:scale-105"
+              className="!bg-white/20 !text-white !border !border-white/40 backdrop-blur-md hover:!bg-[#FFCD00] hover:!text-navy hover:!border-[#FFCD00] shadow-lg transition-all duration-300 hover:scale-105"
             >
               Book Your Dive
               <ArrowIcon />

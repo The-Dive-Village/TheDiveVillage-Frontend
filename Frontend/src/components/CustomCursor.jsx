@@ -100,15 +100,16 @@ export default function CustomCursor() {
 
       isHovered = !!activeProximityEl
 
-      const transformStr = `translate3d(${mouseX}px, ${mouseY}px, 0) rotate(45deg)`
+      const normalTransformStr = `translate3d(${mouseX}px, ${mouseY}px, 0) rotate(45deg)`
+      const hoverTransformStr = `translate3d(${mouseX}px, ${mouseY}px, 0) rotate(45deg) scaleX(-1)`
 
       if (normalRef.current) {
-        normalRef.current.style.transform = transformStr
+        normalRef.current.style.transform = normalTransformStr
         normalRef.current.style.opacity = isHidden ? '0' : isHovered ? '0' : '1'
       }
 
       if (hoverRef.current) {
-        hoverRef.current.style.transform = transformStr
+        hoverRef.current.style.transform = hoverTransformStr
         hoverRef.current.style.opacity = isHidden ? '0' : isHovered ? '1' : '0'
       }
 

@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { motion, AnimatePresence } from 'framer-motion'
 import { SHOP_PRODUCTS } from '../utils/products'
@@ -6,6 +6,7 @@ import { useCart } from '../hooks/useCart'
 import { useWishlist } from '../hooks/useWishlist'
 import { useAuth } from '../hooks/useAuth'
 import Button from '../components/Button'
+import SEOHead from '../components/SEOHead'
 import picture3 from '../assets/Picture3.png'
 import divingVid from '@video-optimized/diving.mp4'
 import pop1 from '../assets/Products/pop1.jpeg'
@@ -58,20 +59,26 @@ export default function Shop() {
   const filteredProducts = useMemo(() => {
     return SHOP_PRODUCTS.filter((product) => {
       const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory
-      const matchesSearch = searchQuery === '' || 
-        product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      const matchesSearch =
+        (product.title || product.name).toLowerCase().includes(searchQuery.toLowerCase()) ||
         product.description.toLowerCase().includes(searchQuery.toLowerCase())
       return matchesCategory && matchesSearch
     }).sort((a, b) => {
       if (sortBy === 'price-low') return a.price - b.price
       if (sortBy === 'price-high') return b.price - a.price
-      if (sortBy === 'rating') return (b.rating || 0) - (a.rating || 0)
+      if (sortBy === 'rating') return (b.rating || 5) - (a.rating || 5)
       return 0
     })
   }, [selectedCategory, searchQuery, sortBy])
 
   return (
-    <div className="bg-[#FAFAFA] min-h-screen text-navy font-body pt-24 sm:pt-32 pb-24">
+    <div className="bg-[#FAFAFA] min-h-screen text-navy font-body pt-24 sm:pt-32 pb-24 overflow-x-hidden">
+      <SEOHead
+        title="Dive Shop & Sustainable Marine Apparel | The Dive Village"
+        description="Shop high-performance ocean gear, eco-friendly dive apparel, UPF rashguards, and diving accessories. Designed for comfort, durability, and marine conservation."
+        keywords="scuba diving shop, dive gear store, ocean apparel, UPF rashguards, dive suits, eco-friendly swimsuits, dive village merch"
+        canonicalUrl="https://thedivevillage.com/shop"
+      />
       {/* Toast Notification */}
       <AnimatePresence>
         {addedToast && (
@@ -239,28 +246,47 @@ export default function Shop() {
 function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }) {
   const navigate = useNavigate()
   const [isHovered, setIsHovered] = useState(false)
-  const videoRef = useRef(null)
+  const [isLoaded, setIsLoaded] = useState(false)
+  const viewerRef = useRef(null)
 
-  const handleMouseEnter = () => {
-    setIsHovered(true)
-    if (videoRef.current) {
-      videoRef.current.play().catch(() => {})
+  useEffect(() => {
+    if (typeof window !== 'undefined' && !customElements.get('model-viewer')) {
+      const script = document.createElement('script')
+      script.type = 'module'
+      script.src = 'https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js'
+      document.head.appendChild(script)
     }
-  }
+  }, [])
 
-  const handleMouseLeave = () => {
-    setIsHovered(false)
-    if (videoRef.current) {
-      videoRef.current.pause()
-      videoRef.current.currentTime = 0
+  useEffect(() => {
+    let active = true
+    const el = viewerRef.current
+    if (el) {
+      if (el.loaded) setIsLoaded(true)
+      const handleLoad = () => {
+        if (active) setIsLoaded(true)
+      }
+      el.addEventListener('load', handleLoad)
     }
-  }
+    const fallbackTimer = setTimeout(() => {
+      if (active) setIsLoaded(true)
+    }, 300)
+    return () => {
+      active = false
+      if (el) {
+        el.removeEventListener('load', () => setIsLoaded(true))
+      }
+      clearTimeout(fallbackTimer)
+    }
+  }, [product.glb])
+
+  const show3D = isHovered
 
   return (
     <div
       onClick={() => navigate(`/shop/${product.id}`)}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       className="group rounded-[32px] bg-white border border-navy/5 p-6 shadow-card hover:shadow-float transition duration-300 flex flex-col justify-between cursor-pointer"
     >
       <div>
@@ -269,49 +295,43 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
             <img
               src={product.image}
               alt={product.title}
-              className={`max-h-full max-w-full object-contain transition duration-500 group-hover:scale-105 ${
-                isHovered && product.video ? 'opacity-0' : 'opacity-100'
+              className={`max-h-full max-w-full object-contain transition-all duration-300 group-hover:scale-105 ${
+                show3D ? 'opacity-0 pointer-events-none' : 'opacity-100'
               }`}
             />
-            {product.video && (
-              <video
-                ref={videoRef}
-                src={product.video}
-                muted
-                loop
-                playsInline
-                preload="metadata"
-                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
-                  isHovered ? 'opacity-100' : 'opacity-0 pointer-events-none'
+            {product.glb && (
+              <div
+                className={`absolute inset-0 w-full h-full z-10 bg-gradient-to-b from-[#F8FAFC] to-[#E2E8F0] flex items-center justify-center transition-opacity duration-300 ${
+                  show3D ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
                 }`}
-              />
+              >
+                <model-viewer
+                  ref={viewerRef}
+                  src={product.glb}
+                  alt={product.title}
+                  loading="eager"
+                  reveal="auto"
+                  auto-rotate
+                  auto-rotate-delay="0"
+                  rotation-per-second="150deg"
+                  camera-orbit="0deg 75deg 120%"
+                  camera-target="auto auto auto"
+                  disable-zoom
+                  interaction-prompt="none"
+                  shadow-intensity="1"
+                  shadow-softness="0.8"
+                  exposure="1.0"
+                  bounds="tight"
+                  style={{ width: '100%', height: '100%' }}
+                />
+              </div>
             )}
           </div>
           {product.tag && (
             <span className="absolute top-3 left-3 bg-white/95 backdrop-blur-md px-3 py-1 text-[11px] font-bold text-navy rounded-full shadow-sm z-10">
-              {programTag(product.tag)}
+              {product.tag}
             </span>
           )}
-          <button
-            type="button"
-            onClick={onToggleWishlist}
-            className="absolute top-3 right-3 w-9 h-9 rounded-full bg-navy border border-white/20 flex items-center justify-center shadow-md z-10 transition duration-200 hover:scale-110 active:scale-95 cursor-pointer"
-            aria-label="Wishlist"
-            title={isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}
-          >
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill={isWishlisted ? '#FFCD00' : 'none'}
-              stroke={isWishlisted ? '#FFCD00' : 'white'}
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-            </svg>
-          </button>
         </div>
 
         <div className="mb-4">
@@ -334,10 +354,32 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
 
       <div className="pt-4 border-t border-navy/10 flex items-center justify-between gap-3">
         <span className="text-[10px] text-emerald-600 font-bold">Inquire within</span>
-        <button onClick={(e) => onQuickAdd(product, e)} className="rounded-full bg-navy text-white px-5 py-2.5 text-xs font-bold hover:bg-accent hover:text-navy transition shadow-sm flex items-center gap-1.5 cursor-pointer">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" /><line x1="3" y1="6" x2="21" y2="6" /><path d="M16 10a4 4 0 01-8 0" /></svg>
-          Add
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={onToggleWishlist}
+            className="w-9 h-9 rounded-full bg-navy/10 hover:bg-navy border border-navy/20 text-navy hover:text-white flex items-center justify-center shadow-sm transition duration-200 hover:scale-110 active:scale-95 cursor-pointer shrink-0"
+            aria-label="Wishlist"
+            title={isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill={isWishlisted ? '#FFCD00' : 'none'}
+              stroke={isWishlisted ? '#FFCD00' : 'currentColor'}
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+            </svg>
+          </button>
+          <button onClick={(e) => onQuickAdd(product, e)} className="rounded-full bg-navy text-white px-5 py-2.5 text-xs font-bold hover:bg-accent hover:text-navy transition shadow-sm flex items-center gap-1.5 cursor-pointer">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" /><line x1="3" y1="6" x2="21" y2="6" /><path d="M16 10a4 4 0 01-8 0" /></svg>
+            Add
+          </button>
+        </div>
       </div>
     </div>
   )

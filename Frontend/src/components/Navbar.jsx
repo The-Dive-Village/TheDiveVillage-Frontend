@@ -56,8 +56,12 @@ export default function Navbar() {
   const bgSoft = isDarkBackground ? 'bg-transparent' : 'bg-transparent'
 
   return (
-    <header className="fixed top-4 left-0 right-0 z-[9999] w-full px-4 flex justify-center pointer-events-none transition-all duration-300">
-      <div className={`pointer-events-auto relative grid grid-cols-[1fr_auto_1fr] h-[56px] sm:h-[64px] lg:h-[70px] w-full max-w-[1400px] items-center px-4 lg:px-8 rounded-full shadow-float border border-white/10 ${location.pathname === '/' ? 'bg-navy/40 backdrop-blur-xl' : 'bg-[#003865]'}`}>
+    <header className={`fixed top-0 left-0 right-0 z-[9999] w-full border-b transition-all duration-300 ${
+      location.pathname === '/'
+        ? 'bg-navy/35 backdrop-blur-md border-white/15 shadow-md'
+        : 'bg-[#00223D]/95 backdrop-blur-xl border-white/15 shadow-lg'
+    }`}>
+      <div className="mx-auto grid grid-cols-[1fr_auto_1fr] h-[60px] sm:h-[68px] lg:h-[72px] w-full max-w-7xl items-center px-4 sm:px-6 lg:px-8">
         
         {/* Left Side: Home, Book Us, Contact Us */}
         <div className="flex items-center justify-start gap-4 lg:gap-8 pl-1 sm:pl-2">

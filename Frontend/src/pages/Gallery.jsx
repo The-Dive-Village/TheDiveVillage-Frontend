@@ -3,6 +3,7 @@ import { Link } from 'react-router'
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import Button from '../components/Button'
 import SafeImage from '../components/SafeImage'
+import SEOHead from '../components/SEOHead'
 import { IMAGES, CAROUSEL_IMAGES } from '../utils/images'
 
 import c1 from '../assets/Carosel/WhatsApp Image 2026-07-31 at 9.36.42 AM (1).jpeg'
@@ -173,6 +174,12 @@ export default function Gallery() {
 
   return (
     <div className="bg-[#FAFAFA] min-h-screen text-navy font-body pt-24 sm:pt-32 pb-24 overflow-x-hidden" style={{ textShadow: 'none' }}>
+      <SEOHead
+        title="Underwater Photography & Scuba Gallery | The Dive Village"
+        description="Explore our visual gallery of underwater expeditions, vibrant coral reefs, sea turtle encounters, and diving moments captured at The Dive Village."
+        keywords="underwater photography, scuba diving gallery, marine life photos, coral reef images, dive village photos"
+        canonicalUrl="https://thedivevillage.com/gallery"
+      />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         
         {/* 1. HEADER */}

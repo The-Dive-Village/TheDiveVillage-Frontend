@@ -312,6 +312,15 @@ export default function VideoSphereBackground() {
   const isAbout = location.pathname === '/about'
   const currentVideo = isAbout ? bookFile : videoFile
 
+  const isHiddenJoystickPath =
+    location.pathname.startsWith('/services') ||
+    location.pathname.startsWith('/scuba') ||
+    location.pathname.startsWith('/snorkeling') ||
+    location.pathname.startsWith('/surfing') ||
+    location.pathname === '/book-us' ||
+    location.pathname === '/login' ||
+    location.pathname === '/signup'
+
   return (
     <>
       <audio ref={audioRef} src={underwaterAudio} loop playsInline />
@@ -332,7 +341,7 @@ export default function VideoSphereBackground() {
           </Canvas>
         </div>
       </div>
-      {location.pathname !== '/book-us' && location.pathname !== '/login' && location.pathname !== '/signup' && <JoystickControl joystickVelocity={joystickVelocity} />}
+      {!isHiddenJoystickPath && <JoystickControl joystickVelocity={joystickVelocity} />}
       <AudioToggle isMuted={isMuted} onToggle={() => setIsMuted(!isMuted)} />
     </>
   )

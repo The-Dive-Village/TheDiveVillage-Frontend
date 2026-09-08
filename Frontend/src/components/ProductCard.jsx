@@ -54,30 +54,6 @@ export default function ProductCard({ product }) {
             <Badge tone={product.badgeTone || 'accent'}>{product.badge}</Badge>
           </div>
         )}
-        <button
-          type="button"
-          onClick={(e) => {
-            e.preventDefault()
-            e.stopPropagation()
-            toggleWishlist(product)
-          }}
-          className="absolute right-3 top-3 w-9 h-9 rounded-full bg-navy border border-white/20 flex items-center justify-center shadow-md z-10 transition duration-200 hover:scale-110 active:scale-95 cursor-pointer"
-          aria-label="Wishlist"
-          title={wishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}
-        >
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill={wishlisted ? '#FFCD00' : 'none'}
-            stroke={wishlisted ? '#FFCD00' : 'white'}
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-          </svg>
-        </button>
       </Link>
 
       <div className="flex flex-1 flex-col gap-3 p-4">
@@ -87,13 +63,39 @@ export default function ProductCard({ product }) {
           </h3>
           <p className="mt-1 text-sm text-white/70">{product.category}</p>
         </Link>
-        <div className="mt-auto flex items-center justify-between gap-3">
+        <div className="mt-auto flex items-center justify-between gap-2">
           <p className="font-heading text-lg font-bold text-white">
             {formatCurrency(product.price)}
           </p>
-          <Button type="button" onClick={onAdd} className="!px-4 !py-2 text-xs">
-            Add to Cart
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button type="button" onClick={onAdd} className="!px-4 !py-2 text-xs">
+              Add to Cart
+            </Button>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                toggleWishlist(product)
+              }}
+              className="w-8 h-8 rounded-full bg-navy/80 border border-white/30 flex items-center justify-center shadow-md transition duration-200 hover:scale-110 active:scale-95 cursor-pointer shrink-0"
+              aria-label="Wishlist"
+              title={wishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill={wishlisted ? '#FFCD00' : 'none'}
+                stroke={wishlisted ? '#FFCD00' : 'white'}
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
     </motion.article>

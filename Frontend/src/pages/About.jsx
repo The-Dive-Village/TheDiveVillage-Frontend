@@ -3,6 +3,7 @@ import { motion, useReducedMotion } from 'framer-motion'
 import Button from '../components/Button'
 import SafeImage from '../components/SafeImage'
 import SectionReveal, { StaggerGrid, StaggerItem } from '../components/SectionReveal'
+import SEOHead from '../components/SEOHead'
 import { IMAGES, CAROUSEL_IMAGES } from '../utils/images'
 import img2 from '../assets/2.png'
 import panelImg from '../assets/panel3.png'
@@ -84,6 +85,12 @@ export default function About() {
 
   return (
     <div className="bg-[#003865] min-h-screen font-body overflow-x-hidden pointer-events-none relative">
+      <SEOHead
+        title="About Us | Certified PADI Scuba Instructors & Ocean Sanctuary | The Dive Village"
+        description="Discover the story behind The Dive Village. Dedicated to safety, marine conservation, PADI diving excellence, and building an inclusive underwater community."
+        keywords="about the dive village, PADI certified instructors, marine conservation dive center, eco scuba diving, ocean community"
+        canonicalUrl="https://thedivevillage.com/about"
+      />
       
       {/* FULL-SCREEN 360 VIDEO BACKGROUND (diving.mp4 ONLY) */}
       <div className="fixed inset-0 w-full h-full z-0 pointer-events-none overflow-hidden">

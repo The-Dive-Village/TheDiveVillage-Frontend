@@ -34,8 +34,12 @@ export default function Preloader({ onComplete }) {
   const [progress, setProgress] = useState(0)
 
   useEffect(() => {
+<<<<<<< Updated upstream
     // 4.0 seconds total duration for a relaxed, deliberate, premium transition
     const totalDuration = 4000
+=======
+    const totalDuration = 2000 // 2.0 seconds
+>>>>>>> Stashed changes
     const intervalTime = 30
     const increment = 100 / (totalDuration / intervalTime)
 
