@@ -17,14 +17,14 @@ import imgCapBack from '../assets/Products/capb.png'
 import imgBagFront from '../assets/Products/bagf.png'
 import imgBagBack from '../assets/Products/bagb.png'
 
-import glbBag from '../assets/3d model/backpack 3d model.glb'
-import glbCap from '../assets/3d model/baseball cap 3d model.glb'
-import glbUnisexShorts from '../assets/3d model/black dive shorts 3d model.glb'
-import glbWomensPants from '../assets/3d model/black leggings 3d model.glb'
-import glbUnisexShirt from '../assets/3d model/black long sleeve shirt 3d model.glb'
-import glbFullSuit from '../assets/3d model/black wetsuit 3d model.glb'
-import glbWomensShirt from '../assets/3d model/long sleeve shirt 3d model.glb'
-import glbWomensStrap from '../assets/3d model/wetsuit 3d model.glb'
+import glbBag from '../assets/3d model/backpack 3d model.glb?url'
+import glbCap from '../assets/3d model/baseball cap 3d model.glb?url'
+import glbUnisexShorts from '../assets/3d model/black dive shorts 3d model.glb?url'
+import glbWomensPants from '../assets/3d model/black leggings 3d model.glb?url'
+import glbUnisexShirt from '../assets/3d model/black long sleeve shirt 3d model.glb?url'
+import glbFullSuit from '../assets/3d model/black wetsuit 3d model.glb?url'
+import glbWomensShirt from '../assets/3d model/long sleeve shirt 3d model.glb?url'
+import glbWomensStrap from '../assets/3d model/wetsuit 3d model.glb?url'
 
 export const SHOP_PRODUCTS = [
   {

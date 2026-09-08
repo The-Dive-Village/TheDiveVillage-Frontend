@@ -132,25 +132,18 @@ function VideoSphere({ videoSrc, isMuted, joystickVelocity }) {
       const testimonialsEl = document.getElementById('testimonials-section')
 
       if (isHome) {
-        const fadeStart = window.innerHeight * 0.85
-        const fadeEnd = window.innerHeight * 0.25
+        const triggerThreshold = window.innerHeight * 0.7
 
         if (diveSectionEl) {
           const diveRect = diveSectionEl.getBoundingClientRect()
-          if (diveRect.top < fadeStart) {
-            targetOpacity2.current = diveRect.top < fadeEnd ? 1 : 1 - (diveRect.top - fadeEnd) / (fadeStart - fadeEnd)
-          } else {
-            targetOpacity2.current = 0
-          }
+          // Automatically blend 2nd video when reaching Who Can Dive section
+          targetOpacity2.current = diveRect.top < triggerThreshold ? 1 : 0
         }
 
         if (testimonialsEl) {
           const testRect = testimonialsEl.getBoundingClientRect()
-          if (testRect.top < fadeStart) {
-            targetOpacity3.current = testRect.top < fadeEnd ? 1 : 1 - (testRect.top - fadeEnd) / (fadeStart - fadeEnd)
-          } else {
-            targetOpacity3.current = 0
-          }
+          // Automatically blend 3rd video when reaching Testimonials section
+          targetOpacity3.current = testRect.top < triggerThreshold ? 1 : 0
         }
       }
 
@@ -252,13 +245,13 @@ function VideoSphere({ videoSrc, isMuted, joystickVelocity }) {
       if (meshRef2.current && isHome) {
         meshRef2.current.rotation.y = meshRef.current.rotation.y - (Math.PI / 2.5)
         meshRef2.current.rotation.x = meshRef.current.rotation.x - (Math.PI / 1.68)
-        meshRef2.current.material.opacity += (targetOpacity2.current - meshRef2.current.material.opacity) * delta * 5
+        meshRef2.current.material.opacity += (targetOpacity2.current - meshRef2.current.material.opacity) * delta * 2.5
       }
 
       if (meshRef3.current && isHome) {
         meshRef3.current.rotation.y = meshRef.current.rotation.y
         meshRef3.current.rotation.x = meshRef.current.rotation.x + (Math.PI / 10)
-        meshRef3.current.material.opacity += (targetOpacity3.current - meshRef3.current.material.opacity) * delta * 5
+        meshRef3.current.material.opacity += (targetOpacity3.current - meshRef3.current.material.opacity) * delta * 2.5
       }
     }
   })
