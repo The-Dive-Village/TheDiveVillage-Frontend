@@ -110,7 +110,7 @@ function Card({ program }) {
         {/* Accent Bar */}
         <div className="w-8 h-1 bg-accent rounded-full mb-4"></div>
 
-        <p className="text-white/80 text-sm leading-relaxed font-medium mb-8 flex-1 text-justify">
+        <p className="text-white/80 text-sm leading-relaxed font-medium mb-8 flex-1 text-left">
           {program.desc}
         </p>
 

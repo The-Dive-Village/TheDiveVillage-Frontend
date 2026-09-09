@@ -24,7 +24,7 @@ const HIGHLIGHTS_DATA = [
   {
     id: 'scuba',
     title: 'Introductory Programs',
-    desc: 'Experience scuba safely in shallow water with professional supervision.',
+    desc: 'Experience scuba safely in shallow water alongside our professionals.',
     image: IMAGES.scubaHero,
     link: '/services',
     btnText: 'Explore'
@@ -32,7 +32,7 @@ const HIGHLIGHTS_DATA = [
   {
     id: 'snorkeling',
     title: 'Guided Snorkeling',
-    desc: 'Discover snorkeling and explore the ocean up close. The ocean welcomes all.',
+    desc: 'Discover snorkeling and explore the ocean up close with our expert guides!',
     image: IMAGES.snorkelingHero,
     link: '/services',
     btnText: 'Explore'
@@ -40,7 +40,7 @@ const HIGHLIGHTS_DATA = [
   {
     id: 'courses',
     title: 'Certified Courses',
-    desc: 'From your very first breath under the water to professional divemaster certifications.',
+    desc: 'From your first breath underwater to professional divemaster courses.',
     image: IMAGES.hero,
     link: '/services',
     btnText: 'Explore'
@@ -48,7 +48,7 @@ const HIGHLIGHTS_DATA = [
   {
     id: 'surfing',
     title: 'Freediving',
-    desc: 'Breath-hold freediving to explore the ocean with just your natural abilities.',
+    desc: 'Explore the ocean with free diving and rely on your natural abilities.',
     image: IMAGES.surfingHero,
     link: '/services',
     btnText: 'Explore'
@@ -56,7 +56,7 @@ const HIGHLIGHTS_DATA = [
   {
     id: 'products',
     title: 'Flexible Fun Dives',
-    desc: 'Every experience is a step deeper into the world of the ocean.',
+    desc: 'Every single experience is one step deeper into the world of the ocean.',
     image: IMAGES.gear1,
     link: '/services',
     btnText: 'Explore'
@@ -744,29 +744,29 @@ function InteractiveHighlights() {
               key={`${current.id}-${i}`}
               onClick={(e) => handleNavigate(e, current.link)}
               style={{ width: `${cardWidth}px` }}
-              className="h-[380px] sm:h-[420px] flex-shrink-0 rounded-2xl overflow-hidden shadow-2xl relative border border-white/20 bg-[#001E36] group cursor-pointer pointer-events-auto transition-all duration-500 hover:border-[#FFCD00]/70 hover:shadow-[0_10px_30px_rgba(0,0,0,0.8)] hover:-translate-y-1"
+              className="h-[410px] sm:h-[450px] flex-shrink-0 rounded-[28px] overflow-hidden shadow-2xl relative border border-white/20 bg-[#001E36] group cursor-pointer pointer-events-auto transition-all duration-500 hover:border-[#FFCD00]/70 hover:shadow-[0_12px_36px_rgba(0,0,0,0.85)] hover:-translate-y-1.5"
             >
               <img
                 src={current.image}
                 alt={current.title}
                 className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110 opacity-90"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#001428] via-[#001428]/40 to-transparent pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#001224] via-[#001428]/60 to-transparent pointer-events-none" />
 
-              <div className="absolute inset-0 p-5 sm:p-6 flex flex-col justify-end pointer-events-auto">
-                <span className="inline-flex items-center self-start text-[#FFCD00] font-heading font-bold text-[10px] uppercase tracking-widest bg-[#FFCD00]/15 px-2.5 py-0.5 rounded-full border border-[#FFCD00]/30 mb-2 pointer-events-none">
+              <div className="absolute inset-0 p-5 sm:p-6 lg:p-7 flex flex-col justify-end pointer-events-auto">
+                <span className="inline-flex items-center self-start text-[#FFCD00] font-heading font-bold text-[10px] uppercase tracking-widest bg-[#FFCD00]/15 px-3 py-1 rounded-full border border-[#FFCD00]/30 mb-2.5 pointer-events-none shadow-sm backdrop-blur-md">
                   Featured
                 </span>
-                <h3 className="font-heading text-lg sm:text-xl font-bold text-white leading-tight mb-2 pointer-events-none drop-shadow-md">
+                <h3 className="font-heading text-xl sm:text-2xl font-bold text-white leading-tight mb-2 pointer-events-none drop-shadow-md">
                   {current.title}
                 </h3>
-                <p className="text-white/85 text-xs line-clamp-2 leading-relaxed mb-4 pointer-events-none text-justify">
+                <p className="text-white/85 text-xs sm:text-[13px] line-clamp-2 leading-relaxed mb-5 pointer-events-none text-left">
                   {current.desc}
                 </p>
                 <button
                   type="button"
                   onClick={(e) => handleNavigate(e, current.link)}
-                  className="w-full py-2.5 px-4 rounded-full bg-white/20 backdrop-blur-md border border-white/40 text-white font-bold text-xs uppercase tracking-wider transition-all duration-300 hover:bg-[#FFCD00] hover:text-[#001428] hover:border-[#FFCD00] shadow-lg pointer-events-auto cursor-pointer relative z-30 flex items-center justify-center gap-2 group/btn"
+                  className="w-full py-3 px-5 rounded-full bg-white/20 backdrop-blur-md border border-white/40 text-white font-bold text-xs uppercase tracking-wider transition-all duration-300 hover:bg-[#FFCD00] hover:text-[#001428] hover:border-[#FFCD00] shadow-lg pointer-events-auto cursor-pointer relative z-30 flex items-center justify-center gap-2 group/btn"
                 >
                   <span>{current.btnText || 'Explore'}</span>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover/btn:translate-x-1">

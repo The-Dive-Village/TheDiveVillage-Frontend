@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import cursorVideo from '../assets/cursor.webm'
 
 export default function CustomCursor() {
@@ -67,6 +68,15 @@ export default function CustomCursor() {
 
     const onMouseEnter = () => {
       isHidden = false
+<<<<<<< Updated upstream
+=======
+    }
+
+    const updatePosition = () => {
+      // Tilted dynamically (rotate 38deg) for a natural swimming dive angle
+      const transformStr = `translate3d(${mouseX}px, ${mouseY}px, 0) rotate(38deg)`
+
+>>>>>>> Stashed changes
       if (cursorRef.current) {
         cursorRef.current.style.opacity = '1'
       }
@@ -94,12 +104,12 @@ export default function CustomCursor() {
     return null
   }
 
-  return (
+  const cursorNode = (
     <div
       ref={cursorRef}
-      className="pointer-events-none fixed top-0 left-0 z-[10000] will-change-transform drop-shadow-md"
+      className="pointer-events-none fixed top-0 left-0 z-[9999999] will-change-transform drop-shadow-md"
       style={{
-        transform: 'translate3d(-100px, -100px, 0) rotate(20deg)',
+        transform: 'translate3d(-100px, -100px, 0) rotate(38deg)',
         opacity: 0,
         transition: 'opacity 0.12s ease-out',
       }}
@@ -115,4 +125,10 @@ export default function CustomCursor() {
       />
     </div>
   )
+
+  if (typeof document !== 'undefined') {
+    return createPortal(cursorNode, document.body)
+  }
+
+  return cursorNode
 }
