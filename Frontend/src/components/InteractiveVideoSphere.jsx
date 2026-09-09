@@ -2,24 +2,45 @@ import { useState, useEffect, Suspense, useRef } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls, useVideoTexture } from '@react-three/drei'
 import * as THREE from 'three'
-import videoFile from '@video-optimized/Hero.mp4'
+import videoFile from '../assets/Hero(1).mp4'
+
+function getOrCreateDomVideoContainer() {
+  let container = document.getElementById('interactive-video-dom-root')
+  if (!container) {
+    container = document.createElement('div')
+    container.id = 'interactive-video-dom-root'
+    container.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;opacity:0.001;pointer-events:none;overflow:hidden;z-index:-99999;'
+    document.body.appendChild(container)
+  }
+  return container
+}
 
 function useDirectVideoTexture(src) {
   const [texture, setTexture] = useState(null)
   const videoRef = useRef(null)
 
   useEffect(() => {
-    if (!src) return
+    if (!src) {
+      setTexture(null)
+      return
+    }
 
+    const domContainer = getOrCreateDomVideoContainer()
     const video = document.createElement('video')
     video.src = src
     video.crossOrigin = 'anonymous'
     video.playsInline = true
-    video.setAttribute('webkit-playsinline', 'true')
+    video.setAttribute('webkit-playsinline', '')
+    video.setAttribute('playsinline', '')
+    video.setAttribute('muted', '')
     video.muted = true
+    video.defaultMuted = true
     video.loop = true
     video.autoplay = true
     video.preload = 'auto'
+    video.setAttribute('fetchpriority', 'high')
+    
+    domContainer.appendChild(video)
     videoRef.current = video
 
     const vidTexture = new THREE.VideoTexture(video)
@@ -28,16 +49,24 @@ function useDirectVideoTexture(src) {
     vidTexture.magFilter = THREE.LinearFilter
     vidTexture.generateMipmaps = false
 
+    const updateTexture = () => {
+      vidTexture.needsUpdate = true
+    }
+
+    video.addEventListener('loadeddata', updateTexture)
+    video.addEventListener('playing', updateTexture)
+    video.addEventListener('timeupdate', updateTexture)
+
     const playPromise = video.play()
     if (playPromise !== undefined) {
-      playPromise.catch((err) => {
+      playPromise.then(updateTexture).catch((err) => {
         console.warn('Video autoplay deferred:', err?.message || err)
       })
     }
 
     const handleUserInteraction = () => {
       if (videoRef.current && videoRef.current.paused) {
-        videoRef.current.play().catch(() => {})
+        videoRef.current.play().then(updateTexture).catch(() => {})
       }
     }
     window.addEventListener('pointerdown', handleUserInteraction, { once: true })
@@ -48,9 +77,15 @@ function useDirectVideoTexture(src) {
     return () => {
       window.removeEventListener('pointerdown', handleUserInteraction)
       window.removeEventListener('touchstart', handleUserInteraction)
+      video.removeEventListener('loadeddata', updateTexture)
+      video.removeEventListener('playing', updateTexture)
+      video.removeEventListener('timeupdate', updateTexture)
       video.pause()
       video.removeAttribute('src')
       video.load()
+      if (video.parentNode) {
+        video.parentNode.removeChild(video)
+      }
       vidTexture.dispose()
       videoRef.current = null
     }

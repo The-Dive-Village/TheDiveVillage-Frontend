@@ -7,7 +7,7 @@ import SEOHead from '../components/SEOHead'
 import { IMAGES, CAROUSEL_IMAGES } from '../utils/images'
 import img2 from '../assets/2.png'
 import panelImg from '../assets/panel3.png'
-import divingVid from '@video-optimized/diving.mp4'
+import divingVid from '../assets/Diving(1).mp4'
 
 const SAFETY_PROMISES = [
   {
@@ -92,7 +92,7 @@ export default function About() {
         canonicalUrl="https://thedivevillage.com/about"
       />
       
-      {/* FULL-SCREEN 360 VIDEO BACKGROUND (diving.mp4 ONLY) */}
+      {/* FULL-SCREEN 360 VIDEO BACKGROUND (Diving(1).mp4 ONLY) */}
       <div className="fixed inset-0 w-full h-full z-0 pointer-events-none overflow-hidden">
         <video
           src={divingVid}
@@ -328,7 +328,7 @@ export default function About() {
           </div>
         </div>
 
-        {/* 2.5 CALL TO ACTION (CTA) — ONLY DIVING.MP4 USED */}
+        {/* 2.5 CALL TO ACTION (CTA) — ONLY DIVING(1).MP4 USED */}
         <div className="rounded-[40px] text-white p-10 sm:p-16 lg:p-20 relative overflow-hidden shadow-lift group bg-[#003865]">
           <video
             src={divingVid}

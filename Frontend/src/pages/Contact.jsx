@@ -4,7 +4,7 @@ import { motion, useReducedMotion } from 'framer-motion'
 import PhoneInput from 'react-phone-number-input'
 import 'react-phone-number-input/style.css'
 import { IMAGES, CAROUSEL_IMAGES } from '../utils/images'
-import bookVideo from '@video-optimized/Book.mp4'
+import bookVideo from '../assets/Book(2).mp4'
 import InteractiveVideoSphere from '../components/InteractiveVideoSphere'
 import SEOHead from '../components/SEOHead'
 

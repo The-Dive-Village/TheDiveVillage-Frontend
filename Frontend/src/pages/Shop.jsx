@@ -9,7 +9,7 @@ import Button from '../components/Button'
 import SEOHead from '../components/SEOHead'
 import CustomerReviews from '../components/CustomerReviews'
 import picture3 from '../assets/Picture3.png'
-import divingVid from '@video-optimized/diving.mp4'
+import divingVid from '../assets/Diving(1).mp4'
 import pop1 from '../assets/Products/pop1.jpeg'
 import pop2 from '../assets/Products/pop2.jpeg'
 
