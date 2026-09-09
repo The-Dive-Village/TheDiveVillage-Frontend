@@ -3,6 +3,7 @@ import { Link } from 'react-router'
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import Button from '../components/Button'
 import SafeImage from '../components/SafeImage'
+import LazyVideo from '../components/LazyVideo'
 import SEOHead from '../components/SEOHead'
 import { GALLERY_ITEMS, GALLERY_CATEGORIES } from '../utils/galleryData'
 
@@ -105,13 +106,12 @@ export default function Gallery() {
               onClick={() => openLightbox(idx)}
             >
               {item.type === 'video' ? (
-                <video
+                <LazyVideo
                   src={item.src}
                   muted
                   loop
                   playsInline
                   autoPlay
-                  preload="metadata"
                   className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                 />
               ) : (

@@ -48,7 +48,7 @@ function useDirectVideoTexture(src, playbackRate = 0.5, priority = false) {
     video.style.cssText = 'width:100%;height:100%;object-fit:cover;pointer-events:none;'
     video.loop = true
     video.autoplay = true
-    video.preload = 'auto'
+    video.preload = priority ? 'auto' : 'none'
     video.playbackRate = playbackRate
     if (priority) {
       video.setAttribute('fetchpriority', 'high')
@@ -114,10 +114,10 @@ function useDirectVideoTexture(src, playbackRate = 0.5, priority = false) {
       window.removeEventListener('pointerdown', handleUserInteraction)
       window.removeEventListener('touchstart', handleUserInteraction)
       document.removeEventListener('visibilitychange', handleVisibilityChange)
-      video.removeEventListener('playing', onPlaying)
-      video.removeEventListener('loadeddata', onPlaying)
-      video.removeEventListener('canplay', onPlaying)
-      video.removeEventListener('timeupdate', onTimeUpdate)
+      video.removeEventListener('playing', markReady)
+      video.removeEventListener('loadeddata', markReady)
+      video.removeEventListener('canplay', markReady)
+      video.removeEventListener('timeupdate', markReady)
       video.pause()
       video.removeAttribute('src')
       video.load()

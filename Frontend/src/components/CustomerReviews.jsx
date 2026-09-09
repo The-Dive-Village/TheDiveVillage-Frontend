@@ -5,6 +5,7 @@ import merch2 from '../assets/New folder/merch2.jpg'
 import merch3 from '../assets/New folder/merch3.jpg'
 import merch4 from '../assets/New folder/merch4.jpg'
 import merch5 from '../assets/New folder/merch 5.mp4'
+import LazyVideo from './LazyVideo'
 
 export const MERCH_MEDIA_ITEMS = [
   { id: 'm1', src: merch1, type: 'image', alt: 'Customer Merch 1' },
@@ -39,7 +40,7 @@ export default function CustomerReviews({ className = '' }) {
           >
             {item.type === 'video' ? (
               <div className="w-full h-full relative">
-                <video
+                <LazyVideo
                   src={item.src}
                   autoPlay
                   loop

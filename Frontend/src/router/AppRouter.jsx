@@ -4,6 +4,7 @@ import PublicLayout from '../layouts/PublicLayout'
 import DashboardLayout from '../layouts/DashboardLayout'
 import AdminLayout from '../layouts/AdminLayout'
 import ProtectedRoute from './ProtectedRoute'
+import ErrorBoundary from '../components/ErrorBoundary'
 
 // Initial home page is direct for fast startup
 import Home from '../pages/Home'
@@ -37,9 +38,11 @@ const AdminContent = lazy(() => import('../pages/admin/Content'))
 
 function PageLiquid({ children }) {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-transparent" />}>
-      {children}
-    </Suspense>
+    <ErrorBoundary>
+      <Suspense fallback={<div className="min-h-screen bg-transparent" />}>
+        {children}
+      </Suspense>
+    </ErrorBoundary>
   )
 }
 

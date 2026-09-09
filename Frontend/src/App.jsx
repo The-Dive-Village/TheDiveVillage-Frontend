@@ -10,13 +10,16 @@ import CustomCursor from './components/CustomCursor'
 import Preloader from './components/Preloader'
 import ScrollToTop from './components/ScrollToTop'
 
+import ErrorBoundary from './components/ErrorBoundary'
+
 export default function App() {
   const [isLoading, setIsLoading] = useState(true)
 
   return (
-    <BrowserRouter>
-      <ScrollToTop />
-      <AuthProvider>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <ScrollToTop />
+        <AuthProvider>
         <CartProvider>
           <WishlistProvider>
             <ReviewsProvider>
@@ -30,5 +33,6 @@ export default function App() {
         </CartProvider>
       </AuthProvider>
     </BrowserRouter>
+  </ErrorBoundary>
   )
 }
