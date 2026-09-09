@@ -5,7 +5,18 @@ import { fileURLToPath, URL } from 'node:url'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  assetsInclude: ['**/*.mp3', '**/*.mpeg', '**/*.mp4', '**/*.wav', '**/*.webm', '**/*.glb', '**/*.GLB'],
+  assetsInclude: [
+    '**/*.mp3',
+    '**/*.mpeg',
+    '**/*.mp4',
+    '**/*.MP4',
+    '**/*.mov',
+    '**/*.MOV',
+    '**/*.wav',
+    '**/*.webm',
+    '**/*.glb',
+    '**/*.GLB'
+  ],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
