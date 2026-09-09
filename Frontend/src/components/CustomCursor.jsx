@@ -68,15 +68,6 @@ export default function CustomCursor() {
 
     const onMouseEnter = () => {
       isHidden = false
-<<<<<<< Updated upstream
-=======
-    }
-
-    const updatePosition = () => {
-      // Tilted dynamically (rotate 38deg) for a natural swimming dive angle
-      const transformStr = `translate3d(${mouseX}px, ${mouseY}px, 0) rotate(38deg)`
-
->>>>>>> Stashed changes
       if (cursorRef.current) {
         cursorRef.current.style.opacity = '1'
       }
