@@ -5,29 +5,77 @@ import { subscribeHeroVideoReady, getHeroVideoReady } from '../utils/mediaReadyM
 
 function DiverAnimation({ src, className }) {
   const videoRef = useRef(null)
+  const canvasRef = useRef(null)
 
   useEffect(() => {
     const video = videoRef.current
-    if (!video) return
+    const canvas = canvasRef.current
+    if (!video || !canvas) return
+
     video.muted = true
     video.defaultMuted = true
     video.setAttribute('muted', '')
     video.setAttribute('playsinline', '')
     video.setAttribute('webkit-playsinline', '')
     video.play().catch(() => {})
+
+    const ctx = canvas.getContext('2d', { willReadFrequently: true })
+    let animId
+    let isRunning = true
+
+    const render = () => {
+      if (!isRunning) return
+      if (video.readyState >= 2) {
+        const w = video.videoWidth || 640
+        const h = video.videoHeight || 360
+        if (canvas.width !== w || canvas.height !== h) {
+          canvas.width = w
+          canvas.height = h
+        }
+        ctx.drawImage(video, 0, 0, w, h)
+        const frame = ctx.getImageData(0, 0, w, h)
+        const data = frame.data
+        const len = data.length
+        for (let i = 0; i < len; i += 4) {
+          const r = data[i]
+          const g = data[i + 1]
+          const b = data[i + 2]
+          const minVal = Math.min(r, g, b)
+          // Cleanly key out background
+          if (minVal >= 225) {
+            data[i + 3] = 0
+          } else if (minVal > 180) {
+            // Anti-aliased feathering on edges
+            const factor = (225 - minVal) / 45
+            data[i + 3] = Math.round(data[i + 3] * Math.max(0, Math.min(1, factor)))
+          }
+        }
+        ctx.putImageData(frame, 0, 0)
+      }
+      animId = requestAnimationFrame(render)
+    }
+
+    animId = requestAnimationFrame(render)
+
+    return () => {
+      isRunning = false
+      if (animId) cancelAnimationFrame(animId)
+    }
   }, [src])
 
   return (
-    <video
-      ref={videoRef}
-      src={src}
-      autoPlay
-      loop
-      muted
-      playsInline
-      className={`${className} mix-blend-multiply pointer-events-none`}
-      style={{ filter: 'contrast(1.45) brightness(1.06)' }}
-    />
+    <>
+      <video
+        ref={videoRef}
+        src={src}
+        autoPlay
+        loop
+        muted
+        playsInline
+        style={{ position: 'fixed', left: '-9999px', top: '-9999px', width: '1px', height: '1px', opacity: 0, pointerEvents: 'none' }}
+      />
+      <canvas ref={canvasRef} className={`${className} pointer-events-none`} />
+    </>
   )
 }
 
@@ -44,8 +92,8 @@ export default function Preloader({ onComplete }) {
 
   useEffect(() => {
     const startTime = performance.now()
-    const baseTargetDuration = 1800 // Fast and balanced premium animation duration (~1.8s)
-    const maxSafetyTimeout = 3200 // Safety cap ensuring user is never held too long
+    const baseTargetDuration = 3600 // Smooth, relaxed duration (~3.6s)
+    const maxSafetyTimeout = 5000 // Safety cap ensuring user is never held too long
     let animationFrameId
     let completed = false
 
@@ -55,7 +103,7 @@ export default function Preloader({ onComplete }) {
 
       let targetProgress
       if (isVideoReady) {
-        // When video is ready, progress scales smoothly to 100% by baseTargetDuration
+        // Smoothly progress to 100% by baseTargetDuration
         targetProgress = Math.min(100, (elapsed / baseTargetDuration) * 100)
       } else {
         // If still buffering video, smoothly ease up to 90% and hold until ready
@@ -68,7 +116,7 @@ export default function Preloader({ onComplete }) {
         completed = true
         setTimeout(() => {
           if (onComplete) onComplete()
-        }, 50)
+        }, 250)
         return
       }
 
@@ -85,7 +133,7 @@ export default function Preloader({ onComplete }) {
   return (
     <motion.div
       initial={{ y: 0 }}
-      exit={{ y: '-100%', transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] } }}
+      exit={{ y: '-100%', transition: { duration: 0.75, ease: [0.76, 0, 0.24, 1] } }}
       className="fixed inset-0 z-[99999] bg-white flex flex-col items-center justify-center p-6 select-none font-body shadow-2xl"
     >
       {/* Diver Graphic / Animation */}
