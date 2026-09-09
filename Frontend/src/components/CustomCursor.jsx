@@ -14,38 +14,15 @@ export default function CustomCursor() {
     let isHidden = true
     let isHoveringInteractive = false
 
-<<<<<<< HEAD
     const checkInteractive = (target) => {
       if (!target || !(target instanceof Element)) return false
       return !!target.closest('a, button, input, select, textarea, [role="button"], .cursor-pointer, [data-cursor-interactive], label')
-=======
-    let dirtyProximity = true
-
-    const checkProximity = (x, y) => {
-      if (x < 0 || y < 0) return null
-
-      // 1. Direct hit check at (x, y) - Instant O(1) without forced reflow
-      const target = document.elementFromPoint(x, y)
-      if (target) {
-        const interactiveEl = target.closest(
-          'button, a, select, input, [role="button"], .cursor-pointer, [data-clickable="true"]'
-        )
-        if (interactiveEl) return interactiveEl
-        try {
-          const style = window.getComputedStyle(target)
-          if (style && style.cursor === 'pointer') return target
-        } catch {}
-      }
-
-      return null
->>>>>>> 182d9bb331e44a4a99f3be86f1d680bbac8be789
     }
 
     const onMouseMove = (e) => {
       mouseX = e.clientX
       mouseY = e.clientY
       isHidden = false
-<<<<<<< HEAD
 
       const hovering = checkInteractive(e.target)
       if (hovering !== isHoveringInteractive) {
@@ -58,9 +35,6 @@ export default function CustomCursor() {
           }
         }
       }
-=======
-      dirtyProximity = true
->>>>>>> 182d9bb331e44a4a99f3be86f1d680bbac8be789
     }
 
     const onMouseLeave = () => {
@@ -73,47 +47,15 @@ export default function CustomCursor() {
 
     const onMouseEnter = () => {
       isHidden = false
-      dirtyProximity = true
     }
 
     const updatePosition = () => {
-<<<<<<< HEAD
       // Tilted slightly (rotate 20deg) for a natural swimming dive angle
       const transformStr = `translate3d(${mouseX}px, ${mouseY}px, 0) rotate(20deg)`
 
       if (cursorRef.current) {
         cursorRef.current.style.transform = transformStr
         cursorRef.current.style.opacity = isHidden ? '0' : '1'
-=======
-      if (dirtyProximity) {
-        const nearestEl = checkProximity(mouseX, mouseY)
-
-        if (nearestEl !== activeProximityEl) {
-          if (activeProximityEl) {
-            activeProximityEl.classList.remove('proximity-active')
-          }
-          if (nearestEl) {
-            nearestEl.classList.add('proximity-active')
-          }
-          activeProximityEl = nearestEl
-        }
-
-        isHovered = !!activeProximityEl
-        dirtyProximity = false
-      }
-
-      const normalTransformStr = `translate3d(${mouseX}px, ${mouseY}px, 0) rotate(45deg)`
-      const hoverTransformStr = `translate3d(${mouseX}px, ${mouseY}px, 0) rotate(45deg) scaleX(-1)`
-
-      if (normalRef.current) {
-        normalRef.current.style.transform = normalTransformStr
-        normalRef.current.style.opacity = isHidden ? '0' : isHovered ? '0' : '1'
-      }
-
-      if (hoverRef.current) {
-        hoverRef.current.style.transform = hoverTransformStr
-        hoverRef.current.style.opacity = isHidden ? '0' : isHovered ? '1' : '0'
->>>>>>> 182d9bb331e44a4a99f3be86f1d680bbac8be789
       }
 
       animationFrameId = requestAnimationFrame(updatePosition)
