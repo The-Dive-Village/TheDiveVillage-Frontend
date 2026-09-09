@@ -40,9 +40,19 @@ const Button = forwardRef(function Button(
   const xSpring = useSpring(x, springConfig)
   const ySpring = useSpring(y, springConfig)
 
+  const rectRef = useRef(null)
+
+  const handleMouseEnter = () => {
+    if (reduce || !ref.current) return
+    rectRef.current = ref.current.getBoundingClientRect()
+  }
+
   const handleMouseMove = (e) => {
     if (reduce || !ref.current) return
-    const rect = ref.current.getBoundingClientRect()
+    if (!rectRef.current) {
+      rectRef.current = ref.current.getBoundingClientRect()
+    }
+    const rect = rectRef.current
     const centerX = rect.left + rect.width / 2
     const centerY = rect.top + rect.height / 2
     
@@ -52,6 +62,7 @@ const Button = forwardRef(function Button(
   }
 
   const handleMouseLeave = () => {
+    rectRef.current = null
     if (reduce) return
     x.set(0)
     y.set(0)
@@ -61,6 +72,7 @@ const Button = forwardRef(function Button(
     <Comp
       ref={ref}
       type={as ? undefined : type}
+      onMouseEnter={handleMouseEnter}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       style={{ x: xSpring, y: ySpring }}

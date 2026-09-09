@@ -18,7 +18,6 @@ import itineraryVid from '../assets/New folder/Itinerary.mp4'
 const ProgramsPreview = lazy(() => import('../components/ProgramsPreview'))
 
 const GalleryPreview = lazy(() => import('../components/GalleryPreview'))
-const InteractiveDiveMap = lazy(() => import('../components/InteractiveDiveMap'))
 
 
 const HIGHLIGHTS_DATA = [

@@ -1,20 +1,60 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { COUNTRY_CENTROIDS } from '../data/countryCentroids'
 import { getLocationDisplayName } from '../services/padiLocationService'
 
+// Singleton Promise-based loader for Cesium scripts and styles
+let cesiumLoadPromise = null
+
+export function loadCesium() {
+  if (typeof window !== 'undefined' && window.Cesium) {
+    return Promise.resolve(window.Cesium)
+  }
+  if (cesiumLoadPromise) {
+    return cesiumLoadPromise
+  }
+
+  cesiumLoadPromise = new Promise((resolve, reject) => {
+    const CSS_URL = 'https://cesium.com/downloads/cesiumjs/releases/1.132/Build/Cesium/Widgets/widgets.css'
+    const SCRIPT_URL = 'https://cesium.com/downloads/cesiumjs/releases/1.132/Build/Cesium/Cesium.js'
+
+    if (!document.querySelector(`link[href="${CSS_URL}"]`)) {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = CSS_URL
+      document.head.appendChild(link)
+    }
+
+    if (window.Cesium) {
+      resolve(window.Cesium)
+      return
+    }
+
+    const existingScript = document.querySelector(`script[src="${SCRIPT_URL}"]`)
+    if (existingScript) {
+      existingScript.addEventListener('load', () => resolve(window.Cesium))
+      existingScript.addEventListener('error', (err) => reject(err))
+      return
+    }
+
+    const script = document.createElement('script')
+    script.src = SCRIPT_URL
+    script.async = true
+    script.onload = () => {
+      window.CESIUM_BASE_URL = 'https://cesium.com/downloads/cesiumjs/releases/1.132/Build/Cesium/'
+      resolve(window.Cesium)
+    }
+    script.onerror = (err) => {
+      cesiumLoadPromise = null
+      reject(new Error('Failed to load Cesium script'))
+    }
+    document.head.appendChild(script)
+  })
+
+  return cesiumLoadPromise
+}
+
 // Memoization cache for generated marker SVG data URIs
 const svgCache = new Map()
-
-// Safe XML character escape for international strings
-const escapeXml = (str) => {
-  if (!str) return ''
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&apos;')
-}
 
 // Generate high-resolution SVG billboard pin for countries
 const createSitePinSvg = () => {
@@ -96,6 +136,8 @@ export default function InteractiveDiveMap({
 }) {
   const containerRef = useRef(null)
   const viewerRef = useRef(null)
+  const isCesiumReady = useRef(false)
+  const [isLoaded, setIsLoaded] = useState(false)
 
   const countryLocationsRef = useRef(countryLocations)
   const selectedLocationRef = useRef(selectedLocation)
@@ -103,9 +145,11 @@ export default function InteractiveDiveMap({
   const onLocationSelectRef = useRef(onLocationSelect)
   const onCountrySelectRef = useRef(onCountrySelect)
   const isProgrammaticFlightRef = useRef(false)
+  const isUserInteractingRef = useRef(false)
+  const lastInteractionTimeRef = useRef(Date.now())
 
   const prevCountryRef = useRef(selectedCountry)
-  const prevLocationRef = useRef(selectedLocation)
+  const prevLocationIdRef = useRef(selectedLocation?.id ?? null)
 
   countryLocationsRef.current = countryLocations
   selectedLocationRef.current = selectedLocation
@@ -114,19 +158,19 @@ export default function InteractiveDiveMap({
   onCountrySelectRef.current = onCountrySelect
 
   // Deterministic camera flight to Global Overview
-  const flyToGlobalOverview = () => {
+  const flyToGlobalOverview = useCallback(() => {
     const viewer = viewerRef.current
     if (!viewer || viewer.isDestroyed() || !window.Cesium) return
 
     isProgrammaticFlightRef.current = true
     viewer.camera.flyTo({
-      destination: window.Cesium.Cartesian3.fromDegrees(80.0, 15.0, 11500000), // Perfectly framed Earth sphere
+      destination: window.Cesium.Cartesian3.fromDegrees(80.0, 15.0, 11500000),
       orientation: {
         heading: 0.0,
-        pitch: window.Cesium.Math.toRadians(-90), // Direct vertical nadir centering
+        pitch: window.Cesium.Math.toRadians(-90),
         roll: 0.0
       },
-      duration: 2.0,
+      duration: 1.8,
       easingFunction: window.Cesium.EasingFunction.CUBIC_IN_OUT,
       complete: () => {
         isProgrammaticFlightRef.current = false
@@ -135,10 +179,10 @@ export default function InteractiveDiveMap({
         isProgrammaticFlightRef.current = false
       }
     })
-  }
+  }, [])
 
   // Deterministic camera flight to Country Bounding Extent
-  const flyToCountryBounds = (locs, countryName) => {
+  const flyToCountryBounds = useCallback((locs, countryName) => {
     const viewer = viewerRef.current
     if (!viewer || viewer.isDestroyed() || !window.Cesium) return
 
@@ -186,36 +230,7 @@ export default function InteractiveDiveMap({
       destination: window.Cesium.Cartesian3.fromDegrees(centerLon, centerLat, targetAltitude),
       orientation: {
         heading: 0.0,
-        pitch: window.Cesium.Math.toRadians(-88), // Clean downward center alignment
-        roll: 0.0
-      },
-      duration: 2.0,
-      easingFunction: window.Cesium.EasingFunction.CUBIC_IN_OUT,
-      complete: () => {
-        isProgrammaticFlightRef.current = false
-      },
-      cancel: () => {
-        isProgrammaticFlightRef.current = false
-      }
-    })
-  }
-
-  // Deterministic camera flight to Dive Center Location
-  const flyToLocationPoint = (loc) => {
-    const viewer = viewerRef.current
-    if (!viewer || viewer.isDestroyed() || !window.Cesium || !loc) return
-    if (loc.latitude == null || loc.longitude == null) return
-
-    isProgrammaticFlightRef.current = true
-    viewer.camera.flyTo({
-      destination: window.Cesium.Cartesian3.fromDegrees(
-        loc.longitude,
-        loc.latitude,
-        50000 // Coastline dive center altitude (~50km)
-      ),
-      orientation: {
-        heading: 0.0,
-        pitch: window.Cesium.Math.toRadians(-85), // Focused and centered on the dive center
+        pitch: window.Cesium.Math.toRadians(-88),
         roll: 0.0
       },
       duration: 1.8,
@@ -227,12 +242,298 @@ export default function InteractiveDiveMap({
         isProgrammaticFlightRef.current = false
       }
     })
-  }
+  }, [])
 
-  // 1. Update PADI markers & Country visibility when country or locations change
+  // Deterministic camera flight to Dive Center Location
+  const flyToLocationPoint = useCallback((loc) => {
+    const viewer = viewerRef.current
+    if (!viewer || viewer.isDestroyed() || !window.Cesium || !loc) return
+    if (loc.latitude == null || loc.longitude == null) return
+
+    isProgrammaticFlightRef.current = true
+    viewer.camera.flyTo({
+      destination: window.Cesium.Cartesian3.fromDegrees(
+        loc.longitude,
+        loc.latitude,
+        45000
+      ),
+      orientation: {
+        heading: 0.0,
+        pitch: window.Cesium.Math.toRadians(-85),
+        roll: 0.0
+      },
+      duration: 1.5,
+      easingFunction: window.Cesium.EasingFunction.CUBIC_IN_OUT,
+      complete: () => {
+        isProgrammaticFlightRef.current = false
+      },
+      cancel: () => {
+        isProgrammaticFlightRef.current = false
+      }
+    })
+  }, [])
+
+  // 1. ONE-TIME INITIALIZATION: Load Cesium asynchronously and build Viewer ONCE
+  useEffect(() => {
+    let viewer = null
+    let handler = null
+    let resizeObserver = null
+    let removePostRender = null
+    let isUnmounted = false
+
+    loadCesium()
+      .then((Cesium) => {
+        if (isUnmounted || !containerRef.current) return
+
+        Cesium.Ion.defaultAccessToken =
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6IkVxY1lQVGlOMVp4M3NtdWMiLCJqdGkiOiI2MDI2Yjg2NS0zZTA5LTQ4ODQtOGM0Mi0yYjgxOTQ1MzA4NDciLCJpZCI6NDY4NjA1LCJpc3MiOiJodHRwczovL2FwaS5jZXNpdW0uY29tIiwiYXVkIjoidW5kZWZpbmVkX2RlZmF1bHQiLCJpYXQiOjE3ODY5MDc0MzF9.EatbbDckxW4VVoTQ4aXQQ3mlBCvxIp1-XpM0YaLxNUM'
+
+        viewer = new Cesium.Viewer(containerRef.current, {
+          animation: false,
+          timeline: false,
+          baseLayerPicker: false,
+          geocoder: false,
+          homeButton: false,
+          sceneModePicker: false,
+          navigationHelpButton: false,
+          infoBox: false,
+          selectionIndicator: false,
+          fullscreenButton: false,
+          requestRenderMode: false,
+        })
+
+        if (isUnmounted) {
+          viewer.destroy()
+          return
+        }
+
+        viewerRef.current = viewer
+        isCesiumReady.current = true
+        setIsLoaded(true)
+
+        // ResizeObserver
+        if (typeof ResizeObserver !== 'undefined' && containerRef.current) {
+          resizeObserver = new ResizeObserver(() => {
+            if (viewer && !viewer.isDestroyed()) {
+              viewer.resize()
+            }
+          })
+          resizeObserver.observe(containerRef.current)
+        }
+
+        const dpr = Math.min(window.devicePixelRatio || 1, 2)
+        const isMobile = window.innerWidth < 768
+
+        // Capped device pixel ratio for smooth performance without blur
+        viewer.resolutionScale = isMobile ? Math.min(dpr, 1.25) : Math.min(dpr, 1.75)
+
+        // Tune base imagery layer
+        const tuneImageryLayer = (layer) => {
+          if (!layer) return
+          layer.brightness = 1.05
+          layer.contrast = 1.15
+          layer.gamma = 1.04
+          layer.saturation = 1.12
+        }
+
+        const baseLayer = viewer.imageryLayers.get(0)
+        if (baseLayer) tuneImageryLayer(baseLayer)
+        viewer.imageryLayers.layerAdded.addEventListener(tuneImageryLayer)
+
+        // Globe rendering config
+        viewer.scene.globe.baseColor = Cesium.Color.fromCssColorString('#021426')
+        viewer.scene.globe.enableLighting = false
+        viewer.scene.globe.showGroundAtmosphere = true
+        viewer.scene.globe.depthTestAgainstTerrain = false
+        viewer.scene.globe.tileCacheSize = 400
+        viewer.scene.globe.loadingDescendantLimit = 16
+        viewer.scene.globe.preloadAncestors = true
+        viewer.scene.globe.preloadSiblings = false
+        viewer.scene.globe.maximumScreenSpaceError = isMobile ? 2.0 : 1.5
+
+        if (viewer.scene.skyAtmosphere) {
+          viewer.scene.skyAtmosphere.show = true
+          viewer.scene.skyAtmosphere.brightnessShift = 0.12
+          viewer.scene.skyAtmosphere.saturationShift = 0.05
+        }
+        if (viewer.scene.fog) {
+          viewer.scene.fog.enabled = true
+          viewer.scene.fog.density = 0.00008
+          viewer.scene.fog.screenSpaceErrorFactor = 2.0
+        }
+
+        if (viewer.scene.postProcessStages?.fxaa) {
+          viewer.scene.postProcessStages.fxaa.enabled = true
+        }
+
+        // Camera controller bounds & inertia
+        viewer.scene.screenSpaceCameraController.minimumZoomDistance = 15000
+        viewer.scene.screenSpaceCameraController.maximumZoomDistance = 25000000
+        viewer.scene.screenSpaceCameraController.enableCollisionDetection = true
+        viewer.scene.screenSpaceCameraController.inertiaSpin = 0.85
+        viewer.scene.screenSpaceCameraController.inertiaTranslate = 0.85
+        viewer.scene.screenSpaceCameraController.inertiaZoom = 0.8
+
+        // Adaptive SSE for 60fps interaction
+        const handleMoveStart = () => {
+          isUserInteractingRef.current = true
+          lastInteractionTimeRef.current = Date.now()
+          if (viewer && !viewer.isDestroyed()) {
+            viewer.scene.globe.maximumScreenSpaceError = isMobile ? 3.0 : 2.5
+          }
+        }
+        const handleMoveEnd = () => {
+          isUserInteractingRef.current = false
+          lastInteractionTimeRef.current = Date.now()
+          if (viewer && !viewer.isDestroyed()) {
+            viewer.scene.globe.maximumScreenSpaceError = isMobile ? 2.0 : 1.5
+          }
+        }
+
+        viewer.camera.moveStart.addEventListener(handleMoveStart)
+        viewer.camera.moveEnd.addEventListener(handleMoveEnd)
+
+        // Subtle idle rotation when completely idle on world view
+        removePostRender = viewer.scene.postRender.addEventListener(() => {
+          if (
+            !viewer ||
+            viewer.isDestroyed() ||
+            selectedCountryRef.current ||
+            isProgrammaticFlightRef.current ||
+            isUserInteractingRef.current
+          ) {
+            return
+          }
+          if (Date.now() - lastInteractionTimeRef.current > 3500) {
+            viewer.camera.rotate(Cesium.Cartesian3.UNIT_Z, -0.00025)
+          }
+        })
+
+        // World terrain progressive loading
+        try {
+          if (typeof Cesium.createWorldTerrainAsync === 'function') {
+            Cesium.createWorldTerrainAsync({
+              requestVertexNormals: true,
+              requestWaterMask: true
+            })
+              .then((terrainProvider) => {
+                if (viewer && !viewer.isDestroyed()) {
+                  viewer.terrainProvider = terrainProvider
+                }
+              })
+              .catch(() => {})
+          }
+        } catch {}
+
+        // Initial view
+        viewer.camera.setView({
+          destination: Cesium.Cartesian3.fromDegrees(80.0, 15.0, 11500000),
+          orientation: {
+            heading: 0.0,
+            pitch: Cesium.Math.toRadians(-90),
+            roll: 0.0
+          }
+        })
+
+        // Add Country Billboard Pins & Labels for Initial World View
+        COUNTRY_CENTROIDS.forEach((country) => {
+          viewer.entities.add({
+            id: `country-${country.name}`,
+            name: country.name,
+            position: Cesium.Cartesian3.fromDegrees(country.lon, country.lat),
+            show: !selectedCountryRef.current,
+            billboard: {
+              image: createSitePinSvg(),
+              width: 38,
+              height: 46,
+              verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+              eyeOffset: new Cesium.Cartesian3(0, 0, -50),
+              scaleByDistance: new Cesium.NearFarScalar(1.0e6, 1.0, 1.8e7, 0.48),
+              translucencyByDistance: new Cesium.NearFarScalar(1.0e6, 1.0, 2.0e7, 0.8)
+            },
+            label: {
+              text: country.name,
+              font: 'bold 11px Outfit, Inter, system-ui, sans-serif',
+              fillColor: Cesium.Color.WHITE,
+              outlineColor: Cesium.Color.fromCssColorString('#00223D'),
+              outlineWidth: 3,
+              style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+              verticalOrigin: Cesium.VerticalOrigin.TOP,
+              pixelOffset: new Cesium.Cartesian2(0, 4),
+              scaleByDistance: new Cesium.NearFarScalar(1.0e6, 1.0, 1.8e7, 0.5),
+              translucencyByDistance: new Cesium.NearFarScalar(1.0e6, 1.0, 2.0e7, 0.8),
+              distanceDisplayCondition: new Cesium.DistanceDisplayCondition(100000, 20000000)
+            },
+            properties: {
+              countryName: country.name
+            }
+          })
+        })
+
+        // Interaction handlers
+        handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas)
+
+        handler.setInputAction((movement) => {
+          lastInteractionTimeRef.current = Date.now()
+          const pickedObject = viewer.scene.pick(movement.endPosition)
+          if (Cesium.defined(pickedObject) && pickedObject.id) {
+            viewer.scene.canvas.style.cursor = 'pointer'
+          } else {
+            viewer.scene.canvas.style.cursor = 'default'
+          }
+        }, Cesium.ScreenSpaceEventType.MOUSE_MOVE)
+
+        handler.setInputAction((click) => {
+          lastInteractionTimeRef.current = Date.now()
+          const pickedObject = viewer.scene.pick(click.position)
+          if (Cesium.defined(pickedObject) && pickedObject.id) {
+            const idStr = String(pickedObject.id.id || '')
+
+            // 1. Clicked a PADI Dive Location marker
+            if (idStr.startsWith('padi-')) {
+              const locId = idStr.replace('padi-', '')
+              const loc = countryLocationsRef.current.find(
+                (l) => String(l.id) === locId || String(l.padiId) === locId
+              )
+              if (loc) {
+                onLocationSelectRef.current?.(loc)
+                flyToLocationPoint(loc)
+              }
+              return
+            }
+
+            // 2. Clicked a Country Pin Badge
+            if (idStr.startsWith('country-') || pickedObject.id.properties?.countryName) {
+              const countryName = pickedObject.id.properties?.countryName?.getValue() || idStr.replace('country-', '')
+              if (countryName) {
+                onCountrySelectRef.current?.(countryName)
+              }
+              return
+            }
+          }
+        }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
+      })
+      .catch((err) => {
+        console.warn('Cesium load notice:', err)
+      })
+
+    return () => {
+      isUnmounted = true
+      isCesiumReady.current = false
+      if (removePostRender) removePostRender()
+      if (resizeObserver) resizeObserver.disconnect()
+      if (handler) handler.destroy()
+      if (viewer && !viewer.isDestroyed()) viewer.destroy()
+      viewerRef.current = null
+    }
+  }, [flyToLocationPoint])
+
+  // 2. COUNTRY & LOCATIONS UPDATE EFFECT (Preserves Viewer instance)
   useEffect(() => {
     const viewer = viewerRef.current
-    if (!viewer || viewer.isDestroyed() || !window.Cesium) return
+    if (!viewer || viewer.isDestroyed() || !window.Cesium || !isLoaded) return
+
+    const Cesium = window.Cesium
 
     // A. Remove existing PADI markers and country highlight envelope
     const entitiesToRemove = viewer.entities.values.filter(
@@ -261,24 +562,36 @@ export default function InteractiveDiveMap({
         const isSel = selectedLocation && String(selectedLocation.id) === String(loc.id)
         const isDimmed = hasSelection && !isSel
         const displayName = getLocationDisplayName(loc)
-        const textWidth = Math.max(92, Math.round(displayName.length * 7.5 + 24))
-        const svgWidth = textWidth + 30
 
         viewer.entities.add({
           id: `padi-${loc.id}`,
           name: loc.name,
-          position: window.Cesium.Cartesian3.fromDegrees(loc.longitude, loc.latitude),
+          position: Cesium.Cartesian3.fromDegrees(loc.longitude, loc.latitude),
           billboard: {
             image: createPadiPinSvg(isSel, isDimmed),
             width: isSel ? 48 : 38,
             height: isSel ? 56 : 46,
-            verticalOrigin: window.Cesium.VerticalOrigin.BOTTOM,
-            eyeOffset: new window.Cesium.Cartesian3(0, 0, isSel ? -250 : -80),
-            scaleByDistance: new window.Cesium.NearFarScalar(2.0e4, 1.0, 1.2e7, 0.5),
-            translucencyByDistance: new window.Cesium.NearFarScalar(2.0e4, 1.0, 1.5e7, 0.85)
+            verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+            eyeOffset: new Cesium.Cartesian3(0, 0, isSel ? -250 : -80),
+            scaleByDistance: new Cesium.NearFarScalar(2.0e4, 1.0, 1.2e7, 0.5),
+            translucencyByDistance: new Cesium.NearFarScalar(2.0e4, 1.0, 1.5e7, 0.85)
+          },
+          label: {
+            text: displayName || loc.name,
+            font: isSel ? 'bold 12px Outfit, Inter, system-ui, sans-serif' : '10px Outfit, Inter, system-ui, sans-serif',
+            fillColor: isSel ? Cesium.Color.fromCssColorString('#FFCD00') : Cesium.Color.WHITE,
+            outlineColor: Cesium.Color.fromCssColorString('#00223D'),
+            outlineWidth: 3,
+            style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+            verticalOrigin: Cesium.VerticalOrigin.TOP,
+            pixelOffset: new Cesium.Cartesian2(0, 4),
+            scaleByDistance: new Cesium.NearFarScalar(1.0e4, 1.0, 8.0e6, 0.6),
+            translucencyByDistance: new Cesium.NearFarScalar(1.0e4, 1.0, 1.0e7, 0.8),
+            distanceDisplayCondition: new Cesium.DistanceDisplayCondition(1000, 6000000)
           },
           properties: {
-            padiLocation: loc
+            padiLocation: loc,
+            displayName
           }
         })
       })
@@ -304,15 +617,15 @@ export default function InteractiveDiveMap({
           viewer.entities.add({
             id: 'country-envelope',
             rectangle: {
-              coordinates: window.Cesium.Rectangle.fromDegrees(
+              coordinates: Cesium.Rectangle.fromDegrees(
                 Math.max(-180, minLon - lonPadding),
                 Math.max(-85, minLat - latPadding),
                 Math.min(180, maxLon + lonPadding),
                 Math.min(85, maxLat + latPadding)
               ),
-              material: new window.Cesium.Color(0.0, 0.68, 0.78, 0.06),
+              material: new Cesium.Color(0.0, 0.68, 0.78, 0.06),
               outline: true,
-              outlineColor: new window.Cesium.Color(0.0, 0.9, 1.0, 0.35),
+              outlineColor: new Cesium.Color(0.0, 0.9, 1.0, 0.35),
               outlineWidth: 2
             }
           })
@@ -320,11 +633,9 @@ export default function InteractiveDiveMap({
       }
     }
 
-    // E. Deterministic Camera Flight Transitions
+    // E. Camera Flight Transitions on Country Change
     const countryChanged = prevCountryRef.current !== selectedCountry
-    const locationChanged = prevLocationRef.current !== selectedLocation
     prevCountryRef.current = selectedCountry
-    prevLocationRef.current = selectedLocation
 
     if (countryChanged) {
       if (selectedCountry) {
@@ -336,242 +647,43 @@ export default function InteractiveDiveMap({
       } else {
         flyToGlobalOverview()
       }
-    } else if (locationChanged) {
-      if (selectedLocation) {
-        flyToLocationPoint(selectedLocation)
-      } else if (selectedCountry) {
-        flyToCountryBounds(validLocs, selectedCountry)
-      }
     }
-  }, [selectedCountry, countryLocations, selectedLocation])
+  }, [selectedCountry, countryLocations, isLoaded, flyToCountryBounds, flyToGlobalOverview, flyToLocationPoint])
 
-  // 2. Initialize Cesium Viewer with Crisp Daytime Google Earth Clarity
+  // 3. TARGETED LOCATION SELECTION EFFECT (Updates only marker visual state + camera flight)
   useEffect(() => {
-    let viewer = null
-    let handler = null
-    let intervalId = null
-    let resizeObserver = null
-    let isUnmounted = false
+    const viewer = viewerRef.current
+    if (!viewer || viewer.isDestroyed() || !window.Cesium || !isLoaded) return
 
-    const initCesium = () => {
-      if (!window.Cesium || !containerRef.current) return false
+    const currentLocationId = selectedLocation?.id ?? null
+    if (prevLocationIdRef.current === currentLocationId) return
+    prevLocationIdRef.current = currentLocationId
 
-      window.CESIUM_BASE_URL = 'https://cesium.com/downloads/cesiumjs/releases/1.132/Build/Cesium/'
-      window.Cesium.Ion.defaultAccessToken =
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6IkVxY1lQVGlOMVp4M3NtdWMiLCJqdGkiOiI2MDI2Yjg2NS0zZTA5LTQ4ODQtOGM0Mi0yYjgxOTQ1MzA4NDciLCJpZCI6NDY4NjA1LCJpc3MiOiJodHRwczovL2FwaS5jZXNpdW0uY29tIiwiYXVkIjoidW5kZWZpbmVkX2RlZmF1bHQiLCJpYXQiOjE3ODY5MDc0MzF9.EatbbDckxW4VVoTQ4aXQQ3mlBCvxIp1-XpM0YaLxNUM'
+    const hasSelection = Boolean(selectedLocation)
 
-      viewer = new window.Cesium.Viewer(containerRef.current, {
-        animation: false,
-        timeline: false,
-        baseLayerPicker: false,
-        geocoder: false,
-        homeButton: false,
-        sceneModePicker: false,
-        navigationHelpButton: false,
-        infoBox: false,
-        selectionIndicator: false,
-        fullscreenButton: false,
-      })
-
-      if (isUnmounted) {
-        viewer.destroy()
-        return true
-      }
-
-      viewerRef.current = viewer
-
-      // ResizeObserver to ensure Cesium canvas fills the exact parent dimensions at all times
-      if (typeof ResizeObserver !== 'undefined' && containerRef.current) {
-        resizeObserver = new ResizeObserver(() => {
-          if (viewer && !viewer.isDestroyed()) {
-            viewer.resize()
-          }
-        })
-        resizeObserver.observe(containerRef.current)
-      }
-
-      const dpr = Math.min(window.devicePixelRatio || 1, 2)
-      const isMobile = window.innerWidth < 768
-
-      // Device Pixel Ratio: Sharp on desktop (1.75 max), fast & smooth on mobile (1.25 max)
-      viewer.resolutionScale = isMobile ? Math.min(dpr, 1.25) : Math.min(dpr, 1.75)
-
-      // Enhance base satellite imagery layer clarity, coastline contrast, and ocean vibrancy
-      const tuneImageryLayer = (layer) => {
-        if (!layer) return
-        layer.brightness = 1.05
-        layer.contrast = 1.16
-        layer.gamma = 1.04
-        layer.saturation = 1.12
-      }
-
-      const baseLayer = viewer.imageryLayers.get(0)
-      if (baseLayer) tuneImageryLayer(baseLayer)
-      viewer.imageryLayers.layerAdded.addEventListener(tuneImageryLayer)
-
-      // Progressive tile loading, tile caching & sharp rendering
-      viewer.scene.globe.baseColor = window.Cesium.Color.fromCssColorString('#021426')
-      viewer.scene.globe.enableLighting = false
-      viewer.scene.globe.showGroundAtmosphere = true
-      viewer.scene.globe.depthTestAgainstTerrain = false
-      viewer.scene.globe.tileCacheSize = 600
-      viewer.scene.globe.loadingDescendantLimit = 20
-      viewer.scene.globe.preloadAncestors = true
-      viewer.scene.globe.preloadSiblings = false
-      viewer.scene.globe.maximumScreenSpaceError = isMobile ? 1.5 : 1.0
-
-      // Sky atmosphere & fog configuration for geographic clarity
-      if (viewer.scene.skyAtmosphere) {
-        viewer.scene.skyAtmosphere.show = true
-        viewer.scene.skyAtmosphere.brightnessShift = 0.12
-        viewer.scene.skyAtmosphere.saturationShift = 0.05
-      }
-      if (viewer.scene.fog) {
-        viewer.scene.fog.enabled = true
-        viewer.scene.fog.density = 0.00008
-        viewer.scene.fog.screenSpaceErrorFactor = 2.0
-      }
-
-      if (viewer.scene.postProcessStages?.fxaa) {
-        viewer.scene.postProcessStages.fxaa.enabled = true
-      }
-
-      // Smooth camera controller bounds & inertia
-      viewer.scene.screenSpaceCameraController.minimumZoomDistance = 15000
-      viewer.scene.screenSpaceCameraController.maximumZoomDistance = 25000000
-      viewer.scene.screenSpaceCameraController.inertiaSpin = 0.85
-      viewer.scene.screenSpaceCameraController.inertiaTranslate = 0.85
-      viewer.scene.screenSpaceCameraController.inertiaZoom = 0.8
-
-      // Adaptive Screen Space Error: High FPS during camera flight/drag, razor sharp detail when settled
-      const handleMoveStart = () => {
-        if (viewer && !viewer.isDestroyed()) {
-          viewer.scene.globe.maximumScreenSpaceError = isMobile ? 3.0 : 2.5
+    // Update billboard pins & labels state in place without entity recreation
+    countryLocations.forEach((loc) => {
+      const entity = viewer.entities.getById(`padi-${loc.id}`)
+      if (entity) {
+        const isSel = selectedLocation && String(selectedLocation.id) === String(loc.id)
+        const isDimmed = hasSelection && !isSel
+        if (entity.billboard) {
+          entity.billboard.image = createPadiPinSvg(isSel, isDimmed)
+          entity.billboard.width = isSel ? 48 : 38
+          entity.billboard.height = isSel ? 56 : 46
+          entity.billboard.eyeOffset = new window.Cesium.Cartesian3(0, 0, isSel ? -250 : -80)
+        }
+        if (entity.label) {
+          entity.label.fillColor = isSel ? window.Cesium.Color.fromCssColorString('#FFCD00') : window.Cesium.Color.WHITE
+          entity.label.font = isSel ? 'bold 12px Outfit, Inter, system-ui, sans-serif' : '10px Outfit, Inter, system-ui, sans-serif'
         }
       }
-      const handleMoveEnd = () => {
-        if (viewer && !viewer.isDestroyed()) {
-          viewer.scene.globe.maximumScreenSpaceError = isMobile ? 1.5 : 1.0
-        }
-      }
+    })
 
-      viewer.camera.moveStart.addEventListener(handleMoveStart)
-      viewer.camera.moveEnd.addEventListener(handleMoveEnd)
-
-      // Asynchronously load World Terrain with water masks without blocking fast initial render
-      try {
-        if (typeof window.Cesium.createWorldTerrainAsync === 'function') {
-          window.Cesium.createWorldTerrainAsync({
-            requestVertexNormals: true,
-            requestWaterMask: true
-          })
-            .then((terrainProvider) => {
-              if (viewer && !viewer.isDestroyed()) {
-                viewer.terrainProvider = terrainProvider
-              }
-            })
-            .catch(() => {})
-        }
-      } catch (err) {}
-
-      // Initial clean overview
-      viewer.camera.flyTo({
-        destination: window.Cesium.Cartesian3.fromDegrees(80.0, 15.0, 11500000),
-        orientation: {
-          heading: 0.0,
-          pitch: window.Cesium.Math.toRadians(-90),
-          roll: 0.0
-        },
-        duration: 0
-      })
-
-      // Add Country Billboard Pins for Initial World View
-      COUNTRY_CENTROIDS.forEach((country) => {
-        const textWidth = Math.max(100, Math.round(country.name.length * 8.2 + 24))
-        const svgWidth = textWidth + 24
-
-        viewer.entities.add({
-          id: `country-${country.name}`,
-          name: country.name,
-          position: window.Cesium.Cartesian3.fromDegrees(country.lon, country.lat),
-          show: !selectedCountryRef.current,
-          billboard: {
-            image: createSitePinSvg(),
-            width: 38,
-            height: 46,
-            verticalOrigin: window.Cesium.VerticalOrigin.BOTTOM,
-            eyeOffset: new window.Cesium.Cartesian3(0, 0, -50),
-            scaleByDistance: new window.Cesium.NearFarScalar(1.0e6, 1.0, 1.8e7, 0.48),
-            translucencyByDistance: new window.Cesium.NearFarScalar(1.0e6, 1.0, 2.0e7, 0.8)
-          },
-          properties: {
-            countryName: country.name
-          }
-        })
-      })
-
-      // User Interaction & Click Handlers
-      handler = new window.Cesium.ScreenSpaceEventHandler(viewer.scene.canvas)
-
-      // Hover cursor management
-      handler.setInputAction((movement) => {
-        const pickedObject = viewer.scene.pick(movement.endPosition)
-        if (window.Cesium.defined(pickedObject) && pickedObject.id) {
-          viewer.scene.canvas.style.cursor = 'pointer'
-        } else {
-          viewer.scene.canvas.style.cursor = 'default'
-        }
-      }, window.Cesium.ScreenSpaceEventType.MOUSE_MOVE)
-
-      // Click Selection Handler
-      handler.setInputAction((click) => {
-        const pickedObject = viewer.scene.pick(click.position)
-        if (window.Cesium.defined(pickedObject) && pickedObject.id) {
-          const idStr = String(pickedObject.id.id || '')
-
-          // 1. Clicked a PADI Dive Location marker
-          if (idStr.startsWith('padi-')) {
-            const locId = idStr.replace('padi-', '')
-            const loc = countryLocationsRef.current.find(
-              (l) => String(l.id) === locId || String(l.padiId) === locId
-            )
-            if (loc) {
-              onLocationSelectRef.current?.(loc)
-              flyToLocationPoint(loc)
-            }
-            return
-          }
-
-          // 2. Clicked a Country Pin Badge
-          if (idStr.startsWith('country-') || pickedObject.id.properties?.countryName) {
-            const countryName = pickedObject.id.properties?.countryName?.getValue() || idStr.replace('country-', '')
-            if (countryName) {
-              onCountrySelectRef.current?.(countryName)
-            }
-            return
-          }
-        }
-      }, window.Cesium.ScreenSpaceEventType.LEFT_CLICK)
-
-      return true
+    if (selectedLocation) {
+      flyToLocationPoint(selectedLocation)
     }
-
-    if (!initCesium()) {
-      intervalId = setInterval(() => {
-        if (initCesium()) {
-          clearInterval(intervalId)
-        }
-      }, 100)
-    }
-
-    return () => {
-      isUnmounted = true
-      if (intervalId) clearInterval(intervalId)
-      if (resizeObserver) resizeObserver.disconnect()
-      if (handler) handler.destroy()
-      if (viewer && !viewer.isDestroyed()) viewer.destroy()
-    }
-  }, [])
+  }, [selectedLocation, countryLocations, isLoaded, flyToLocationPoint])
 
   return (
     <div id="dive-map-container" className="relative w-full h-full min-h-[450px] overflow-hidden bg-[#021426] pointer-events-auto">
@@ -655,10 +767,9 @@ function GlobeJoystick({ viewerRef }) {
       dy = (dy / distance) * MAX_RADIUS
     }
     setThumbPos({ x: dx, y: dy })
-    if (viewerRef.current) {
+    if (viewerRef.current && !viewerRef.current.isDestroyed()) {
       viewerRef.current.camera.rotateLeft(dx * 0.003)
       viewerRef.current.camera.rotateUp(dy * 0.003)
-      viewerRef.current.scene.requestRender()
     }
   }
 

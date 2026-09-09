@@ -1,7 +1,7 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, lazy, Suspense } from 'react'
 import { useSearchParams } from 'react-router'
 import { motion } from 'framer-motion'
-import InteractiveDiveMap from '../components/InteractiveDiveMap'
+const InteractiveDiveMap = lazy(() => import('../components/InteractiveDiveMap'))
 import SEOHead from '../components/SEOHead'
 import { padiLocationService } from '../services/padiLocationService'
 import {
@@ -934,21 +934,30 @@ export default function BookUs() {
               <h3 className="font-heading text-2xl font-bold text-white">Select Dive Location</h3>
             </div>
             <div className="flex-1 w-full relative min-h-0 flex flex-col">
-              <InteractiveDiveMap
-                selectedCountry={country}
-                countryLocations={availableLocations}
-                selectedLocation={selectedLocation}
-                onCountrySelect={handleCountryChange}
-                onLocationSelect={(loc) => {
-                  if (loc) {
-                    setLocationId(String(loc.id))
-                    setSelectedLocation(loc)
-                    const placeName = padiLocationService.getLocationDisplayName(loc)
-                    setLocation(placeName || loc.name)
-                    setStepError('')
-                  }
-                }}
-              />
+              <Suspense fallback={
+                <div className="w-full h-full flex items-center justify-center bg-[#021426] text-white/50 text-sm font-medium">
+                  <div className="flex flex-col items-center gap-3">
+                    <div className="w-8 h-8 rounded-full border-2 border-accent border-t-transparent animate-spin" />
+                    <span>Loading 3D Globe...</span>
+                  </div>
+                </div>
+              }>
+                <InteractiveDiveMap
+                  selectedCountry={country}
+                  countryLocations={availableLocations}
+                  selectedLocation={selectedLocation}
+                  onCountrySelect={handleCountryChange}
+                  onLocationSelect={(loc) => {
+                    if (loc) {
+                      setLocationId(String(loc.id))
+                      setSelectedLocation(loc)
+                      const placeName = padiLocationService.getLocationDisplayName(loc)
+                      setLocation(placeName || loc.name)
+                      setStepError('')
+                    }
+                  }}
+                />
+              </Suspense>
             </div>
           </div>
 

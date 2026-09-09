@@ -1,9 +1,7 @@
 import { Outlet, useLocation } from 'react-router'
-import { Suspense, lazy } from 'react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
-
-const VideoSphereBackground = lazy(() => import('../components/VideoSphereBackground'))
+import VideoSphereBackground from '../components/VideoSphereBackground'
 
 export default function PublicLayout() {
   const location = useLocation()
@@ -12,9 +10,7 @@ export default function PublicLayout() {
   return (
     <div className="flex min-h-screen flex-col bg-transparent relative isolate">
       {/* Global Interactive 360 Video Background */}
-      <Suspense fallback={<div className="fixed inset-0 -z-10 bg-navy" />}>
-        <VideoSphereBackground />
-      </Suspense>
+      <VideoSphereBackground />
 
       {!isAuthPage && <Navbar />}
       <main className="flex-1">

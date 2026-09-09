@@ -26,6 +26,14 @@ export default function GalleryPreview() {
   useEffect(() => {
     let animId
     let lastTime = performance.now()
+    let cachedThirdWidth = scrollContainerRef.current ? scrollContainerRef.current.scrollWidth / 3 : 1000
+
+    const handleResize = () => {
+      if (scrollContainerRef.current) {
+        cachedThirdWidth = scrollContainerRef.current.scrollWidth / 3
+      }
+    }
+    window.addEventListener('resize', handleResize, { passive: true })
 
     const loop = (currentTime) => {
       const delta = (currentTime - lastTime) / 1000
@@ -35,14 +43,17 @@ export default function GalleryPreview() {
         // Shift smoothly at ~60px/s
         scrollContainerRef.current.scrollLeft -= 60 * delta
         if (scrollContainerRef.current.scrollLeft <= 5) {
-          scrollContainerRef.current.scrollLeft = scrollContainerRef.current.scrollWidth / 3
+          scrollContainerRef.current.scrollLeft = cachedThirdWidth
         }
       }
       animId = requestAnimationFrame(loop)
     }
 
     animId = requestAnimationFrame(loop)
-    return () => cancelAnimationFrame(animId)
+    return () => {
+      cancelAnimationFrame(animId)
+      window.removeEventListener('resize', handleResize)
+    }
   }, [isHovered])
 
   // Initialize scroll position in the middle so left-to-right scrolling works instantly

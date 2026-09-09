@@ -10,14 +10,15 @@ import bookFile from '../assets/Book(2).mp4'
 import turtleVideo from '../assets/New folder/Turtle Anna(1).mp4'
 import nightDiveVideo from '../assets/nightdive.mp4'
 import underwaterAudio from '../assets/Underwater.mp3'
+import { setHeroVideoReady } from '../utils/mediaReadyManager'
 
-// Shared off-screen DOM container for active video elements to ensure browser hardware acceleration and high-priority decoding
+// Shared viewport DOM container for active video elements to ensure browser hardware acceleration and high-priority decoding
 function getOrCreateDomVideoContainer() {
   let container = document.getElementById('video-sphere-dom-root')
   if (!container) {
     container = document.createElement('div')
     container.id = 'video-sphere-dom-root'
-    container.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;opacity:0.001;pointer-events:none;overflow:hidden;z-index:-99999;'
+    container.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;overflow:hidden;z-index:-99999;opacity:0.001;'
     document.body.appendChild(container)
   }
   return container
@@ -25,17 +26,14 @@ function getOrCreateDomVideoContainer() {
 
 function useDirectVideoTexture(src, playbackRate = 0.5, priority = false) {
   const [texture, setTexture] = useState(null)
-  const [isReady, setIsReady] = useState(false)
   const videoRef = useRef(null)
 
   useEffect(() => {
     if (!src) {
       setTexture(null)
-      setIsReady(false)
       return
     }
 
-    setIsReady(false)
     const domContainer = getOrCreateDomVideoContainer()
     const video = document.createElement('video')
     video.src = src
@@ -47,15 +45,16 @@ function useDirectVideoTexture(src, playbackRate = 0.5, priority = false) {
     video.setAttribute('muted', '')
     video.setAttribute('playsinline', '')
     video.setAttribute('webkit-playsinline', '')
+    video.style.cssText = 'width:100%;height:100%;object-fit:cover;pointer-events:none;'
     video.loop = true
     video.autoplay = true
-    video.preload = priority ? 'auto' : 'metadata'
+    video.preload = 'auto'
     video.playbackRate = playbackRate
     if (priority) {
       video.setAttribute('fetchpriority', 'high')
     }
     
-    // Append to DOM to prevent browser background throttling
+    // Append to DOM with full viewport dimensions to prevent browser background throttling
     domContainer.appendChild(video)
     videoRef.current = video
 
@@ -64,41 +63,34 @@ function useDirectVideoTexture(src, playbackRate = 0.5, priority = false) {
     vidTexture.minFilter = THREE.LinearFilter
     vidTexture.magFilter = THREE.LinearFilter
     vidTexture.generateMipmaps = false
+    vidTexture.needsUpdate = true
 
     const markReady = () => {
-      if (video.readyState >= 2) {
-        setIsReady(true)
-        vidTexture.needsUpdate = true
+      vidTexture.needsUpdate = true
+      if (priority && video.readyState >= 2) {
+        setHeroVideoReady(true)
       }
     }
 
-    const onPlaying = () => {
-      setIsReady(true)
-      vidTexture.needsUpdate = true
+    if (video.readyState >= 2) {
+      markReady()
     }
 
-    video.addEventListener('playing', onPlaying)
+    video.addEventListener('playing', markReady)
     video.addEventListener('loadeddata', markReady)
     video.addEventListener('canplay', markReady)
-    video.addEventListener('timeupdate', () => {
-      vidTexture.needsUpdate = true
-    })
+    video.addEventListener('timeupdate', markReady)
 
-    const playPromise = video.play()
-    if (playPromise !== undefined) {
-      playPromise.then(() => {
-        setIsReady(true)
-        vidTexture.needsUpdate = true
-      }).catch((err) => {
-        console.warn('Video autoplay deferred:', err?.message || err)
-      })
-    }
+    video.play().then(() => {
+      markReady()
+    }).catch((err) => {
+      console.warn('Video autoplay deferred:', err?.message || err)
+    })
 
     const handleUserInteraction = () => {
       if (videoRef.current && videoRef.current.paused) {
         videoRef.current.play().then(() => {
-          setIsReady(true)
-          vidTexture.needsUpdate = true
+          markReady()
         }).catch(() => {})
       }
     }
@@ -123,8 +115,9 @@ function useDirectVideoTexture(src, playbackRate = 0.5, priority = false) {
       window.removeEventListener('touchstart', handleUserInteraction)
       document.removeEventListener('visibilitychange', handleVisibilityChange)
       video.removeEventListener('playing', onPlaying)
-      video.removeEventListener('loadeddata', markReady)
-      video.removeEventListener('canplay', markReady)
+      video.removeEventListener('loadeddata', onPlaying)
+      video.removeEventListener('canplay', onPlaying)
+      video.removeEventListener('timeupdate', onTimeUpdate)
       video.pause()
       video.removeAttribute('src')
       video.load()
@@ -136,7 +129,7 @@ function useDirectVideoTexture(src, playbackRate = 0.5, priority = false) {
     }
   }, [src, playbackRate, priority])
 
-  return { texture, isReady }
+  return { texture }
 }
 
 function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
@@ -152,10 +145,10 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
   const isAbout = location.pathname === '/about'
 
   // Primary video is prioritized with 'auto' preload and high DOM priority
-  const { texture, isReady } = useDirectVideoTexture(videoSrc, 0.5, true)
+  const { texture } = useDirectVideoTexture(videoSrc, 0.5, true)
   // Secondary videos are strictly lazy-loaded only when user scrolls or needs them
-  const { texture: texture2, isReady: isReady2 } = useDirectVideoTexture(isHome && !isNightDive && loadSecondary ? bookFile : null, 0.5, false)
-  const { texture: texture3, isReady: isReady3 } = useDirectVideoTexture(isHome && !isNightDive && loadSecondary ? turtleVideo : null, 0.5, false)
+  const { texture: texture2 } = useDirectVideoTexture(isHome && !isNightDive && loadSecondary ? bookFile : null, 0.5, false)
+  const { texture: texture3 } = useDirectVideoTexture(isHome && !isNightDive && loadSecondary ? turtleVideo : null, 0.5, false)
 
   // Flip turtle video texture horizontally so it displays correctly on the sphere
   useEffect(() => {
@@ -288,8 +281,8 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
   useFrame((state, delta) => {
     if (meshRef.current) {
       if (texture) texture.needsUpdate = true
-      if (texture2) texture2.needsUpdate = true
-      if (texture3) texture3.needsUpdate = true
+      if (texture2 && targetOpacity2.current > 0.01) texture2.needsUpdate = true
+      if (texture3 && targetOpacity3.current > 0.01) texture3.needsUpdate = true
 
       if (joystickVelocity && joystickVelocity.current) {
         dragOffset.current.y += joystickVelocity.current.x * delta * 0.4
@@ -318,17 +311,17 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
 
   return (
     <group>
-      <mesh ref={meshRef} scale={[-1, 1, 1]} visible={isReady}>
+      <mesh ref={meshRef} scale={[-1, 1, 1]} visible={true}>
         <sphereGeometry args={[500, 60, 40]} />
         <meshBasicMaterial map={texture} side={THREE.BackSide} />
       </mesh>
       {isHome && !isNightDive && (
         <>
-          <mesh ref={meshRef2} scale={[-0.99, 0.99, 0.99]} visible={isReady2}>
+          <mesh ref={meshRef2} scale={[-0.99, 0.99, 0.99]} visible={Boolean(texture2)}>
             <sphereGeometry args={[500, 60, 40]} />
             <meshBasicMaterial map={texture2} side={THREE.BackSide} transparent={true} opacity={0} depthWrite={false} />
           </mesh>
-          <mesh ref={meshRef3} scale={[-0.98, 0.98, 0.98]} visible={isReady3}>
+          <mesh ref={meshRef3} scale={[-0.98, 0.98, 0.98]} visible={Boolean(texture3)}>
             <sphereGeometry args={[500, 60, 40]} />
             <meshBasicMaterial map={texture3} side={THREE.BackSide} transparent={true} opacity={0} depthWrite={false} />
           </mesh>
@@ -415,7 +408,7 @@ export default function VideoSphereBackground() {
     <>
       <audio ref={audioRef} src={underwaterAudio} loop playsInline />
       <div className="absolute inset-0 -z-10">
-        <div className="sticky top-0 h-[100dvh] w-full bg-navy overflow-hidden">
+        <div className="sticky top-0 h-[100dvh] w-full bg-[#030d16] overflow-hidden">
           <video
             ref={(el) => {
               if (el) {

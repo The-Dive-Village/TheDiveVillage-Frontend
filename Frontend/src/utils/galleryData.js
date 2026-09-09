@@ -24,13 +24,12 @@ import vidDJI_0011 from '../assets/New folder/DJI_20260525104139_0011_D.MP4'
 import vidDJI_0017 from '../assets/New folder/DJI_20260525123656_0017_D.MP4'
 import vidDJI_0018 from '../assets/New folder/DJI_20260525124204_0018_D.MP4'
 import vidDive from '../assets/New folder/Dive.MP4'
-import vidFreeDiving1 from '../assets/New folder/Free Diving 1.mp4'
+import vidFreeDiving1 from '../assets/New folder/Free Diving 1.mov'
 import vidGX8833 from '../assets/New folder/GX018833.mp4'
 import vidGX8841 from '../assets/New folder/GX018841.MP4'
 import vidItinerary from '../assets/New folder/Itinerary.mp4'
 import vidTravel from '../assets/New folder/Travel.mp4'
 import vidTurtleAnna from '../assets/New folder/Turtle Anna(1).mp4'
-import vidWA0009 from '../assets/New folder/VID-20260630-WA0009.mp4'
 import vidDjiMimo1 from '../assets/New folder/dji_mimo_20260124_112020_0_1769300692742_video.mp4'
 import vidDjiMimo2 from '../assets/New folder/dji_mimo_20260204_084830_0_1770187393265_video.mp4'
 import vidDjiMimo3 from '../assets/New folder/dji_mimo_20260204_084858_0_1770187391850_video.mp4'
@@ -65,7 +64,6 @@ export const GALLERY_ITEMS = [
   { id: 'vid-20260630', type: 'video', src: vid20260630, category: 'ocean' },
   { id: 'vid-20260707-1', type: 'video', src: vid20260707_1, category: 'ocean' },
   { id: 'vid-20260707-2', type: 'video', src: vid20260707_2, category: 'ocean' },
-  { id: 'vid-wa0009', type: 'video', src: vidWA0009, category: 'scuba' },
   { id: 'vid-merch5', type: 'video', src: vidMerch5, category: 'merch' },
 
   // Photos from New Folder

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import preloaderVideo from '@video-optimized/preloader.mp4'
+import { subscribeHeroVideoReady, getHeroVideoReady } from '../utils/mediaReadyManager'
 
 function DiverAnimation({ src, className }) {
   const videoRef = useRef(null)
@@ -32,34 +33,59 @@ function DiverAnimation({ src, className }) {
 
 export default function Preloader({ onComplete }) {
   const [progress, setProgress] = useState(0)
+  const isVideoReadyRef = useRef(getHeroVideoReady())
 
   useEffect(() => {
-    // 3.2 seconds total duration for a relaxed, deliberate, premium transition (2.5 - 4.0s target)
-    const totalDuration = 3200
-    const intervalTime = 30
-    const increment = 100 / (totalDuration / intervalTime)
+    const unsubscribe = subscribeHeroVideoReady((ready) => {
+      isVideoReadyRef.current = ready
+    })
+    return () => unsubscribe()
+  }, [])
 
-    const timer = setInterval(() => {
-      setProgress((prev) => {
-        const next = prev + increment
-        if (next >= 100) {
-          clearInterval(timer)
-          setTimeout(() => {
-            if (onComplete) onComplete()
-          }, 350)
-          return 100
-        }
-        return next
-      })
-    }, intervalTime)
+  useEffect(() => {
+    const startTime = performance.now()
+    const baseTargetDuration = 1800 // Fast and balanced premium animation duration (~1.8s)
+    const maxSafetyTimeout = 3200 // Safety cap ensuring user is never held too long
+    let animationFrameId
+    let completed = false
 
-    return () => clearInterval(timer)
+    const updateProgress = (currentTime) => {
+      const elapsed = currentTime - startTime
+      const isVideoReady = isVideoReadyRef.current || elapsed >= maxSafetyTimeout
+
+      let targetProgress
+      if (isVideoReady) {
+        // When video is ready, progress scales smoothly to 100% by baseTargetDuration
+        targetProgress = Math.min(100, (elapsed / baseTargetDuration) * 100)
+      } else {
+        // If still buffering video, smoothly ease up to 90% and hold until ready
+        targetProgress = Math.min(90, (elapsed / baseTargetDuration) * 90)
+      }
+
+      setProgress(targetProgress)
+
+      if (targetProgress >= 100 && !completed) {
+        completed = true
+        setTimeout(() => {
+          if (onComplete) onComplete()
+        }, 50)
+        return
+      }
+
+      animationFrameId = requestAnimationFrame(updateProgress)
+    }
+
+    animationFrameId = requestAnimationFrame(updateProgress)
+
+    return () => {
+      if (animationFrameId) cancelAnimationFrame(animationFrameId)
+    }
   }, [onComplete])
 
   return (
     <motion.div
       initial={{ y: 0 }}
-      exit={{ y: '-100%', transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] } }}
+      exit={{ y: '-100%', transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] } }}
       className="fixed inset-0 z-[99999] bg-white flex flex-col items-center justify-center p-6 select-none font-body shadow-2xl"
     >
       {/* Diver Graphic / Animation */}

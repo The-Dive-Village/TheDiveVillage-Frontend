@@ -8,11 +8,23 @@ export default function CustomCursor() {
   useEffect(() => {
     document.body.classList.add('hide-cursors')
 
-    let animationFrameId
+    let animationFrameId = null
+    let isRafScheduled = false
     let mouseX = -100
     let mouseY = -100
     let isHidden = true
     let isHoveringInteractive = false
+
+    const updatePosition = () => {
+      isRafScheduled = false
+      // Tilted slightly (rotate 20deg) for a natural swimming dive angle
+      const transformStr = `translate3d(${mouseX}px, ${mouseY}px, 0) rotate(20deg)`
+
+      if (cursorRef.current) {
+        cursorRef.current.style.transform = transformStr
+        cursorRef.current.style.opacity = isHidden ? '0' : '1'
+      }
+    }
 
     const checkInteractive = (target) => {
       if (!target || !(target instanceof Element)) return false
@@ -23,6 +35,11 @@ export default function CustomCursor() {
       mouseX = e.clientX
       mouseY = e.clientY
       isHidden = false
+
+      if (!isRafScheduled) {
+        isRafScheduled = true
+        animationFrameId = requestAnimationFrame(updatePosition)
+      }
 
       const hovering = checkInteractive(e.target)
       if (hovering !== isHoveringInteractive) {
@@ -39,6 +56,9 @@ export default function CustomCursor() {
 
     const onMouseLeave = () => {
       isHidden = true
+      if (cursorRef.current) {
+        cursorRef.current.style.opacity = '0'
+      }
       if (videoRef.current && isHoveringInteractive) {
         isHoveringInteractive = false
         videoRef.current.play().catch(() => {})
@@ -47,25 +67,14 @@ export default function CustomCursor() {
 
     const onMouseEnter = () => {
       isHidden = false
-    }
-
-    const updatePosition = () => {
-      // Tilted slightly (rotate 20deg) for a natural swimming dive angle
-      const transformStr = `translate3d(${mouseX}px, ${mouseY}px, 0) rotate(20deg)`
-
       if (cursorRef.current) {
-        cursorRef.current.style.transform = transformStr
-        cursorRef.current.style.opacity = isHidden ? '0' : '1'
+        cursorRef.current.style.opacity = '1'
       }
-
-      animationFrameId = requestAnimationFrame(updatePosition)
     }
 
     window.addEventListener('mousemove', onMouseMove, { passive: true })
     window.addEventListener('mouseleave', onMouseLeave)
     window.addEventListener('mouseenter', onMouseEnter)
-
-    animationFrameId = requestAnimationFrame(updatePosition)
 
     if (videoRef.current) {
       videoRef.current.muted = true
