@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router'
 import { motion } from 'framer-motion'
 const InteractiveDiveMap = lazy(() => import('../components/InteractiveDiveMap'))
 import SEOHead from '../components/SEOHead'
-import { padiLocationService } from '../services/padiLocationService'
+import { diveSiteService } from '../services/diveSiteService'
 import {
   COURSE_CATALOG,
   CERTIFICATION_OPTIONS,
@@ -41,8 +41,8 @@ export default function BookUs() {
   const [groupSize, setGroupSize] = useState(1)
 
   // Derived PADI dataset lookups
-  const countries = useMemo(() => padiLocationService.getCountries(), [])
-  const availableLocations = useMemo(() => padiLocationService.getLocationsByCountry(country), [country])
+  const countries = useMemo(() => diveSiteService.getCountries(), [])
+  const availableLocations = useMemo(() => diveSiteService.getLocationsByCountry(country), [country])
 
   // Step 1 Handlers
   const handleCountryChange = (newCountry) => {
@@ -56,12 +56,12 @@ export default function BookUs() {
   const handleLocationChange = (newLocationId) => {
     setLocationId(newLocationId)
     const found = availableLocations.find(
-      (l) => String(l.id) === String(newLocationId) || String(l.padiId) === String(newLocationId)
+      (l) => String(l.id) === String(newLocationId)
     )
     if (found) {
       setSelectedLocation(found)
-      const placeName = padiLocationService.getLocationDisplayName(found)
-      setLocation(placeName || found.name)
+      const placeName = diveSiteService.getLocationDisplayName(found)
+      setLocation(placeName || found.title || found.name)
     } else {
       setSelectedLocation(null)
       setLocation('')
@@ -350,10 +350,7 @@ export default function BookUs() {
                             <>
                               <option value="">Select a dive location</option>
                               {availableLocations.map((loc) => {
-                                const placeName = padiLocationService.getLocationDisplayName(loc)
-                                const optionLabel = placeName && loc.name && placeName.toLowerCase() !== loc.name.toLowerCase()
-                                  ? `${placeName} — ${loc.name}`
-                                  : (placeName || loc.name)
+                                const optionLabel = diveSiteService.getLocationDisplayName(loc)
                                 return (
                                   <option key={loc.id} value={loc.id}>
                                     {optionLabel}
@@ -376,22 +373,22 @@ export default function BookUs() {
                       <div className="rounded-2xl bg-[#F0F2F5]/80 border border-navy/10 p-4 space-y-1.5 transition-all">
                         <div className="flex items-center justify-between">
                           <span className="text-[10px] font-bold uppercase tracking-wider text-accent bg-navy px-2.5 py-0.5 rounded-full">
-                            {selectedLocation.membershipLevel || 'PADI Dive Center'}
+                            {selectedLocation.membershipLevel || 'PADI Dive Site'}
                           </span>
                           <span className="text-[10px] font-mono font-bold text-navy/40">
-                            PADI ID: #{selectedLocation.padiId || selectedLocation.id}
+                            ID: #{selectedLocation.id}
                           </span>
                         </div>
                         <p className="font-heading text-sm font-bold text-navy">
-                          {selectedLocation.name}
+                          {diveSiteService.getLocationDisplayName(selectedLocation)}
                         </p>
-                        {selectedLocation.address && (
+                        {(selectedLocation.country || selectedLocation.address) && (
                           <p className="text-xs text-navy/60 flex items-center gap-1.5">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                               <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
                               <circle cx="12" cy="9" r="2.5" />
                             </svg>
-                            <span>{selectedLocation.address}</span>
+                            <span>{selectedLocation.country || selectedLocation.address}</span>
                           </p>
                         )}
                       </div>
@@ -951,8 +948,8 @@ export default function BookUs() {
                     if (loc) {
                       setLocationId(String(loc.id))
                       setSelectedLocation(loc)
-                      const placeName = padiLocationService.getLocationDisplayName(loc)
-                      setLocation(placeName || loc.name)
+                      const placeName = diveSiteService.getLocationDisplayName(loc)
+                      setLocation(placeName || loc.title || loc.name)
                       setStepError('')
                     }
                   }}

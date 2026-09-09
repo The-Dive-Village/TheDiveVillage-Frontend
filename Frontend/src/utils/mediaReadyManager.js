@@ -1,8 +1,7 @@
 /**
  * Media Ready Manager
- * Coordinates high-priority media preloading (such as the 360 Hero sphere video)
- * with the application Preloader to guarantee a zero-gap, instant handoff without
- * blank screen or color flashes.
+ * Coordinates high-priority media loading (such as the 360 Hero sphere video)
+ * with the application Preloader to guarantee a zero-gap, instant handoff.
  */
 
 let isHeroVideoReady = false

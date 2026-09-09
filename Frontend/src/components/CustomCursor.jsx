@@ -7,25 +7,15 @@ export default function CustomCursor() {
   const videoRef = useRef(null)
 
   useEffect(() => {
+    if (typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches) {
+      return
+    }
+
     document.body.classList.add('hide-cursors')
 
-    let animationFrameId = null
-    let isRafScheduled = false
-    let mouseX = -100
-    let mouseY = -100
     let isHidden = true
     let isHoveringInteractive = false
-
-    const updatePosition = () => {
-      isRafScheduled = false
-      // Tilted slightly (rotate 20deg) for a natural swimming dive angle
-      const transformStr = `translate3d(${mouseX}px, ${mouseY}px, 0) rotate(20deg)`
-
-      if (cursorRef.current) {
-        cursorRef.current.style.transform = transformStr
-        cursorRef.current.style.opacity = isHidden ? '0' : '1'
-      }
-    }
+    let lastCheckTime = 0
 
     const checkInteractive = (target) => {
       if (!target || !(target instanceof Element)) return false
@@ -33,23 +23,30 @@ export default function CustomCursor() {
     }
 
     const onMouseMove = (e) => {
-      mouseX = e.clientX
-      mouseY = e.clientY
-      isHidden = false
+      const x = e.clientX
+      const y = e.clientY
 
-      if (!isRafScheduled) {
-        isRafScheduled = true
-        animationFrameId = requestAnimationFrame(updatePosition)
+      if (cursorRef.current) {
+        cursorRef.current.style.transform = `translate3d(${x}px, ${y}px, 0)`
+        if (isHidden) {
+          isHidden = false
+          cursorRef.current.style.opacity = '1'
+        }
       }
 
-      const hovering = checkInteractive(e.target)
-      if (hovering !== isHoveringInteractive) {
-        isHoveringInteractive = hovering
-        if (videoRef.current) {
-          if (hovering) {
-            videoRef.current.pause()
-          } else {
-            videoRef.current.play().catch(() => {})
+      // Check interactive targets smoothly with time throttling (max once per 50ms)
+      const now = performance.now()
+      if (now - lastCheckTime > 50) {
+        lastCheckTime = now
+        const hovering = checkInteractive(e.target)
+        if (hovering !== isHoveringInteractive) {
+          isHoveringInteractive = hovering
+          if (videoRef.current) {
+            if (hovering) {
+              videoRef.current.pause()
+            } else {
+              videoRef.current.play().catch(() => {})
+            }
           }
         }
       }
@@ -86,7 +83,6 @@ export default function CustomCursor() {
       window.removeEventListener('mousemove', onMouseMove)
       window.removeEventListener('mouseleave', onMouseLeave)
       window.removeEventListener('mouseenter', onMouseEnter)
-      cancelAnimationFrame(animationFrameId)
       document.body.classList.remove('hide-cursors')
     }
   }, [])
@@ -100,20 +96,28 @@ export default function CustomCursor() {
       ref={cursorRef}
       className="pointer-events-none fixed top-0 left-0 z-[9999999] will-change-transform drop-shadow-md"
       style={{
-        transform: 'translate3d(-100px, -100px, 0) rotate(38deg)',
+        transform: 'translate3d(-100px, -100px, 0)',
         opacity: 0,
         transition: 'opacity 0.12s ease-out',
       }}
     >
-      <video
-        ref={videoRef}
-        src={cursorVideo}
-        autoPlay
-        loop
-        muted
-        playsInline
-        className="w-20 sm:w-24 h-auto object-contain pointer-events-none"
-      />
+      <div
+        className="will-change-transform"
+        style={{
+          transformOrigin: '4.6% 57.5%',
+          transform: 'translate(-4.6%, -57.5%) rotate(20deg)',
+        }}
+      >
+        <video
+          ref={videoRef}
+          src={cursorVideo}
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-16 sm:w-20 h-auto object-contain pointer-events-none select-none"
+        />
+      </div>
     </div>
   )
 

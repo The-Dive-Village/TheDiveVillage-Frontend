@@ -56,7 +56,7 @@ export default function Product3DViewer({ src, alt = '3D Product Model' }) {
   }, [src, scriptLoaded])
 
   return (
-    <div className="relative w-full h-full min-h-[340px] bg-gradient-to-b from-[#FFFFFF] via-[#F8FAFC] to-[#EDF2F7] rounded-[28px] overflow-hidden flex items-center justify-center select-none touch-none">
+    <div className="relative w-full h-full min-h-[300px] sm:min-h-[340px] bg-gradient-to-b from-[#FFFFFF] via-[#F8FAFC] to-[#EDF2F7] rounded-[28px] overflow-hidden flex items-center justify-center select-none">
       <model-viewer
         ref={modelRef}
         src={src}
@@ -64,7 +64,7 @@ export default function Product3DViewer({ src, alt = '3D Product Model' }) {
         auto-rotate={autoRotate ? true : undefined}
         rotation-per-second="35deg"
         camera-controls
-        touch-action="none"
+        touch-action="pan-y"
         interaction-prompt="auto"
         camera-orbit="0deg 75deg 110%"
         camera-target="auto auto auto"

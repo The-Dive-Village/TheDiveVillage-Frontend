@@ -68,6 +68,10 @@ export const firebaseAuth = {
     const provider = new authMod.GoogleAuthProvider()
     return authMod.signInWithPopup(a, provider)
   },
+  sendPasswordReset: async (email) => {
+    const { auth: a, authMod } = await getAuthModule()
+    return authMod.sendPasswordResetEmail(a, email)
+  },
   signOut: async () => {
     if (!isFirebaseConfigured) return
     const { auth: a, authMod } = await getAuthModule()

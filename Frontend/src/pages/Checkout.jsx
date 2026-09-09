@@ -209,6 +209,7 @@ export default function Checkout() {
                       <input
                         type="text"
                         name="city"
+                        autoComplete="address-level2"
                         required
                         placeholder="City"
                         value={formData.city}
@@ -221,6 +222,7 @@ export default function Checkout() {
                       <input
                         type="text"
                         name="state"
+                        autoComplete="address-level1"
                         required
                         placeholder="State"
                         value={formData.state}
@@ -233,6 +235,8 @@ export default function Checkout() {
                       <input
                         type="text"
                         name="postalCode"
+                        inputMode="numeric"
+                        autoComplete="postal-code"
                         required
                         placeholder="PIN Code"
                         value={formData.postalCode}

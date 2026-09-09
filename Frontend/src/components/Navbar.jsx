@@ -7,6 +7,7 @@ import ThemeToggle from './ThemeToggle'
 import { useCart } from '../hooks/useCart'
 import { useWishlist } from '../hooks/useWishlist'
 import { useAuth } from '../hooks/useAuth'
+import { prefetchRoute } from '../utils/routePrefetcher'
 
 const NAV = [
   { to: '/', label: 'Home', end: true },
@@ -61,10 +62,10 @@ export default function Navbar() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-[9999] w-full px-2 sm:px-4 lg:px-6 pointer-events-none flex flex-col items-center">
-      <div className={`pointer-events-auto mx-auto grid grid-cols-[1fr_auto_1fr] h-[58px] sm:h-[64px] lg:h-[68px] w-full max-w-7xl 2xl:max-w-[1700px] items-center px-4 sm:px-8 lg:px-12 rounded-full border shadow-[0_12px_40px_rgba(0,0,0,0.5)] transition-all duration-300 ${
+      <div className={`pointer-events-auto mx-auto grid grid-cols-[1fr_auto_1fr] h-[58px] sm:h-[64px] lg:h-[68px] w-full max-w-7xl 2xl:max-w-[1700px] items-center px-4 sm:px-8 lg:px-12 rounded-full border shadow-[0_12px_40px_rgba(0,18,32,0.7)] transition-all duration-300 ${
         location.pathname === '/'
-          ? 'bg-[#001428]/35 backdrop-blur-md backdrop-saturate-125 border-white/25'
-          : 'bg-[#003865]/90 backdrop-blur-md backdrop-saturate-125 border-white/25 shadow-[0_12px_40px_rgba(0,56,101,0.4)]'
+          ? 'bg-[#001e3d]/80 backdrop-blur-xl backdrop-saturate-150 border-cyan-400/30'
+          : 'bg-[#00223D]/90 backdrop-blur-xl backdrop-saturate-150 border-cyan-400/30 shadow-[0_12px_40px_rgba(0,18,32,0.6)]'
       }`}>
         
         {/* Left Side: Home, Book Us, Contact Us */}
@@ -72,6 +73,8 @@ export default function Navbar() {
           <NavLink
             to="/"
             end
+            onMouseEnter={() => prefetchRoute('/')}
+            onTouchStart={() => prefetchRoute('/')}
             className={({ isActive }) =>
               `relative whitespace-nowrap font-body text-[14px] sm:text-[15px] font-bold tracking-wide transition-all duration-300 ${
                 isActive 
@@ -84,6 +87,8 @@ export default function Navbar() {
           </NavLink>
           <NavLink
             to="/book-us"
+            onMouseEnter={() => prefetchRoute('/book-us')}
+            onTouchStart={() => prefetchRoute('/book-us')}
             className={({ isActive }) =>
               `relative whitespace-nowrap font-body text-[14px] sm:text-[15px] font-bold tracking-wide transition-all duration-300 ${
                 isActive 
@@ -100,6 +105,8 @@ export default function Navbar() {
           </NavLink>
           <NavLink
             to="/contact"
+            onMouseEnter={() => prefetchRoute('/contact')}
+            onTouchStart={() => prefetchRoute('/contact')}
             className={({ isActive }) =>
               `hidden lg:block relative whitespace-nowrap font-body text-[14px] sm:text-[15px] font-bold tracking-wide transition-all duration-300 ${
                 isActive 
@@ -123,7 +130,7 @@ export default function Navbar() {
           <button
             type="button"
             onClick={() => setIsCallModalOpen(true)}
-            className="flex h-9 sm:h-10 items-center justify-center gap-1.5 rounded-xl border border-white/30 px-3 text-white transition duration-hover hover:bg-white/10 hover:border-white cursor-pointer"
+            className="flex h-9 sm:h-10 items-center justify-center gap-1.5 rounded-xl border border-cyan-400/30 bg-[#001e3d]/50 px-3 text-white transition duration-hover hover:bg-cyan-500/20 hover:border-cyan-400 cursor-pointer shadow-sm"
             aria-label="Call & Contact Options"
           >
             <PhoneIcon />
@@ -133,7 +140,7 @@ export default function Navbar() {
           <button
             type="button"
             onClick={toggleNightDive}
-            className="flex h-9 sm:h-10 items-center justify-center gap-1.5 rounded-xl border border-white/30 px-3 text-white transition duration-hover hover:bg-white/10 hover:border-white shrink-0 cursor-pointer"
+            className="flex h-9 sm:h-10 items-center justify-center gap-1.5 rounded-xl border border-cyan-400/30 bg-[#001e3d]/50 px-3 text-white transition duration-hover hover:bg-cyan-500/20 hover:border-cyan-400 shrink-0 cursor-pointer shadow-sm"
             aria-label="Toggle Night Dive mode"
           >
             <ThemeToggle isNightDive={isNightDive} />
@@ -144,7 +151,7 @@ export default function Navbar() {
 
           <Link
             to={isAuthenticated ? '/dashboard/profile' : '/login'}
-            className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl border border-white/30 text-white transition duration-hover hover:bg-white/10 hover:border-white shrink-0"
+            className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl border border-cyan-400/30 bg-[#001e3d]/50 text-white transition duration-hover hover:bg-cyan-500/20 hover:border-cyan-400 shrink-0 shadow-sm"
             aria-label={isAuthenticated ? 'Account' : 'Login'}
             title={user?.displayName || user?.email || 'Account'}
           >
@@ -161,7 +168,7 @@ export default function Navbar() {
 
           <button
             type="button"
-            className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full border border-white/30 text-white transition duration-hover hover:bg-white/10 hover:border-white lg:hidden"
+            className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full border border-cyan-400/30 bg-[#001e3d]/50 text-white transition duration-hover hover:bg-cyan-500/20 hover:border-cyan-400 lg:hidden"
             aria-label="Toggle menu"
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
@@ -178,7 +185,7 @@ export default function Navbar() {
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className={`pointer-events-auto mt-2 w-full max-w-7xl 2xl:max-w-[1700px] overflow-hidden rounded-3xl border border-white/20 shadow-2xl ${isDarkBackground ? 'bg-[#001428]/95 backdrop-blur-3xl' : 'bg-white/95 backdrop-blur-3xl'}`}
+            className="pointer-events-auto mt-2 w-full max-w-7xl 2xl:max-w-[1700px] overflow-hidden rounded-3xl border border-cyan-400/30 shadow-2xl bg-[#001e3d]/95 backdrop-blur-3xl text-white"
           >
             <div className="px-6 py-4">
               <nav className="flex flex-col gap-1" aria-label="Mobile">
@@ -187,6 +194,8 @@ export default function Navbar() {
                     key={item.to}
                     to={item.to}
                     end={item.end}
+                    onMouseEnter={() => prefetchRoute(item.to)}
+                    onTouchStart={() => prefetchRoute(item.to)}
                     onClick={() => setOpen(false)}
                     className={({ isActive }) =>
                       `rounded-xl px-4 py-3 font-heading text-[15px] font-bold transition duration-hover ${
@@ -334,7 +343,7 @@ function CallModal({ isOpen, onClose }) {
       id: 'messenger',
       title: 'Facebook Messenger',
       subtitle: 'Message us on Facebook',
-      href: 'https://m.me/thedivevillage',
+      href: '#',
       icon: (
         <svg className="w-5 h-5 text-navy" fill="currentColor" viewBox="0 0 24 24">
           <path d="M12 0C5.373 0 0 4.974 0 11.111c0 3.497 1.745 6.616 4.472 8.652V24l4.074-2.238c1.099.304 2.262.47 3.454.47 6.627 0 12-4.975 12-11.121C24 4.974 18.627 0 12 0zm1.191 14.963l-3.055-3.26-5.963 3.26 6.559-6.963 3.13 3.259 5.889-3.259-6.56 6.963z"/>
@@ -345,7 +354,7 @@ function CallModal({ isOpen, onClose }) {
       id: 'viber',
       title: 'Viber',
       subtitle: 'Connect via Viber (+91 89710 01010)',
-      href: 'viber://chat?number=%2B918971001010',
+      href: '#',
       icon: (
         <svg className="w-5 h-5 text-navy" fill="currentColor" viewBox="0 0 24 24">
           <path d="M19.39 14.88c-.64-.26-3.76-1.85-4.35-2.07-.59-.22-1.02-.33-1.45.33-.43.66-1.68 2.07-2.07 2.51-.39.44-.78.5-1.42.22-3.64-1.57-6.03-5.26-6.42-5.92-.39-.66.39-.66 1.13-2.14.15-.3.07-.56-.04-.78-.11-.22-.98-2.36-1.34-3.23-.35-.85-.71-.73-1-.75l-.85-.02c-.3 0-.78.11-1.19.56-.41.45-1.56 1.52-1.56 3.71 0 2.19 1.6 4.31 1.82 4.61.22.3 3.15 4.81 7.63 6.75 3.7 1.6 4.45 1.28 5.25 1.2.8-.08 2.57-1.05 2.93-2.07.36-1.02.36-1.89.25-2.07-.11-.18-.41-.29-1.05-.55z"/>
@@ -401,10 +410,15 @@ function CallModal({ isOpen, onClose }) {
               {options.map((opt) => (
                 <a
                   key={opt.id}
-                  href={opt.href}
-                  target={opt.id === 'phone' || opt.id === 'email' ? '_self' : '_blank'}
-                  rel="noopener noreferrer"
-                  onClick={onClose}
+                  href={opt.href || '#'}
+                  target={opt.id === 'whatsapp' ? '_blank' : '_self'}
+                  rel={opt.id === 'whatsapp' ? 'noopener noreferrer' : undefined}
+                  onClick={(e) => {
+                    if (!opt.href || opt.href === '#') {
+                      e.preventDefault()
+                    }
+                    onClose()
+                  }}
                   className="flex items-center justify-between p-4 rounded-2xl bg-navy/5 hover:bg-navy/10 border border-navy/10 transition duration-200 group shadow-sm cursor-pointer"
                 >
                   <div className="flex items-center gap-3.5">
@@ -429,3 +443,5 @@ function CallModal({ isOpen, onClose }) {
     document.body
   )
 }
+
+

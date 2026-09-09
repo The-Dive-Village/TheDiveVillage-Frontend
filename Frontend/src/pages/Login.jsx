@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { useAuth } from '../hooks/useAuth'
-import { IMAGES } from '../utils/images'
+import { firebaseAuth } from '../services/firebase'
 import vid2 from '../assets/2.mp4'
 
 export default function Login() {
@@ -10,7 +10,23 @@ export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const [infoMsg, setInfoMsg] = useState('')
   const [loading, setLoading] = useState(false)
+
+  const handleForgotPassword = async () => {
+    if (!email.trim()) {
+      setError('Please enter your email address first, then click Forgot?')
+      return
+    }
+    setError('')
+    setInfoMsg('')
+    try {
+      await firebaseAuth.sendPasswordReset(email.trim())
+      setInfoMsg(`Password reset link sent to ${email.trim()}! Please check your inbox.`)
+    } catch (err) {
+      setError(err.message || 'Failed to send password reset email.')
+    }
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -97,6 +113,12 @@ export default function Login() {
             </div>
           )}
 
+          {infoMsg && (
+            <div className="mb-8 rounded-2xl bg-emerald-50 p-4 text-sm font-semibold text-emerald-700 border border-emerald-100">
+              ✅ {infoMsg}
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label className="mb-2 block text-xs font-bold text-navy/70">Email Address</label>
@@ -113,7 +135,13 @@ export default function Login() {
             <div>
               <div className="flex items-center justify-between mb-2">
                 <label className="block text-xs font-bold text-navy/70">Password</label>
-                <Link to="/forgot-password" className="text-xs font-bold text-navy hover:text-accent transition">Forgot?</Link>
+                <button
+                  type="button"
+                  onClick={handleForgotPassword}
+                  className="text-xs font-bold text-navy hover:text-accent transition cursor-pointer"
+                >
+                  Forgot?
+                </button>
               </div>
               <input
                 type="password"

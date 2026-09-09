@@ -1,5 +1,6 @@
 import { forwardRef, useRef } from 'react'
 import { motion, useReducedMotion, useMotionValue, useSpring } from 'framer-motion'
+import { prefetchRoute } from '../utils/routePrefetcher'
 
 const variants = {
   primary:
@@ -42,7 +43,10 @@ const Button = forwardRef(function Button(
 
   const rectRef = useRef(null)
 
-  const handleMouseEnter = () => {
+  const handleMouseEnter = (e) => {
+    if (props.to) prefetchRoute(props.to)
+    if (props.href && props.href.startsWith('/')) prefetchRoute(props.href)
+    if (props.onMouseEnter) props.onMouseEnter(e)
     if (reduce || !ref.current) return
     rectRef.current = ref.current.getBoundingClientRect()
   }

@@ -2,7 +2,7 @@ import { useState, useEffect, Suspense, useRef } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls, useVideoTexture } from '@react-three/drei'
 import * as THREE from 'three'
-import videoFile from '../assets/Hero(1).mp4'
+import videoFile from '../assets/Hero_fast.mp4'
 
 function getOrCreateDomVideoContainer() {
   let container = document.getElementById('interactive-video-dom-root')
@@ -164,8 +164,9 @@ export default function InteractiveVideoSphere({ autoRotate = true, className = 
   if (!mounted) return null
 
   return (
-    <div className={`relative w-full h-full bg-navy overflow-hidden cursor-grab active:cursor-grabbing ${className}`}>
+    <div className={`relative w-full h-full bg-[#001e3d] overflow-hidden cursor-grab active:cursor-grabbing ${className}`}>
       <Canvas camera={{ position: [0, 0, 0.1], fov: 75 }}>
+        <color attach="background" args={['#001e3d']} />
         <Suspense fallback={null}>
           <SphereMesh autoRotate={autoRotate} />
         </Suspense>
@@ -183,7 +184,7 @@ export default function InteractiveVideoSphere({ autoRotate = true, className = 
 
       {/* Interactive 360 Toggle Circle Overlay */}
       <div className="absolute bottom-6 right-6 z-30 flex flex-col items-center gap-2 pointer-events-auto">
-        <span className="text-[10px] font-bold text-white/70 uppercase tracking-widest bg-navy/60 px-2 py-1 rounded-md backdrop-blur-md">
+        <span className="text-[10px] font-bold text-cyan-200 uppercase tracking-widest bg-[#001e3d]/80 border border-cyan-400/30 px-2.5 py-1 rounded-md backdrop-blur-md shadow-md">
           360° Toggle
         </span>
         <div 
@@ -192,10 +193,10 @@ export default function InteractiveVideoSphere({ autoRotate = true, className = 
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
           onPointerCancel={handlePointerUp}
-          className="relative w-16 h-16 rounded-full border-2 border-white/20 bg-white/10 backdrop-blur-md flex items-center justify-center shadow-lg cursor-grab active:cursor-grabbing touch-none"
+          className="relative w-16 h-16 rounded-full border-2 border-cyan-400/40 bg-[#001e3d]/70 backdrop-blur-md flex items-center justify-center shadow-[0_8px_25px_rgba(0,30,61,0.7)] cursor-grab active:cursor-grabbing touch-none"
         >
           <div
-            className="w-8 h-8 rounded-full bg-white/80 shadow-soft border border-white/50"
+            className="w-8 h-8 rounded-full bg-gradient-to-br from-[#00AEC7] to-[#005580] shadow-[0_0_15px_rgba(0,174,199,0.6)] border border-cyan-300/60"
             style={{ 
               transform: `translate(${thumbPos.x}px, ${thumbPos.y}px)`, 
               transition: isDragging.current ? 'none' : 'transform 0.2s ease-out' 

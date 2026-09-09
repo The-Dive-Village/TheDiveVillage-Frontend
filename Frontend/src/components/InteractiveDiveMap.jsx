@@ -1,57 +1,8 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { COUNTRY_CENTROIDS } from '../data/countryCentroids'
-import { getLocationDisplayName } from '../services/padiLocationService'
-
-// Singleton Promise-based loader for Cesium scripts and styles
-let cesiumLoadPromise = null
-
-export function loadCesium() {
-  if (typeof window !== 'undefined' && window.Cesium) {
-    return Promise.resolve(window.Cesium)
-  }
-  if (cesiumLoadPromise) {
-    return cesiumLoadPromise
-  }
-
-  cesiumLoadPromise = new Promise((resolve, reject) => {
-    const CSS_URL = 'https://cesium.com/downloads/cesiumjs/releases/1.132/Build/Cesium/Widgets/widgets.css'
-    const SCRIPT_URL = 'https://cesium.com/downloads/cesiumjs/releases/1.132/Build/Cesium/Cesium.js'
-
-    if (!document.querySelector(`link[href="${CSS_URL}"]`)) {
-      const link = document.createElement('link')
-      link.rel = 'stylesheet'
-      link.href = CSS_URL
-      document.head.appendChild(link)
-    }
-
-    if (window.Cesium) {
-      resolve(window.Cesium)
-      return
-    }
-
-    const existingScript = document.querySelector(`script[src="${SCRIPT_URL}"]`)
-    if (existingScript) {
-      existingScript.addEventListener('load', () => resolve(window.Cesium))
-      existingScript.addEventListener('error', (err) => reject(err))
-      return
-    }
-
-    const script = document.createElement('script')
-    script.src = SCRIPT_URL
-    script.async = true
-    script.onload = () => {
-      window.CESIUM_BASE_URL = 'https://cesium.com/downloads/cesiumjs/releases/1.132/Build/Cesium/'
-      resolve(window.Cesium)
-    }
-    script.onerror = (err) => {
-      cesiumLoadPromise = null
-      reject(new Error('Failed to load Cesium script'))
-    }
-    document.head.appendChild(script)
-  })
-
-  return cesiumLoadPromise
-}
+import { diveSiteService, getLocationDisplayName } from '../services/diveSiteService'
+import { getDiveSiteImage } from '../data/diveSiteImages'
+import { loadCesium } from '../services/cesiumLoader'
 
 // Memoization cache for generated marker SVG data URIs
 const svgCache = new Map()
@@ -138,6 +89,12 @@ export default function InteractiveDiveMap({
   const viewerRef = useRef(null)
   const isCesiumReady = useRef(false)
   const [isLoaded, setIsLoaded] = useState(false)
+  const [popupSite, setPopupSite] = useState(null)
+  const [isPopupOpen, setIsPopupOpen] = useState(false)
+
+  const popupRef = useRef(null)
+  const popupSiteRef = useRef(null)
+  const isPopupOpenRef = useRef(false)
 
   const countryLocationsRef = useRef(countryLocations)
   const selectedLocationRef = useRef(selectedLocation)
@@ -156,6 +113,8 @@ export default function InteractiveDiveMap({
   selectedCountryRef.current = selectedCountry
   onLocationSelectRef.current = onLocationSelect
   onCountrySelectRef.current = onCountrySelect
+  popupSiteRef.current = popupSite
+  isPopupOpenRef.current = isPopupOpen
 
   // Deterministic camera flight to Global Overview
   const flyToGlobalOverview = useCallback(() => {
@@ -248,18 +207,20 @@ export default function InteractiveDiveMap({
   const flyToLocationPoint = useCallback((loc) => {
     const viewer = viewerRef.current
     if (!viewer || viewer.isDestroyed() || !window.Cesium || !loc) return
-    if (loc.latitude == null || loc.longitude == null) return
+    const lat = Number(loc.latitude)
+    const lon = Number(loc.longitude)
+    if (isNaN(lat) || isNaN(lon)) return
 
     isProgrammaticFlightRef.current = true
     viewer.camera.flyTo({
       destination: window.Cesium.Cartesian3.fromDegrees(
-        loc.longitude,
-        loc.latitude,
-        45000
+        lon,
+        lat,
+        180000
       ),
       orientation: {
         heading: 0.0,
-        pitch: window.Cesium.Math.toRadians(-85),
+        pitch: window.Cesium.Math.toRadians(-75),
         roll: 0.0
       },
       duration: 1.5,
@@ -393,11 +354,70 @@ export default function InteractiveDiveMap({
         viewer.camera.moveStart.addEventListener(handleMoveStart)
         viewer.camera.moveEnd.addEventListener(handleMoveEnd)
 
-        // Subtle idle rotation when completely idle on world view
+        // Subtle idle rotation when completely idle on world view + 60fps smooth popup positioning
         removePostRender = viewer.scene.postRender.addEventListener(() => {
+          if (!viewer || viewer.isDestroyed()) return
+
+          // 1. Screen-space coordinate tracking for dive site popup
+          try {
+            const popupEl = popupRef.current
+            const site = popupSiteRef.current
+            const isOpen = isPopupOpenRef.current
+
+            if (popupEl) {
+              if (!isOpen || !site || !viewer.scene || !viewer.camera) {
+                popupEl.style.display = 'none'
+              } else {
+                const lat = Number(site.latitude)
+                const lon = Number(site.longitude)
+                if (isNaN(lat) || isNaN(lon)) {
+                  popupEl.style.display = 'none'
+                } else {
+                  const cartesian = Cesium.Cartesian3.fromDegrees(lon, lat, 10.0)
+                  const cameraPos = viewer.camera.position
+                  const toPoint = Cesium.Cartesian3.subtract(cartesian, cameraPos, new Cesium.Cartesian3())
+                  const dot = Cesium.Cartesian3.dot(viewer.camera.direction, toPoint)
+
+                  const occluder = new Cesium.EllipsoidalOccluder(viewer.scene.globe.ellipsoid, cameraPos)
+                  const isOccluded = !occluder.isPointVisible(cartesian)
+
+                  if (dot <= 0 || isOccluded) {
+                    popupEl.style.display = 'none'
+                  } else {
+                    let windowPosition = null
+                    if (Cesium.SceneTransforms) {
+                      if (typeof Cesium.SceneTransforms.worldToWindowCoordinates === 'function') {
+                        windowPosition = Cesium.SceneTransforms.worldToWindowCoordinates(viewer.scene, cartesian)
+                      } else if (typeof Cesium.SceneTransforms.wgs84ToWindowCoordinates === 'function') {
+                        windowPosition = Cesium.SceneTransforms.wgs84ToWindowCoordinates(viewer.scene, cartesian)
+                      }
+                    }
+
+                    if (!windowPosition) {
+                      popupEl.style.display = 'none'
+                    } else {
+                      const canvas = viewer.scene.canvas
+                      const x = windowPosition.x
+                      const y = windowPosition.y
+
+                      if (x < -120 || x > canvas.clientWidth + 120 || y < -120 || y > canvas.clientHeight + 120) {
+                        popupEl.style.display = 'none'
+                      } else {
+                        popupEl.style.display = 'block'
+                        popupEl.style.left = `${Math.round(x)}px`
+                        popupEl.style.top = `${Math.round(y - 48)}px`
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          } catch (err) {
+            if (popupRef.current) popupRef.current.style.display = 'none'
+          }
+
+          // 2. Idle world rotation
           if (
-            !viewer ||
-            viewer.isDestroyed() ||
             selectedCountryRef.current ||
             isProgrammaticFlightRef.current ||
             isUserInteractingRef.current
@@ -477,10 +497,16 @@ export default function InteractiveDiveMap({
           lastInteractionTimeRef.current = Date.now()
           const pickedObject = viewer.scene.pick(movement.endPosition)
           if (Cesium.defined(pickedObject) && pickedObject.id) {
-            viewer.scene.canvas.style.cursor = 'pointer'
-          } else {
-            viewer.scene.canvas.style.cursor = 'default'
+            const idStr = String(pickedObject.id.id || '')
+            if (
+              idStr.startsWith('padi-') ||
+              (idStr.startsWith('country-') && idStr !== 'country-envelope' && !selectedCountryRef.current)
+            ) {
+              viewer.scene.canvas.style.cursor = 'pointer'
+              return
+            }
           }
+          viewer.scene.canvas.style.cursor = 'default'
         }, Cesium.ScreenSpaceEventType.MOUSE_MOVE)
 
         handler.setInputAction((click) => {
@@ -498,19 +524,25 @@ export default function InteractiveDiveMap({
               if (loc) {
                 onLocationSelectRef.current?.(loc)
                 flyToLocationPoint(loc)
+                setPopupSite(loc)
+                setIsPopupOpen(true)
               }
               return
             }
 
-            // 2. Clicked a Country Pin Badge
-            if (idStr.startsWith('country-') || pickedObject.id.properties?.countryName) {
+            // 2. Clicked a Country Pin Badge (ONLY on world overview, never country-envelope)
+            if (idStr.startsWith('country-') && idStr !== 'country-envelope') {
               const countryName = pickedObject.id.properties?.countryName?.getValue() || idStr.replace('country-', '')
-              if (countryName) {
+              if (countryName && countryName !== 'envelope') {
                 onCountrySelectRef.current?.(countryName)
               }
               return
             }
           }
+
+          // 3. Clicked empty terrain / ocean / non-selectable object:
+          // Close popup if open. DO NOT reset country or booking state!
+          setIsPopupOpen(false)
         }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
       })
       .catch((err) => {
@@ -565,8 +597,8 @@ export default function InteractiveDiveMap({
 
         viewer.entities.add({
           id: `padi-${loc.id}`,
-          name: loc.name,
-          position: Cesium.Cartesian3.fromDegrees(loc.longitude, loc.latitude),
+          name: displayName || loc.title || loc.name,
+          position: Cesium.Cartesian3.fromDegrees(Number(loc.longitude), Number(loc.latitude)),
           billboard: {
             image: createPadiPinSvg(isSel, isDimmed),
             width: isSel ? 48 : 38,
@@ -681,9 +713,17 @@ export default function InteractiveDiveMap({
     })
 
     if (selectedLocation) {
+      setPopupSite(selectedLocation)
+      setIsPopupOpen(true)
       flyToLocationPoint(selectedLocation)
     }
   }, [selectedLocation, countryLocations, isLoaded, flyToLocationPoint])
+
+  // Reset popup when country changes
+  useEffect(() => {
+    setIsPopupOpen(false)
+    setPopupSite(null)
+  }, [selectedCountry])
 
   return (
     <div id="dive-map-container" className="relative w-full h-full min-h-[450px] overflow-hidden bg-[#021426] pointer-events-auto">
@@ -711,6 +751,16 @@ export default function InteractiveDiveMap({
       {/* Cesium Container */}
       <div ref={containerRef} className="w-full h-full" />
 
+      {/* Sleek Loading Overlay while Cesium starts */}
+      {!isLoaded && (
+        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-[#021426] text-cyan-400 gap-3 pointer-events-none">
+          <div className="w-10 h-10 rounded-full border-2 border-cyan-400/20 border-t-cyan-400 animate-spin" />
+          <span className="text-xs font-bold uppercase tracking-widest text-cyan-300/80 animate-pulse">
+            Loading 3D Ocean Globe...
+          </span>
+        </div>
+      )}
+
       {/* Instruction Overlay */}
       <div className="absolute top-6 right-6 pointer-events-none z-10">
         <span className="inline-flex items-center gap-2 rounded-full bg-black/60 backdrop-blur-md px-4 py-2 text-xs font-bold text-white border border-white/10 shadow-lg">
@@ -719,6 +769,95 @@ export default function InteractiveDiveMap({
           </svg>
           Drag to explore in 3D
         </span>
+      </div>
+
+      {/* Floating Dive Site Image Popup Card */}
+      <div
+        ref={popupRef}
+        style={{ display: 'none' }}
+        className="absolute z-30 pointer-events-auto transform -translate-x-1/2 -translate-y-full w-64 bg-[#00192e]/95 backdrop-blur-xl rounded-2xl shadow-[0_16px_48px_rgba(0,0,0,0.7)] overflow-hidden border border-cyan-400/35 transition-all duration-150"
+      >
+        {popupSite && (
+          <div className="relative">
+            {/* 1. Header: Title & Close Button */}
+            <div className="px-3.5 pt-3 pb-2 flex items-center justify-between gap-2 border-b border-white/10 bg-white/[0.03]">
+              <div className="min-w-0 flex-1">
+                <h3 className="font-heading font-bold text-sm text-white leading-tight truncate">
+                  {popupSite.title || popupSite.name || 'Dive Site'}
+                </h3>
+                {popupSite.country && (
+                  <p className="text-[10px] font-medium text-cyan-400 flex items-center gap-1 mt-0.5 truncate">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="shrink-0">
+                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
+                      <circle cx="12" cy="9" r="2.5" />
+                    </svg>
+                    <span className="truncate">{popupSite.country}</span>
+                  </p>
+                )}
+              </div>
+
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setIsPopupOpen(false)
+                }}
+                className="text-white/60 hover:text-white w-6 h-6 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition cursor-pointer text-xs font-bold shrink-0"
+                aria-label="Close"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* 2. Dive Site Photo */}
+            <div className="w-full h-32 bg-[#021426] overflow-hidden relative group">
+              <img
+                src={getDiveSiteImage(popupSite.id)}
+                alt={popupSite.title || 'Dive Site'}
+                className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                loading="lazy"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#00192e] via-transparent to-transparent opacity-60 pointer-events-none" />
+            </div>
+
+            {/* 3. Dive Metadata Section */}
+            <div className="px-3.5 py-2.5 space-y-0.5 bg-[#00192e]/50">
+              <span className="block text-[9px] font-extrabold uppercase tracking-widest text-cyan-400/90">
+                DIVE TYPE
+              </span>
+              <span className="block text-xs font-semibold text-slate-200 truncate">
+                {popupSite.types || 'Reef, Ocean'}
+              </span>
+            </div>
+
+            {/* 4. Action Footer: View Details Link & ID */}
+            <div className="px-3.5 py-2.5 border-t border-white/10 flex items-center justify-between bg-white/[0.02]">
+              {popupSite.travel_url ? (
+                <a
+                  href={popupSite.travel_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs font-bold text-cyan-400 hover:text-cyan-300 flex items-center gap-1.5 transition group cursor-pointer"
+                >
+                  <span>View Details</span>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">
+                    <path d="M7 17L17 7M17 7H7M17 7V17" />
+                  </svg>
+                </a>
+              ) : (
+                <span className="text-xs font-bold text-cyan-400/70">
+                  Verified PADI Site
+                </span>
+              )}
+              <span className="text-[10px] font-mono font-medium text-white/40">
+                #{popupSite.id}
+              </span>
+            </div>
+
+            {/* Bottom Marker Pointer Needle */}
+            <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-[#00192e] rotate-45 border-r border-b border-cyan-400/35 pointer-events-none" />
+          </div>
+        )}
       </div>
 
       {/* Joystick Overlay */}

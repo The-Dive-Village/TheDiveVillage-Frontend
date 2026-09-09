@@ -21,16 +21,21 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    background-color: #001e3d !important;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
     @apply font-body text-body text-white bg-navy antialiased select-none;
+    background-color: #001e3d !important;
     font-optical-sizing: auto;
     font-variation-settings: "slnt" 0, "wdth" 100, "GRAD" 0, "ROND" 0;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    -webkit-overflow-scrolling: touch;
   }
 
   input,
@@ -40,6 +45,19 @@
     -moz-user-select: text;
     -ms-user-select: text;
     user-select: text;
+  }
+
+  /* Prevent iOS Safari from auto-zooming on input focus */
+  @media screen and (max-width: 768px) {
+    input, select, textarea {
+      font-size: 16px !important;
+    }
+  }
+
+  /* Fast responsive touch action for interactive elements */
+  button, a, [role="button"], input[type="submit"], input[type="button"] {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
 
   /* Hide scrollbars globally across all browsers for elements with scrollbar-none or no-scrollbar */

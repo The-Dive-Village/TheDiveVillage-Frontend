@@ -4,29 +4,16 @@ import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
 import { useLocation } from 'react-router'
-import videoFile from '../assets/Hero(1).mp4'
+import videoFile from '../assets/Hero_fast.mp4'
 import divingFile from '../assets/Diving(1).mp4'
-import bookFile from '../assets/Book(2).mp4'
-import turtleVideo from '../assets/New folder/Turtle Anna(1).mp4'
-import nightDiveVideo from '../assets/nightdive.mp4'
+import bookFile from '../assets/Book_fast.mp4'
+import turtleVideo from '../assets/Turtle_fast.mp4'
+import nightDiveVideo from '../assets/nightdive_fast.mp4'
 import underwaterAudio from '../assets/Underwater.mp3'
 import { setHeroVideoReady } from '../utils/mediaReadyManager'
 
-// Shared viewport DOM container for active video elements to ensure browser hardware acceleration and high-priority decoding
-function getOrCreateDomVideoContainer() {
-  let container = document.getElementById('video-sphere-dom-root')
-  if (!container) {
-    container = document.createElement('div')
-    container.id = 'video-sphere-dom-root'
-    container.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;overflow:hidden;z-index:-99999;opacity:0.001;'
-    document.body.appendChild(container)
-  }
-  return container
-}
-
-function useDirectVideoTexture(src, playbackRate = 0.5, priority = false) {
+function useDirectVideoTexture(src, playbackRate = 1.0, priority = false) {
   const [texture, setTexture] = useState(null)
-  const videoRef = useRef(null)
 
   useEffect(() => {
     if (!src) {
@@ -34,7 +21,8 @@ function useDirectVideoTexture(src, playbackRate = 0.5, priority = false) {
       return
     }
 
-    const domContainer = getOrCreateDomVideoContainer()
+    let isMounted = true
+
     const video = document.createElement('video')
     video.src = src
     video.crossOrigin = 'anonymous'
@@ -45,18 +33,13 @@ function useDirectVideoTexture(src, playbackRate = 0.5, priority = false) {
     video.setAttribute('muted', '')
     video.setAttribute('playsinline', '')
     video.setAttribute('webkit-playsinline', '')
-    video.style.cssText = 'width:100%;height:100%;object-fit:cover;pointer-events:none;'
     video.loop = true
     video.autoplay = true
-    video.preload = priority ? 'auto' : 'none'
+    video.preload = 'auto'
     video.playbackRate = playbackRate
     if (priority) {
       video.setAttribute('fetchpriority', 'high')
     }
-    
-    // Append to DOM with full viewport dimensions to prevent browser background throttling
-    domContainer.appendChild(video)
-    videoRef.current = video
 
     const vidTexture = new THREE.VideoTexture(video)
     vidTexture.colorSpace = THREE.SRGBColorSpace
@@ -65,71 +48,54 @@ function useDirectVideoTexture(src, playbackRate = 0.5, priority = false) {
     vidTexture.generateMipmaps = false
     vidTexture.needsUpdate = true
 
-    const markReady = () => {
+    if (isMounted) {
+      setTexture(vidTexture)
+    }
+
+    const startPlayback = () => {
+      if (!isMounted) return
       vidTexture.needsUpdate = true
-      if (priority && video.readyState >= 2) {
-        setHeroVideoReady(true)
-      }
-    }
-
-    if (video.readyState >= 2) {
-      markReady()
-    }
-
-    video.addEventListener('playing', markReady)
-    video.addEventListener('loadeddata', markReady)
-    video.addEventListener('canplay', markReady)
-    video.addEventListener('timeupdate', markReady)
-
-    video.play().then(() => {
-      markReady()
-    }).catch((err) => {
-      console.warn('Video autoplay deferred:', err?.message || err)
-    })
-
-    const handleUserInteraction = () => {
-      if (videoRef.current && videoRef.current.paused) {
-        videoRef.current.play().then(() => {
-          markReady()
+      if (priority) setHeroVideoReady(true)
+      if (video.paused) {
+        video.play().then(() => {
+          if (isMounted) {
+            vidTexture.needsUpdate = true
+            if (priority) setHeroVideoReady(true)
+          }
         }).catch(() => {})
       }
     }
-    window.addEventListener('pointerdown', handleUserInteraction, { once: true })
-    window.addEventListener('touchstart', handleUserInteraction, { once: true })
 
-    // Tab visibility handling
-    const handleVisibilityChange = () => {
-      if (!videoRef.current) return
-      if (document.hidden) {
-        videoRef.current.pause()
-      } else {
-        videoRef.current.play().catch(() => {})
-      }
+    video.addEventListener('canplay', startPlayback)
+    video.addEventListener('canplaythrough', startPlayback)
+    video.addEventListener('loadeddata', startPlayback)
+    video.addEventListener('playing', startPlayback)
+
+    // Trigger immediately
+    startPlayback()
+
+    const handleUserInteraction = () => {
+      startPlayback()
     }
-    document.addEventListener('visibilitychange', handleVisibilityChange)
-
-    setTexture(vidTexture)
+    window.addEventListener('pointerdown', handleUserInteraction)
+    window.addEventListener('touchstart', handleUserInteraction)
 
     return () => {
+      isMounted = false
       window.removeEventListener('pointerdown', handleUserInteraction)
       window.removeEventListener('touchstart', handleUserInteraction)
-      document.removeEventListener('visibilitychange', handleVisibilityChange)
-      video.removeEventListener('playing', markReady)
-      video.removeEventListener('loadeddata', markReady)
-      video.removeEventListener('canplay', markReady)
-      video.removeEventListener('timeupdate', markReady)
+      video.removeEventListener('canplay', startPlayback)
+      video.removeEventListener('canplaythrough', startPlayback)
+      video.removeEventListener('loadeddata', startPlayback)
+      video.removeEventListener('playing', startPlayback)
       video.pause()
       video.removeAttribute('src')
       video.load()
-      if (video.parentNode) {
-        video.parentNode.removeChild(video)
-      }
       vidTexture.dispose()
-      videoRef.current = null
     }
   }, [src, playbackRate, priority])
 
-  return { texture }
+  return texture
 }
 
 function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
@@ -144,11 +110,11 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
   const isHome = location.pathname === '/'
   const isAbout = location.pathname === '/about'
 
-  // Primary video is prioritized with 'auto' preload and high DOM priority
-  const { texture } = useDirectVideoTexture(videoSrc, 0.5, true)
+  // Primary video is prioritized with 'auto' preload and high priority
+  const texture = useDirectVideoTexture(videoSrc, 1.0, true)
   // Secondary videos are strictly lazy-loaded only when user scrolls or needs them
-  const { texture: texture2 } = useDirectVideoTexture(isHome && !isNightDive && loadSecondary ? bookFile : null, 0.5, false)
-  const { texture: texture3 } = useDirectVideoTexture(isHome && !isNightDive && loadSecondary ? turtleVideo : null, 0.5, false)
+  const texture2 = useDirectVideoTexture(isHome && !isNightDive && loadSecondary ? bookFile : null, 1.0, false)
+  const texture3 = useDirectVideoTexture(isHome && !isNightDive && loadSecondary ? turtleVideo : null, 1.0, false)
 
   // Flip turtle video texture horizontally so it displays correctly on the sphere
   useEffect(() => {
@@ -311,9 +277,9 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
 
   return (
     <group>
-      <mesh ref={meshRef} scale={[-1, 1, 1]} visible={true}>
+      <mesh ref={meshRef} scale={[-1, 1, 1]} visible={Boolean(texture)}>
         <sphereGeometry args={[500, 60, 40]} />
-        <meshBasicMaterial map={texture} side={THREE.BackSide} />
+        <meshBasicMaterial map={texture} side={THREE.BackSide} transparent={false} opacity={1} depthWrite={false} color="#ffffff" />
       </mesh>
       {isHome && !isNightDive && (
         <>
@@ -408,7 +374,12 @@ export default function VideoSphereBackground() {
     <>
       <audio ref={audioRef} src={underwaterAudio} loop playsInline />
       <div className="absolute inset-0 -z-10">
-        <div className="sticky top-0 h-[100dvh] w-full bg-[#030d16] overflow-hidden">
+        <div 
+          className="sticky top-0 h-[100dvh] w-full overflow-hidden"
+          style={{
+            background: 'radial-gradient(circle at center, #003865 0%, #001e3d 55%, #000e1c 100%)'
+          }}
+        >
           <video
             ref={(el) => {
               if (el) {
@@ -440,7 +411,8 @@ export default function VideoSphereBackground() {
             <Canvas
               camera={{ position: [0, 0, 0.1], fov: 95 }}
               gl={{ powerPreference: 'high-performance', antialias: true }}
-              onCreated={({ gl }) => {
+              onCreated={({ gl, scene }) => {
+                scene.background = new THREE.Color('#001e3d')
                 gl.domElement.addEventListener('webglcontextlost', (e) => {
                   e.preventDefault()
                   console.warn('THREE.WebGLRenderer: Context Lost. Handling gracefully.')
@@ -450,6 +422,7 @@ export default function VideoSphereBackground() {
                 }, false)
               }}
             >
+              <color attach="background" args={['#001e3d']} />
               <Suspense fallback={null}>
                 <VideoSphere
                   videoSrc={currentVideo}
@@ -480,11 +453,11 @@ function AudioToggle({ isMuted, onToggle }) {
   return (
     <button
       onClick={onToggle}
-      className="fixed bottom-6 right-6 z-[9000] flex h-6 w-6 items-center justify-center rounded-full border border-white/20 bg-white/10 backdrop-blur-md text-white shadow-soft transition-all duration-300 hover:scale-110 hover:border-accent hover:text-accent"
+      className="fixed bottom-6 right-6 z-[9000] flex h-7 w-7 items-center justify-center rounded-full border border-cyan-400/30 bg-[#00223D]/80 backdrop-blur-md text-cyan-300 shadow-[0_4px_20px_rgba(0,34,61,0.6)] transition-all duration-300 hover:scale-110 hover:border-accent hover:text-accent"
       aria-label={isMuted ? 'Play underwater ambiance' : 'Mute underwater ambiance'}
     >
       {!isMuted ? (
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path
             d="M11 5L6 9H2V15H6L11 19V5Z"
             stroke="currentColor"
@@ -501,7 +474,7 @@ function AudioToggle({ isMuted, onToggle }) {
           />
         </svg>
       ) : (
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path
             d="M11 5L6 9H2V15H6L11 19V5Z"
             stroke="currentColor"
@@ -573,8 +546,8 @@ function JoystickControl({ joystickVelocity }) {
   }
 
   return (
-    <div className="fixed top-1/2 right-6 -translate-y-1/2 z-[8000] flex flex-col items-center gap-2 pointer-events-auto joystick-container">
-      <span className="text-[10px] font-bold text-white/70 uppercase tracking-widest bg-navy/50 px-2 py-1 rounded-md backdrop-blur-md">
+    <div className="fixed top-1/2 right-2 sm:right-6 -translate-y-1/2 z-[8000] flex flex-col items-center gap-1.5 sm:gap-2 pointer-events-auto joystick-container scale-90 sm:scale-100 origin-right">
+      <span className="text-[9px] sm:text-[10px] font-bold text-cyan-200 uppercase tracking-widest bg-[#001e3d]/80 border border-cyan-400/30 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md backdrop-blur-md shadow-md select-none">
         360° Toggle
       </span>
       <div
@@ -583,10 +556,10 @@ function JoystickControl({ joystickVelocity }) {
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerUp}
-        className="relative w-16 h-16 rounded-full border-2 border-white/20 bg-white/10 backdrop-blur-md flex items-center justify-center shadow-lg cursor-grab active:cursor-grabbing touch-none"
+        className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 border-cyan-400/40 bg-[#001e3d]/70 backdrop-blur-md flex items-center justify-center shadow-[0_8px_25px_rgba(0,30,61,0.7)] cursor-grab active:cursor-grabbing touch-none"
       >
         <div
-          className="w-8 h-8 rounded-full bg-white/80 shadow-soft border border-white/50"
+          className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-[#00AEC7] to-[#005580] shadow-[0_0_15px_rgba(0,174,199,0.6)] border border-cyan-300/60"
           style={{
             transform: `translate(${thumbPos.x}px, ${thumbPos.y}px)`,
             transition: isDragging.current ? 'none' : 'transform 0.2s ease-out'

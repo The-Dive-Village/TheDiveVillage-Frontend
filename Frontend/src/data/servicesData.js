@@ -453,6 +453,5 @@ const RAW_SERVICES_DATA = [
 
 export const SERVICES_DATA = RAW_SERVICES_DATA.map((item, index) => ({
   ...item,
-  image: CAROUSEL_IMAGES[index % CAROUSEL_IMAGES.length],
-  video: VIDEOS[index % VIDEOS.length]
+  image: CAROUSEL_IMAGES[index % CAROUSEL_IMAGES.length]
 }))

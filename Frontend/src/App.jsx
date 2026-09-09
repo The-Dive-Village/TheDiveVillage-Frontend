@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { BrowserRouter } from 'react-router'
 import { AnimatePresence } from 'framer-motion'
+import './utils/mediaReadyManager'
 import { AuthProvider } from './contexts/AuthProvider'
 import { CartProvider } from './contexts/CartProvider'
 import { WishlistProvider } from './contexts/WishlistProvider'
