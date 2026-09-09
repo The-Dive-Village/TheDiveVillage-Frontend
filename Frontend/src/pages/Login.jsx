@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { useAuth } from '../hooks/useAuth'
 import { IMAGES } from '../utils/images'
-import vid2 from '@video-optimized/2.mp4'
+import vid2 from '../assets/2.mp4'
 
 export default function Login() {
   const navigate = useNavigate()

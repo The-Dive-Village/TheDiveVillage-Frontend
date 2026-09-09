@@ -5,7 +5,7 @@ import Button from '../components/Button'
 import SafeImage from '../components/SafeImage'
 import SEOHead from '../components/SEOHead'
 import { IMAGES, CAROUSEL_IMAGES } from '../utils/images'
-import video2Bg from '@video-optimized/2.mp4'
+import video2Bg from '../assets/2.mp4'
 
 import { CATEGORIES, SERVICES_DATA } from '../data/servicesData'
 

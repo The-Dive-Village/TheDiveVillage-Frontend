@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
-import preloaderVideo from '@video-optimized/preloader.mp4'
+import preloaderVideo from '../assets/preloader.mp4'
 import { subscribeHeroVideoReady, getHeroVideoReady } from '../utils/mediaReadyManager'
 
 function DiverAnimation({ src, className }) {

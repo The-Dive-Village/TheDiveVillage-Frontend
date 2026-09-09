@@ -9,7 +9,6 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
-      '@video-optimized': fileURLToPath(new URL('./src/video-optimized', import.meta.url)),
     },
   },
   server: {

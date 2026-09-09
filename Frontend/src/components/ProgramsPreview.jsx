@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router'
 import SectionReveal, { StaggerGrid, StaggerItem } from './SectionReveal'
 import { CAROUSEL_IMAGES } from '../utils/images'
-import diveSuitVid from '@video-optimized/Products/Dive suit.mp4'
+import diveSuitVid from '../assets/New folder/merch 5.mp4'
 
 const PROGRAMS = [
   {
