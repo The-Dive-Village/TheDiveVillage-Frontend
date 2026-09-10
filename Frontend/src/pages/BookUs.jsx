@@ -1,9 +1,11 @@
-import { useState, useEffect, useMemo, lazy, Suspense } from 'react'
+import { useState, useEffect, useMemo, useRef, lazy, Suspense } from 'react'
 import { useSearchParams } from 'react-router'
 import { motion } from 'framer-motion'
 const InteractiveDiveMap = lazy(() => import('../components/InteractiveDiveMap'))
+import CompactTwoMonthCalendarPopover from '../components/CompactTwoMonthCalendarPopover'
 import SEOHead from '../components/SEOHead'
 import { diveSiteService } from '../services/diveSiteService'
+import { bookingService } from '../services/bookingService'
 import {
   COURSE_CATALOG,
   CERTIFICATION_OPTIONS,
@@ -39,6 +41,16 @@ export default function BookUs() {
   const [dateError, setDateError] = useState('')
   const [stepError, setStepError] = useState('')
   const [groupSize, setGroupSize] = useState(1)
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false)
+  const datePickerBtnRef = useRef(null)
+
+  const formatDateToDDMMYYYY = (dateStr) => {
+    if (!dateStr) return ''
+    const parts = dateStr.split('-')
+    if (parts.length !== 3) return dateStr
+    const [year, month, day] = parts
+    return `${day}-${month}-${year}`
+  }
 
   // Derived PADI dataset lookups
   const countries = useMemo(() => diveSiteService.getCountries(), [])
@@ -158,7 +170,7 @@ export default function BookUs() {
     })
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
 
     // Pre-submission validation: Confirm every participant satisfies age & prerequisites
@@ -169,6 +181,25 @@ export default function BookUs() {
         setCurrentStep(2)
         return
       }
+    }
+
+    try {
+      const selectedProg = COURSE_CATALOG.find((pr) => pr.id === participants[0]?.selectedProgram)
+      await bookingService.createBooking({
+        country,
+        location,
+        preferredDate: date,
+        peopleCount: participants.length,
+        programId: participants[0]?.selectedProgram || null,
+        programName: selectedProg?.name || 'Dive Trip',
+        contactName: contact.name,
+        contactEmail: contact.email,
+        contactPhone: contact.phone || null,
+        participants,
+        notes: contact.notes || null,
+      })
+    } catch (err) {
+      console.warn('Booking API error, proceeding locally:', err)
     }
 
     setSubmitted(true)
@@ -396,30 +427,49 @@ export default function BookUs() {
 
                     {/* 4. PREFERRED DATE & NUMBER OF PEOPLE */}
                     <div className="grid sm:grid-cols-2 gap-6">
-                      <div>
+                      <div className="relative">
                         <label className="mb-2 block text-xs font-bold text-navy/70 uppercase tracking-wider">
                           Preferred Date
                         </label>
-                        <input
-                          type="date"
-                          value={date}
-                          onChange={(e) => {
-                            const val = e.target.value
-                            setDate(val)
-                            if (val && (val < todayStr || val > maxDateStr)) {
+                        <button
+                          type="button"
+                          ref={datePickerBtnRef}
+                          onClick={() => setIsCalendarOpen((prev) => !prev)}
+                          className={`w-full rounded-2xl bg-[#F0F2F5] px-5 py-4 text-sm font-bold text-navy outline-none text-left flex items-center justify-between transition cursor-pointer focus:ring-2 ${
+                            dateError ? 'border-2 border-red-500 focus:ring-red-300' : 'focus:ring-accent/50'
+                          }`}
+                        >
+                          <span className={date ? 'text-navy' : 'text-navy/40'}>
+                            {date ? formatDateToDDMMYYYY(date) : 'dd-mm-yyyy'}
+                          </span>
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-navy/60 shrink-0">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                            <line x1="16" y1="2" x2="16" y2="6" />
+                            <line x1="8" y1="2" x2="8" y2="6" />
+                            <line x1="3" y1="10" x2="21" y2="10" />
+                          </svg>
+                        </button>
+
+                        {/* Compact Two-Month Calendar Popover */}
+                        <CompactTwoMonthCalendarPopover
+                          isOpen={isCalendarOpen}
+                          onClose={() => setIsCalendarOpen(false)}
+                          selectedDate={date}
+                          onSelectDate={(formattedDDMMYYYY, yyyyMmDd) => {
+                            setDate(yyyyMmDd)
+                            if (yyyyMmDd && (yyyyMmDd < todayStr || yyyyMmDd > maxDateStr)) {
                               setDateError('Please Select a Proper Date')
                             } else {
                               setDateError('')
                               setStepError('')
                             }
+                            setIsCalendarOpen(false)
                           }}
-                          required
-                          min={todayStr}
-                          max={maxDateStr}
-                          className={`w-full rounded-2xl bg-[#F0F2F5] px-5 py-4 text-sm font-bold text-navy outline-none focus:ring-2 transition ${
-                            dateError ? 'border-2 border-red-500 focus:ring-red-300' : 'focus:ring-accent/50'
-                          }`}
+                          minDate={todayStr}
+                          maxDate={maxDateStr}
+                          toggleBtnRef={datePickerBtnRef}
                         />
+
                         {dateError && (
                           <p className="mt-1.5 text-xs font-bold text-red-500 flex items-center gap-1.5">
                             <span>⚠️</span> {dateError}

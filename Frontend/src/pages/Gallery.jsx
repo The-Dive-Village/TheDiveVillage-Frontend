@@ -6,13 +6,39 @@ import SafeImage from '../components/SafeImage'
 import LazyVideo from '../components/LazyVideo'
 import SEOHead from '../components/SEOHead'
 import { GALLERY_ITEMS, GALLERY_CATEGORIES } from '../utils/galleryData'
+import { contentService } from '../services/contentService'
 
 export default function Gallery() {
+  const [itemsList, setItemsList] = useState(GALLERY_ITEMS)
   const [activeCategory, setActiveCategory] = useState('all')
   const [selectedMediaIndex, setSelectedMediaIndex] = useState(null)
   const reduce = useReducedMotion()
 
-  const filteredItems = GALLERY_ITEMS.filter((item) => {
+  useEffect(() => {
+    async function loadGallery() {
+      try {
+        const res = await contentService.getGallery()
+        if (res.data?.data && Array.isArray(res.data.data) && res.data.data.length > 0) {
+          const mapped = res.data.data.map((item) => ({
+            id: item.id,
+            title: item.title || 'Underwater Moment',
+            category: item.category ? item.category.toLowerCase() : 'underwater',
+            location: item.location || 'The Dive Village',
+            type: (item.mediaType || 'IMAGE').toLowerCase(),
+            src: item.src,
+            poster: item.thumbnail || undefined,
+            thumbnail: item.thumbnail || item.src,
+          }))
+          setItemsList(mapped)
+        }
+      } catch (err) {
+        console.warn('Could not load live gallery from DB, using fallback:', err)
+      }
+    }
+    loadGallery()
+  }, [])
+
+  const filteredItems = itemsList.filter((item) => {
     if (activeCategory === 'all') return true
     if (activeCategory === 'videos') return item.type === 'video'
     if (activeCategory === 'photos') return item.type === 'image'

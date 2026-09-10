@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams, Link, Navigate } from 'react-router'
 import { motion, AnimatePresence } from 'framer-motion'
 import { SERVICES_DATA, CATEGORIES } from '../data/servicesData'
 import SafeImage from '../components/SafeImage'
 import Button from '../components/Button'
 import { IMAGES } from '../utils/images'
+import { contentService } from '../services/contentService'
 
 const FAQS = [
   {
@@ -24,6 +25,25 @@ const FAQS = [
 export default function ServiceDetail() {
   const { id } = useParams()
   const [openFaq, setOpenFaq] = useState(null)
+  const [faqList, setFaqList] = useState(FAQS)
+  
+  useEffect(() => {
+    async function loadFaqs() {
+      try {
+        const res = await contentService.getFaqs()
+        if (res.data?.data && Array.isArray(res.data.data) && res.data.data.length > 0) {
+          const mapped = res.data.data.map((f) => ({
+            q: f.question,
+            a: f.answer,
+          }))
+          setFaqList(mapped)
+        }
+      } catch (err) {
+        console.warn('Could not load FAQs from DB, using fallback:', err)
+      }
+    }
+    loadFaqs()
+  }, [])
   
   const service = SERVICES_DATA.find((s) => s.id === id)
 
@@ -131,7 +151,7 @@ export default function ServiceDetail() {
             <div className="mb-8">
               <h3 className="font-heading text-2xl font-bold text-navy mb-6">Frequently Asked Questions</h3>
               <div className="space-y-4">
-                {FAQS.map((faq, idx) => {
+                {faqList.map((faq, idx) => {
                   const isOpen = openFaq === idx
                   return (
                     <div key={idx} className="bg-white rounded-2xl border border-navy/5 overflow-hidden shadow-sm">

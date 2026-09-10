@@ -27,7 +27,7 @@ const SOCIALS = [
 
 export default function Footer() {
   return (
-    <footer className="bg-navy/40 backdrop-blur-xl border-t border-white/20 text-white mt-auto relative z-10 pointer-events-auto">
+    <footer className="bg-navy border-t border-white/20 text-white mt-auto relative z-10 pointer-events-auto">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-2 lg:grid-cols-4 lg:px-8">
         <div className="flex flex-col items-start justify-between">
           <div className="flex flex-col items-center w-fit">

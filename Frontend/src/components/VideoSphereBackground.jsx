@@ -8,7 +8,7 @@ import videoFile from '../assets/Hero_fast.mp4'
 import divingFile from '../assets/Diving(1).mp4'
 import bookFile from '../assets/Book_fast.mp4'
 import turtleVideo from '../assets/Turtle_fast.mp4'
-import nightDiveVideo from '../assets/nightdive_fast.mp4'
+import nightDiveVideo from '../assets/Compiled Night Dive Video(2).mp4'
 import underwaterAudio from '../assets/Underwater.mp3'
 import { setHeroVideoReady } from '../utils/mediaReadyManager'
 

@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, useRef } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { motion, AnimatePresence } from 'framer-motion'
 import { SHOP_PRODUCTS } from '../utils/products'
+import { productService } from '../services/productService'
 import { useCart } from '../hooks/useCart'
 import { useWishlist } from '../hooks/useWishlist'
 import { useAuth } from '../hooks/useAuth'
@@ -24,12 +25,27 @@ const CATEGORIES = [
 export default function Shop() {
   const { user } = useAuth()
   const navigate = useNavigate()
+  const [productsList, setProductsList] = useState(SHOP_PRODUCTS)
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
   const [sortBy, setSortBy] = useState('featured')
   const [addedToast, setAddedToast] = useState(null)
   const { addItem, itemCount } = useCart()
   const { count: wishlistCount, toggle: toggleWishlist, isWishlisted } = useWishlist()
+
+  useEffect(() => {
+    async function loadProducts() {
+      try {
+        const res = await productService.getProducts()
+        if (res.data?.data && Array.isArray(res.data.data) && res.data.data.length > 0) {
+          setProductsList(res.data.data)
+        }
+      } catch (err) {
+        console.warn('Could not load live products from DB, using fallback:', err)
+      }
+    }
+    loadProducts()
+  }, [])
 
   const handleQuickAdd = (product, e) => {
     e.preventDefault()
@@ -58,7 +74,7 @@ export default function Shop() {
   }
 
   const filteredProducts = useMemo(() => {
-    return SHOP_PRODUCTS.filter((product) => {
+    return productsList.filter((product) => {
       const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory
       const matchesSearch =
         (product.title || product.name).toLowerCase().includes(searchQuery.toLowerCase()) ||

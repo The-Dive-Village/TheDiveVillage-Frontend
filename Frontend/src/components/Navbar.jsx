@@ -64,8 +64,8 @@ export default function Navbar() {
     <header className="fixed top-0 left-0 right-0 z-[9999] w-full px-2 sm:px-4 lg:px-6 pointer-events-none flex flex-col items-center">
       <div className={`pointer-events-auto mx-auto grid grid-cols-[1fr_auto_1fr] h-[58px] sm:h-[64px] lg:h-[68px] w-full max-w-7xl 2xl:max-w-[1700px] items-center px-4 sm:px-8 lg:px-12 rounded-full border shadow-[0_12px_40px_rgba(0,18,32,0.7)] transition-all duration-300 ${
         location.pathname === '/'
-          ? 'bg-[#003865]/40 backdrop-blur-xl backdrop-saturate-150 border-white/20'
-          : 'bg-[#003865]/80 backdrop-blur-xl backdrop-saturate-150 border-white/20 shadow-[0_12px_40px_rgba(0,18,32,0.6)]'
+          ? 'bg-navy border-white/20'
+          : 'bg-navy border-white/20 shadow-[0_12px_40px_rgba(0,18,32,0.6)]'
       }`}>
         
         {/* Left Side: Home, Book Us, Contact Us */}
