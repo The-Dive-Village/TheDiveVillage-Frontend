@@ -130,26 +130,26 @@ export default function Home() {
               transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
               className="pointer-events-auto"
             >
-              <h1 className="mt-5 font-heading text-[2.5rem] xs:text-[3.25rem] sm:text-[4.5rem] md:text-[5.5rem] lg:text-[7rem] font-bold uppercase tracking-normal text-white leading-[0.95] sm:leading-[0.9] flex flex-col drop-shadow-2xl">
-                <span className="block text-[0.38em] tracking-[0.1em] mb-2 opacity-90">MORE THAN A DESTINATION</span>
+              <h1 className="mt-5 font-heading text-[3.5rem] sm:text-[4.5rem] md:text-[5.5rem] lg:text-[7rem] font-bold uppercase tracking-normal text-white leading-[0.9] flex flex-col drop-shadow-2xl">
+                <span className="block text-[0.35em] tracking-[0.1em] mb-2 opacity-90">MORE THAN A DESTINATION</span>
                 <span className="block text-white mb-2">IT IS A</span>
                 <span className="block text-[#FFCD00]">COMMUNITY.</span>
               </h1>
-              <div className="mt-4 sm:mt-6 h-1 w-16 sm:w-20 bg-[#FFCD00]"></div>
-              <p className="mt-6 sm:mt-8 max-w-2xl text-base sm:text-xl md:text-2xl font-medium text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] leading-relaxed text-left sm:text-justify">
+              <div className="mt-6 h-1 w-20 bg-[#FFCD00]"></div>
+              <p className="mt-8 max-w-2xl text-lg sm:text-xl md:text-2xl font-medium text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] leading-relaxed text-justify">
                 The life-changing magic of the ocean<br />Is a feeling meant to be shared.
               </p>
-              <div className="mt-8 sm:mt-10 flex flex-col xs:flex-row flex-wrap items-stretch xs:items-center gap-4 sm:gap-6">
+              <div className="mt-10 flex flex-wrap items-center gap-6">
                 <Link
                   to="/book-us"
-                  className="rounded-full bg-[#002b4d]/80 backdrop-blur-xl border border-cyan-400/40 px-7 sm:px-8 py-3.5 sm:py-4 font-body text-xs sm:text-sm tracking-widest font-bold text-white uppercase shadow-[0_8px_32px_0_rgba(0,18,32,0.6)] transition-all duration-300 hover:scale-105 hover:bg-[#FFCD00] hover:text-[#00223D] hover:border-[#FFCD00] hover:shadow-[0_12px_40px_rgba(255,205,0,0.6)] flex items-center justify-center gap-3 active:scale-95 group text-center min-h-[44px]"
+                  className="rounded-full bg-[#002b4d]/80 backdrop-blur-xl border border-cyan-400/40 px-8 py-4 font-body text-xs sm:text-sm tracking-widest font-bold text-white uppercase shadow-[0_8px_32px_0_rgba(0,18,32,0.6)] transition-all duration-300 hover:scale-105 hover:bg-[#FFCD00] hover:text-[#00223D] hover:border-[#FFCD00] hover:shadow-[0_12px_40px_rgba(255,205,0,0.6)] flex items-center gap-3 active:scale-95 group"
                 >
                   Book Your Dive
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-1"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
                 </Link>
                 <Link
                   to="/shop"
-                  className="rounded-full bg-[#001e3d]/85 backdrop-blur-xl border border-cyan-500/35 px-7 sm:px-8 py-3.5 sm:py-4 font-body text-xs sm:text-sm tracking-widest font-bold text-white uppercase shadow-[0_8px_32px_0_rgba(0,18,32,0.6)] transition-all duration-300 hover:scale-105 hover:bg-[#FFCD00] hover:text-[#00223D] hover:border-[#FFCD00] hover:shadow-[0_12px_40px_rgba(255,205,0,0.6)] active:scale-95 text-center min-h-[44px] flex items-center justify-center"
+                  className="rounded-full bg-[#001e3d]/85 backdrop-blur-xl border border-cyan-500/35 px-8 py-4 font-body text-xs sm:text-sm tracking-widest font-bold text-white uppercase shadow-[0_8px_32px_0_rgba(0,18,32,0.6)] transition-all duration-300 hover:scale-105 hover:bg-[#FFCD00] hover:text-[#00223D] hover:border-[#FFCD00] hover:shadow-[0_12px_40px_rgba(255,205,0,0.6)] active:scale-95"
                 >
                   Shop Merch
                 </Link>
@@ -616,9 +616,9 @@ function InteractiveHighlights() {
   const itemsInSet = HIGHLIGHTS_DATA.length
   const cardGap = 16 // px gap between cards
 
-  // Responsively show 5 cards on desktop, 3 on tablet, 1.2 on mobile for a peek effect
-  const cardsToShow = containerWidth < 480 ? 1.2 : (containerWidth < 640 ? 2 : (containerWidth < 960 ? 3 : 5))
-  const cardWidth = Math.floor((containerWidth - (Math.floor(cardsToShow) - 1) * cardGap) / cardsToShow)
+  // Responsively show 5 cards on desktop, 3 on tablet, 2 on mobile
+  const cardsToShow = containerWidth < 640 ? 2 : (containerWidth < 960 ? 3 : 5)
+  const cardWidth = Math.floor((containerWidth - (cardsToShow - 1) * cardGap) / cardsToShow)
   const singleSetWidth = itemsInSet * (cardWidth + cardGap)
 
   useEffect(() => {
