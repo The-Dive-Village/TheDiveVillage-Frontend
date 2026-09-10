@@ -57,10 +57,11 @@ export default function LazyVideo({
           muted={muted}
           playsInline={playsInline}
           controls={controls}
-          preload="none"
+          preload="metadata"
+          onLoadedMetadata={() => setIsLoaded(true)}
           onLoadedData={() => setIsLoaded(true)}
-          className={`w-full h-full object-cover transition-opacity duration-500 ${
-            isLoaded ? 'opacity-100' : 'opacity-0'
+          className={`w-full h-full object-cover transition-opacity duration-300 ${
+            isLoaded || !poster ? 'opacity-100' : 'opacity-0'
           }`}
           {...props}
         />

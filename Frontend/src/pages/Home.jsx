@@ -26,7 +26,7 @@ const HIGHLIGHTS_DATA = [
     title: 'Introductory Programs',
     desc: 'Experience scuba safely in shallow water alongside our professionals.',
     image: IMAGES.scubaHero,
-    link: '/services',
+    link: '/services?category=programs',
     btnText: 'Explore'
   },
   {
@@ -34,7 +34,7 @@ const HIGHLIGHTS_DATA = [
     title: 'Guided Snorkeling',
     desc: 'Discover snorkeling and explore the ocean up close with our expert guides!',
     image: IMAGES.snorkelingHero,
-    link: '/services',
+    link: '/services?category=snorkeling',
     btnText: 'Explore'
   },
   {
@@ -42,7 +42,7 @@ const HIGHLIGHTS_DATA = [
     title: 'Certified Courses',
     desc: 'From your first breath underwater to professional divemaster courses.',
     image: IMAGES.hero,
-    link: '/services',
+    link: '/services?category=courses',
     btnText: 'Explore'
   },
   {
@@ -50,7 +50,7 @@ const HIGHLIGHTS_DATA = [
     title: 'Freediving',
     desc: 'Explore the ocean with free diving and rely on your natural abilities.',
     image: IMAGES.surfingHero,
-    link: '/services',
+    link: '/services?category=freediving',
     btnText: 'Explore'
   },
   {
@@ -58,7 +58,7 @@ const HIGHLIGHTS_DATA = [
     title: 'Flexible Fun Dives',
     desc: 'Every single experience is one step deeper into the world of the ocean.',
     image: IMAGES.gear1,
-    link: '/services',
+    link: '/services?category=fundives',
     btnText: 'Explore'
   },
 ]
@@ -233,7 +233,13 @@ export default function Home() {
               }
             ].map((item, i) => (
               <StaggerItem key={i}>
-                <div className="h-full group cursor-pointer relative mt-8 flex flex-col">
+                <div
+                  onClick={() => {
+                    navigate('/gallery')
+                    window.scrollTo({ top: 0, behavior: 'smooth' })
+                  }}
+                  className="h-full group cursor-pointer relative mt-8 flex flex-col pointer-events-auto"
+                >
 
                   {/* Floating transparent PNG image */}
                   <img
@@ -633,18 +639,26 @@ function InteractiveHighlights() {
     return () => cancelAnimationFrame(animationFrameId)
   }, [])
 
+  const hasMoved = useRef(false)
+
   const handlePointerDown = (e) => {
     isDragging.current = true
+    hasMoved.current = false
     dragStartX.current = e.clientX
     scrollAtStart.current = scrollPos
-    try {
-      e.currentTarget.setPointerCapture(e.pointerId)
-    } catch { }
   }
 
   const handlePointerMove = (e) => {
     if (!isDragging.current) return
     const deltaX = e.clientX - dragStartX.current
+    if (Math.abs(deltaX) > 8) {
+      hasMoved.current = true
+      try {
+        if (!e.currentTarget.hasPointerCapture(e.pointerId)) {
+          e.currentTarget.setPointerCapture(e.pointerId)
+        }
+      } catch { }
+    }
     setScrollPos(scrollAtStart.current - deltaX)
   }
 
@@ -652,7 +666,9 @@ function InteractiveHighlights() {
     if (isDragging.current) {
       isDragging.current = false
       try {
-        e.currentTarget.releasePointerCapture(e.pointerId)
+        if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+          e.currentTarget.releasePointerCapture(e.pointerId)
+        }
       } catch { }
     }
   }
@@ -677,6 +693,9 @@ function InteractiveHighlights() {
     if (e) {
       e.preventDefault()
       e.stopPropagation()
+    }
+    if (hasMoved.current) {
+      return
     }
     const destination = targetLink || '/services'
     navigate(destination)

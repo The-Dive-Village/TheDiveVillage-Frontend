@@ -13,6 +13,10 @@ import Home from '../pages/Home'
 const About = lazy(() => import('../pages/About'))
 const Services = lazy(() => import('../pages/Services'))
 const ServiceDetail = lazy(() => import('../pages/ServiceDetail'))
+const AllCourses = lazy(() => import('../pages/AllCourses'))
+const Scuba = lazy(() => import('../pages/Scuba'))
+const Snorkeling = lazy(() => import('../pages/Snorkeling'))
+const Surfing = lazy(() => import('../pages/Surfing'))
 const Gallery = lazy(() => import('../pages/Gallery'))
 const BookUs = lazy(() => import('../pages/BookUs'))
 const Shop = lazy(() => import('../pages/Shop'))
@@ -62,7 +66,15 @@ export default function AppRouter() {
         />
         <Route path="about" element={<PageLiquid><About /></PageLiquid>} />
         <Route path="services" element={<PageLiquid><Services /></PageLiquid>} />
+        <Route path="our-services" element={<PageLiquid><Services /></PageLiquid>} />
         <Route path="services/:id" element={<PageLiquid><ServiceDetail /></PageLiquid>} />
+        <Route path="courses" element={<PageLiquid><AllCourses /></PageLiquid>} />
+        <Route path="courses/scuba" element={<PageLiquid><Scuba /></PageLiquid>} />
+        <Route path="courses/snorkeling" element={<PageLiquid><Snorkeling /></PageLiquid>} />
+        <Route path="courses/surfing" element={<PageLiquid><Surfing /></PageLiquid>} />
+        <Route path="scuba-diving" element={<PageLiquid><Scuba /></PageLiquid>} />
+        <Route path="snorkeling" element={<PageLiquid><Snorkeling /></PageLiquid>} />
+        <Route path="freediving" element={<PageLiquid><Surfing /></PageLiquid>} />
         <Route path="gallery" element={<PageLiquid><Gallery /></PageLiquid>} />
         <Route path="book-us" element={<PageLiquid><BookUs /></PageLiquid>} />
         <Route path="shop" element={<PageLiquid><Shop /></PageLiquid>} />

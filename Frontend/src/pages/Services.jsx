@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router'
+import { useState, useEffect } from 'react'
+import { Link, useNavigate, useSearchParams, useLocation } from 'react-router'
 import { motion, useReducedMotion } from 'framer-motion'
 import Button from '../components/Button'
 import SafeImage from '../components/SafeImage'
@@ -10,9 +10,41 @@ import video2Bg from '../assets/2.mp4'
 import { CATEGORIES, SERVICES_DATA } from '../data/servicesData'
 
 export default function Services() {
-  const [activeTab, setActiveTab] = useState('all')
+  const [searchParams, setSearchParams] = useSearchParams()
+  const location = useLocation()
   const navigate = useNavigate()
   const reduce = useReducedMotion()
+
+  const getInitialCategory = () => {
+    const param = searchParams.get('category') || searchParams.get('tab')
+    if (param && CATEGORIES.some(c => c.key === param)) {
+      return param
+    }
+    if (location.pathname === '/courses') {
+      return 'courses'
+    }
+    return 'all'
+  }
+
+  const [activeTab, setActiveTab] = useState(getInitialCategory)
+
+  useEffect(() => {
+    const param = searchParams.get('category') || searchParams.get('tab')
+    if (param && CATEGORIES.some(c => c.key === param)) {
+      setActiveTab(param)
+    } else if (location.pathname === '/courses') {
+      setActiveTab('courses')
+    }
+  }, [searchParams, location.pathname])
+
+  const handleTabChange = (key) => {
+    setActiveTab(key)
+    if (key === 'all') {
+      setSearchParams({})
+    } else {
+      setSearchParams({ category: key })
+    }
+  }
 
   const isMatch = (service, catKey) => {
     if (service.category === catKey) return true
@@ -46,7 +78,7 @@ export default function Services() {
               What We Offer
             </span>
             <h1 className="font-heading text-5xl sm:text-7xl lg:text-8xl font-bold tracking-tight text-navy leading-none">
-              Our Services
+              {activeTab === 'courses' ? 'Our Courses' : 'Our Services'}
             </h1>
           </div>
           <p className="max-w-md text-base sm:text-lg font-medium text-navy/70 leading-relaxed lg:pb-4">
@@ -59,7 +91,7 @@ export default function Services() {
           {CATEGORIES.map((cat) => (
             <button
               key={cat.key}
-              onClick={() => setActiveTab(cat.key)}
+              onClick={() => handleTabChange(cat.key)}
               className={`rounded-full px-5 py-2.5 text-xs sm:text-sm font-bold transition-all duration-200 ${
                 activeTab === cat.key
                   ? 'bg-navy text-white shadow-md'

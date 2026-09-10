@@ -343,7 +343,7 @@ function CallModal({ isOpen, onClose }) {
       id: 'messenger',
       title: 'Facebook Messenger',
       subtitle: 'Message us on Facebook',
-      href: '#',
+      href: 'https://m.me/IamSanjeevbajaj',
       icon: (
         <svg className="w-5 h-5 text-navy" fill="currentColor" viewBox="0 0 24 24">
           <path d="M12 0C5.373 0 0 4.974 0 11.111c0 3.497 1.745 6.616 4.472 8.652V24l4.074-2.238c1.099.304 2.262.47 3.454.47 6.627 0 12-4.975 12-11.121C24 4.974 18.627 0 12 0zm1.191 14.963l-3.055-3.26-5.963 3.26 6.559-6.963 3.13 3.259 5.889-3.259-6.56 6.963z"/>
@@ -411,8 +411,8 @@ function CallModal({ isOpen, onClose }) {
                 <a
                   key={opt.id}
                   href={opt.href || '#'}
-                  target={opt.id === 'whatsapp' ? '_blank' : '_self'}
-                  rel={opt.id === 'whatsapp' ? 'noopener noreferrer' : undefined}
+                  target={['whatsapp', 'messenger'].includes(opt.id) ? '_blank' : '_self'}
+                  rel={['whatsapp', 'messenger'].includes(opt.id) ? 'noopener noreferrer' : undefined}
                   onClick={(e) => {
                     if (!opt.href || opt.href === '#') {
                       e.preventDefault()
