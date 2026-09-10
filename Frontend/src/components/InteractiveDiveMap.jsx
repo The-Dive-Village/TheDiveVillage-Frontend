@@ -240,6 +240,7 @@ export default function InteractiveDiveMap({
     let handler = null
     let resizeObserver = null
     let removePostRender = null
+    let removeWheelListener = null
     let isUnmounted = false
 
     loadCesium()
@@ -544,6 +545,137 @@ export default function InteractiveDiveMap({
           // Close popup if open. DO NOT reset country or booking state!
           setIsPopupOpen(false)
         }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
+        // Trackpad Two-Finger Pan & Pinch-to-Zoom Gesture Controller
+        const containerEl = containerRef.current
+        let safariInitialScale = 1.0
+
+        const handleWheel = (e) => {
+          if (!containerEl) return
+
+          // Prevent page scroll when interacting over the globe container
+          e.preventDefault()
+          e.stopPropagation()
+
+          const currentViewer = viewerRef.current
+          if (!currentViewer || currentViewer.isDestroyed() || !window.Cesium) return
+
+          const camera = currentViewer.camera
+          const isPinch = e.ctrlKey || e.metaKey
+
+          const height = camera.positionCartographic ? camera.positionCartographic.height : 10000000
+          const minDist = currentViewer.scene.screenSpaceCameraController.minimumZoomDistance || 15000
+          const maxDist = currentViewer.scene.screenSpaceCameraController.maximumZoomDistance || 25000000
+
+          if (isPinch) {
+            // ----------------------------------------------------
+            // PINCH TO ZOOM (Trackpad Pinch In / Pinch Out)
+            // ----------------------------------------------------
+            // e.deltaY < 0 -> Pinch OUT (fingers spreading apart) -> Zoom IN
+            // e.deltaY > 0 -> Pinch IN (fingers pinching together) -> Zoom OUT
+            const zoomFactor = Math.min(Math.max(height * 0.0025, 500), 500000)
+            const zoomAmount = e.deltaY * zoomFactor
+
+            if (zoomAmount < 0) {
+              const maxAllowedZoomIn = Math.max(0, height - minDist)
+              const actualZoom = Math.min(Math.abs(zoomAmount), maxAllowedZoomIn)
+              if (actualZoom > 0) camera.zoomIn(actualZoom)
+            } else if (zoomAmount > 0) {
+              const maxAllowedZoomOut = Math.max(0, maxDist - height)
+              const actualZoom = Math.min(zoomAmount, maxAllowedZoomOut)
+              if (actualZoom > 0) camera.zoomOut(actualZoom)
+            }
+          } else {
+            // Check for hardware mouse scroll wheel vs trackpad two-finger swipe
+            const isHardwareMouseWheel = e.deltaMode !== 0 || (e.deltaX === 0 && Math.abs(e.deltaY) >= 100 && e.deltaY % 100 === 0)
+
+            if (isHardwareMouseWheel) {
+              // ----------------------------------------------------
+              // HARDWARE MOUSE WHEEL ZOOM
+              // ----------------------------------------------------
+              const zoomFactor = Math.min(Math.max(height * 0.0015, 1000), 600000)
+              const zoomAmount = e.deltaY * zoomFactor
+
+              if (zoomAmount < 0) {
+                const maxAllowedZoomIn = Math.max(0, height - minDist)
+                const actualZoom = Math.min(Math.abs(zoomAmount), maxAllowedZoomIn)
+                if (actualZoom > 0) camera.zoomIn(actualZoom)
+              } else if (zoomAmount > 0) {
+                const maxAllowedZoomOut = Math.max(0, maxDist - height)
+                const actualZoom = Math.min(zoomAmount, maxAllowedZoomOut)
+                if (actualZoom > 0) camera.zoomOut(actualZoom)
+              }
+            } else {
+              // ----------------------------------------------------
+              // TRACKPAD TWO-FINGER PAN / SWIPE
+              // ----------------------------------------------------
+              // Rotate speed dynamically scaled by camera altitude for uniform speed across zoom levels
+              const rotateFactor = Math.min(Math.max(height / 10000000000, 0.00018), 0.0015)
+
+              const moveX = e.deltaX
+              const moveY = e.deltaY
+
+              if (Math.abs(moveX) > 0) {
+                // Horizontal swipe:
+                // Swiping Right (-deltaX) -> rotates camera Left -> Globe content moves Right
+                // Swiping Left (+deltaX) -> rotates camera Right -> Globe content moves Left
+                camera.rotateLeft(-moveX * rotateFactor)
+              }
+
+              if (Math.abs(moveY) > 0) {
+                // Vertical swipe:
+                // Swiping Up (-deltaY) -> rotates camera Down -> Globe content moves Up
+                // Swiping Down (+deltaY) -> rotates camera Up -> Globe content moves Down
+                camera.rotate(camera.right, moveY * rotateFactor)
+              }
+            }
+          }
+
+          lastInteractionTimeRef.current = Date.now()
+        }
+
+        const handleGestureStart = (e) => {
+          e.preventDefault()
+          safariInitialScale = 1.0
+        }
+
+        const handleGestureChange = (e) => {
+          e.preventDefault()
+          const currentViewer = viewerRef.current
+          if (!currentViewer || currentViewer.isDestroyed() || !window.Cesium) return
+
+          const camera = currentViewer.camera
+          const scaleDelta = e.scale - safariInitialScale
+          safariInitialScale = e.scale
+
+          const height = camera.positionCartographic ? camera.positionCartographic.height : 10000000
+          const minDist = currentViewer.scene.screenSpaceCameraController.minimumZoomDistance || 15000
+          const maxDist = currentViewer.scene.screenSpaceCameraController.maximumZoomDistance || 25000000
+          const zoomFactor = Math.min(Math.max(height * 0.8, 5000), 2000000)
+
+          if (scaleDelta > 0) {
+            const maxAllowedZoomIn = Math.max(0, height - minDist)
+            const actualZoom = Math.min(scaleDelta * zoomFactor, maxAllowedZoomIn)
+            if (actualZoom > 0) camera.zoomIn(actualZoom)
+          } else if (scaleDelta < 0) {
+            const maxAllowedZoomOut = Math.max(0, maxDist - height)
+            const actualZoom = Math.min(Math.abs(scaleDelta) * zoomFactor, maxAllowedZoomOut)
+            if (actualZoom > 0) camera.zoomOut(actualZoom)
+          }
+
+          lastInteractionTimeRef.current = Date.now()
+        }
+
+        if (containerEl) {
+          containerEl.addEventListener('wheel', handleWheel, { passive: false })
+          containerEl.addEventListener('gesturestart', handleGestureStart, { passive: false })
+          containerEl.addEventListener('gesturechange', handleGestureChange, { passive: false })
+
+          removeWheelListener = () => {
+            containerEl.removeEventListener('wheel', handleWheel)
+            containerEl.removeEventListener('gesturestart', handleGestureStart)
+            containerEl.removeEventListener('gesturechange', handleGestureChange)
+          }
+        }
       })
       .catch((err) => {
         console.warn('Cesium load notice:', err)
@@ -552,6 +684,7 @@ export default function InteractiveDiveMap({
     return () => {
       isUnmounted = true
       isCesiumReady.current = false
+      if (removeWheelListener) removeWheelListener()
       if (removePostRender) removePostRender()
       if (resizeObserver) resizeObserver.disconnect()
       if (handler) handler.destroy()

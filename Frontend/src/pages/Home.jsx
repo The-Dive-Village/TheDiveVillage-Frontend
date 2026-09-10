@@ -142,14 +142,14 @@ export default function Home() {
               <div className="mt-10 flex flex-wrap items-center gap-6">
                 <Link
                   to="/book-us"
-                  className="rounded-full bg-[#002b4d]/80 backdrop-blur-xl border border-cyan-400/40 px-8 py-4 font-body text-xs sm:text-sm tracking-widest font-bold text-white uppercase shadow-[0_8px_32px_0_rgba(0,18,32,0.6)] transition-all duration-300 hover:scale-105 hover:bg-[#FFCD00] hover:text-[#00223D] hover:border-[#FFCD00] hover:shadow-[0_12px_40px_rgba(255,205,0,0.6)] flex items-center gap-3 active:scale-95 group"
+                  className="rounded-full bg-white/15 backdrop-blur-xl border border-white/30 px-8 py-4 font-body text-xs sm:text-sm tracking-widest font-bold text-white uppercase shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] transition-all duration-300 hover:scale-105 hover:bg-[#FFCD00] hover:text-navy hover:border-[#FFCD00] hover:shadow-[0_12px_40px_rgba(255,205,0,0.6)] flex items-center gap-3 active:scale-95 group"
                 >
                   Book Your Dive
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-1"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
                 </Link>
                 <Link
                   to="/shop"
-                  className="rounded-full bg-[#001e3d]/85 backdrop-blur-xl border border-cyan-500/35 px-8 py-4 font-body text-xs sm:text-sm tracking-widest font-bold text-white uppercase shadow-[0_8px_32px_0_rgba(0,18,32,0.6)] transition-all duration-300 hover:scale-105 hover:bg-[#FFCD00] hover:text-[#00223D] hover:border-[#FFCD00] hover:shadow-[0_12px_40px_rgba(255,205,0,0.6)] active:scale-95"
+                  className="rounded-full bg-white/10 backdrop-blur-xl border border-white/25 px-8 py-4 font-body text-xs sm:text-sm tracking-widest font-bold text-white uppercase shadow-[0_8px_32px_0_rgba(0,0,0,0.25)] transition-all duration-300 hover:scale-105 hover:bg-[#FFCD00] hover:text-navy hover:border-[#FFCD00] hover:shadow-[0_12px_40px_rgba(255,205,0,0.6)] active:scale-95"
                 >
                   Shop Merch
                 </Link>

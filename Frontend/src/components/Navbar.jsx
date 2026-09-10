@@ -64,8 +64,8 @@ export default function Navbar() {
     <header className="fixed top-0 left-0 right-0 z-[9999] w-full px-2 sm:px-4 lg:px-6 pointer-events-none flex flex-col items-center">
       <div className={`pointer-events-auto mx-auto grid grid-cols-[1fr_auto_1fr] h-[58px] sm:h-[64px] lg:h-[68px] w-full max-w-7xl 2xl:max-w-[1700px] items-center px-4 sm:px-8 lg:px-12 rounded-full border shadow-[0_12px_40px_rgba(0,18,32,0.7)] transition-all duration-300 ${
         location.pathname === '/'
-          ? 'bg-[#001e3d]/80 backdrop-blur-xl backdrop-saturate-150 border-cyan-400/30'
-          : 'bg-[#00223D]/90 backdrop-blur-xl backdrop-saturate-150 border-cyan-400/30 shadow-[0_12px_40px_rgba(0,18,32,0.6)]'
+          ? 'bg-[#003865]/40 backdrop-blur-xl backdrop-saturate-150 border-white/20'
+          : 'bg-[#003865]/80 backdrop-blur-xl backdrop-saturate-150 border-white/20 shadow-[0_12px_40px_rgba(0,18,32,0.6)]'
       }`}>
         
         {/* Left Side: Home, Book Us, Contact Us */}
@@ -130,7 +130,7 @@ export default function Navbar() {
           <button
             type="button"
             onClick={() => setIsCallModalOpen(true)}
-            className="flex h-9 sm:h-10 items-center justify-center gap-1.5 rounded-xl border border-cyan-400/30 bg-[#001e3d]/50 px-3 text-white transition duration-hover hover:bg-cyan-500/20 hover:border-cyan-400 cursor-pointer shadow-sm"
+            className="flex h-9 sm:h-10 items-center justify-center gap-1.5 rounded-xl border border-white/30 bg-transparent px-3 text-white transition duration-hover hover:bg-white/10 hover:border-white cursor-pointer shadow-sm"
             aria-label="Call & Contact Options"
           >
             <PhoneIcon />
@@ -140,7 +140,7 @@ export default function Navbar() {
           <button
             type="button"
             onClick={toggleNightDive}
-            className="flex h-9 sm:h-10 items-center justify-center gap-1.5 rounded-xl border border-cyan-400/30 bg-[#001e3d]/50 px-3 text-white transition duration-hover hover:bg-cyan-500/20 hover:border-cyan-400 shrink-0 cursor-pointer shadow-sm"
+            className="flex h-9 sm:h-10 items-center justify-center gap-1.5 rounded-xl border border-white/30 bg-transparent px-3 text-white transition duration-hover hover:bg-white/10 hover:border-white shrink-0 cursor-pointer shadow-sm"
             aria-label="Toggle Night Dive mode"
           >
             <ThemeToggle isNightDive={isNightDive} />
@@ -151,7 +151,7 @@ export default function Navbar() {
 
           <Link
             to={isAuthenticated ? '/dashboard/profile' : '/login'}
-            className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl border border-cyan-400/30 bg-[#001e3d]/50 text-white transition duration-hover hover:bg-cyan-500/20 hover:border-cyan-400 shrink-0 shadow-sm"
+            className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl border border-white/30 bg-transparent text-white transition duration-hover hover:bg-white/10 hover:border-white shrink-0 shadow-sm"
             aria-label={isAuthenticated ? 'Account' : 'Login'}
             title={user?.displayName || user?.email || 'Account'}
           >
@@ -168,7 +168,7 @@ export default function Navbar() {
 
           <button
             type="button"
-            className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full border border-cyan-400/30 bg-[#001e3d]/50 text-white transition duration-hover hover:bg-cyan-500/20 hover:border-cyan-400 lg:hidden"
+            className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full border border-white/30 bg-transparent text-white transition duration-hover hover:bg-white/10 hover:border-white lg:hidden"
             aria-label="Toggle menu"
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
@@ -185,7 +185,7 @@ export default function Navbar() {
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="pointer-events-auto mt-2 w-full max-w-7xl 2xl:max-w-[1700px] overflow-hidden rounded-3xl border border-cyan-400/30 shadow-2xl bg-[#001e3d]/95 backdrop-blur-3xl text-white"
+            className="pointer-events-auto mt-2 w-full max-w-7xl 2xl:max-w-[1700px] overflow-hidden rounded-3xl border border-white/20 shadow-2xl bg-[#001e3d]/90 backdrop-blur-3xl text-white"
           >
             <div className="px-6 py-4">
               <nav className="flex flex-col gap-1" aria-label="Mobile">
