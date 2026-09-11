@@ -50,10 +50,10 @@ export default function ProgramsPreview() {
           </p>
           <Link
             to="/services"
-            className="mt-6 inline-flex items-center gap-2 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 px-6 py-3 text-xs font-bold text-white uppercase tracking-widest transition-all duration-300 hover:border-accent hover:text-accent shadow-sm"
+            className="mt-6 inline-flex items-center gap-2 rounded-full bg-white/15 backdrop-blur-xl border border-white/30 px-6 py-3 text-xs font-bold text-white uppercase tracking-widest transition-all duration-300 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] shadow-md"
           >
             <span>View All Services</span>
-            <span className="text-accent text-sm">→</span>
+            <span className="text-sm">→</span>
           </Link>
         </SectionReveal>
 
@@ -120,7 +120,7 @@ function Card({ program }) {
           onClick={(e) => {
             e.stopPropagation()
           }}
-          className="w-full py-3.5 px-6 rounded-full bg-white/20 backdrop-blur-md border border-white/40 hover:bg-[#FFCD00] hover:text-[#001428] hover:border-[#FFCD00] text-white font-bold text-xs sm:text-sm tracking-wider uppercase transition-all duration-300 shadow-md flex items-center justify-center gap-2 group-hover:shadow-lg mt-auto"
+          className="w-full py-3.5 px-6 rounded-full bg-white/15 backdrop-blur-xl border border-white/30 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] text-white font-bold text-xs sm:text-sm tracking-wider uppercase transition-all duration-300 shadow-md flex items-center justify-center gap-2 group-hover:shadow-lg mt-auto cursor-pointer"
         >
           <span>{program.btnText}</span>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-1">

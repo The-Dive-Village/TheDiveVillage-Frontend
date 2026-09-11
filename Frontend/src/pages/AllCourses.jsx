@@ -53,7 +53,7 @@ export default function AllCourses() {
             <div className="absolute inset-0 p-8 flex flex-col justify-end">
               <h2 className="font-serif text-4xl text-white mb-2">{cat.title}</h2>
               <p className="text-white/80 mb-6">{cat.desc}</p>
-              <Button as={Link} to={cat.link} className="bg-white/20 backdrop-blur-md border border-white/30 text-white hover:bg-white hover:text-navy w-max transition-all">
+              <Button as={Link} to={cat.link} variant="glass">
                 Explore {cat.title}
               </Button>
             </div>
@@ -76,10 +76,10 @@ export default function AllCourses() {
               Talk to our PADI Master Instructors. We will guide you to the perfect training path based on your schedule, experience, and goals.
             </p>
             <div className="flex flex-wrap gap-4 items-center">
-              <Button as={Link} to="/book-us" className="bg-accent text-navy hover:bg-white hover:text-navy border-none">
+              <Button as={Link} to="/book-us" variant="primary">
                 Book a Course Today →
               </Button>
-              <Button as={Link} to="/services" variant="secondary" className="!border-white/30 !text-white hover:!bg-white/10">
+              <Button as={Link} to="/services" variant="secondary">
                 View All Services
               </Button>
             </div>

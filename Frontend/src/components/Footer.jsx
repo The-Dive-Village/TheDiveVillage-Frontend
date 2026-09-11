@@ -92,7 +92,7 @@ export default function Footer() {
           <h3 className="font-heading text-sm font-bold uppercase tracking-widest text-accent">
             Contact
           </h3>
-          <ul className="mt-4 flex flex-1 flex-col justify-between space-y-4 sm:space-y-0 text-sm text-white/80">
+          <ul className="mt-4 flex flex-1 flex-col justify-start space-y-4 text-sm text-white/80">
             <li>
               <a href="tel:+918971001010" className="transition duration-hover hover:text-accent">
                 +91 89710 01010
@@ -104,16 +104,6 @@ export default function Footer() {
                 className="transition duration-hover hover:text-accent"
               >
                 sanjeev.bajaj@thedivevillage.co
-              </a>
-            </li>
-            <li>
-              <a
-                href="https://www.google.com/maps/place/2JG4%2B8WP,+C-101,+1st+Cross+Rd,+Ranka+Nagar,+Kaval+Bairasandra,+Bengaluru,+Karnataka 560032/@13.0259006,77.6070295,20.34z/data=!4m9!1m2!2m1!1sradhidhamma!3m5!1s0x3bae17a78cde34a9:0x7c9daf2e21647c11!8m2!3d13.0258219!4d77.6072606!16s%2Fg%2F11fy_3kdm6?entry=ttu&g_ep=EgoyMDI2MDgzMS4wIKXMDSoASAFQAw%3D%3D"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="transition duration-hover hover:text-accent leading-relaxed"
-              >
-                No,11, 1st Cross Rd, Ranka Nagar, Kaval Bairasandra, Bengaluru, Karnataka 560032
               </a>
             </li>
           </ul>

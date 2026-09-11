@@ -14,6 +14,7 @@ import {
 } from '../utils/courseEligibility'
 import 'react-phone-number-input/style.css'
 import PhoneInput from 'react-phone-number-input'
+import turtleAnnaVideo from '../assets/New folder/Turtle Anna.mp4'
 
 // Backwards-compatible export alias for any legacy imports
 export const PROGRAMS_CATALOG = COURSE_CATALOG
@@ -267,30 +268,61 @@ export default function BookUs() {
   }
 
   return (
-    <div className="bg-[#FAFAFA] min-h-screen text-navy font-body pt-24 sm:pt-32 pb-24" style={{ textShadow: 'none' }}>
+    <div className="bg-[#FAFAFA] min-h-screen text-navy font-body overflow-x-hidden" style={{ textShadow: 'none' }}>
       <SEOHead
         title="Book Scuba Diving Courses & Expeditions Online | The Dive Village"
         description="Book PADI scuba diving courses, Discovery dives, snorkeling trips, and freediving packages online with instant confirmation at The Dive Village."
         keywords="book scuba dive online, PADI course reservation, dive charter booking, snorkeling trip reservation, dive village booking"
         canonicalUrl="https://thedivevillage.com/book-us"
       />
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        
-        {/* Page Header */}
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 mb-12">
-          <div>
-            <span className="inline-block bg-black/5 rounded-full px-4 py-1.5 text-xs font-bold text-navy/60 uppercase tracking-widest mb-4">
-              Step-by-Step Experience Planner
-            </span>
-            <h1 className="font-heading text-5xl sm:text-7xl lg:text-8xl font-bold tracking-tight text-navy leading-none">
-              Book Your Dive
-            </h1>
-          </div>
-          <p className="max-w-md text-sm sm:text-base font-medium text-navy/70 leading-relaxed lg:pb-4">
-            Select your location, group size, participant details, and matching programs. Our dive masters will confirm within 24 hours.
-          </p>
+
+      {/* 1. HEADER VIDEO HERO (MATCHING CONTACT-PAGE STYLE WITH TURTLE ANNA VIDEO) */}
+      <section className="relative h-[75vh] min-h-[540px] w-full flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <video
+            src={turtleAnnaVideo}
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#001428]/60 via-[#001428]/40 to-[#FAFAFA]"></div>
         </div>
 
+        <div className="relative z-10 flex flex-col items-center text-center px-4 max-w-4xl mx-auto pt-16">
+          <motion.span
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="inline-block bg-white/10 backdrop-blur-md rounded-full px-4 py-1.5 text-xs font-bold text-accent uppercase tracking-widest mb-6 border border-white/20 shadow-sm"
+          >
+            Step-by-Step Experience Planner
+          </motion.span>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.1 }}
+            className="font-heading text-5xl sm:text-7xl lg:text-8xl font-bold uppercase tracking-tight text-white leading-none drop-shadow-[0_4px_25px_rgba(0,0,0,0.6)]"
+            style={{ textShadow: '0 4px 20px rgba(0,0,0,0.3)' }}
+          >
+            Book Your <span className="text-[#FFCD00]">Dive</span>
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="mt-6 text-base sm:text-xl font-medium text-white/90 max-w-xl leading-relaxed drop-shadow-md text-center"
+          >
+            Select your location, group size, participant details, and matching programs. Our dive masters will confirm within 24 hours.
+          </motion.p>
+        </div>
+      </section>
+
+      {/* 2. MAIN 4-STEP BOOKING WIZARD */}
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
         {/* Main 4-Step Layout */}
         <div className="grid lg:grid-cols-12 gap-10 lg:gap-14">
           
@@ -957,14 +989,14 @@ export default function BookUs() {
                       setStepError('')
                       setCurrentStep((prev) => prev + 1)
                     }}
-                    className="rounded-full bg-navy px-8 py-4 text-sm font-bold text-white transition hover:bg-accent hover:text-navy shadow-md ml-auto"
+                    className="rounded-full bg-navy hover:!bg-accent hover:!text-navy px-8 py-4 text-sm font-bold text-white transition-all duration-200 shadow-md ml-auto cursor-pointer"
                   >
                     Continue →
                   </button>
                 ) : (
                   <button
                     type="submit"
-                    className="rounded-full bg-accent px-8 py-4 text-sm font-bold text-navy transition hover:bg-navy hover:text-white shadow-md ml-auto"
+                    className="rounded-full bg-accent hover:!bg-navy hover:!text-white px-8 py-4 text-sm font-extrabold text-[#001e3d] transition-all duration-200 shadow-md ml-auto cursor-pointer border border-[#FFCD00]"
                   >
                     Confirm Booking Request
                   </button>

@@ -8,7 +8,7 @@ import videoFile from '../assets/Hero_fast.mp4'
 import divingFile from '../assets/Diving(1).mp4'
 import bookFile from '../assets/Book_fast.mp4'
 import turtleVideo from '../assets/Turtle_fast.mp4'
-import nightDiveVideo from '../assets/Compiled Night Dive Video(2).mp4'
+import nightDiveVideo from '../assets/nightdive_fast.mp4'
 import underwaterAudio from '../assets/Underwater.mp3'
 import { setHeroVideoReady } from '../utils/mediaReadyManager'
 
@@ -130,7 +130,7 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
     const handleScroll = () => {
       const scrollY = window.scrollY
       const INITIAL_YAW = Math.PI / 2.65 - (Math.PI * 1.1)
-      const INITIAL_PITCH = isAbout ? -(Math.PI / 6) : (Math.PI / 5)
+      const INITIAL_PITCH = isAbout ? -(Math.PI / 6) : (Math.PI / 5.2)
 
       const aboutEl = document.getElementById('about-section')
       const programsEl = document.getElementById('programs-section')
@@ -299,7 +299,10 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
 
 export default function VideoSphereBackground() {
   const [mounted, setMounted] = useState(false)
-  const [isMuted, setIsMuted] = useState(true)
+  // Audio state: Unmuted by default unless the user has explicitly muted it
+  const [isMuted, setIsMuted] = useState(() => {
+    return localStorage.getItem('dive_village_user_muted') === 'true'
+  })
   const [isNightDive, setIsNightDive] = useState(false)
   const location = useLocation()
   const joystickVelocity = useRef({ x: 0, y: 0 })
@@ -345,16 +348,53 @@ export default function VideoSphereBackground() {
     }
   }, [isNightDive])
 
+  // Automatic ambient audio playback unless explicitly muted
   useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.volume = 0.5
-      if (!isMuted) {
-        audioRef.current.play().catch((err) => console.log('Background audio play failed:', err))
-      } else {
-        audioRef.current.pause()
+    const audio = audioRef.current
+    if (!audio) return
+
+    audio.volume = 0.5
+
+    if (!isMuted) {
+      const playPromise = audio.play()
+      if (playPromise !== undefined) {
+        playPromise.catch((err) => {
+          // Autoplay policy prevented immediate playback without user gesture
+          console.log('Autoplay waiting for initial user interaction:', err)
+          const unlockAudio = () => {
+            if (audioRef.current && localStorage.getItem('dive_village_user_muted') !== 'true') {
+              audioRef.current.play().catch(() => {})
+            }
+            window.removeEventListener('pointerdown', unlockAudio)
+            window.removeEventListener('click', unlockAudio)
+            window.removeEventListener('touchstart', unlockAudio)
+            window.removeEventListener('keydown', unlockAudio)
+            window.removeEventListener('scroll', unlockAudio)
+          }
+
+          window.addEventListener('pointerdown', unlockAudio, { once: true })
+          window.addEventListener('click', unlockAudio, { once: true })
+          window.addEventListener('touchstart', unlockAudio, { once: true })
+          window.addEventListener('keydown', unlockAudio, { once: true })
+          window.addEventListener('scroll', unlockAudio, { once: true })
+        })
       }
+    } else {
+      audio.pause()
     }
   }, [isMuted])
+
+  const handleToggleAudio = () => {
+    setIsMuted((prev) => {
+      const next = !prev
+      if (next) {
+        localStorage.setItem('dive_village_user_muted', 'true')
+      } else {
+        localStorage.removeItem('dive_village_user_muted')
+      }
+      return next
+    })
+  }
 
   if (!mounted) return null // Prevent SSR/hydration mismatches if any
 
@@ -372,7 +412,7 @@ export default function VideoSphereBackground() {
 
   return (
     <>
-      <audio ref={audioRef} src={underwaterAudio} loop playsInline />
+      <audio ref={audioRef} src={underwaterAudio} loop playsInline autoPlay />
       <div className="absolute inset-0 -z-10">
         <div 
           className="sticky top-0 h-[100dvh] w-full overflow-hidden"
@@ -444,7 +484,7 @@ export default function VideoSphereBackground() {
         </div>
       </div>
       {!isNightDive && !isHiddenJoystickPath && <JoystickControl joystickVelocity={joystickVelocity} />}
-      <AudioToggle isMuted={isMuted} onToggle={() => setIsMuted(!isMuted)} />
+      <AudioToggle isMuted={isMuted} onToggle={handleToggleAudio} />
     </>
   )
 }
@@ -453,7 +493,7 @@ function AudioToggle({ isMuted, onToggle }) {
   return (
     <button
       onClick={onToggle}
-      className="fixed bottom-6 right-6 z-[9000] flex h-7 w-7 items-center justify-center rounded-full border border-cyan-400/30 bg-[#00223D]/80 backdrop-blur-md text-cyan-300 shadow-[0_4px_20px_rgba(0,34,61,0.6)] transition-all duration-300 hover:scale-110 hover:border-accent hover:text-accent"
+      className="fixed bottom-6 right-6 z-[9000] flex h-8 w-8 items-center justify-center rounded-full border border-white/25 bg-white/10 backdrop-blur-2xl text-white/90 shadow-[0_4px_20px_rgba(0,0,0,0.3)] transition-all duration-300 hover:scale-110 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] cursor-pointer"
       aria-label={isMuted ? 'Play underwater ambiance' : 'Mute underwater ambiance'}
     >
       {!isMuted ? (
@@ -547,7 +587,7 @@ function JoystickControl({ joystickVelocity }) {
 
   return (
     <div className="fixed top-1/2 right-2 sm:right-6 -translate-y-1/2 z-[8000] flex flex-col items-center gap-1.5 sm:gap-2 pointer-events-auto joystick-container scale-90 sm:scale-100 origin-right">
-      <span className="text-[9px] sm:text-[10px] font-bold text-cyan-200 uppercase tracking-widest bg-[#001e3d]/80 border border-cyan-400/30 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md backdrop-blur-md shadow-md select-none">
+      <span className="text-[9px] sm:text-[10px] font-bold text-white/90 uppercase tracking-widest bg-white/10 border border-white/25 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md backdrop-blur-2xl shadow-[0_4px_16px_rgba(0,0,0,0.25)] select-none">
         360° Toggle
       </span>
       <div
@@ -556,10 +596,10 @@ function JoystickControl({ joystickVelocity }) {
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerUp}
-        className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 border-cyan-400/40 bg-[#001e3d]/70 backdrop-blur-md flex items-center justify-center shadow-[0_8px_25px_rgba(0,30,61,0.7)] cursor-grab active:cursor-grabbing touch-none"
+        className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-full border border-white/30 bg-white/10 backdrop-blur-2xl flex items-center justify-center shadow-[0_8px_32px_rgba(0,0,0,0.3)] cursor-grab active:cursor-grabbing touch-none transition-all duration-300 hover:bg-white/15 hover:border-white/40"
       >
         <div
-          className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-[#00AEC7] to-[#005580] shadow-[0_0_15px_rgba(0,174,199,0.6)] border border-cyan-300/60"
+          className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/30 backdrop-blur-xl shadow-[0_2px_12px_rgba(255,255,255,0.25)] border border-white/50"
           style={{
             transform: `translate(${thumbPos.x}px, ${thumbPos.y}px)`,
             transition: isDragging.current ? 'none' : 'transform 0.2s ease-out'

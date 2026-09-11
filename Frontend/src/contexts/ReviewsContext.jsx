@@ -4,9 +4,9 @@ import { CAROUSEL_IMAGES } from '../utils/images'
 const INITIAL_REVIEWS = [
   {
     id: 'rev-1',
-    name: "Alex Johnson",
-    role: "PADI Open Water Diver",
-    text: "The Dive Village completely changed my perspective on the ocean. The instructors were incredibly patient, and the focus on safety made my first dive unforgettable.",
+    name: "Rohan Deshmukh",
+    role: "PADI Advanced Open Water Diver",
+    text: "Did my Advanced Open Water with Sanjeev and the crew in Havelock. Having instructors who genuinely emphasize neutral buoyancy and reef protection made all the difference. Saw manta rays at Dixon's Pinnacle—an unforgettable dive.",
     rating: 5,
     image: CAROUSEL_IMAGES[1],
     approved: true,
@@ -14,9 +14,9 @@ const INITIAL_REVIEWS = [
   },
   {
     id: 'rev-2',
-    name: "Maria Garcia",
-    role: "Marine Biologist",
-    text: "I've dived all over the world, but the dedication to eco-stewardship here is unmatched. It's inspiring to see a dive center that truly cares about coral restoration and leaving no trace.",
+    name: "Dr. Ananya Sen",
+    role: "Marine Ecology Enthusiast",
+    text: "As someone passionate about coral ecosystems, their respect for marine wildlife blew me away. Intimate small-group dives, zero touch policies, and the instructors know every reef species by name. It really feels like family.",
     rating: 5,
     image: CAROUSEL_IMAGES[2],
     approved: true,
@@ -24,9 +24,9 @@ const INITIAL_REVIEWS = [
   },
   {
     id: 'rev-3',
-    name: "David Chen",
-    role: "Advanced Adventurer",
-    text: "From the seamless booking process to the personalized dive charters, everything was flawless. A vibrant community that genuinely feels like a second home.",
+    name: "Vikramaditya Rathore",
+    role: "Rescue Diver & Underwater Photographer",
+    text: "From seamless logistics and custom boat charters to top-tier safety gear, everything was top notch. The night dive with glowing bioluminescence was pure magic. Easily the best dive community in the region.",
     rating: 5,
     image: CAROUSEL_IMAGES[0],
     approved: true,
@@ -40,7 +40,15 @@ export function ReviewsProvider({ children }) {
   const [reviews, setReviews] = useState(() => {
     try {
       const saved = localStorage.getItem('tdv_reviews')
-      return saved ? JSON.parse(saved) : INITIAL_REVIEWS
+      if (!saved) return INITIAL_REVIEWS
+      const parsed = JSON.parse(saved)
+      if (parsed.some((r) => r.name === 'Alex Johnson' || r.name === 'Maria Garcia' || r.name === 'David Chen')) {
+        const customOnes = parsed.filter(
+          (r) => !['rev-1', 'rev-2', 'rev-3'].includes(r.id) && r.name !== 'Alex Johnson' && r.name !== 'Maria Garcia' && r.name !== 'David Chen'
+        )
+        return [...INITIAL_REVIEWS, ...customOnes]
+      }
+      return parsed
     } catch {
       return INITIAL_REVIEWS
     }

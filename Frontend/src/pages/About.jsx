@@ -352,10 +352,10 @@ export default function About() {
               Whether it's your very first breath underwater or your next technical certification, we are ready to guide you every step of the way.
             </p>
             <div className="flex flex-wrap gap-4 items-center">
-              <Button as={Link} to="/book-us" className="bg-[#FFCD00] text-[#003865] hover:bg-white hover:text-[#003865] border-none shadow-lg font-heading font-bold">
+              <Button as={Link} to="/book-us" variant="primary">
                 Book Your Dive Now →
               </Button>
-              <Button as={Link} to="/contact" variant="secondary" className="!border-white/30 !text-white hover:!bg-white/10 backdrop-blur-sm font-heading font-bold">
+              <Button as={Link} to="/contact" variant="secondary">
                 Contact Our Team
               </Button>
             </div>

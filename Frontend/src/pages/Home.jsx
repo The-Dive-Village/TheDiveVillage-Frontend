@@ -32,7 +32,7 @@ const HIGHLIGHTS_DATA = [
   {
     id: 'snorkeling',
     title: 'Guided Snorkeling',
-    desc: 'Discover snorkeling and explore the ocean up close with our expert guides!',
+    desc: 'Discover snorkeling and explore the coral reefs along side our experts.',
     image: IMAGES.snorkelingHero,
     link: '/services?category=snorkeling',
     btnText: 'Explore'
@@ -113,7 +113,7 @@ export default function Home() {
   return (
     <div className="overflow-x-hidden relative isolate pointer-events-none">
       <SEOHead
-        title="The Dive Village | Premier Scuba Diving Center, PADI Courses & Ocean Gear"
+        title="The Dive Village | It's a Community"
         description="Experience world-class scuba diving, PADI certifications, guided snorkeling tours, and freediving with The Dive Village. Explore ocean gear and sustainable apparel."
         keywords="scuba diving center, PADI certification courses, guided snorkeling tours, freediving school, ocean apparel, dive gear shop, eco diving village"
         canonicalUrl="https://thedivevillage.com/"
@@ -137,7 +137,7 @@ export default function Home() {
               </h1>
               <div className="mt-6 h-1 w-20 bg-[#FFCD00]"></div>
               <p className="mt-8 max-w-2xl text-lg sm:text-xl md:text-2xl font-medium text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] leading-relaxed text-justify">
-                The life-changing magic of the ocean<br />Is a feeling meant to be shared.
+                The life-changing magic of the ocean<br />Is a feeling that is meant to be shared.
               </p>
               <div className="mt-10 flex flex-wrap items-center gap-6">
                 <Link
@@ -182,7 +182,7 @@ export default function Home() {
               Explore Our <span className="text-[#FFCD00] italic">Programs</span>
             </h2>
             <p className="mt-4 max-w-2xl mx-auto text-base sm:text-lg text-white/90 font-medium drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] text-justify">
-              From your very first breath under the water to professional dive master certifications.
+              From your very first breath under the water <br />To professional dive master certifications.
             </p>
           </SectionReveal>
         </div>
@@ -201,7 +201,7 @@ export default function Home() {
               The Ocean <span className="text-[#FFCD00] italic">Welcomes All</span>
             </h2>
             <p className="mt-4 max-w-2xl mx-auto text-base sm:text-lg text-white/90 font-medium drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] text-justify">
-              You don't need to be an athlete or an expert to dive<br />Only curious enough to explore.
+              You don't need to be an athlete or an expert to dive<br />You only need curiosity to explore what lies below.
             </p>
           </SectionReveal>
 
@@ -211,25 +211,25 @@ export default function Home() {
                 t: 'Enthusiastic Beginners',
                 img: img1,
                 bgImg: CAROUSEL_IMAGES[0],
-                desc: "New to diving? Start your journey with confidence. We'll guide you every step of the way."
+                desc: "New to diving? Start your journey with confidence, our expert guidance and support every step."
               },
               {
                 t: 'Families & Groups',
                 img: img2,
                 bgImg: CAROUSEL_IMAGES[1],
-                desc: "Shared memories.\nDeeper connections.\nPerfect experiences for the people who matter most."
+                desc: "Shared memories. Deeper connections. Perfect experiences with who matter the most to you."
               },
               {
                 t: 'Professionals',
                 img: img3,
                 bgImg: CAROUSEL_IMAGES[2],
-                desc: "For those who work beneath the surface. Training, support and solutions you can rely on."
+                desc: "For those who work beneath the surface. Training, support and solutions you can always rely on."
               },
               {
                 t: 'Adventure Seekers',
                 img: img4,
                 bgImg: CAROUSEL_IMAGES[3],
-                desc: "For the bold, the curious and the ocean lovers. Explore more. Dive deeper. Live the adventure."
+                desc: "For the bold, the curious and all the ocean lovers. Explore more. Dive deeper. Live the adventure."
               }
             ].map((item, i) => (
               <StaggerItem key={i}>
@@ -252,24 +252,24 @@ export default function Home() {
                   />
 
                   {/* Actual Card Background & Content */}
-                  <div className="h-full w-full rounded-2xl overflow-hidden border border-white/30 relative flex flex-col p-6 sm:p-8 pt-56 sm:pt-60 z-10 transition duration-500 group-hover:border-white/60 shadow-2xl justify-end">
+                  <div className="h-full w-full rounded-2xl overflow-hidden border border-white/30 relative flex flex-col p-5 sm:p-6 pt-64 sm:pt-72 pb-6 sm:pb-7 z-10 transition duration-500 group-hover:border-white/60 shadow-2xl justify-end">
 
                     <img
                       src={item.bgImg}
                       alt={item.t}
-                      className="absolute inset-0 w-full h-full object-cover z-0 opacity-90"
+                      className="absolute inset-0 w-full h-full object-cover z-0 opacity-85 blur-[2px] scale-105 transition-transform duration-700 group-hover:scale-110"
                     />
 
-                    <div className="absolute bottom-0 inset-x-0 h-1/2 bg-gradient-to-t from-navy/95 via-navy/70 to-transparent z-0 pointer-events-none" />
+                    <div className="absolute bottom-0 inset-x-0 h-3/5 bg-gradient-to-t from-navy via-navy/80 to-transparent z-0 pointer-events-none" />
 
                     <div className="relative z-10 flex flex-col justify-end h-full mt-auto">
-                      <h3 className="font-heading text-lg sm:text-xl font-bold text-white uppercase tracking-wider mb-3 leading-tight text-left drop-shadow-md min-h-[56px] flex items-end">
+                      <h3 className="font-heading text-lg sm:text-xl font-bold text-white uppercase tracking-wider mb-2 leading-tight text-left drop-shadow-md min-h-[48px] flex items-end">
                         {item.t}
                       </h3>
 
-                      <div className="w-8 h-[3px] bg-[#FFCD00] mb-4 shadow-sm shrink-0"></div>
+                      <div className="w-8 h-[3px] bg-[#FFCD00] mb-3 shadow-sm shrink-0"></div>
 
-                      <p className="text-white/90 text-sm font-medium mb-6 leading-relaxed text-justify drop-shadow-sm min-h-[72px] flex items-start whitespace-pre-line">
+                      <p className="text-white/90 text-sm font-medium mb-4 leading-relaxed text-justify drop-shadow-sm min-h-[64px] flex items-start whitespace-pre-line">
                         {item.desc}
                       </p>
 
@@ -308,7 +308,7 @@ export default function Home() {
               <button
                 type="button"
                 onClick={() => setShowReviewModal(true)}
-                className="inline-flex items-center gap-2 rounded-full bg-[#FFCD00] text-navy font-bold text-xs uppercase tracking-widest px-6 py-3 transition hover:scale-105 shadow-md cursor-pointer"
+                className="inline-flex items-center gap-2 rounded-full bg-white/15 backdrop-blur-xl border border-white/30 text-white font-bold text-xs uppercase tracking-widest px-6 py-3 transition-all duration-300 hover:scale-105 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] shadow-md cursor-pointer"
               >
                 <span>+ Write a Review</span>
               </button>
@@ -318,7 +318,7 @@ export default function Home() {
           <StaggerGrid className="grid md:grid-cols-3 gap-8 items-stretch">
             {approvedReviews.slice(0, 3).map((t, i) => (
               <StaggerItem key={t.id || i} className="h-full">
-                <div className="h-full flex flex-col justify-between bg-[#00223D]/80 backdrop-blur-xl rounded-3xl p-8 border border-cyan-400/30 shadow-2xl hover:bg-[#002b4d]/90 hover:border-cyan-400/60 hover:-translate-y-2 transition duration-500">
+                <div className="h-full flex flex-col justify-between bg-white/10 backdrop-blur-2xl rounded-3xl p-8 border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.37)] hover:bg-white/15 hover:border-white/40 hover:-translate-y-2 transition-all duration-500">
                   <div>
                     <div className="flex gap-1 mb-6">
                       {[...Array(t.rating || 5)].map((_, j) => (
@@ -330,12 +330,12 @@ export default function Home() {
                     <p className="text-white/95 font-medium italic mb-8 leading-relaxed text-justify">"{t.text}"</p>
                   </div>
                   <div className="flex items-center gap-4 mt-auto">
-                    <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-cyan-400/40 shrink-0">
+                    <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white/30 shrink-0 shadow-md">
                       <SafeImage src={t.image} alt={t.name} className="w-full h-full object-cover" />
                     </div>
                     <div>
-                      <h4 className="font-bold text-white text-sm">{t.name}</h4>
-                      <span className="text-xs text-cyan-300 font-medium">{t.role}</span>
+                      <h4 className="font-bold text-white text-sm tracking-wide">{t.name}</h4>
+                      <span className="text-xs text-[#FFCD00] font-medium">{t.role}</span>
                     </div>
                   </div>
                 </div>
@@ -356,7 +356,7 @@ export default function Home() {
               <span className="text-accent font-bold">We've Got You Covered</span>
             </h2>
             <p className="text-base sm:text-lg text-white/80 font-medium leading-relaxed drop-shadow-md text-justify">
-              Relax and immerse yourself in the ocean.<br />We handle every detail of your island holiday from arrival to departure.
+              Relax, slow down, and immerse yourself in the ocean's endless beauty!<br />We handle every detail of your island holiday from arrival to departure.
             </p>
           </SectionReveal>
 
@@ -365,7 +365,7 @@ export default function Home() {
               {
                 num: '01',
                 title: 'Travel Logistics',
-                desc: 'Seamless transfers and hassle-free travel.',
+                desc: 'Seamless transfers and hassle free travel, arrival to departure.',
                 video: travelVid,
                 icon: (
                   <svg className="w-5 h-5 text-[#00AEC7]" fill="currentColor" viewBox="0 0 24 24">
@@ -376,7 +376,7 @@ export default function Home() {
               {
                 num: '02',
                 title: 'Comfortable Stays',
-                desc: 'Handpicked accommodations for your perfect escape.',
+                desc: 'Handpicked accommodations for a perfect escape, made easy.',
                 img: stayImg,
                 icon: (
                   <svg className="w-5 h-5 text-[#00AEC7]" fill="currentColor" viewBox="0 0 24 24">
@@ -387,7 +387,7 @@ export default function Home() {
               {
                 num: '03',
                 title: 'Local Cuisine',
-                desc: 'Savor authentic flavors crafted by local chefs.',
+                desc: 'Savor authentic flavors, freshly crafted delicacies by local chefs.',
                 img: foodImg,
                 icon: (
                   <svg className="w-5 h-5 text-[#00AEC7]" fill="currentColor" viewBox="0 0 24 24">
@@ -398,7 +398,7 @@ export default function Home() {
               {
                 num: '04',
                 title: 'Personal Itineraries',
-                desc: 'Custom experiences tailored to your travel style.',
+                desc: 'Custom experiences tailored to your travel style and made to fit.',
                 video: itineraryVid,
                 img: CAROUSEL_IMAGES[1],
                 icon: (
@@ -562,7 +562,7 @@ export default function Home() {
                   </div>
                   <button
                     type="submit"
-                    className="w-full rounded-full bg-[#FFCD00] text-navy font-bold py-3 text-sm transition hover:bg-white cursor-pointer mt-2"
+                    className="w-full rounded-full bg-white/15 backdrop-blur-xl border border-white/25 text-white font-bold py-3 text-sm transition hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] cursor-pointer mt-2"
                   >
                     Submit Review for Approval
                   </button>
@@ -720,7 +720,7 @@ function InteractiveHighlights() {
         onClick={handlePrev}
         onMouseEnter={(e) => { e.stopPropagation(); isHovered.current = true }}
         onMouseLeave={(e) => { e.stopPropagation(); isHovered.current = true }}
-        className="carousel-arrow-btn absolute -left-1 sm:left-2 lg:left-3 top-1/2 -translate-y-1/2 z-40 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#00182D]/90 border border-[#FFCD00]/50 text-[#FFCD00] hover:bg-[#FFCD00] hover:text-[#00182D] shadow-[0_0_20px_rgba(0,0,0,0.6)] backdrop-blur-xl flex items-center justify-center cursor-pointer select-none transition-all duration-300 hover:scale-110 active:scale-95"
+        className="carousel-arrow-btn absolute -left-1 sm:left-2 lg:left-3 top-1/2 -translate-y-1/2 z-40 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/15 border border-white/30 text-white hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] shadow-[0_8px_32px_rgba(0,0,0,0.37)] backdrop-blur-2xl flex items-center justify-center cursor-pointer select-none transition-all duration-300 hover:scale-110 active:scale-95"
         aria-label="Previous Slide"
       >
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
@@ -733,7 +733,7 @@ function InteractiveHighlights() {
         onClick={handleNext}
         onMouseEnter={(e) => { e.stopPropagation(); isHovered.current = true }}
         onMouseLeave={(e) => { e.stopPropagation(); isHovered.current = true }}
-        className="carousel-arrow-btn absolute -right-1 sm:right-2 lg:right-3 top-1/2 -translate-y-1/2 z-40 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#00182D]/90 border border-[#FFCD00]/50 text-[#FFCD00] hover:bg-[#FFCD00] hover:text-[#00182D] shadow-[0_0_20px_rgba(0,0,0,0.6)] backdrop-blur-xl flex items-center justify-center cursor-pointer select-none transition-all duration-300 hover:scale-110 active:scale-95"
+        className="carousel-arrow-btn absolute -right-1 sm:right-2 lg:right-3 top-1/2 -translate-y-1/2 z-40 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/15 border border-white/30 text-white hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] shadow-[0_8px_32px_rgba(0,0,0,0.37)] backdrop-blur-2xl flex items-center justify-center cursor-pointer select-none transition-all duration-300 hover:scale-110 active:scale-95"
         aria-label="Next Slide"
       >
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
@@ -785,7 +785,7 @@ function InteractiveHighlights() {
                 <button
                   type="button"
                   onClick={(e) => handleNavigate(e, current.link)}
-                  className="w-full py-3 px-5 rounded-full bg-white/20 backdrop-blur-md border border-white/40 text-white font-bold text-xs uppercase tracking-wider transition-all duration-300 hover:bg-[#FFCD00] hover:text-[#001428] hover:border-[#FFCD00] shadow-lg pointer-events-auto cursor-pointer relative z-30 flex items-center justify-center gap-2 group/btn"
+                  className="w-full py-3 px-5 rounded-full bg-white/15 backdrop-blur-xl border border-white/30 text-white font-bold text-xs uppercase tracking-wider transition-all duration-300 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] hover:shadow-[0_8px_30px_rgba(255,205,0,0.5)] shadow-lg pointer-events-auto cursor-pointer relative z-30 flex items-center justify-center gap-2 group/btn"
                 >
                   <span>{current.btnText || 'Explore'}</span>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover/btn:translate-x-1">

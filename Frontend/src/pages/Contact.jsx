@@ -99,10 +99,10 @@ export default function Contact() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.1 }}
-            className="text-5xl sm:text-7xl lg:text-8xl font-serif text-white tracking-tight leading-none drop-shadow-[0_4px_25px_rgba(0,0,0,0.6)]"
+            className="font-heading text-5xl sm:text-7xl lg:text-8xl font-bold uppercase tracking-tight text-white leading-none drop-shadow-[0_4px_25px_rgba(0,0,0,0.6)]"
             style={{ textShadow: '0 4px 20px rgba(0,0,0,0.3)' }}
           >
-            Contact <span className="font-bold italic text-accent">Us</span>
+            Contact <span className="text-[#FFCD00]">Us</span>
           </motion.h1>
 
           <motion.p
@@ -118,7 +118,7 @@ export default function Contact() {
 
       {/* 2. MAIN FORM & INTERACTIVE SPHERE SECTION */}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
-        
+
         {/* Main Split Section */}
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-stretch">
           {/* Form */}
@@ -210,20 +210,13 @@ export default function Contact() {
                 ></textarea>
               </div>
 
-              <div className="pt-2 flex items-center gap-3">
+              <div className="pt-2">
                 <button
                   type="submit"
                   disabled={loading}
-                  className="rounded-full bg-navy px-8 py-4 text-sm font-bold text-white transition hover:bg-accent hover:text-navy disabled:opacity-50 cursor-pointer shadow-md"
+                  className="w-full sm:w-auto rounded-full bg-navy text-white hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] px-8 py-4 text-sm font-bold transition-all duration-300 shadow-md cursor-pointer disabled:opacity-50"
                 >
                   {loading ? 'Sending...' : 'Reserve Your Spot'}
-                </button>
-                <button 
-                  type="submit" 
-                  disabled={loading} 
-                  className="w-12 h-12 rounded-full bg-navy flex items-center justify-center text-white transition hover:bg-accent hover:text-navy disabled:opacity-50 cursor-pointer shadow-md"
-                >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>
                 </button>
               </div>
             </form>
@@ -236,18 +229,18 @@ export default function Contact() {
         </div>
 
         {/* Info Blocks */}
-        <div className="mt-24 sm:mt-32 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 text-center max-w-6xl mx-auto">
+        <div className="mt-24 sm:mt-32 grid grid-cols-1 md:grid-cols-3 gap-8 text-center max-w-5xl mx-auto">
           <div className="flex flex-col items-center bg-white p-8 rounded-3xl border border-navy/5 shadow-card hover:shadow-float transition">
             <div className="w-12 h-12 rounded-full bg-navy/5 text-navy flex items-center justify-center mb-5">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" /></svg>
             </div>
             <h4 className="font-bold text-navy mb-2">Call & WhatsApp</h4>
             <a href="tel:+918971001010" className="text-xs text-navy/70 hover:text-accent font-semibold transition">+91 89710 01010</a>
           </div>
-          
+
           <div className="flex flex-col items-center bg-white p-8 rounded-3xl border border-navy/5 shadow-card hover:shadow-float transition">
             <div className="w-12 h-12 rounded-full bg-navy/5 text-navy flex items-center justify-center mb-5">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="M22 6l-10 7L2 6"/></svg>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><path d="M22 6l-10 7L2 6" /></svg>
             </div>
             <h4 className="font-bold text-navy mb-2">Write to Us</h4>
             <a href="mailto:sanjeev.bajaj@thedivevillage.co" className="text-xs text-navy/70 hover:text-accent font-semibold transition truncate max-w-full">sanjeev.bajaj@thedivevillage.co</a>
@@ -255,22 +248,7 @@ export default function Contact() {
 
           <div className="flex flex-col items-center bg-white p-8 rounded-3xl border border-navy/5 shadow-card hover:shadow-float transition">
             <div className="w-12 h-12 rounded-full bg-navy/5 text-navy flex items-center justify-center mb-5">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            </div>
-            <h4 className="font-bold text-navy mb-2">Visit Us</h4>
-            <a
-              href="https://www.google.com/maps/place/2JG4%2B8WP,+C-101,+1st+Cross+Rd,+Ranka+Nagar,+Kaval+Bairasandra,+Bengaluru,+Karnataka+560032/@13.0259006,77.6070295,20.34z/data=!4m9!1m2!2m1!1sradhidhamma!3m5!1s0x3bae17a78cde34a9:0x7c9daf2e21647c11!8m2!3d13.0258219!4d77.6072606!16s%2Fg%2F11fy_3kdm6?entry=ttu&g_ep=EgoyMDI2MDgzMS4wIKXMDSoASAFQAw%3D%3D"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs text-navy/70 hover:text-accent font-semibold transition text-center leading-relaxed"
-            >
-              No,11, 1st Cross Rd, Ranka Nagar, Bengaluru 560032
-            </a>
-          </div>
-
-          <div className="flex flex-col items-center bg-white p-8 rounded-3xl border border-navy/5 shadow-card hover:shadow-float transition">
-            <div className="w-12 h-12 rounded-full bg-navy/5 text-navy flex items-center justify-center mb-5">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg>
             </div>
             <h4 className="font-bold text-navy mb-2">Availability</h4>
             <span className="text-xs text-navy/80 font-bold">Always open to guide your dive</span>
@@ -281,19 +259,19 @@ export default function Contact() {
         {/* Social Links */}
         <div className="mt-16 flex justify-center gap-4 sm:gap-6">
           <a href="#" className="w-11 h-11 rounded-full bg-white border border-navy/10 shadow-sm flex items-center justify-center text-navy/70 hover:bg-accent hover:text-navy hover:border-accent transition" aria-label="Instagram">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5" /><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z" /><line x1="17.5" y1="6.5" x2="17.51" y2="6.5" /></svg>
           </a>
           <a href="https://m.me/IamSanjeevbajaj" target="_blank" rel="noopener noreferrer" className="w-11 h-11 rounded-full bg-white border border-navy/10 shadow-sm flex items-center justify-center text-navy/70 hover:bg-accent hover:text-navy hover:border-accent transition" aria-label="Facebook Messenger">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3.81l.39-4h-4.2V7a1 1 0 011-1h3z"/></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3.81l.39-4h-4.2V7a1 1 0 011-1h3z" /></svg>
           </a>
           <a href="#" className="w-11 h-11 rounded-full bg-white border border-navy/10 shadow-sm flex items-center justify-center text-navy/70 hover:bg-accent hover:text-navy hover:border-accent transition" aria-label="LinkedIn">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z" /><circle cx="4" cy="4" r="2" /></svg>
           </a>
           <a href="#" className="w-11 h-11 rounded-full bg-white border border-navy/10 shadow-sm flex items-center justify-center text-navy/70 hover:bg-accent hover:text-navy hover:border-accent transition" aria-label="YouTube">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22.54 6.42a2.78 2.78 0 00-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 00-1.94 2A29 29 0 001 11.75a29 29 0 00.46 5.33 2.78 2.78 0 001.94 2c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 001.94-2 29 29 0 00.46-5.33 29 29 0 00-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22.54 6.42a2.78 2.78 0 00-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 00-1.94 2A29 29 0 001 11.75a29 29 0 00.46 5.33 2.78 2.78 0 001.94 2c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 001.94-2 29 29 0 00.46-5.33 29 29 0 00-.46-5.33z" /><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" /></svg>
           </a>
           <a href="https://wa.me/918971001010" target="_blank" rel="noopener noreferrer" className="w-11 h-11 rounded-full bg-white border border-navy/10 shadow-sm flex items-center justify-center text-navy/70 hover:bg-accent hover:text-navy hover:border-accent transition" aria-label="WhatsApp">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z" /></svg>
           </a>
         </div>
 
@@ -308,16 +286,16 @@ export default function Contact() {
                 Start Now
               </span>
               <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight tracking-tight mb-4">
-                Discover Your Next <span className="font-serif italic font-normal text-accent">Ocean Escape</span>
+                Discover Your Next <span className="font-serif italic font-normal text-accent"> <br /> Ocean Escape</span>
               </h2>
               <p className="text-base sm:text-lg font-medium text-white/80 leading-relaxed max-w-lg mb-8">
                 Ready to take the plunge? Plan your trip in minutes and enjoy every moment of your dive adventure with certified PADI experts.
               </p>
-              
+
               <div className="flex flex-wrap items-center gap-4">
                 <Link
                   to="/book-us"
-                  className="rounded-full bg-[#FFCD00] text-navy font-bold px-8 py-4 text-sm uppercase tracking-wider transition-all duration-300 hover:bg-white hover:scale-105 shadow-lg flex items-center gap-2 cursor-pointer"
+                  className="rounded-full bg-white/15 backdrop-blur-xl border border-white/25 text-white font-bold px-8 py-4 text-sm uppercase tracking-wider transition-all duration-300 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] shadow-lg flex items-center gap-2 cursor-pointer"
                 >
                   <span>Book Your Dive Now</span>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -327,7 +305,7 @@ export default function Contact() {
                 </Link>
                 <Link
                   to="/services"
-                  className="rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold px-6 py-4 text-sm uppercase tracking-wider transition duration-300 hover:bg-white/20 hover:border-white/40 cursor-pointer"
+                  className="rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold px-6 py-4 text-sm uppercase tracking-wider transition duration-300 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] cursor-pointer"
                 >
                   Explore Programs
                 </Link>
@@ -341,16 +319,7 @@ export default function Contact() {
                 className="w-full h-full object-cover transition duration-700 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-navy/60 via-transparent to-transparent pointer-events-none" />
-              <div className="absolute bottom-4 left-4 right-4 bg-navy/85 backdrop-blur-md p-4 rounded-2xl border border-white/20 flex items-center justify-between">
-                <div>
-                  <p className="text-xs font-bold text-accent uppercase tracking-wider">PADI Certified Center</p>
-                  <p className="text-sm font-bold text-white">Daily Boat Dives & Courses</p>
-                </div>
-                <span className="flex h-3 w-3 relative">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
-                </span>
-              </div>
+
             </div>
           </div>
         </div>

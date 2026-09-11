@@ -4,17 +4,19 @@ import { prefetchRoute } from '../utils/routePrefetcher'
 
 const variants = {
   primary:
-    'bg-white/15 backdrop-blur-xl border border-white/30 text-white shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] hover:bg-[#FFCD00] hover:text-navy hover:border-[#FFCD00] hover:shadow-[0_12px_40px_rgba(255,205,0,0.6)] active:scale-[0.98]',
+    'bg-white/15 backdrop-blur-xl border border-white/25 text-white shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] hover:shadow-[0_12px_40px_rgba(255,205,0,0.6)] active:scale-[0.98]',
   secondary:
-    'bg-white/10 backdrop-blur-xl border border-white/30 text-white hover:bg-[#FFCD00] hover:text-navy hover:border-[#FFCD00] hover:shadow-[0_12px_40px_rgba(255,205,0,0.5)] active:scale-[0.98]',
+    'bg-white/10 backdrop-blur-xl border border-white/20 text-white hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] hover:shadow-[0_12px_40px_rgba(255,205,0,0.5)] active:scale-[0.98]',
   glass:
-    'bg-white/15 backdrop-blur-xl border border-white/40 text-white shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] hover:bg-[#FFCD00] hover:text-navy hover:border-[#FFCD00] hover:shadow-[0_12px_40px_rgba(255,205,0,0.6)] active:scale-[0.98]',
+    'bg-white/15 backdrop-blur-xl border border-white/30 text-white shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] hover:shadow-[0_12px_40px_rgba(255,205,0,0.6)] active:scale-[0.98]',
   glassSecondary:
-    'bg-white/10 backdrop-blur-xl border border-white/25 text-white shadow-[0_8px_32px_0_rgba(0,0,0,0.25)] hover:bg-[#FFCD00] hover:text-navy hover:border-[#FFCD00] hover:shadow-[0_12px_40px_rgba(255,205,0,0.5)] active:scale-[0.98]',
+    'bg-white/10 backdrop-blur-xl border border-white/20 text-white shadow-[0_8px_32px_0_rgba(0,0,0,0.2)] hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] hover:shadow-[0_12px_40px_rgba(255,205,0,0.5)] active:scale-[0.98]',
   ghost:
-    'bg-white/5 backdrop-blur-md border border-white/15 text-white hover:bg-[#FFCD00] hover:text-navy hover:border-[#FFCD00] active:scale-[0.98]',
+    'bg-white/5 backdrop-blur-md border border-white/15 text-white hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] active:scale-[0.98]',
   navy:
-    'bg-navy/80 backdrop-blur-xl border border-white/20 text-white shadow-soft hover:shadow-lift hover:bg-[#FFCD00] hover:text-navy hover:border-[#FFCD00] active:scale-[0.98]',
+    'bg-[#001e3d]/40 backdrop-blur-xl border border-white/20 text-white shadow-soft hover:shadow-lift hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] active:scale-[0.98]',
+  outline:
+    'bg-white/5 backdrop-blur-md border border-white/25 text-white hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] active:scale-[0.98]',
 }
 
 const Button = forwardRef(function Button(

@@ -22,6 +22,7 @@ export default function Gallery() {
           const mapped = res.data.data.map((item) => ({
             id: item.id,
             title: item.title || 'Underwater Moment',
+            species: item.species || item.subtitle || undefined,
             category: item.category ? item.category.toLowerCase() : 'underwater',
             location: item.location || 'The Dive Village',
             type: (item.mediaType || 'IMAGE').toLowerCase(),
@@ -96,7 +97,7 @@ export default function Gallery() {
             </h1>
           </div>
           <p className="max-w-md text-base sm:text-lg font-medium text-navy/70 leading-relaxed lg:pb-4">
-            Moments frozen in time beneath the waves. Explore our underwater expeditions, coral encounters, surf sessions, and village life.
+            Moments frozen in time beneath the waves. Explore our underwater expeditions, marine encounters, species identification, and village life.
           </p>
         </div>
 
@@ -125,60 +126,99 @@ export default function Gallery() {
           {filteredItems.map((item, idx) => (
             <motion.div
               key={item.id}
-              initial={reduce ? false : { opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
+              initial={reduce ? false : { opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ delay: Math.min(idx * 0.03, 0.3) }}
-              className="group relative rounded-[28px] overflow-hidden bg-navy/10 shadow-card hover:shadow-float transition duration-300 aspect-[4/3] cursor-pointer"
+              className="group flex flex-col rounded-[24px] overflow-hidden bg-white border border-navy/10 shadow-sm hover:shadow-xl hover:border-cyan-500/30 transition-all duration-300 cursor-pointer"
               onClick={() => openLightbox(idx)}
             >
-              {item.type === 'video' ? (
-                <LazyVideo
-                  src={item.src}
-                  muted
-                  loop
-                  playsInline
-                  autoPlay
-                  className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                />
-              ) : (
-                <SafeImage
-                  src={item.src}
-                  alt="Gallery item"
-                  className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-                />
-              )}
+              {/* Media Container */}
+              <div className="relative aspect-[16/11] w-full overflow-hidden bg-navy/10">
+                {item.type === 'video' ? (
+                  <LazyVideo
+                    src={item.src}
+                    muted
+                    loop
+                    playsInline
+                    autoPlay
+                    className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                  />
+                ) : (
+                  <SafeImage
+                    src={item.src}
+                    alt={item.title || 'Gallery item'}
+                    className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                  />
+                )}
 
-              {/* Hover Dark Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-300" />
-              
-              {/* Top Media Type Badge */}
-              <div className="absolute top-4 left-4">
-                <span className="rounded-full bg-black/40 backdrop-blur-md px-3 py-1 text-[11px] font-bold text-white shadow-sm flex items-center gap-1.5">
-                  {item.type === 'video' ? (
-                    <>
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                        <polygon points="5 3 19 12 5 21 5 3" />
-                      </svg>
-                      Video
-                    </>
-                  ) : (
-                    <>
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                        <circle cx="8.5" cy="8.5" r="1.5"/>
-                        <polyline points="21 15 16 10 5 21"/>
-                      </svg>
-                      Photo
-                    </>
+                {/* Hover Dark Gradient */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-300" />
+                
+                {/* Top Media Type & Reel Badge */}
+                <div className="absolute top-3.5 left-3.5 flex items-center gap-1.5 flex-wrap">
+                  <span className="rounded-full bg-black/50 backdrop-blur-md px-3 py-1 text-[11px] font-bold text-white shadow-sm flex items-center gap-1.5">
+                    {item.type === 'video' ? (
+                      <>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                          <polygon points="5 3 19 12 5 21 5 3" />
+                        </svg>
+                        Video
+                      </>
+                    ) : (
+                      <>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                          <circle cx="8.5" cy="8.5" r="1.5"/>
+                          <polyline points="21 15 16 10 5 21"/>
+                        </svg>
+                        Photo
+                      </>
+                    )}
+                  </span>
+                  {item.reelName && (
+                    <span className="rounded-full bg-black/50 backdrop-blur-md px-2.5 py-1 text-[10px] font-bold text-[#FFCD00] shadow-sm flex items-center gap-1 border border-white/10">
+                      🎬 {item.reelName.split('•')[1]?.trim() || item.reelName}
+                    </span>
                   )}
-                </span>
+                </div>
+
+                {/* Expand Icon on Hover */}
+                <div className="absolute top-3.5 right-3.5 h-9 w-9 rounded-full bg-white/25 backdrop-blur-md flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition duration-300 hover:scale-110 shadow-md">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+                  </svg>
+                </div>
               </div>
 
-              {/* Expand / Play Icon on Hover */}
-              <div className="absolute top-4 right-4 h-10 w-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition duration-300 hover:scale-110">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
-                </svg>
+              {/* Information Panel Below Media */}
+              <div className="p-5 flex flex-col flex-grow justify-between gap-3 bg-white">
+                <div>
+                  <div className="flex items-start justify-between gap-2">
+                    <h3 className="font-heading text-lg font-bold text-navy group-hover:text-[#008ba3] transition duration-200 line-clamp-1">
+                      {item.title}
+                    </h3>
+                  </div>
+                  {item.species && (
+                    <p className="text-xs font-semibold italic text-[#007A87] mt-1 tracking-wide line-clamp-1">
+                      {item.species}
+                    </p>
+                  )}
+                  {item.reelName && (
+                    <p className="text-[11px] font-bold text-navy/60 mt-1.5 flex items-center gap-1 tracking-tight">
+                      <span className="text-[#FF6106]">▶</span> {item.reelName}
+                    </p>
+                  )}
+                </div>
+
+                {item.location && (
+                  <div className="flex items-center gap-1.5 text-xs font-medium text-navy/70 pt-2.5 border-t border-navy/5">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-[#FF6106] shrink-0">
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                      <circle cx="12" cy="10" r="3" />
+                    </svg>
+                    <span className="truncate">{item.location}</span>
+                  </div>
+                )}
               </div>
             </motion.div>
           ))}
@@ -228,10 +268,10 @@ export default function Gallery() {
               Join us for certified diving, reef safaris, and surfing camps. Experience the serenity that only the ocean can offer.
             </p>
             <div className="flex flex-wrap gap-4 items-center">
-              <Button as={Link} to="/book-us" className="bg-accent text-navy hover:bg-white hover:text-navy border-none">
+              <Button as={Link} to="/book-us" variant="primary">
                 Book Your Dive Adventure →
               </Button>
-              <Button as={Link} to="/contact" variant="secondary" className="!border-white/30 !text-white hover:!bg-white/10">
+              <Button as={Link} to="/contact" variant="secondary">
                 Inquire With Us
               </Button>
             </div>
@@ -250,7 +290,7 @@ export default function Gallery() {
             {/* Close Button */}
             <button
               onClick={() => setSelectedMediaIndex(null)}
-              className="absolute top-6 right-6 z-20 flex h-12 w-12 items-center justify-center rounded-full bg-white/20 text-white transition hover:bg-accent hover:text-navy hover:scale-110 cursor-pointer"
+              className="absolute top-6 right-6 z-20 flex h-12 w-12 items-center justify-center rounded-full bg-white/20 text-white transition hover:bg-accent hover:text-navy hover:scale-110 cursor-pointer shadow-lg"
               aria-label="Close Lightbox"
             >
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -261,7 +301,7 @@ export default function Gallery() {
             {/* Left Nav */}
             <button
               onClick={(e) => { e.stopPropagation(); prevMedia() }}
-              className="absolute left-4 sm:left-8 z-20 flex h-12 w-12 items-center justify-center rounded-full bg-white/20 text-white transition hover:bg-accent hover:text-navy hover:scale-110 cursor-pointer"
+              className="absolute left-4 sm:left-8 z-20 flex h-12 w-12 items-center justify-center rounded-full bg-white/20 text-white transition hover:bg-accent hover:text-navy hover:scale-110 cursor-pointer shadow-lg"
               aria-label="Previous media"
             >
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -272,7 +312,7 @@ export default function Gallery() {
             {/* Right Nav */}
             <button
               onClick={(e) => { e.stopPropagation(); nextMedia() }}
-              className="absolute right-4 sm:right-8 z-20 flex h-12 w-12 items-center justify-center rounded-full bg-white/20 text-white transition hover:bg-accent hover:text-navy hover:scale-110 cursor-pointer"
+              className="absolute right-4 sm:right-8 z-20 flex h-12 w-12 items-center justify-center rounded-full bg-white/20 text-white transition hover:bg-accent hover:text-navy hover:scale-110 cursor-pointer shadow-lg"
               aria-label="Next media"
             >
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -286,10 +326,10 @@ export default function Gallery() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.2 }}
-              className="relative max-h-[92vh] max-w-5xl w-full flex flex-col rounded-3xl overflow-hidden bg-navy/95 border border-white/20 shadow-2xl text-white"
+              className="relative max-h-[92vh] max-w-5xl w-full flex flex-col rounded-3xl overflow-hidden bg-[#001e3d] border border-white/20 shadow-2xl text-white"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="relative w-full max-h-[76vh] flex items-center justify-center bg-black/60 overflow-hidden">
+              <div className="relative w-full max-h-[70vh] flex items-center justify-center bg-black/70 overflow-hidden">
                 {currentItem.type === 'video' ? (
                   <video
                     src={currentItem.src}
@@ -297,26 +337,59 @@ export default function Gallery() {
                     autoPlay
                     loop
                     playsInline
-                    className="max-h-[76vh] w-auto max-w-full object-contain"
+                    className="max-h-[70vh] w-auto max-w-full object-contain"
                   />
                 ) : (
                   <img
                     src={currentItem.src}
-                    alt="Gallery visual"
-                    className="max-h-[76vh] w-auto max-w-full object-contain"
+                    alt={currentItem.title || 'Gallery visual'}
+                    className="max-h-[70vh] w-auto max-w-full object-contain"
                   />
                 )}
               </div>
 
-              {/* Lightbox Footer Bar (clean, no titles or locations) */}
-              <div className="p-4 sm:p-6 bg-navy flex justify-between items-center">
-                <span className="text-xs sm:text-sm font-bold text-white/60 tracking-wider">
-                  {selectedMediaIndex + 1} / {filteredItems.length}
-                </span>
+              {/* Lightbox Footer Bar with full details */}
+              <div className="p-5 sm:p-6 bg-[#001830] border-t border-white/10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div className="flex flex-col gap-1 max-w-2xl">
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <h2 className="text-lg sm:text-2xl font-bold font-heading text-white">
+                      {currentItem.title}
+                    </h2>
+                    {currentItem.reelName && (
+                      <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#FFCD00]/20 text-[#FFCD00] border border-[#FFCD00]/30">
+                        🎬 {currentItem.reelName}
+                      </span>
+                    )}
+                    {currentItem.category && (
+                      <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-400/30">
+                        {currentItem.category}
+                      </span>
+                    )}
+                  </div>
+                  {currentItem.species && (
+                    <p className="text-xs sm:text-sm font-semibold italic text-[#00AEC7]">
+                      Species: {currentItem.species}
+                    </p>
+                  )}
+                  {currentItem.location && (
+                    <p className="text-xs sm:text-sm text-white/80 flex items-center gap-1.5 mt-0.5">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-[#FF6106] shrink-0">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                        <circle cx="12" cy="10" r="3" />
+                      </svg>
+                      {currentItem.location}
+                    </p>
+                  )}
+                </div>
 
-                <Button as={Link} to="/book-us" className="bg-accent text-navy text-xs py-2 px-5 font-bold border-none hover:bg-white hover:text-navy">
-                  Join Expedition
-                </Button>
+                <div className="flex items-center gap-4 shrink-0 w-full sm:w-auto justify-between sm:justify-end">
+                  <span className="text-xs sm:text-sm font-bold text-white/60 tracking-wider">
+                    {selectedMediaIndex + 1} / {filteredItems.length}
+                  </span>
+                  <Button as={Link} to="/book-us" variant="primary" className="text-xs sm:text-sm py-2 px-5 font-bold shadow-md">
+                    Join Expedition
+                  </Button>
+                </div>
               </div>
             </motion.div>
           </div>

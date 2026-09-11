@@ -62,11 +62,7 @@ export default function Navbar() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-[9999] w-full px-2 sm:px-4 lg:px-6 pointer-events-none flex flex-col items-center">
-      <div className={`pointer-events-auto mx-auto grid grid-cols-[1fr_auto_1fr] h-[58px] sm:h-[64px] lg:h-[68px] w-full max-w-7xl 2xl:max-w-[1700px] items-center px-4 sm:px-8 lg:px-12 rounded-full border shadow-[0_12px_40px_rgba(0,18,32,0.7)] transition-all duration-300 ${
-        location.pathname === '/'
-          ? 'bg-navy border-white/20'
-          : 'bg-navy border-white/20 shadow-[0_12px_40px_rgba(0,18,32,0.6)]'
-      }`}>
+      <div className={`pointer-events-auto mx-auto grid grid-cols-[1fr_auto_1fr] h-[58px] sm:h-[64px] lg:h-[68px] w-full max-w-7xl 2xl:max-w-[1700px] items-center px-4 sm:px-8 lg:px-12 rounded-full border border-white/20 bg-[#001e3d]/45 backdrop-blur-2xl shadow-[0_12px_40px_rgba(0,18,32,0.5)] transition-all duration-300`}>
         
         {/* Left Side: Home, Book Us, Contact Us */}
         <div className="flex items-center justify-start gap-4 lg:gap-8 pl-1 sm:pl-2">
@@ -130,7 +126,7 @@ export default function Navbar() {
           <button
             type="button"
             onClick={() => setIsCallModalOpen(true)}
-            className="flex h-9 sm:h-10 items-center justify-center gap-1.5 rounded-xl border border-white/30 bg-transparent px-3 text-white transition duration-hover hover:bg-white/10 hover:border-white cursor-pointer shadow-sm"
+            className="flex h-9 sm:h-10 items-center justify-center gap-1.5 rounded-xl border border-white/20 bg-white/10 backdrop-blur-md px-3 text-white transition duration-300 hover:bg-[#FFCD00] hover:text-[#001e3d] hover:border-[#FFCD00] cursor-pointer shadow-sm"
             aria-label="Call & Contact Options"
           >
             <PhoneIcon />
@@ -140,7 +136,7 @@ export default function Navbar() {
           <button
             type="button"
             onClick={toggleNightDive}
-            className="flex h-9 sm:h-10 items-center justify-center gap-1.5 rounded-xl border border-white/30 bg-transparent px-3 text-white transition duration-hover hover:bg-white/10 hover:border-white shrink-0 cursor-pointer shadow-sm"
+            className="flex h-9 sm:h-10 items-center justify-center gap-1.5 rounded-xl border border-white/20 bg-white/10 backdrop-blur-md px-3 text-white transition duration-300 hover:bg-[#FFCD00] hover:text-[#001e3d] hover:border-[#FFCD00] shrink-0 cursor-pointer shadow-sm"
             aria-label="Toggle Night Dive mode"
           >
             <ThemeToggle isNightDive={isNightDive} />
@@ -151,7 +147,7 @@ export default function Navbar() {
 
           <Link
             to={isAuthenticated ? '/dashboard/profile' : '/login'}
-            className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl border border-white/30 bg-transparent text-white transition duration-hover hover:bg-white/10 hover:border-white shrink-0 shadow-sm"
+            className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl border border-white/20 bg-white/10 backdrop-blur-md text-white transition duration-300 hover:bg-[#FFCD00] hover:text-[#001e3d] hover:border-[#FFCD00] shrink-0 shadow-sm"
             aria-label={isAuthenticated ? 'Account' : 'Login'}
             title={user?.displayName || user?.email || 'Account'}
           >
@@ -168,7 +164,7 @@ export default function Navbar() {
 
           <button
             type="button"
-            className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full border border-white/30 bg-transparent text-white transition duration-hover hover:bg-white/10 hover:border-white lg:hidden"
+            className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full border border-white/20 bg-white/10 backdrop-blur-md text-white transition duration-300 hover:bg-[#FFCD00] hover:text-[#001e3d] hover:border-[#FFCD00] lg:hidden"
             aria-label="Toggle menu"
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}

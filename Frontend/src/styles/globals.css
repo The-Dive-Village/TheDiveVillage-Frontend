@@ -398,29 +398,68 @@
   filter: brightness(0.95) contrast(1.05);
 }
 
-/* Button & interactive element contrast in Night Dive */
-.night-dive button.bg-\[\#FFCD00\],
-.night-dive a.bg-\[\#FFCD00\],
-.night-dive .bg-\[\#FFCD00\],
-.night-dive .bg-\[\#FFCD00\] *,
-.night-dive .bg-accent,
-.night-dive .bg-accent *,
+/* ==========================================================================
+   GLOBAL TRANSLUCENT BUTTONS & YELLOW HOVER ONLY
+   ========================================================================== */
+button:not([data-no-glass]):not(.switch__input),
+a.btn,
+.btn {
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease !important;
+}
+
+/* Ensure resting state for glass buttons is translucent */
+button.glass-btn,
+a.glass-btn,
+button[data-glass],
+a[data-glass] {
+  background-color: rgba(255, 255, 255, 0.15) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  color: #ffffff !important;
+}
+
+/* Solid accent button default styles */
+button.bg-accent,
+a.bg-accent {
+  background-color: #FFCD00;
+  color: #001e3d;
+}
+
+/* Solid navy button default styles */
+button.bg-navy,
+a.bg-navy {
+  background-color: #003865;
+  color: #ffffff;
+}
+
+/* Hover state only: vibrant yellow with dark navy text */
+button:not([data-no-glass]):not(.switch__input):hover,
+a.btn:hover,
+.btn:hover,
+button.glass-btn:hover,
+a.glass-btn:hover,
+.btn-primary:hover,
+button.bg-accent:hover,
+a.bg-accent:hover,
+button.bg-navy:hover,
+a.bg-navy:hover,
+button.bg-black:hover,
+a.bg-black:hover,
+.night-dive button.bg-accent:hover,
+.night-dive a.bg-accent:hover {
+  background-color: #FFCD00 !important;
+  color: #001e3d !important;
+  border-color: #FFCD00 !important;
+  box-shadow: 0 10px 30px rgba(255, 205, 0, 0.4) !important;
+}
+
+/* Night-dive button contrast adjustment */
 .night-dive button.bg-accent,
 .night-dive a.bg-accent {
-  color: #00223D !important;
-}
-
-.night-dive button.bg-black,
-.night-dive button[type="submit"].bg-black {
-  background-color: #00AEC7 !important;
-  color: #00223D !important;
-  border-color: #00AEC7 !important;
-}
-
-.night-dive button.bg-black:hover,
-.night-dive button[type="submit"].bg-black:hover {
-  background-color: #ffffff !important;
-  color: #00223D !important;
+  background-color: rgba(255, 255, 255, 0.12) !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
 }
 
 :root {
