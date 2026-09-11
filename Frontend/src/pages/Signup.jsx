@@ -40,13 +40,13 @@ export default function Signup() {
   }
 
   return (
-    <div className="min-h-screen flex bg-[#FAFAFA] text-navy font-body relative">
+    <div className="min-h-screen flex bg-white text-navy font-body relative overflow-hidden">
       
       {/* Left side - Image (hidden on mobile) */}
-      <div className="hidden lg:block lg:w-[62%] relative bg-navy overflow-hidden">
+      <div className="hidden lg:block lg:w-[60%] xl:w-[62%] shrink-0 relative bg-navy overflow-hidden">
         <img src={IMAGES.gear1} alt="Diver underwater" className="w-full h-full object-cover opacity-80" />
-        <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/20 to-transparent" />
-        
+        <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/20 to-transparent pointer-events-none" />
+
         {/* Return to Home on Video Side */}
         <Link
           to="/"
@@ -59,16 +59,16 @@ export default function Signup() {
           <span>Return to Home</span>
         </Link>
 
-        <div className="absolute bottom-16 left-16 max-w-lg">
-          <h2 className="font-heading text-5xl font-bold text-white leading-tight mb-4 text-balance">
+        <div className="absolute bottom-16 left-16 max-w-lg pointer-events-none z-20">
+          <h2 className="font-heading text-5xl font-bold text-white leading-tight mb-4 text-balance drop-shadow-md">
             Join the Village.
           </h2>
-          <p className="text-white/80 font-medium">Create an account to book dives, purchase gear, and track your history.</p>
+          <p className="text-white/80 font-medium drop-shadow-sm">Create an account to book dives, purchase gear, and track your history.</p>
         </div>
       </div>
 
-      {/* Right side - Form */}
-      <div className="w-full lg:w-[38%] flex items-center justify-center p-6 sm:p-12 lg:p-12 relative">
+      {/* Right side - Form (Crisp White Panel) */}
+      <div className="w-full flex-1 bg-white flex items-center justify-center p-6 sm:p-12 lg:p-12 relative min-h-screen z-10">
         <div className="w-full max-w-md">
           
           {/* Mobile Return to Home */}
@@ -102,7 +102,7 @@ export default function Signup() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
-                className="w-full rounded-2xl bg-[#F0F2F5] px-5 py-4 text-sm text-navy outline-none focus:ring-2 focus:ring-accent/50 transition placeholder:text-navy/30"
+                className="w-full rounded-2xl bg-[#F0F2F5] px-5 py-4 text-sm font-medium text-navy outline-none focus:ring-2 focus:ring-accent/50 focus:bg-white border border-transparent focus:border-navy/10 transition placeholder:text-navy/30"
               />
             </div>
             
@@ -114,7 +114,7 @@ export default function Signup() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full rounded-2xl bg-[#F0F2F5] px-5 py-4 text-sm text-navy outline-none focus:ring-2 focus:ring-accent/50 transition placeholder:text-navy/30"
+                className="w-full rounded-2xl bg-[#F0F2F5] px-5 py-4 text-sm font-medium text-navy outline-none focus:ring-2 focus:ring-accent/50 focus:bg-white border border-transparent focus:border-navy/10 transition placeholder:text-navy/30"
               />
             </div>
             
@@ -126,14 +126,14 @@ export default function Signup() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full rounded-2xl bg-[#F0F2F5] px-5 py-4 text-sm text-navy outline-none focus:ring-2 focus:ring-accent/50 transition placeholder:text-navy/30"
+                className="w-full rounded-2xl bg-[#F0F2F5] px-5 py-4 text-sm font-medium text-navy outline-none focus:ring-2 focus:ring-accent/50 focus:bg-white border border-transparent focus:border-navy/10 transition placeholder:text-navy/30"
               />
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-full bg-black px-8 py-4 text-sm font-bold text-white transition hover:bg-black/80 disabled:opacity-50 mt-4"
+              className="w-full rounded-full bg-navy text-white hover:!bg-accent hover:!text-navy px-8 py-4 text-sm font-bold transition-all duration-300 shadow-md cursor-pointer disabled:opacity-50 mt-4"
             >
               {loading ? 'Creating account...' : 'Create Account'}
             </button>
@@ -143,7 +143,7 @@ export default function Signup() {
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-navy/10" />
             </div>
-            <span className="relative bg-[#FAFAFA] px-4 text-xs font-bold uppercase tracking-wider text-navy/40">
+            <span className="relative bg-white px-4 text-xs font-bold uppercase tracking-wider text-navy/40">
               Or continue with
             </span>
           </div>
@@ -152,7 +152,7 @@ export default function Signup() {
             type="button"
             disabled={loading}
             onClick={handleGoogleSignUp}
-            className="w-full flex items-center justify-center gap-3 rounded-full bg-white border border-navy/10 px-8 py-4 text-sm font-bold text-navy transition hover:bg-slate-50 disabled:opacity-50 shadow-sm"
+            className="w-full flex items-center justify-center gap-3 rounded-full bg-white border border-navy/15 px-8 py-4 text-sm font-bold text-navy hover:bg-[#F0F2F5] transition shadow-sm cursor-pointer disabled:opacity-50"
           >
             <svg className="h-5 w-5" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z" />

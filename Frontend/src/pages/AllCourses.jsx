@@ -3,6 +3,10 @@ import { motion, useReducedMotion } from 'framer-motion'
 import { IMAGES } from '../utils/images'
 import Button from '../components/Button'
 
+import scubaVid from '../assets/New folder/GX018843.mp4'
+import snorkelingVid from '../assets/New folder/Turtle Anna.mp4'
+import freedivingVid from '../assets/New folder/free diving 3.mp4'
+
 export default function AllCourses() {
   const reduce = useReducedMotion()
 
@@ -11,18 +15,21 @@ export default function AllCourses() {
       title: 'Scuba Diving',
       desc: 'A form of underwater diving where divers use a Self-Contained Underwater Breathing Apparatus to explore beneath the surface.',
       img: IMAGES.scubaHero,
+      video: scubaVid,
       link: '/courses/scuba'
     },
     {
       title: 'Snorkeling',
       desc: 'Discover snorkeling and explore the ocean up close. The ocean welcomes all.',
       img: IMAGES.snorkelingHero,
+      video: snorkelingVid,
       link: '/courses/snorkeling'
     },
     {
       title: 'Freediving',
       desc: 'Focus on breath-hold diving and safe descents.',
       img: IMAGES.surfingHero,
+      video: freedivingVid,
       link: '/courses/surfing'
     }
   ]
@@ -46,10 +53,22 @@ export default function AllCourses() {
             initial={reduce ? false : { opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
-            className="group block relative rounded-[40px] overflow-hidden aspect-[3/4] shadow-xl"
+            className="group block relative rounded-[40px] overflow-hidden aspect-[3/4] shadow-xl bg-navy"
           >
-            <img src={cat.img} alt={cat.title} className="w-full h-full object-cover transition duration-700 group-hover:scale-110" />
-            <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/20 to-transparent"></div>
+            {cat.video ? (
+              <video
+                src={cat.video}
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-full object-cover transition duration-700 group-hover:scale-110"
+                poster={cat.img}
+              />
+            ) : (
+              <img src={cat.img} alt={cat.title} className="w-full h-full object-cover transition duration-700 group-hover:scale-110" />
+            )}
+            <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/30 to-transparent pointer-events-none"></div>
             <div className="absolute inset-0 p-8 flex flex-col justify-end">
               <h2 className="font-serif text-4xl text-white mb-2">{cat.title}</h2>
               <p className="text-white/80 mb-6">{cat.desc}</p>

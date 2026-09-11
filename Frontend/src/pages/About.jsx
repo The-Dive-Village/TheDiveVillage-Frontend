@@ -100,6 +100,7 @@ export default function About() {
           loop
           muted
           playsInline
+          onPlay={(e) => { e.currentTarget.playbackRate = 0.7 }}
           className="w-full h-full object-cover opacity-35 filter brightness-90 contrast-105"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[#003865]/80 via-[#003865]/50 to-[#003865]/90 mix-blend-multiply" />

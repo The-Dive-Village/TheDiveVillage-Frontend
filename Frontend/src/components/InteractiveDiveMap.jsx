@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { COUNTRY_CENTROIDS } from '../data/countryCentroids'
 import { diveSiteService, getLocationDisplayName } from '../services/diveSiteService'
-import { getDiveSiteImage } from '../data/diveSiteImages'
+import { getDiveSiteImage, getDiveSiteCreatureInfo } from '../data/diveSiteImages'
 import { loadCesium } from '../services/cesiumLoader'
 
 // Memoization cache for generated marker SVG data URIs
@@ -336,6 +336,14 @@ export default function InteractiveDiveMap({
         viewer.scene.screenSpaceCameraController.inertiaTranslate = 0.85
         viewer.scene.screenSpaceCameraController.inertiaZoom = 0.8
 
+        // Disable Cesium's default PINCH/WHEEL zoom so 2-finger slide strictly rotates the globe
+        viewer.scene.screenSpaceCameraController.zoomEventTypes = [
+          Cesium.CameraEventType.RIGHT_DRAG
+        ]
+        viewer.scene.screenSpaceCameraController.tiltEventTypes = [
+          Cesium.CameraEventType.MIDDLE_DRAG
+        ]
+
         // Adaptive SSE for 60fps interaction
         const handleMoveStart = () => {
           isUserInteractingRef.current = true
@@ -545,9 +553,12 @@ export default function InteractiveDiveMap({
           // Close popup if open. DO NOT reset country or booking state!
           setIsPopupOpen(false)
         }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
-        // Trackpad Two-Finger Pan & Pinch-to-Zoom Gesture Controller
+        // Trackpad & Touch Two-Finger Rotation Gesture Controller (Rotates Globe Up/Down/Left/Right - NO ZOOM)
         const containerEl = containerRef.current
         let safariInitialScale = 1.0
+        let touchStartX = null
+        let touchStartY = null
+        let isTwoFingerSlide = false
 
         const handleWheel = (e) => {
           if (!containerEl) return
@@ -560,18 +571,14 @@ export default function InteractiveDiveMap({
           if (!currentViewer || currentViewer.isDestroyed() || !window.Cesium) return
 
           const camera = currentViewer.camera
-          const isPinch = e.ctrlKey || e.metaKey
+          const isExplicitPinch = e.ctrlKey || e.metaKey
 
           const height = camera.positionCartographic ? camera.positionCartographic.height : 10000000
           const minDist = currentViewer.scene.screenSpaceCameraController.minimumZoomDistance || 15000
           const maxDist = currentViewer.scene.screenSpaceCameraController.maximumZoomDistance || 25000000
 
-          if (isPinch) {
-            // ----------------------------------------------------
-            // PINCH TO ZOOM (Trackpad Pinch In / Pinch Out)
-            // ----------------------------------------------------
-            // e.deltaY < 0 -> Pinch OUT (fingers spreading apart) -> Zoom IN
-            // e.deltaY > 0 -> Pinch IN (fingers pinching together) -> Zoom OUT
+          if (isExplicitPinch) {
+            // Explicit pinch with Ctrl/Cmd key -> zoom
             const zoomFactor = Math.min(Math.max(height * 0.0025, 500), 500000)
             const zoomAmount = e.deltaY * zoomFactor
 
@@ -585,52 +592,80 @@ export default function InteractiveDiveMap({
               if (actualZoom > 0) camera.zoomOut(actualZoom)
             }
           } else {
-            // Check for hardware mouse scroll wheel vs trackpad two-finger swipe
-            const isHardwareMouseWheel = e.deltaMode !== 0 || (e.deltaX === 0 && Math.abs(e.deltaY) >= 100 && e.deltaY % 100 === 0)
+            // ----------------------------------------------------
+            // 2-FINGER SLIDE: ROTATES GLOBE UP/DOWN & LEFT/RIGHT (NO ZOOM)
+            // ----------------------------------------------------
+            const rotateFactor = Math.min(Math.max(height / 7000000000, 0.0003), 0.002)
 
-            if (isHardwareMouseWheel) {
-              // ----------------------------------------------------
-              // HARDWARE MOUSE WHEEL ZOOM
-              // ----------------------------------------------------
-              const zoomFactor = Math.min(Math.max(height * 0.0015, 1000), 600000)
-              const zoomAmount = e.deltaY * zoomFactor
+            const moveX = e.deltaX
+            const moveY = e.deltaY
 
-              if (zoomAmount < 0) {
-                const maxAllowedZoomIn = Math.max(0, height - minDist)
-                const actualZoom = Math.min(Math.abs(zoomAmount), maxAllowedZoomIn)
-                if (actualZoom > 0) camera.zoomIn(actualZoom)
-              } else if (zoomAmount > 0) {
-                const maxAllowedZoomOut = Math.max(0, maxDist - height)
-                const actualZoom = Math.min(zoomAmount, maxAllowedZoomOut)
-                if (actualZoom > 0) camera.zoomOut(actualZoom)
-              }
-            } else {
-              // ----------------------------------------------------
-              // TRACKPAD TWO-FINGER PAN / SWIPE
-              // ----------------------------------------------------
-              // Rotate speed dynamically scaled by camera altitude for uniform speed across zoom levels
-              const rotateFactor = Math.min(Math.max(height / 10000000000, 0.00018), 0.0015)
+            if (Math.abs(moveX) > 0) {
+              camera.rotateLeft(-moveX * rotateFactor)
+            }
 
-              const moveX = e.deltaX
-              const moveY = e.deltaY
-
-              if (Math.abs(moveX) > 0) {
-                // Horizontal swipe:
-                // Swiping Right (-deltaX) -> rotates camera Left -> Globe content moves Right
-                // Swiping Left (+deltaX) -> rotates camera Right -> Globe content moves Left
-                camera.rotateLeft(-moveX * rotateFactor)
-              }
-
-              if (Math.abs(moveY) > 0) {
-                // Vertical swipe:
-                // Swiping Up (-deltaY) -> rotates camera Down -> Globe content moves Up
-                // Swiping Down (+deltaY) -> rotates camera Up -> Globe content moves Down
-                camera.rotate(camera.right, moveY * rotateFactor)
-              }
+            if (Math.abs(moveY) > 0) {
+              // Sliding 2 fingers Up (deltaY < 0) -> rotates globe Upwards
+              // Sliding 2 fingers Down (deltaY > 0) -> rotates globe Downwards
+              camera.rotate(camera.right, moveY * rotateFactor)
             }
           }
 
           lastInteractionTimeRef.current = Date.now()
+        }
+
+        // Two-Finger Touch Screen Swipe (Mobile / Tablet / Touch laptops)
+        const handleTouchStart = (e) => {
+          if (e.touches.length === 2) {
+            isTwoFingerSlide = true
+            touchStartX = (e.touches[0].clientX + e.touches[1].clientX) / 2
+            touchStartY = (e.touches[0].clientY + e.touches[1].clientY) / 2
+          } else {
+            isTwoFingerSlide = false
+          }
+        }
+
+        const handleTouchMove = (e) => {
+          if (e.touches.length === 2 && isTwoFingerSlide) {
+            e.preventDefault()
+            e.stopPropagation()
+
+            const currentViewer = viewerRef.current
+            if (!currentViewer || currentViewer.isDestroyed() || !window.Cesium) return
+            const camera = currentViewer.camera
+            const height = camera.positionCartographic ? camera.positionCartographic.height : 10000000
+
+            const currentX = (e.touches[0].clientX + e.touches[1].clientX) / 2
+            const currentY = (e.touches[0].clientY + e.touches[1].clientY) / 2
+
+            if (touchStartX !== null && touchStartY !== null) {
+              const deltaX = currentX - touchStartX
+              const deltaY = currentY - touchStartY
+
+              const rotateFactor = Math.min(Math.max(height / 3500000000, 0.0006), 0.004)
+
+              if (Math.abs(deltaX) > 0.1) {
+                camera.rotateLeft(-deltaX * rotateFactor)
+              }
+              if (Math.abs(deltaY) > 0.1) {
+                // Dragging 2 fingers Up (deltaY < 0) -> rotates globe Upwards
+                // Dragging 2 fingers Down (deltaY > 0) -> rotates globe Downwards
+                camera.rotate(camera.right, deltaY * rotateFactor)
+              }
+            }
+
+            touchStartX = currentX
+            touchStartY = currentY
+            lastInteractionTimeRef.current = Date.now()
+          }
+        }
+
+        const handleTouchEnd = (e) => {
+          if (e.touches.length < 2) {
+            isTwoFingerSlide = false
+            touchStartX = null
+            touchStartY = null
+          }
         }
 
         const handleGestureStart = (e) => {
@@ -667,11 +702,19 @@ export default function InteractiveDiveMap({
 
         if (containerEl) {
           containerEl.addEventListener('wheel', handleWheel, { passive: false })
+          containerEl.addEventListener('touchstart', handleTouchStart, { passive: false })
+          containerEl.addEventListener('touchmove', handleTouchMove, { passive: false })
+          containerEl.addEventListener('touchend', handleTouchEnd, { passive: false })
+          containerEl.addEventListener('touchcancel', handleTouchEnd, { passive: false })
           containerEl.addEventListener('gesturestart', handleGestureStart, { passive: false })
           containerEl.addEventListener('gesturechange', handleGestureChange, { passive: false })
 
           removeWheelListener = () => {
             containerEl.removeEventListener('wheel', handleWheel)
+            containerEl.removeEventListener('touchstart', handleTouchStart)
+            containerEl.removeEventListener('touchmove', handleTouchMove)
+            containerEl.removeEventListener('touchend', handleTouchEnd)
+            containerEl.removeEventListener('touchcancel', handleTouchEnd)
             containerEl.removeEventListener('gesturestart', handleGestureStart)
             containerEl.removeEventListener('gesturechange', handleGestureChange)
           }
@@ -910,87 +953,119 @@ export default function InteractiveDiveMap({
         style={{ display: 'none' }}
         className="absolute z-30 pointer-events-auto transform -translate-x-1/2 -translate-y-full w-64 bg-[#00192e]/95 backdrop-blur-xl rounded-2xl shadow-[0_16px_48px_rgba(0,0,0,0.7)] overflow-hidden border border-cyan-400/35 transition-all duration-150"
       >
-        {popupSite && (
-          <div className="relative">
-            {/* 1. Header: Title & Close Button */}
-            <div className="px-3.5 pt-3 pb-2 flex items-center justify-between gap-2 border-b border-white/10 bg-white/[0.03]">
-              <div className="min-w-0 flex-1">
-                <h3 className="font-heading font-bold text-sm text-white leading-tight truncate">
-                  {popupSite.title || popupSite.name || 'Dive Site'}
-                </h3>
-                {popupSite.country && (
-                  <p className="text-[10px] font-medium text-cyan-400 flex items-center gap-1 mt-0.5 truncate">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="shrink-0">
-                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
-                      <circle cx="12" cy="9" r="2.5" />
-                    </svg>
-                    <span className="truncate">{popupSite.country}</span>
+        {popupSite && (() => {
+          const creature = getDiveSiteCreatureInfo(popupSite.id, popupSite)
+          return (
+            <div className="relative">
+              {/* 1. Header: Title & Close Button */}
+              <div className="px-3.5 pt-3 pb-2 flex items-center justify-between gap-2 border-b border-white/10 bg-white/[0.03]">
+                <div className="min-w-0 flex-1">
+                  <h3 className="font-heading font-bold text-sm text-white leading-tight truncate">
+                    {popupSite.title || popupSite.name || 'Dive Site'}
+                  </h3>
+                  {popupSite.country && (
+                    <p className="text-[10px] font-medium text-cyan-400 flex items-center gap-1 mt-0.5 truncate">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="shrink-0">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
+                        <circle cx="12" cy="9" r="2.5" />
+                      </svg>
+                      <span className="truncate">{popupSite.country}</span>
+                    </p>
+                  )}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setIsPopupOpen(false)
+                  }}
+                  className="text-white/60 hover:text-white w-6 h-6 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition cursor-pointer text-xs font-bold shrink-0"
+                  aria-label="Close"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* 2. Resident Creature & Dive Photo with Dynamic Badge */}
+              <div className="w-full h-36 bg-[#021426] overflow-hidden relative group">
+                <img
+                  src={creature?.image || getDiveSiteImage(popupSite.id, popupSite)}
+                  alt={creature?.creatureName || popupSite.title || 'Marine Life'}
+                  className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#00192e] via-transparent to-black/30 pointer-events-none" />
+
+                {/* Creature Badge */}
+                {creature?.creatureName && (
+                  <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between gap-1 pointer-events-none">
+                    <span className="inline-flex items-center gap-1.5 bg-[#00192e]/90 backdrop-blur-md px-2.5 py-1 rounded-full text-[10px] font-bold text-accent border border-accent/40 shadow-sm max-w-[90%] truncate">
+                      <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse shrink-0" />
+                      <span className="truncate">{creature.creatureName}</span>
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {/* 3. Marine Life & Ecological Info */}
+              <div className="px-3.5 py-2.5 space-y-1.5 bg-[#00192e]/60 border-t border-white/5 text-left">
+                {creature?.species && (
+                  <div>
+                    <span className="block text-[8.5px] font-extrabold uppercase tracking-widest text-cyan-400/80">
+                      SPECIES / HABITAT
+                    </span>
+                    <p className="text-[11px] font-medium text-white italic truncate">
+                      {creature.species}
+                    </p>
+                  </div>
+                )}
+
+                <div className="flex items-center justify-between gap-2 pt-0.5 border-t border-white/5">
+                  <span className="text-[9px] font-extrabold uppercase tracking-widest text-white/50">
+                    DIVE TYPE
+                  </span>
+                  <span className="text-[11px] font-semibold text-slate-200 truncate max-w-[130px] text-right">
+                    {popupSite.types || 'Reef, Ocean'}
+                  </span>
+                </div>
+
+                {creature?.description && (
+                  <p className="text-[10px] text-slate-300/80 line-clamp-2 leading-tight pt-0.5">
+                    {creature.description}
                   </p>
                 )}
               </div>
 
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  setIsPopupOpen(false)
-                }}
-                className="text-white/60 hover:text-white w-6 h-6 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition cursor-pointer text-xs font-bold shrink-0"
-                aria-label="Close"
-              >
-                ✕
-              </button>
-            </div>
-
-            {/* 2. Dive Site Photo */}
-            <div className="w-full h-32 bg-[#021426] overflow-hidden relative group">
-              <img
-                src={getDiveSiteImage(popupSite.id)}
-                alt={popupSite.title || 'Dive Site'}
-                className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
-                loading="lazy"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#00192e] via-transparent to-transparent opacity-60 pointer-events-none" />
-            </div>
-
-            {/* 3. Dive Metadata Section */}
-            <div className="px-3.5 py-2.5 space-y-0.5 bg-[#00192e]/50">
-              <span className="block text-[9px] font-extrabold uppercase tracking-widest text-cyan-400/90">
-                DIVE TYPE
-              </span>
-              <span className="block text-xs font-semibold text-slate-200 truncate">
-                {popupSite.types || 'Reef, Ocean'}
-              </span>
-            </div>
-
-            {/* 4. Action Footer: View Details Link & ID */}
-            <div className="px-3.5 py-2.5 border-t border-white/10 flex items-center justify-between bg-white/[0.02]">
-              {popupSite.travel_url ? (
-                <a
-                  href={popupSite.travel_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs font-bold text-cyan-400 hover:text-cyan-300 flex items-center gap-1.5 transition group cursor-pointer"
-                >
-                  <span>View Details</span>
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">
-                    <path d="M7 17L17 7M17 7H7M17 7V17" />
-                  </svg>
-                </a>
-              ) : (
-                <span className="text-xs font-bold text-cyan-400/70">
-                  Verified PADI Site
+              {/* 4. Action Footer: View Details Link & ID */}
+              <div className="px-3.5 py-2 border-t border-white/10 flex items-center justify-between bg-white/[0.02]">
+                {popupSite.travel_url ? (
+                  <a
+                    href={popupSite.travel_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs font-bold text-cyan-400 hover:text-cyan-300 flex items-center gap-1.5 transition group cursor-pointer"
+                  >
+                    <span>View Details</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">
+                      <path d="M7 17L17 7M17 7H7M17 7V17" />
+                    </svg>
+                  </a>
+                ) : (
+                  <span className="text-xs font-bold text-cyan-400/70">
+                    Verified PADI Site
+                  </span>
+                )}
+                <span className="text-[10px] font-mono font-medium text-white/40">
+                  #{popupSite.id}
                 </span>
-              )}
-              <span className="text-[10px] font-mono font-medium text-white/40">
-                #{popupSite.id}
-              </span>
-            </div>
+              </div>
 
-            {/* Bottom Marker Pointer Needle */}
-            <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-[#00192e] rotate-45 border-r border-b border-cyan-400/35 pointer-events-none" />
-          </div>
-        )}
+              {/* Bottom Marker Pointer Needle */}
+              <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-[#00192e] rotate-45 border-r border-b border-cyan-400/35 pointer-events-none" />
+            </div>
+          )
+        })()}
       </div>
 
       {/* Joystick Overlay */}

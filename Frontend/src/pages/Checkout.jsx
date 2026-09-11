@@ -146,7 +146,7 @@ export default function Checkout() {
                       type="tel"
                       name="phone"
                       required
-                      placeholder="+91 89710 01010"
+                      placeholder="Phone number"
                       value={formData.phone}
                       onChange={handleChange}
                       className="w-full rounded-2xl bg-[#F0F2F5] px-4 py-3.5 text-xs sm:text-sm text-navy outline-none focus:ring-2 focus:ring-accent/50"

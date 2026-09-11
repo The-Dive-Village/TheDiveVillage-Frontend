@@ -122,15 +122,14 @@ export default function Shop() {
             loop
             muted
             playsInline
+            onPlay={(e) => { e.currentTarget.playbackRate = 0.7 }}
             className="absolute inset-0 w-full h-full object-cover opacity-50"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-navy/90 via-navy/60 to-navy/30" />
-          
+
           {/* Left Column: Title & Text */}
           <div className="relative z-10 max-w-xl">
-            <span className="inline-block bg-accent/20 border border-accent/40 backdrop-blur-md rounded-full px-4 py-1.5 text-xs font-bold text-accent uppercase tracking-widest mb-4">
-              Official Gear & Apparel
-            </span>
+
             <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-3 text-white drop-shadow-lg">
               Merchandise
             </h1>
@@ -146,26 +145,26 @@ export default function Shop() {
         </div>
       </section>
 
-      {/* 2. STORE CONTROLS */}
+      {/* 2. STORE CONTROLS TOOLBAR IN BRAND BLUE */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-8">
-        <div className="rounded-3xl bg-white p-4 sm:p-6 shadow-card border border-navy/5 flex flex-col md:flex-row gap-4 items-center justify-between">
+        <div className="rounded-[28px] bg-[#003865] p-4 sm:p-6 shadow-lift border border-white/15 text-white flex flex-col md:flex-row gap-4 items-center justify-between backdrop-blur-xl">
           <div className="relative w-full md:w-96">
             <input
               type="text"
               placeholder="Search rash guards, suits, gear..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full rounded-full border border-navy/15 bg-[#FAFAFA] pl-12 pr-4 py-3 text-sm focus:border-navy focus:bg-white focus:outline-none transition shadow-inner"
+              className="w-full rounded-full border border-white/20 bg-[#00223D]/80 pl-12 pr-8 py-3 text-sm text-white placeholder:text-white/60 focus:border-accent focus:bg-[#00223D] focus:outline-none transition shadow-inner"
             />
-            <svg className="absolute left-4 top-3.5 h-5 w-5 text-navy/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-            {searchQuery && <button onClick={() => setSearchQuery('')} className="absolute right-4 top-3.5 text-xs text-navy/40 hover:text-navy">✕</button>}
+            <svg className="absolute left-4 top-3.5 h-5 w-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+            {searchQuery && <button onClick={() => setSearchQuery('')} className="absolute right-4 top-3.5 text-xs text-white/70 hover:text-accent font-bold cursor-pointer">✕</button>}
           </div>
           <div className="flex items-center gap-3 w-full md:w-auto justify-end flex-wrap sm:flex-nowrap">
-            <span className="text-xs font-bold text-navy/60 uppercase tracking-wider whitespace-nowrap">Sort by:</span>
+            <span className="text-xs font-extrabold text-cyan-400/90 uppercase tracking-wider whitespace-nowrap">Sort by:</span>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="rounded-full border border-navy/15 bg-[#FAFAFA] px-4 py-2.5 text-xs sm:text-sm font-bold text-navy focus:border-navy focus:bg-white focus:outline-none transition cursor-pointer"
+              className="rounded-full border border-white/20 bg-[#00223D]/80 px-4 py-2.5 text-xs sm:text-sm font-bold text-white focus:border-accent focus:outline-none transition cursor-pointer"
             >
               <option value="featured">Featured / Newest</option>
               <option value="price-low">Price: Low to High</option>
@@ -175,14 +174,14 @@ export default function Shop() {
 
             <Link
               to="/wishlist"
-              className="rounded-full bg-white hover:bg-navy hover:text-white text-navy font-bold px-5 py-2.5 text-xs sm:text-sm transition-all duration-200 shadow-md flex items-center gap-2 whitespace-nowrap border border-navy/15 cursor-pointer"
+              className="rounded-full bg-white/10 hover:!bg-[#FFCD00] hover:!text-[#001e3d] text-white font-bold px-5 py-2.5 text-xs sm:text-sm transition-all duration-200 shadow-md flex items-center gap-2 whitespace-nowrap border border-white/20 cursor-pointer"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
               </svg>
               <span>Wishlist</span>
               {wishlistCount > 0 && (
-                <span className="bg-navy text-white text-[11px] font-bold px-2 py-0.5 rounded-full ml-0.5">
+                <span className="bg-accent text-[#001e3d] text-[11px] font-extrabold px-2 py-0.5 rounded-full ml-0.5">
                   {wishlistCount}
                 </span>
               )}
@@ -190,16 +189,16 @@ export default function Shop() {
 
             <Link
               to="/cart"
-              className="rounded-full bg-accent hover:bg-white text-navy font-bold px-5 py-2.5 text-xs sm:text-sm transition-all duration-200 shadow-md flex items-center gap-2 whitespace-nowrap border border-transparent hover:border-accent cursor-pointer"
+              className="rounded-full bg-accent hover:bg-white text-navy font-extrabold px-5 py-2.5 text-xs sm:text-sm transition-all duration-200 shadow-md flex items-center gap-2 whitespace-nowrap border border-transparent cursor-pointer"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
                 <line x1="3" y1="6" x2="21" y2="6" />
-                <path d="M16 10a4 4 0 01-8 0" />
+                <path d="M16 10a4 4 0 0 1-8 0" />
               </svg>
               <span>View Cart</span>
               {itemCount > 0 && (
-                <span className="bg-navy text-white text-[11px] font-bold px-2 py-0.5 rounded-full ml-0.5">
+                <span className="bg-[#001e3d] text-accent text-[11px] font-extrabold px-2 py-0.5 rounded-full ml-0.5">
                   {itemCount}
                 </span>
               )}
@@ -212,10 +211,10 @@ export default function Shop() {
             <button
               key={cat.key}
               onClick={() => setSelectedCategory(cat.key)}
-              className={`rounded-full px-5 py-2.5 text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
+              className={`rounded-full px-5 py-2.5 text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 cursor-pointer ${
                 selectedCategory === cat.key
-                  ? 'bg-navy text-white shadow-md'
-                  : 'bg-white text-navy/70 border border-navy/10 hover:bg-navy/5'
+                  ? 'bg-accent text-[#001e3d] shadow-md font-extrabold'
+                  : 'bg-white text-navy/70 border border-navy/10 hover:bg-[#003865] hover:text-white hover:border-[#003865]'
               }`}
             >
               {cat.label}
@@ -241,10 +240,10 @@ export default function Shop() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredProducts.map((product) => (
-              <ProductCardItem 
-                key={product.id} 
-                product={product} 
-                onQuickAdd={handleQuickAdd} 
+              <ProductCardItem
+                key={product.id}
+                product={product}
+                onQuickAdd={handleQuickAdd}
                 isWishlisted={isWishlisted(product.id)}
                 onToggleWishlist={(e) => {
                   e.preventDefault()
@@ -298,7 +297,7 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
               }
             })
           }
-        } catch (e) {}
+        } catch (e) { }
       }
 
       if (el.loaded) {
@@ -340,15 +339,13 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
             <img
               src={product.image}
               alt={product.title}
-              className={`max-h-full max-w-full object-contain transition-all duration-300 group-hover:scale-105 ${
-                show3D ? 'opacity-0 pointer-events-none' : 'opacity-100'
-              }`}
+              className={`max-h-full max-w-full object-contain transition-all duration-300 group-hover:scale-105 ${show3D ? 'opacity-0 pointer-events-none' : 'opacity-100'
+                }`}
             />
             {product.glb && (
               <div
-                className={`absolute inset-0 w-full h-full z-10 bg-gradient-to-b from-[#FFFFFF] via-[#F8FAFC] to-[#EDF2F7] flex items-center justify-center transition-opacity duration-300 ${
-                  show3D ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-                }`}
+                className={`absolute inset-0 w-full h-full z-10 bg-gradient-to-b from-[#FFFFFF] via-[#F8FAFC] to-[#EDF2F7] flex items-center justify-center transition-opacity duration-300 ${show3D ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+                  }`}
               >
                 <model-viewer
                   ref={viewerRef}
@@ -362,10 +359,13 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
                   camera-orbit="0deg 75deg 120%"
                   camera-target="auto auto auto"
                   disable-zoom
+                  disable-pan
+                  min-camera-orbit="auto 75deg auto"
+                  max-camera-orbit="auto 75deg auto"
                   interaction-prompt="none"
                   environment-image="neutral"
-                  exposure="1.35"
-                  shadow-intensity="0.4"
+                  exposure={product.id === 'product-dive-cap' || product.glb?.toLowerCase().includes('cap') ? '2.5' : '1.35'}
+                  shadow-intensity={product.id === 'product-dive-cap' || product.glb?.toLowerCase().includes('cap') ? '0.08' : '0.4'}
                   shadow-softness="0.9"
                   tone-mapping="commerce"
                   bounds="tight"

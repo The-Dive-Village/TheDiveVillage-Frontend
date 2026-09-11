@@ -194,8 +194,8 @@ export const SHOP_PRODUCTS = [
   },
   {
     id: 'product-dive-cap',
-    title: 'The Dive Village Ocean Cap',
-    name: 'Ocean Cap',
+    title: 'The Dive Village Foldable Cap',
+    name: 'The Dive Village Foldable Cap',
     price: 1299,
     oldPrice: 1599,
     image: imgCapFront,

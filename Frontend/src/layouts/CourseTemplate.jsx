@@ -5,6 +5,7 @@ import Button from '../components/Button'
 // Reusable CourseTemplate based on the reference design
 export default function CourseTemplate({
   heroImage,
+  heroVideo,
   titleTop,
   titleBottom,
   aboutTitle,
@@ -29,34 +30,44 @@ export default function CourseTemplate({
   return (
     <div className="bg-[#f0f9ff] text-navy font-body overflow-x-hidden pt-16 sm:pt-[72px]">
       {/* HERO SECTION */}
-      <section className="relative h-[80vh] min-h-[600px] w-full flex items-center justify-center overflow-hidden">
+      <section className="relative h-[80vh] min-h-[600px] w-full flex items-center justify-center overflow-hidden bg-navy">
         <div className="absolute inset-0 z-0">
-          <img src={heroImage} alt="Hero" className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-b from-navy/30 via-transparent to-navy/80"></div>
+          {heroVideo ? (
+            <video
+              src={heroVideo}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-cover"
+              poster={heroImage}
+            />
+          ) : (
+            <img src={heroImage} alt="Hero" className="w-full h-full object-cover" />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-b from-navy/40 via-navy/20 to-navy/80"></div>
         </div>
         
-        <div className="relative z-10 flex flex-col items-center text-center px-4">
+        <div className="relative z-10 flex flex-col items-center text-center px-4 max-w-4xl mx-auto">
           <motion.h1 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-5xl sm:text-7xl lg:text-8xl font-serif text-white tracking-tight"
-            style={{ textShadow: '0 4px 20px rgba(0,0,0,0.3)' }}
+            className="text-5xl sm:text-7xl lg:text-8xl font-serif text-white tracking-tight leading-tight"
+            style={{ textShadow: '0 4px 20px rgba(0,0,0,0.4)' }}
           >
             {titleTop} <br />
-            <span className="font-bold italic text-white/90">{titleBottom}</span>
+            <span className="font-bold italic text-white/95">{titleBottom}</span>
           </motion.h1>
           
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.5, duration: 0.5 }}
-            className="mt-12 flex items-center gap-4 bg-white/10 backdrop-blur-md rounded-full pr-6 p-2 border border-white/20 cursor-pointer hover:bg-white/20 transition"
+            className="mt-10 flex items-center gap-3 bg-white/15 backdrop-blur-md rounded-full px-6 py-3 border border-white/30 shadow-lg text-white font-bold text-xs sm:text-sm tracking-widest uppercase"
           >
-            <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-accent pl-1">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-            </div>
-            <span className="text-white font-bold text-sm tracking-widest uppercase">Watch Video</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-accent animate-pulse" />
+            <span>PADI Certified Course Experience</span>
           </motion.div>
         </div>
       </section>

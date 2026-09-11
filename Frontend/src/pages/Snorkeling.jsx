@@ -1,6 +1,7 @@
 import CourseTemplate from '../layouts/CourseTemplate'
 import SEOHead from '../components/SEOHead'
 import { IMAGES, FEATURED_EXPERIENCES } from '../utils/images'
+import turtleSnorkelVideo from '../assets/New folder/Turtle Anna.mp4'
 
 export default function Snorkeling() {
   const tours = [
@@ -35,6 +36,7 @@ export default function Snorkeling() {
         canonicalUrl="https://thedivevillage.com/snorkeling"
       />
       <CourseTemplate
+        heroVideo={turtleSnorkelVideo}
         heroImage={IMAGES.snorkelingHero}
         titleTop="Explore the"
         titleBottom="Shallow Reefs"

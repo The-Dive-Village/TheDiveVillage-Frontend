@@ -1,6 +1,7 @@
 import CourseTemplate from '../layouts/CourseTemplate'
 import SEOHead from '../components/SEOHead'
 import { IMAGES, FEATURED_EXPERIENCES } from '../utils/images'
+import scubaDiveVideo from '../assets/New folder/GX018843.mp4'
 
 export default function Scuba() {
   const tours = [
@@ -31,6 +32,7 @@ export default function Scuba() {
         canonicalUrl="https://thedivevillage.com/scuba"
       />
       <CourseTemplate
+        heroVideo={scubaDiveVideo}
         heroImage={IMAGES.scubaHero}
         titleTop="Dive into"
         titleBottom="The Dive Village"

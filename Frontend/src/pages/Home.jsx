@@ -5,7 +5,7 @@ import Button from '../components/Button'
 import SafeImage from '../components/SafeImage'
 import SectionReveal, { StaggerGrid, StaggerItem } from '../components/SectionReveal'
 import SEOHead from '../components/SEOHead'
-import { IMAGES, CAROUSEL_IMAGES } from '../utils/images'
+import { IMAGES, CAROUSEL_IMAGES, PANEL_IMAGES } from '../utils/images'
 import { useReviews } from '../contexts/ReviewsContext'
 import img1 from '../assets/1.png'
 import img2 from '../assets/2.png'
@@ -18,6 +18,8 @@ import itineraryVid from '../assets/New folder/Itinerary.mp4'
 const ProgramsPreview = lazy(() => import('../components/ProgramsPreview'))
 
 const GalleryPreview = lazy(() => import('../components/GalleryPreview'))
+
+const ADVENTURE_CALM_IMAGES = PANEL_IMAGES
 
 
 const HIGHLIGHTS_DATA = [
@@ -485,12 +487,13 @@ export default function Home() {
       {/* Review Submission Modal */}
       <AnimatePresence>
         {showReviewModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md pointer-events-auto">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md pointer-events-auto normal-cursor" data-normal-cursor="true">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="relative w-full max-w-lg rounded-3xl bg-[#00223D] border border-white/20 p-6 sm:p-8 shadow-2xl text-white"
+              className="relative w-full max-w-lg rounded-3xl bg-[#00223D] border border-white/20 p-6 sm:p-8 shadow-2xl text-white normal-cursor"
+              data-normal-cursor="true"
             >
               <button
                 type="button"
@@ -501,18 +504,18 @@ export default function Home() {
               </button>
               <h3 className="font-heading text-2xl font-bold mb-2">Write a Review</h3>
               <p className="text-xs text-white/70 mb-6">
-                Share your diving experience with our community. Your review will be submitted for admin approval before being displayed on the site.
+                Share your diving experience with our community.
               </p>
 
               {reviewSubmitted ? (
                 <div className="rounded-2xl bg-emerald-500/20 border border-emerald-500/40 p-6 text-center text-emerald-200">
                   <p className="text-lg font-bold mb-2">✓ Review Submitted!</p>
                   <p className="text-xs leading-relaxed">
-                    Thank you! Your review has been submitted and is pending administrator approval before appearing on the website.
+                    Thank you! Your review has been submitted.
                   </p>
                 </div>
               ) : (
-                <form onSubmit={handleReviewSubmit} className="space-y-4">
+                <form onSubmit={handleReviewSubmit} className="space-y-4 normal-cursor" data-normal-cursor="true">
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wider mb-1 text-white/80">Your Name *</label>
                     <input
@@ -564,7 +567,7 @@ export default function Home() {
                     type="submit"
                     className="w-full rounded-full bg-white/15 backdrop-blur-xl border border-white/25 text-white font-bold py-3 text-sm transition hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] cursor-pointer mt-2"
                   >
-                    Submit Review for Approval
+                    Submit
                   </button>
                 </form>
               )}
@@ -577,7 +580,7 @@ export default function Home() {
       <section className="py-16 sm:py-24 bg-transparent pointer-events-auto">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionReveal>
-            <AutoCarousel images={CAROUSEL_IMAGES} />
+            <AutoCarousel images={ADVENTURE_CALM_IMAGES} />
           </SectionReveal>
         </div>
       </section>
@@ -804,30 +807,45 @@ function InteractiveHighlights() {
 
 function AutoCarousel({ images, showContent = true }) {
   const [index, setIndex] = useState(0)
+  const [prevIndex, setPrevIndex] = useState(0)
 
   useEffect(() => {
+    if (!images || images.length === 0) return
     const timer = setInterval(() => {
-      setIndex((prev) => (prev + 1) % images.length)
-    }, 2000)
+      setIndex((curr) => {
+        setPrevIndex(curr)
+        return (curr + 1) % images.length
+      })
+    }, 3200)
     return () => clearInterval(timer)
-  }, [images.length])
+  }, [images])
 
   return (
-    <div className="relative overflow-hidden rounded-[32px] sm:rounded-[40px] shadow-float w-full h-[400px] lg:h-[450px]">
-      <AnimatePresence>
-        <motion.img
-          key={index}
-          src={images[index]}
-          alt="Ocean Journey"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 1.5, ease: "easeInOut" }}
+    <div className="relative overflow-hidden rounded-[32px] sm:rounded-[40px] shadow-float w-full h-[400px] lg:h-[450px] bg-[#001e3d]">
+      {/* Base Layer: Previous image stays 100% solid underneath so background is NEVER visible during transition */}
+      {images[prevIndex] && (
+        <img
+          src={images[prevIndex]}
+          alt="Ocean Life"
           className="absolute inset-0 w-full h-full object-cover"
         />
-      </AnimatePresence>
-      <div className="absolute inset-0 bg-navy/10 mix-blend-multiply z-10" />
-      <div className="absolute inset-0 bg-gradient-to-r from-navy/90 via-navy/40 to-transparent z-10" />
+      )}
+
+      {/* Active Layer: Current image smoothly fades in on top of previous image */}
+      {images.map((src, i) => (
+        <img
+          key={i}
+          src={src}
+          alt={`Marine Life ${i + 1}`}
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
+            i === index ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
+          }`}
+          loading="lazy"
+        />
+      ))}
+
+      <div className="absolute inset-0 bg-navy/20 mix-blend-multiply z-10 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-r from-navy/90 via-navy/40 to-transparent z-10 pointer-events-none" />
 
       {showContent && (
         <div className="absolute inset-0 z-20 flex flex-col justify-center p-8 sm:p-12 lg:p-16">

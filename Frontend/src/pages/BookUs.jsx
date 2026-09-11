@@ -5,6 +5,7 @@ const InteractiveDiveMap = lazy(() => import('../components/InteractiveDiveMap')
 import CompactTwoMonthCalendarPopover from '../components/CompactTwoMonthCalendarPopover'
 import SEOHead from '../components/SEOHead'
 import { diveSiteService } from '../services/diveSiteService'
+import { getDiveSiteCreatureInfo } from '../data/diveSiteImages'
 import { bookingService } from '../services/bookingService'
 import {
   COURSE_CATALOG,
@@ -15,11 +16,14 @@ import {
 import 'react-phone-number-input/style.css'
 import PhoneInput from 'react-phone-number-input'
 import turtleAnnaVideo from '../assets/New folder/Turtle Anna.mp4'
+import redLionfishVideo from '../assets/Red Lionfish.mp4'
+import useNightDive from '../hooks/useNightDive'
 
 // Backwards-compatible export alias for any legacy imports
 export const PROGRAMS_CATALOG = COURSE_CATALOG
 
 export default function BookUs() {
+  const isNightDive = useNightDive()
   const [searchParams] = useSearchParams()
   const initialProgram = searchParams.get('program') || ''
 
@@ -276,19 +280,36 @@ export default function BookUs() {
         canonicalUrl="https://thedivevillage.com/book-us"
       />
 
-      {/* 1. HEADER VIDEO HERO (MATCHING CONTACT-PAGE STYLE WITH TURTLE ANNA VIDEO) */}
+      {/* 1. HEADER VIDEO HERO (DYNAMIC NIGHT DIVE RED LIONFISH VIDEO) */}
       <section className="relative h-[75vh] min-h-[540px] w-full flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 z-0">
+        <div 
+          className="absolute inset-0 z-0"
+          style={{
+            maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 55%, rgba(0,0,0,0) 100%)',
+            WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 55%, rgba(0,0,0,0) 100%)'
+          }}
+        >
           <video
-            src={turtleAnnaVideo}
+            key={isNightDive ? 'night-lionfish' : 'day-turtle'}
+            src={isNightDive ? redLionfishVideo : turtleAnnaVideo}
             autoPlay
             loop
             muted
             playsInline
-            className="w-full h-full object-cover"
+            onPlay={(e) => { e.currentTarget.playbackRate = 0.7 }}
+            className="w-full h-full object-cover transition-opacity duration-700"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#001428]/60 via-[#001428]/40 to-[#FAFAFA]"></div>
+          <div className={`absolute inset-0 bg-gradient-to-b from-[#001428]/60 via-[#001428]/35 ${isNightDive ? 'to-[#030a12]' : 'to-[#FAFAFA]'}`}></div>
         </div>
+
+        {/* Bottom Smooth Dissolve & Merge Layer */}
+        <div 
+          className={`absolute bottom-0 inset-x-0 h-44 sm:h-64 pointer-events-none z-[5] transition-colors duration-500 ${
+            isNightDive 
+              ? 'bg-gradient-to-t from-[#030a12] via-[#030a12]/85 to-transparent' 
+              : 'bg-gradient-to-t from-[#FAFAFA] via-[#FAFAFA]/90 to-transparent'
+          }`} 
+        />
 
         <div className="relative z-10 flex flex-col items-center text-center px-4 max-w-4xl mx-auto pt-16">
           <motion.span
@@ -316,7 +337,7 @@ export default function BookUs() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="mt-6 text-base sm:text-xl font-medium text-white/90 max-w-xl leading-relaxed drop-shadow-md text-center"
           >
-            Select your location, group size, participant details, and matching programs. Our dive masters will confirm within 24 hours.
+            Select your location, group size, participant details, and matching programs. Our dive masters will get back to you.
           </motion.p>
         </div>
       </section>
@@ -325,12 +346,12 @@ export default function BookUs() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
         {/* Main 4-Step Layout */}
         <div className="grid lg:grid-cols-12 gap-10 lg:gap-14">
-          
+
           {/* Form Wizard Column */}
           <div className="lg:col-span-7 flex flex-col">
-            
+
             {/* Step Indicator Bar */}
-            <div className="flex items-center justify-between mb-8 bg-white p-4 sm:p-5 rounded-3xl border border-navy/5 shadow-sm overflow-x-auto">
+            <div className="flex items-center justify-between mb-8 bg-white/80 backdrop-blur-xl p-4 sm:p-5 rounded-3xl border border-navy/10 shadow-sm overflow-x-auto">
               {[
                 { num: 1, title: 'Location & Group' },
                 { num: 2, title: 'Participant Details' },
@@ -338,13 +359,12 @@ export default function BookUs() {
                 { num: 4, title: 'Contact Info' },
               ].map((s) => (
                 <div key={s.num} className="flex items-center gap-2.5 shrink-0">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
-                    currentStep === s.num
-                      ? 'bg-navy text-white shadow-md ring-2 ring-navy/20'
-                      : currentStep > s.num
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${currentStep === s.num
+                    ? 'bg-navy text-white shadow-md ring-2 ring-navy/20'
+                    : currentStep > s.num
                       ? 'bg-emerald-500 text-white'
                       : 'bg-[#F0F2F5] text-navy/50'
-                  }`}>
+                    }`}>
                     {currentStep > s.num ? '✓' : s.num}
                   </div>
                   <span className={`text-xs font-bold whitespace-nowrap ${currentStep === s.num ? 'text-navy font-bold' : 'text-navy/40'}`}>
@@ -432,30 +452,58 @@ export default function BookUs() {
                     </div>
 
                     {/* 3. SELECTED LOCATION PREVIEW CARD */}
-                    {selectedLocation && (
-                      <div className="rounded-2xl bg-[#F0F2F5]/80 border border-navy/10 p-4 space-y-1.5 transition-all">
-                        <div className="flex items-center justify-between">
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-accent bg-navy px-2.5 py-0.5 rounded-full">
-                            {selectedLocation.membershipLevel || 'PADI Dive Site'}
-                          </span>
-                          <span className="text-[10px] font-mono font-bold text-navy/40">
-                            ID: #{selectedLocation.id}
-                          </span>
+                    {selectedLocation && (() => {
+                      const creature = getDiveSiteCreatureInfo(selectedLocation.id, selectedLocation)
+                      return (
+                        <div className="rounded-3xl bg-white border border-navy/10 p-4 shadow-sm space-y-3 transition-all">
+                          <div className="flex gap-3.5 items-center">
+                            {/* Creature & Dive Thumbnail */}
+                            {creature?.image && (
+                              <div className="w-16 h-16 rounded-2xl overflow-hidden bg-navy/10 shrink-0 border border-navy/10 relative group">
+                                <img
+                                  src={creature.image}
+                                  alt={creature.creatureName || 'Marine Life'}
+                                  className="w-full h-full object-cover group-hover:scale-110 transition duration-300"
+                                />
+                              </div>
+                            )}
+
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center justify-between gap-2 mb-1">
+                                <span className="text-[9px] font-bold uppercase tracking-wider text-accent bg-navy px-2.5 py-0.5 rounded-full truncate">
+                                  {creature?.creatureName || selectedLocation.membershipLevel || 'PADI Dive Site'}
+                                </span>
+                                <span className="text-[10px] font-mono font-bold text-navy/40 shrink-0">
+                                  #{selectedLocation.id}
+                                </span>
+                              </div>
+
+                              <p className="font-heading text-sm font-bold text-navy truncate">
+                                {diveSiteService.getLocationDisplayName(selectedLocation)}
+                              </p>
+
+                              {(selectedLocation.country || selectedLocation.address) && (
+                                <p className="text-[11px] text-navy/60 flex items-center gap-1 mt-0.5 truncate">
+                                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="shrink-0">
+                                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
+                                    <circle cx="12" cy="9" r="2.5" />
+                                  </svg>
+                                  <span className="truncate">{selectedLocation.country || selectedLocation.address}</span>
+                                </p>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Species & Habitat description */}
+                          {creature?.species && (
+                            <div className="pt-2 border-t border-navy/5 flex items-center justify-between text-[11px]">
+                              <span className="text-navy/50 font-bold uppercase text-[9px]">Marine Life:</span>
+                              <span className="font-semibold text-navy italic truncate max-w-[200px]">{creature.species}</span>
+                            </div>
+                          )}
                         </div>
-                        <p className="font-heading text-sm font-bold text-navy">
-                          {diveSiteService.getLocationDisplayName(selectedLocation)}
-                        </p>
-                        {(selectedLocation.country || selectedLocation.address) && (
-                          <p className="text-xs text-navy/60 flex items-center gap-1.5">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
-                              <circle cx="12" cy="9" r="2.5" />
-                            </svg>
-                            <span>{selectedLocation.country || selectedLocation.address}</span>
-                          </p>
-                        )}
-                      </div>
-                    )}
+                      )
+                    })()}
 
                     {/* 4. PREFERRED DATE & NUMBER OF PEOPLE */}
                     <div className="grid sm:grid-cols-2 gap-6">
@@ -467,9 +515,8 @@ export default function BookUs() {
                           type="button"
                           ref={datePickerBtnRef}
                           onClick={() => setIsCalendarOpen((prev) => !prev)}
-                          className={`w-full rounded-2xl bg-[#F0F2F5] px-5 py-4 text-sm font-bold text-navy outline-none text-left flex items-center justify-between transition cursor-pointer focus:ring-2 ${
-                            dateError ? 'border-2 border-red-500 focus:ring-red-300' : 'focus:ring-accent/50'
-                          }`}
+                          className={`w-full rounded-2xl bg-[#F0F2F5] px-5 py-4 text-sm font-bold text-navy outline-none text-left flex items-center justify-between transition cursor-pointer focus:ring-2 ${dateError ? 'border-2 border-red-500 focus:ring-red-300' : 'focus:ring-accent/50'
+                            }`}
                         >
                           <span className={date ? 'text-navy' : 'text-navy/40'}>
                             {date ? formatDateToDDMMYYYY(date) : 'dd-mm-yyyy'}
@@ -619,11 +666,10 @@ export default function BookUs() {
                                     <button
                                       type="button"
                                       onClick={() => handleParticipantChange(idx, 'hasCertification', false)}
-                                      className={`p-4 rounded-2xl border text-left transition-all flex items-center justify-between gap-3 ${
-                                        !p.hasCertification
-                                          ? 'bg-navy text-white border-navy shadow-sm'
-                                          : 'bg-white text-navy border-navy/15 hover:border-navy/30'
-                                      }`}
+                                      className={`p-4 rounded-2xl border text-left transition-all flex items-center justify-between gap-3 ${!p.hasCertification
+                                        ? 'bg-navy text-white border-navy shadow-sm'
+                                        : 'bg-white text-navy border-navy/15 hover:border-navy/30'
+                                        }`}
                                     >
                                       <div>
                                         <span className="font-bold text-sm block">No, I don't have a certification</span>
@@ -631,9 +677,8 @@ export default function BookUs() {
                                           Beginner, Discover Scuba & Pathway options
                                         </span>
                                       </div>
-                                      <div className={`w-5 h-5 rounded-full border flex items-center justify-center shrink-0 ${
-                                        !p.hasCertification ? 'border-accent bg-accent text-navy' : 'border-navy/20'
-                                      }`}>
+                                      <div className={`w-5 h-5 rounded-full border flex items-center justify-center shrink-0 ${!p.hasCertification ? 'border-accent bg-accent text-navy' : 'border-navy/20'
+                                        }`}>
                                         {!p.hasCertification && <span className="text-[10px] font-bold">✓</span>}
                                       </div>
                                     </button>
@@ -641,11 +686,10 @@ export default function BookUs() {
                                     <button
                                       type="button"
                                       onClick={() => handleParticipantChange(idx, 'hasCertification', true)}
-                                      className={`p-4 rounded-2xl border text-left transition-all flex items-center justify-between gap-3 ${
-                                        p.hasCertification
-                                          ? 'bg-navy text-white border-navy shadow-sm'
-                                          : 'bg-white text-navy border-navy/15 hover:border-navy/30'
-                                      }`}
+                                      className={`p-4 rounded-2xl border text-left transition-all flex items-center justify-between gap-3 ${p.hasCertification
+                                        ? 'bg-navy text-white border-navy shadow-sm'
+                                        : 'bg-white text-navy border-navy/15 hover:border-navy/30'
+                                        }`}
                                     >
                                       <div>
                                         <span className="font-bold text-sm block">Yes, I have a certification</span>
@@ -653,9 +697,8 @@ export default function BookUs() {
                                           Advanced, Rescue, Specialities & Fun Dives
                                         </span>
                                       </div>
-                                      <div className={`w-5 h-5 rounded-full border flex items-center justify-center shrink-0 ${
-                                        p.hasCertification ? 'border-accent bg-accent text-navy' : 'border-navy/20'
-                                      }`}>
+                                      <div className={`w-5 h-5 rounded-full border flex items-center justify-center shrink-0 ${p.hasCertification ? 'border-accent bg-accent text-navy' : 'border-navy/20'
+                                        }`}>
                                         {p.hasCertification && <span className="text-[10px] font-bold">✓</span>}
                                       </div>
                                     </button>
@@ -676,16 +719,14 @@ export default function BookUs() {
                                             key={opt.id}
                                             type="button"
                                             onClick={() => handleToggleCertification(idx, opt.id)}
-                                            className={`p-3 rounded-xl border text-left text-xs font-bold transition flex items-center justify-between gap-2 ${
-                                              isSelected
-                                                ? 'bg-accent/15 text-navy border-accent/60 shadow-sm'
-                                                : 'bg-white text-navy/80 border-navy/10 hover:border-navy/30 hover:bg-navy/[0.02]'
-                                            }`}
+                                            className={`p-3 rounded-xl border text-left text-xs font-bold transition flex items-center justify-between gap-2 ${isSelected
+                                              ? 'bg-accent/15 text-navy border-accent/60 shadow-sm'
+                                              : 'bg-white text-navy/80 border-navy/10 hover:border-navy/30 hover:bg-navy/[0.02]'
+                                              }`}
                                           >
                                             <span className="truncate">{opt.name}</span>
-                                            <span className={`w-4 h-4 rounded-md border flex items-center justify-center shrink-0 text-[10px] ${
-                                              isSelected ? 'bg-navy text-white border-navy font-bold' : 'border-navy/20'
-                                            }`}>
+                                            <span className={`w-4 h-4 rounded-md border flex items-center justify-center shrink-0 text-[10px] ${isSelected ? 'bg-navy text-white border-navy font-bold' : 'border-navy/20'
+                                              }`}>
                                               {isSelected ? '✓' : ''}
                                             </span>
                                           </button>
@@ -787,7 +828,7 @@ export default function BookUs() {
                                     ))}
                                   </select>
                                   <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-navy/40">
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 9l6 6 6-6"/></svg>
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 9l6 6 6-6" /></svg>
                                   </div>
                                 </div>
 
@@ -799,39 +840,34 @@ export default function BookUs() {
                                       <div
                                         key={prog.id}
                                         onClick={() => handleParticipantChange(idx, 'selectedProgram', prog.id)}
-                                        className={`rounded-2xl p-4 border transition-all cursor-pointer flex flex-col justify-between gap-3 ${
-                                          isSelected
-                                            ? 'bg-navy text-white border-navy shadow-md ring-1 ring-navy'
-                                            : 'bg-white text-navy border-navy/10 hover:border-navy/30 hover:bg-navy/[0.02]'
-                                        }`}
+                                        className={`rounded-2xl p-4 border transition-all cursor-pointer flex flex-col justify-between gap-3 ${isSelected
+                                          ? 'bg-navy text-white border-navy shadow-md ring-1 ring-navy'
+                                          : 'bg-white text-navy border-navy/10 hover:border-navy/30 hover:bg-navy/[0.02]'
+                                          }`}
                                       >
                                         <div className="flex justify-between items-start gap-2">
                                           <div>
-                                            <span className={`text-[10px] font-bold uppercase tracking-widest block mb-1 ${
-                                              isSelected ? 'text-accent' : 'text-navy/50'
-                                            }`}>
+                                            <span className={`text-[10px] font-bold uppercase tracking-widest block mb-1 ${isSelected ? 'text-accent' : 'text-navy/50'
+                                              }`}>
                                               {prog.category}
                                             </span>
                                             <h5 className="font-heading font-bold text-base leading-snug">
                                               {prog.name}
                                             </h5>
                                           </div>
-                                          <div className={`w-5 h-5 rounded-full border shrink-0 flex items-center justify-center mt-0.5 ${
-                                            isSelected ? 'border-accent bg-accent text-navy' : 'border-navy/20 bg-transparent'
-                                          }`}>
+                                          <div className={`w-5 h-5 rounded-full border shrink-0 flex items-center justify-center mt-0.5 ${isSelected ? 'border-accent bg-accent text-navy' : 'border-navy/20 bg-transparent'
+                                            }`}>
                                             {isSelected && <span className="text-[10px] font-bold">✓</span>}
                                           </div>
                                         </div>
 
                                         <div className="flex flex-wrap items-center gap-2 pt-1 text-[10px]">
-                                          <span className={`px-2.5 py-0.5 rounded-full font-semibold ${
-                                            isSelected ? 'bg-white/10 text-white/90' : 'bg-navy/[0.05] text-navy/70'
-                                          }`}>
+                                          <span className={`px-2.5 py-0.5 rounded-full font-semibold ${isSelected ? 'bg-white/10 text-white/90' : 'bg-navy/[0.05] text-navy/70'
+                                            }`}>
                                             Age {prog.minimumAge}+
                                           </span>
-                                          <span className={`truncate max-w-[170px] ${
-                                            isSelected ? 'text-white/70' : 'text-navy/50'
-                                          }`}>
+                                          <span className={`truncate max-w-[170px] ${isSelected ? 'text-white/70' : 'text-navy/50'
+                                            }`}>
                                             Prereq: {prog.certLabel}
                                           </span>
                                         </div>
@@ -886,7 +922,7 @@ export default function BookUs() {
                         <label className="mb-2 block text-xs font-bold text-navy/70 uppercase tracking-wider">Phone Number</label>
                         <PhoneInput
                           defaultCountry="IN"
-                          placeholder="8971001010"
+                          placeholder="Phone number"
                           value={contact.phone}
                           onChange={(val) => setContact((prev) => ({ ...prev, phone: val }))}
                           className="w-full rounded-2xl bg-[#F0F2F5] px-5 py-4 text-sm font-bold text-navy outline-none focus-within:ring-2 focus-within:ring-accent/50 transition [&_.PhoneInputCountryIcon]:rounded-sm [&_.PhoneInputInput]:bg-transparent [&_.PhoneInputInput]:outline-none [&_.PhoneInputInput]:border-none [&_.PhoneInputCountrySelect]:outline-none [&_.PhoneInputCountryIcon--border]:border-none [&_.PhoneInputInput]:ml-3 font-bold"

@@ -2,15 +2,7 @@ import { useRef, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router'
 import SectionReveal from './SectionReveal'
 import Button from './Button'
-
-import c1 from '../assets/Carosel/WhatsApp Image 2026-07-31 at 9.36.42 AM (1).jpeg'
-import c2 from '../assets/Carosel/WhatsApp Image 2026-07-31 at 9.36.42 AM.jpeg'
-import c3 from '../assets/Carosel/WhatsApp Image 2026-07-31 at 9.36.43 AM (1).jpeg'
-import c4 from '../assets/Carosel/WhatsApp Image 2026-07-31 at 9.36.43 AM (2).jpeg'
-import c5 from '../assets/Carosel/WhatsApp Image 2026-07-31 at 9.36.43 AM.jpeg'
-import c6 from '../assets/Carosel/WhatsApp Image 2026-07-31 at 9.36.44 AM.jpeg'
-
-const GALLERY_IMAGES = [c1, c2, c3, c4, c5, c6]
+import { GALLERY_ITEMS } from '../utils/galleryData'
 
 export default function GalleryPreview() {
   const navigate = useNavigate()
@@ -19,6 +11,8 @@ export default function GalleryPreview() {
   const startX = useRef(0)
   const scrollLeft = useRef(0)
   const [isHovered, setIsHovered] = useState(false)
+
+  const previewItems = GALLERY_ITEMS.slice(0, 16)
 
   const goToGallery = () => navigate('/gallery')
 
@@ -104,10 +98,10 @@ export default function GalleryPreview() {
     <section id="gallery" className="relative py-16 sm:py-20 scroll-mt-20 pointer-events-auto overflow-hidden">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionReveal className="mb-12 text-center">
-          <h2 className="font-heading text-h2 font-bold text-white">
-            The Dive Village <em className="font-heading italic font-bold text-accent">Gallery</em>
+          <h2 className="font-heading text-h2 font-bold text-[#FFCD00] drop-shadow-md">
+            The Dive Village <em className="font-heading italic font-bold text-[#FFCD00]">Gallery</em>
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-white/80 text-justify">
+          <p className="mx-auto mt-4 max-w-2xl text-[#00223D] font-bold text-base sm:text-lg text-center drop-shadow-xs">
             Where the sea is your classroom, playground, and escape.
           </p>
         </SectionReveal>
@@ -157,19 +151,44 @@ export default function GalleryPreview() {
           className="flex gap-4 overflow-x-auto scrollbar-none no-scrollbar cursor-grab active:cursor-grabbing select-none py-2 px-6"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
-          {[...GALLERY_IMAGES, ...GALLERY_IMAGES, ...GALLERY_IMAGES, ...GALLERY_IMAGES].map((src, i) => (
+          {[...previewItems, ...previewItems, ...previewItems].map((item, i) => (
             <div
-              key={i}
+              key={`${item.id}-${i}`}
               onClick={goToGallery}
-              className="relative flex-shrink-0 w-[280px] h-[380px] rounded-2xl overflow-hidden border border-white/20 shadow-2xl group cursor-pointer"
+              className="relative flex-shrink-0 w-[280px] h-[380px] rounded-2xl overflow-hidden border border-white/20 shadow-2xl group cursor-pointer bg-navy/20"
             >
-              <img
-                src={src}
-                alt={`Gallery ${(i % 6) + 1}`}
-                className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-                loading="lazy"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-navy/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              {item.type === 'video' ? (
+                <video
+                  src={item.src}
+                  muted
+                  loop
+                  playsInline
+                  autoPlay
+                  className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                />
+              ) : (
+                <img
+                  src={item.src}
+                  alt={item.title}
+                  className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                  loading="lazy"
+                />
+              )}
+              {/* Overlay with ONLY Title and Location */}
+              <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/30 to-transparent flex flex-col justify-end p-4">
+                <h4 className="text-white font-heading font-bold text-base leading-tight drop-shadow-md">
+                  {item.title}
+                </h4>
+                {item.location && (
+                  <p className="text-white/80 text-xs font-semibold mt-1 flex items-center gap-1 drop-shadow-sm">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-[#FFCD00] shrink-0">
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                      <circle cx="12" cy="10" r="3" />
+                    </svg>
+                    <span className="truncate">{item.location}</span>
+                  </p>
+                )}
+              </div>
             </div>
           ))}
         </div>

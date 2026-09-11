@@ -1,9 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
 
-export default function Product3DViewer({ src, alt = '3D Product Model' }) {
+export default function Product3DViewer({ src, alt = '3D Product Model', productId }) {
   const [scriptLoaded, setScriptLoaded] = useState(false)
   const [autoRotate, setAutoRotate] = useState(true)
   const modelRef = useRef(null)
+
+  const isCap = Boolean(
+    (src && src.toLowerCase().includes('cap')) ||
+    (alt && alt.toLowerCase().includes('cap')) ||
+    productId === 'product-dive-cap'
+  )
 
   useEffect(() => {
     if (typeof window !== 'undefined' && !customElements.get('model-viewer')) {
@@ -35,7 +41,7 @@ export default function Product3DViewer({ src, alt = '3D Product Model' }) {
 
             const pbr = mat.pbrMetallicRoughness
             if (pbr) {
-              pbr.setRoughnessFactor(0.82)
+              pbr.setRoughnessFactor(isCap ? 0.65 : 0.82)
               pbr.setMetallicFactor(0.0)
             }
           })
@@ -53,7 +59,7 @@ export default function Product3DViewer({ src, alt = '3D Product Model' }) {
     return () => {
       viewer.removeEventListener('load', applyMatteAndDoubleSided)
     }
-  }, [src, scriptLoaded])
+  }, [src, scriptLoaded, isCap])
 
   return (
     <div className="relative w-full h-full min-h-[300px] sm:min-h-[340px] bg-gradient-to-b from-[#FFFFFF] via-[#F8FAFC] to-[#EDF2F7] rounded-[28px] overflow-hidden flex items-center justify-center select-none">
@@ -64,18 +70,17 @@ export default function Product3DViewer({ src, alt = '3D Product Model' }) {
         auto-rotate={autoRotate ? true : undefined}
         rotation-per-second="35deg"
         camera-controls
+        disable-zoom
+        disable-pan
         touch-action="pan-y"
         interaction-prompt="auto"
         camera-orbit="0deg 75deg 110%"
         camera-target="auto auto auto"
-        field-of-view="auto"
-        min-field-of-view="12deg"
-        max-field-of-view="65deg"
-        min-camera-orbit="auto 15deg 40%"
-        max-camera-orbit="auto 165deg 260%"
+        min-camera-orbit="auto 75deg auto"
+        max-camera-orbit="auto 75deg auto"
         environment-image="neutral"
-        exposure="1.35"
-        shadow-intensity="0.4"
+        exposure={isCap ? "2.5" : "1.4"}
+        shadow-intensity={isCap ? "0.08" : "0.35"}
         shadow-softness="0.9"
         tone-mapping="commerce"
         bounds="tight"
@@ -96,7 +101,7 @@ export default function Product3DViewer({ src, alt = '3D Product Model' }) {
       {/* Control Hint */}
       <div className="absolute bottom-4 left-4 bg-navy/85 backdrop-blur-md px-3 py-1.5 rounded-full text-[10px] sm:text-[11px] font-bold text-white/90 shadow-md z-10 pointer-events-none flex items-center gap-1.5">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#FFCD00" strokeWidth="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 11-.57-8.38l5.67-5.67" /></svg>
-        <span>Pinch: Zoom • 2-finger: Move • Drag: Rotate</span>
+        <span>Drag sideways to rotate 360°</span>
       </div>
 
       {/* Bottom Right 360° Toggle Circle Controller */}

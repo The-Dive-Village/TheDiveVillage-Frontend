@@ -1,6 +1,7 @@
 import CourseTemplate from '../layouts/CourseTemplate'
 import SEOHead from '../components/SEOHead'
 import { IMAGES } from '../utils/images'
+import freediveVideo from '../assets/New folder/free diving 3.mp4'
 
 export default function Surfing() {
   const tours = [
@@ -37,6 +38,7 @@ export default function Surfing() {
         canonicalUrl="https://thedivevillage.com/freediving"
       />
       <CourseTemplate
+        heroVideo={freediveVideo}
         heroImage={IMAGES.surfingHero}
         titleTop="Experience"
         titleBottom="Breath-Hold Diving"

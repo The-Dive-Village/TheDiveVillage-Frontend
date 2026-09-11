@@ -2,6 +2,8 @@ import { Link, useNavigate } from 'react-router'
 import SectionReveal, { StaggerGrid, StaggerItem } from './SectionReveal'
 import { CAROUSEL_IMAGES } from '../utils/images'
 import diveSuitVid from '../assets/New folder/merch 5.mp4'
+import tryDiveVid from '../assets/New folder/Dive.MP4'
+import certVid from '../assets/Diving(1).mp4'
 
 const PROGRAMS = [
   {
@@ -20,6 +22,7 @@ const PROGRAMS = [
     tag: 'For Beginners',
     desc: 'Perfect for first-timers. Experience scuba safely in shallow water with professional 1-on-1 supervision.',
     img: CAROUSEL_IMAGES[0],
+    video: tryDiveVid,
     link: '/services',
     btnText: 'Explore Services',
   },
@@ -29,6 +32,7 @@ const PROGRAMS = [
     tag: 'PADI Courses',
     desc: 'From Open Water Diver to Divemaster, start or advance your international dive certification.',
     img: CAROUSEL_IMAGES[1],
+    video: certVid,
     link: '/services',
     btnText: 'Explore Services',
   },

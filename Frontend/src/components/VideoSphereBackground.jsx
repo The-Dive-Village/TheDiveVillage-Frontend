@@ -12,7 +12,7 @@ import nightDiveVideo from '../assets/nightdive_fast.mp4'
 import underwaterAudio from '../assets/Underwater.mp3'
 import { setHeroVideoReady } from '../utils/mediaReadyManager'
 
-function useDirectVideoTexture(src, playbackRate = 1.0, priority = false) {
+function useDirectVideoTexture(src, playbackRate = 0.7, priority = false) {
   const [texture, setTexture] = useState(null)
 
   useEffect(() => {
@@ -110,11 +110,11 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
   const isHome = location.pathname === '/'
   const isAbout = location.pathname === '/about'
 
-  // Primary video is prioritized with 'auto' preload and high priority
-  const texture = useDirectVideoTexture(videoSrc, 1.0, true)
+  // Primary video is prioritized with 'auto' preload and high priority (calm slowed playback)
+  const texture = useDirectVideoTexture(videoSrc, 0.7, true)
   // Secondary videos are strictly lazy-loaded only when user scrolls or needs them
-  const texture2 = useDirectVideoTexture(isHome && !isNightDive && loadSecondary ? bookFile : null, 1.0, false)
-  const texture3 = useDirectVideoTexture(isHome && !isNightDive && loadSecondary ? turtleVideo : null, 1.0, false)
+  const texture2 = useDirectVideoTexture(isHome && !isNightDive && loadSecondary ? bookFile : null, 0.7, false)
+  const texture3 = useDirectVideoTexture(isHome && !isNightDive && loadSecondary ? turtleVideo : null, 0.7, false)
 
   // Flip turtle video texture horizontally so it displays correctly on the sphere
   useEffect(() => {
@@ -328,13 +328,19 @@ export default function VideoSphereBackground() {
     if (video) {
       video.muted = true
       video.defaultMuted = true
+      video.playbackRate = 0.7
       if (isNightDive) {
         const playPromise = video.play()
         if (playPromise !== undefined) {
-          playPromise.catch((err) => {
+          playPromise.then(() => {
+            if (video) video.playbackRate = 0.7
+          }).catch((err) => {
             console.warn('Night dive video play notice:', err)
             const handleInteract = () => {
-              if (video) video.play().catch(() => {})
+              if (video) {
+                video.playbackRate = 0.7
+                video.play().catch(() => {})
+              }
               window.removeEventListener('pointerdown', handleInteract)
               window.removeEventListener('touchstart', handleInteract)
             }

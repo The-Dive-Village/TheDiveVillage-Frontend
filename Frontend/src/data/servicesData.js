@@ -1,5 +1,62 @@
 import { CAROUSEL_IMAGES } from '../utils/images'
 
+// Carousel & Curated Photos for Classroom/Wrecks/Swelling
+import c1 from '../assets/Carosel/WhatsApp Image 2026-07-31 at 9.36.42 AM (1).jpeg'
+import c2 from '../assets/Carosel/WhatsApp Image 2026-07-31 at 9.36.42 AM.jpeg'
+import c3 from '../assets/Carosel/WhatsApp Image 2026-07-31 at 9.36.43 AM (1).jpeg'
+import c4 from '../assets/Carosel/WhatsApp Image 2026-07-31 at 9.36.43 AM (2).jpeg'
+import c5 from '../assets/Carosel/WhatsApp Image 2026-07-31 at 9.36.43 AM.jpeg'
+import c6 from '../assets/Carosel/WhatsApp Image 2026-07-31 at 9.36.44 AM.jpeg'
+import imgGallery1 from '../assets/New folder/Galleryimg1.jpg'
+import scene1 from '../assets/New folder/Scene1.jpg'
+import scene2 from '../assets/New folder/Scene2.jpg'
+import scene3 from '../assets/New folder/Scene3.jpg'
+import stayImg from '../assets/New folder/Stay.jpg'
+
+// Diverse Library of Unique Video Assets
+import vidDive from '../assets/New folder/Dive.MP4'
+import vidBook2 from '../assets/Book(2).mp4'
+import vidBookFast from '../assets/Book_fast.mp4'
+import vidScubaSub from '../assets/New folder/GX018833.mp4'
+import vidClownfish from '../assets/New folder/dji_mimo_20260220_140750_0_1771571076972_video.mp4'
+import vidTurtleAnna from '../assets/New folder/Turtle Anna.mp4'
+import vidTurtleLagoon from '../assets/New folder/DJI_20260525102811_0007_D.MP4'
+import vidTurquoiseAtoll from '../assets/New folder/DJI_20260525104139_0011_D.MP4'
+import vidFreedivingBasic from '../assets/New folder/free diving .mp4'
+import vidScubaSkill1 from '../assets/New folder/20260525_114955.mp4'
+import vidScubaTeam from '../assets/New folder/GX018843.mp4'
+import vidCoralPinnacle from '../assets/New folder/dji_mimo_20260124_112020_0_1769300692742_video.mp4'
+import vidDiving1 from '../assets/Diving(1).mp4'
+import vidRescueDiver from '../assets/New folder/GX018843.mp4'
+import vidReactivate from '../assets/New folder/20260525_115020.mp4'
+import vidCloseup1 from '../assets/New folder/Closeup1.mp4'
+import vidCrystalLagoon from '../assets/New folder/20260630_153650_005.mp4'
+import vidBuoyancy from '../assets/New folder/GX018839_rotated.MP4'
+import vidTurtleFlyinnn from '../assets/New folder/Turtle Flyinnn.mov'
+import vidDeepCloseup3 from '../assets/New folder/closeup3.mp4'
+import vidNightDive from '../assets/Compiled Night Dive Video(2).mp4'
+import vidTravelNitrox from '../assets/New folder/Travel.mp4'
+import vidMantaDrift from '../assets/New folder/dji_mimo_20260204_084858_0_1770187391850_video.mp4'
+import vidGallery1 from '../assets/New folder/gallery1.mp4'
+import vidTrevally from '../assets/New folder/DJI_20260525123656_0017_D.MP4'
+import vidSharkPatrol from '../assets/New folder/DJI_20260525124204_0018_D.MP4'
+import vidWhaleShark from '../assets/New folder/dji_mimo_20260204_084830_0_1770187393265_video.mp4'
+import vidManta3 from '../assets/New folder/manta3.mp4'
+import vidLobster from '../assets/New folder/lobster.mp4'
+import vidTurtleAnna1 from '../assets/New folder/Turtle Anna.mp4'
+import vidExtendedDives from '../assets/New folder/20260526_174504.mp4'
+import vidDawnCruise from '../assets/New folder/20260707_165729_460.mp4'
+import vidItineraryCombo from '../assets/New folder/Itinerary.mp4'
+import vidHeroFast from '../assets/Hero_fast.mp4'
+import vidHero1 from '../assets/Hero(1).mp4'
+import vidHeroOptimized from '../assets/Hero_optimized.mp4'
+import vidTurtleFast from '../assets/Turtle_fast.mp4'
+import vidSunsetIsland from '../assets/New folder/20260707_170454_824.mp4'
+import vidPanoramic1 from '../assets/1.mp4'
+import vidFreediving1 from '../assets/New folder/Free Diving 1.mov'
+import vidFreediving3 from '../assets/New folder/free diving 3.mp4'
+import vidSurfing from '../assets/New folder/surfing.mp4'
+
 export const CATEGORIES = [
   { key: 'all', label: 'All Services' },
   { key: 'recreation', label: 'Recreation' },
@@ -15,14 +72,15 @@ export const CATEGORIES = [
   { key: 'surfing', label: 'Surfing' },
 ]
 
-const RAW_SERVICES_DATA = [
+export const SERVICES_DATA = [
   // 1. Recreation (Try Dive / DSD)
   {
     id: 'prog-1', category: 'recreation', categories: ['recreation', 'programs'],
     title: 'Try Dive',
-    short_desc: 'A short introduction dives for beginners.',
-    long_desc: 'Experience scuba safely in shallow water with a briefing, shallow water training and a guided dive upto 4 meters for 10 minutes.',
-    banner: 'assets/bg-video.mp4',
+    short_desc: 'A short introduction dive for beginners.',
+    long_desc: 'Experience scuba safely in shallow water with a briefing, shallow water training and a guided dive up to 4 meters for 10 minutes.',
+    video: vidDive,
+    image: c1,
     highlights: 'Max Depth: 4m | Dive Time: 10 mins | Total Time: 45 mins | Photos & videos included',
     days_min: '', days_max: '', min_age: 8
   },
@@ -30,8 +88,9 @@ const RAW_SERVICES_DATA = [
     id: 'prog-2', category: 'recreation', categories: ['recreation', 'programs'],
     title: 'DSD Lite',
     short_desc: 'A lighter version of Discover Scuba Dive.',
-    long_desc: 'Includes a briefing, shallow water training, and a guided dive upto 12 meters for a maximum of 20 minutes.',
-    banner: 'assets/bg-video.mp4',
+    long_desc: 'Includes a briefing, shallow water training, and a guided dive up to 12 meters for a maximum of 20 minutes.',
+    video: vidBook2,
+    image: c2,
     highlights: 'Max Depth: 12m (or 4m for kids/medical) | Dive Time: 20 mins | Total Time: 1 hr | Photos & videos included',
     days_min: '', days_max: '', min_age: 10
   },
@@ -39,8 +98,9 @@ const RAW_SERVICES_DATA = [
     id: 'prog-3', category: 'recreation', categories: ['recreation', 'programs'],
     title: 'PADI Discover Scuba Dive',
     short_desc: 'The official PADI Discover Scuba Diving program.',
-    long_desc: 'PADI\'s official introductory scuba diving program where you will learn the basics of scuba diving, practice skills in confined water, and do an open water dive under upto 12 meters for 45 mins under the close supervision of a PADI Instructor.',
-    banner: 'assets/bg-video.mp4',
+    long_desc: 'PADI\'s official introductory scuba diving program where you will learn the basics of scuba diving, practice skills in confined water, and do an open water dive up to 12 meters for 45 mins under the close supervision of a PADI Instructor.',
+    video: vidBookFast,
+    image: c3,
     highlights: 'Max Depth: 12m | Dive Time: 45 mins | Total Time: 3 hrs | Photos & videos included',
     days_min: '', days_max: '', min_age: ''
   },
@@ -49,27 +109,32 @@ const RAW_SERVICES_DATA = [
     title: 'Additional Dive after DSD',
     short_desc: 'Extra guided dive after DSD.',
     long_desc: 'Extend your Discover Scuba Dive experience with a guided dive with a PADI Pro.',
-    banner: 'assets/bg-video.mp4',
+    video: vidScubaSub,
+    image: c4,
     highlights: 'Dive Time: 45 mins | Photos & videos may be included',
     days_min: '', days_max: '', min_age: ''
   },
+
   // 2. Bubblemaker
   {
     id: 'prog-4', category: 'bubble', categories: ['bubble', 'programs'],
     title: 'PADI Bubblemaker',
     short_desc: 'Scuba fun for kids aged between 8 to 10.',
-    long_desc: 'The PADI Bubblemaker introduces children to scuba in a safe pool like environment.',
-    banner: 'assets/bg-video.mp4',
+    long_desc: 'The PADI Bubblemaker introduces children to scuba in a safe pool-like environment, swimming with colorful clownfish and gentle marine life.',
+    video: vidClownfish,
+    image: c5,
     highlights: 'Max Depth: 2m | Dive Time: 30 mins | PADI registration included',
     days_min: '', days_max: '', min_age: 8
   },
+
   // 3. Snorkeling
   {
     id: 'snork-1', category: 'snorkeling', categories: ['snorkeling', 'programs'],
     title: 'Discover Snorkeling',
     short_desc: 'Learn the basics of snorkeling in a safe, guided setting.',
-    long_desc: 'Includes briefing, equipment use orientation, and a 1 hour open water snorkeling session with a professional leading you.',
-    banner: 'assets/bg-video.mp4',
+    long_desc: 'Includes briefing, equipment use orientation, and a 1 hour open water snorkeling session with a professional leading you over coral gardens and sea turtles.',
+    video: vidTurtleAnna,
+    image: c3,
     highlights: 'Total Time: 1 hr | Knowledge development + water session',
     days_min: '', days_max: '', min_age: ''
   },
@@ -78,7 +143,8 @@ const RAW_SERVICES_DATA = [
     title: 'Reef Explorer',
     short_desc: 'Guided reef snorkeling for beginners.',
     long_desc: 'Perfect shallow-water snorkel trip to see colorful reef fish, corals, and safe lagoon sites.',
-    banner: 'assets/bg-video.mp4',
+    video: vidTurtleLagoon,
+    image: c4,
     highlights: 'Total Time: 1–1.5 hrs | Suitable for all ages',
     days_min: '', days_max: '', min_age: ''
   },
@@ -87,17 +153,20 @@ const RAW_SERVICES_DATA = [
     title: 'Ocean Explorer',
     short_desc: 'Snorkel further into the blue.',
     long_desc: 'Explore deeper reef areas, spot turtles and bigger marine life, with guided safety.',
-    banner: 'assets/bg-video.mp4',
+    video: vidTurquoiseAtoll,
+    image: c5,
     highlights: 'Total Time: 1.5–2 hrs | Includes equipment & guide',
     days_min: '', days_max: '', min_age: ''
   },
-  // 3. Courses
+
+  // 4. Courses
   {
     id: 'course-1', category: 'courses',
     title: 'PADI Skin Diver',
     short_desc: 'Learn snorkeling & skin diving.',
-    long_desc: 'Dive on a single breath upto 6 meters. Learn the basics of breath-hold diving, safety considerations and efficient technique.',
-    banner: 'assets/bg-video.mp4',
+    long_desc: 'Dive on a single breath up to 6 meters. Learn the basics of breath-hold diving, safety considerations and efficient technique.',
+    video: vidFreedivingBasic,
+    image: c1,
     highlights: 'Duration: 1–2 days | Includes knowledge + water sessions',
     days_min: 1, days_max: 1, min_age: ''
   },
@@ -105,8 +174,9 @@ const RAW_SERVICES_DATA = [
     id: 'course-2', category: 'courses',
     title: 'PADI Scuba Diver',
     short_desc: 'Entry-level certification.',
-    long_desc: 'The first step towards scuba certification for beginners with limited time. The certification will enable you to dive upto 12m under professional supervision. Upgrade to open water diver anytime by completing the remaining training sections. Includes theory, confined water skill development and 2 open water dives upto 12 meters.',
-    banner: 'assets/bg-video.mp4',
+    long_desc: 'The first step towards scuba certification for beginners with limited time. The certification will enable you to dive up to 12m under professional supervision. Upgrade to open water diver anytime by completing the remaining training sections. Includes theory, confined water skill development and 2 open water dives up to 12 meters.',
+    video: vidScubaSkill1,
+    image: c2,
     highlights: 'Duration: 1–2 days | Credit toward Open Water',
     days_min: 1, days_max: 2, min_age: 10
   },
@@ -114,8 +184,9 @@ const RAW_SERVICES_DATA = [
     id: 'course-3', category: 'courses',
     title: 'PADI Open Water Diver',
     short_desc: 'The world’s most popular scuba certification.',
-    long_desc: 'Learn essential dive theory, skills, and complete 4 open water dives. This certification lets you dive upto 18m without professional supervision.',
-    banner: 'assets/bg-video.mp4',
+    long_desc: 'Learn essential dive theory, skills, and complete 4 open water dives. This certification lets you dive up to 18m without professional supervision.',
+    video: vidScubaTeam,
+    image: c3,
     highlights: 'Duration: 3–4 days | Certification to 18m',
     days_min: 3, days_max: 4, min_age: 10
   },
@@ -124,7 +195,8 @@ const RAW_SERVICES_DATA = [
     title: 'PADI Adventure Diver',
     short_desc: 'Complete 3 adventure dives.',
     long_desc: 'Expand skills in areas like navigation, buoyancy, or night diving.',
-    banner: 'assets/bg-video.mp4',
+    video: vidCoralPinnacle,
+    image: c4,
     highlights: 'Duration: 1–2 days | Credit toward Advanced | Prerequisites: Open Water Diver',
     days_min: 1, days_max: 2, min_age: 10
   },
@@ -133,7 +205,8 @@ const RAW_SERVICES_DATA = [
     title: 'PADI Advanced Open Water',
     short_desc: 'Take your skills deeper.',
     long_desc: 'Includes 5 adventure dives: Deep + Navigation + 3 electives.',
-    banner: 'assets/bg-video.mp4',
+    video: vidDiving1,
+    image: c5,
     highlights: 'Duration: 2–3 days | Certification to 30m | Prerequisites: Open water diver',
     days_min: 2, days_max: 3, min_age: 12
   },
@@ -141,8 +214,9 @@ const RAW_SERVICES_DATA = [
     id: 'course-6', category: 'courses',
     title: 'EFR Primary & Secondary Care',
     short_desc: 'Learn CPR and first aid.',
-    long_desc: 'Emergency First Responder course for divers and non-divers. Develop Skills to be able to respond in a medical emergency and make a difference in saving peoples lives.',
-    banner: 'assets/bg-video.mp4',
+    long_desc: 'Emergency First Responder course for divers and non-divers. Develop skills to be able to respond in a medical emergency and make a difference in saving peoples lives.',
+    video: null,
+    image: c6,
     highlights: 'Duration: 1–2 days | Certification valid 2 years',
     days_min: 1, days_max: 2, min_age: ''
   },
@@ -151,7 +225,8 @@ const RAW_SERVICES_DATA = [
     title: 'PADI Rescue Diver',
     short_desc: 'Expand your rescue skills and become a safer diver.',
     long_desc: 'Learn to manage dive emergencies and assist other divers.',
-    banner: 'assets/bg-video.mp4',
+    video: vidRescueDiver,
+    image: c1,
     highlights: 'Duration: 3–4 days | Prereq: Advanced + EFR',
     days_min: 3, days_max: 4, min_age: 12
   },
@@ -160,7 +235,8 @@ const RAW_SERVICES_DATA = [
     title: 'PADI Reactivate (with dive)',
     short_desc: 'Refresh your skills with certification credit.',
     long_desc: 'Includes theory review and 1 open water dive.',
-    banner: 'assets/bg-video.mp4',
+    video: vidReactivate,
+    image: c2,
     highlights: 'Duration: 1 day | 1 Open Water Dive',
     days_min: 1, days_max: 1, min_age: ''
   },
@@ -169,7 +245,8 @@ const RAW_SERVICES_DATA = [
     title: 'Full Refresher (with dive)',
     short_desc: 'Refresher without certification credit.',
     long_desc: 'Skills practice and 1 open water dive.',
-    banner: 'assets/bg-video.mp4',
+    video: vidCloseup1,
+    image: c3,
     highlights: 'Duration: 1 day | 1 Open Water Dive',
     days_min: 1, days_max: 1, min_age: ''
   },
@@ -178,17 +255,20 @@ const RAW_SERVICES_DATA = [
     title: 'Lite Refresher (confined only)',
     short_desc: 'Confined water refresher only.',
     long_desc: 'Quick skill refresh in pool or shallow water.',
-    banner: 'assets/bg-video.mp4',
+    video: vidCrystalLagoon,
+    image: c4,
     highlights: 'Duration: 1 day | Confined water only',
     days_min: 1, days_max: 1, min_age: ''
   },
-  // 4. Specialities
+
+  // 5. Specialities
   {
     id: 'spec-1', category: 'specialities',
     title: 'Peak Performance Buoyancy',
     short_desc: 'Become a buoyancy master.',
-    long_desc: 'Explore more and dive comfortably while improving air consumption, trim, finning and overall bouyancy skills.',
-    banner: 'assets/bg-video.mp4',
+    long_desc: 'Explore more and dive comfortably while improving air consumption, trim, finning and overall buoyancy skills.',
+    video: vidBuoyancy,
+    image: c5,
     highlights: 'Duration: 1–2 days | Includes 2 dives | Prerequisites: Open Water Diver',
     days_min: 1, days_max: 1, min_age: ''
   },
@@ -196,8 +276,9 @@ const RAW_SERVICES_DATA = [
     id: 'spec-2', category: 'specialities',
     title: 'Project AWARE',
     short_desc: 'Support ocean conservation.',
-    long_desc: 'Knowledge-based specialty focused on marine protection.',
-    banner: 'assets/bg-video.mp4',
+    long_desc: 'Knowledge-based specialty focused on marine protection, coral reef health, and ocean ecosystems.',
+    video: vidTurtleFlyinnn,
+    image: imgGallery1,
     highlights: 'Duration: 1–2 days | Non-diving course',
     days_min: 1, days_max: 1, min_age: ''
   },
@@ -206,7 +287,8 @@ const RAW_SERVICES_DATA = [
     title: 'Deep Diver',
     short_desc: 'Dive deeper safely.',
     long_desc: 'Learn advanced deep diving by taking planning, techniques, and safety to the next level for 18–40m dives.',
-    banner: 'assets/bg-video.mp4',
+    video: vidDeepCloseup3,
+    image: c6,
     highlights: 'Duration: 2 days | 4 dives | Prerequisites: Open Water',
     days_min: 2, days_max: 3, min_age: ''
   },
@@ -214,8 +296,9 @@ const RAW_SERVICES_DATA = [
     id: 'spec-4', category: 'specialities',
     title: 'Wreck Diver',
     short_desc: 'Explore underwater wrecks.',
-    long_desc: 'Learn how to safely and effectively dive in wrecks.',
-    banner: 'assets/bg-video.mp4',
+    long_desc: 'Learn how to safely and effectively navigate, map, and explore historic underwater shipwrecks.',
+    video: null,
+    image: scene1,
     highlights: 'Duration: 1–2 days | 4 dives',
     days_min: 2, days_max: 3, min_age: ''
   },
@@ -223,8 +306,9 @@ const RAW_SERVICES_DATA = [
     id: 'spec-5', category: 'specialities',
     title: 'Night Diver',
     short_desc: 'Experience diving at night.',
-    long_desc: 'Use torches, signals, and practice navigation in the dark.',
-    banner: 'assets/bg-video.mp4',
+    long_desc: 'Use torches, signals, and practice navigation in the dark to encounter nocturnal ocean life.',
+    video: vidNightDive,
+    image: c1,
     highlights: 'Duration: 2 days | 3 dives',
     days_min: 2, days_max: 3, min_age: ''
   },
@@ -233,7 +317,8 @@ const RAW_SERVICES_DATA = [
     title: 'Enriched Air Nitrox',
     short_desc: 'Extend your bottom time.',
     long_desc: 'Learn safe use of enriched air nitrox for longer no-decompression limits.',
-    banner: 'assets/bg-video.mp4',
+    video: vidTravelNitrox,
+    image: c2,
     highlights: 'Duration: 1 day | Knowledge + practical session',
     days_min: 1, days_max: 1, min_age: ''
   },
@@ -241,18 +326,21 @@ const RAW_SERVICES_DATA = [
     id: 'spec-7', category: 'specialities',
     title: 'Drift Diver',
     short_desc: 'Go with the flow!',
-    long_desc: 'Learn the techiques to be able to dive in moderate to strong current. Many of the world class diving sites are in areas of high current, so this certificaiton is very useful.',
-    banner: 'assets/bg-video.mp4',
+    long_desc: 'Learn the techniques to be able to dive in moderate to strong currents alongside manta rays and pelagic marine life.',
+    video: vidMantaDrift,
+    image: c3,
     highlights: 'Prerequisites: Open Water Diver',
     days_min: 2, days_max: 2, min_age: ''
   },
-  // 5. Fun Dives
+
+  // 6. Fun Dives
   {
     id: 'fun-1', category: 'fundives',
     title: '1 Dive',
     short_desc: 'A single dive for certified divers.',
     long_desc: 'Explore reefs or walls with a guided single dive.',
-    banner: 'assets/bg-video.mp4',
+    video: vidGallery1,
+    image: c4,
     highlights: 'Certified divers only',
     days_min: '', days_max: '', min_age: ''
   },
@@ -260,8 +348,9 @@ const RAW_SERVICES_DATA = [
     id: 'fun-2', category: 'fundives',
     title: '2 Dives',
     short_desc: 'Two guided dives in one day.',
-    long_desc: 'Perfect for a short trip, explore two dive sites.',
-    banner: 'assets/bg-video.mp4',
+    long_desc: 'Perfect for a short trip, explore two dive sites teeming with schooling pelagics.',
+    video: vidTrevally,
+    image: c5,
     highlights: 'Certified divers only',
     days_min: '', days_max: '', min_age: ''
   },
@@ -270,7 +359,8 @@ const RAW_SERVICES_DATA = [
     title: '4 Dives',
     short_desc: 'Four dives spread across your trip.',
     long_desc: 'Explore multiple sites with this dive package.',
-    banner: 'assets/bg-video.mp4',
+    video: vidSharkPatrol,
+    image: c6,
     highlights: 'Certified divers only',
     days_min: '', days_max: '', min_age: ''
   },
@@ -278,8 +368,9 @@ const RAW_SERVICES_DATA = [
     id: 'fun-6', category: 'fundives',
     title: '6 Dives',
     short_desc: 'Six dives for extended reef exploration.',
-    long_desc: 'Enjoy a multi-day dive experience across different sites.',
-    banner: 'assets/bg-video.mp4',
+    long_desc: 'Enjoy a multi-day dive experience across different sites including whale shark passages.',
+    video: vidWhaleShark,
+    image: c1,
     highlights: 'Certified divers only',
     days_min: '', days_max: '', min_age: ''
   },
@@ -287,8 +378,9 @@ const RAW_SERVICES_DATA = [
     id: 'fun-8', category: 'fundives',
     title: '8 Dives',
     short_desc: 'Eight dives for avid explorers.',
-    long_desc: 'Covers multiple days of diving across varied reefs',
-    banner: 'assets/bg-video.mp4',
+    long_desc: 'Covers multiple days of diving across varied reefs and pinnacles.',
+    video: vidManta3,
+    image: c2,
     highlights: 'Certified divers only',
     days_min: '', days_max: '', min_age: ''
   },
@@ -296,8 +388,9 @@ const RAW_SERVICES_DATA = [
     id: 'fun-10', category: 'fundives',
     title: '10 Dives',
     short_desc: 'Ten dive package for committed divers.',
-    long_desc: 'Perfect balance of cost and adventure.',
-    banner: 'assets/bg-video.mp4',
+    long_desc: 'Perfect balance of cost and adventure across world-class dive sites.',
+    video: vidLobster,
+    image: c3,
     highlights: 'Certified divers only',
     days_min: '', days_max: '', min_age: ''
   },
@@ -305,8 +398,9 @@ const RAW_SERVICES_DATA = [
     id: 'fun-12', category: 'fundives',
     title: '12 Dives',
     short_desc: 'Twelve dives for enthusiasts.',
-    long_desc: 'Extended package covering reefs and walls',
-    banner: 'assets/bg-video.mp4',
+    long_desc: 'Extended package covering reefs, pinnacles, and deep walls.',
+    video: vidTurtleAnna1,
+    image: c4,
     highlights: 'Certified divers only',
     days_min: '', days_max: '', min_age: ''
   },
@@ -315,7 +409,8 @@ const RAW_SERVICES_DATA = [
     title: 'Post 12 (extra 2 dives)',
     short_desc: 'Add on two extra dives.',
     long_desc: 'Flexible add-on to extend your package.',
-    banner: 'assets/bg-video.mp4',
+    video: vidExtendedDives,
+    image: c5,
     highlights: 'Certified divers only',
     days_min: '', days_max: '', min_age: ''
   },
@@ -323,8 +418,9 @@ const RAW_SERVICES_DATA = [
     id: 'fun-night', category: 'fundives',
     title: 'Night Dive',
     short_desc: 'Experience the reef after dark.',
-    long_desc: 'Guided night dive spotting nocturnal marine life.',
-    banner: 'assets/bg-video.mp4',
+    long_desc: 'Guided night dive spotting nocturnal marine life and glowing bioluminescence.',
+    video: vidNightDive,
+    image: c6,
     highlights: 'Prerequisites: Open Water Diver',
     days_min: '', days_max: '', min_age: ''
   },
@@ -332,18 +428,21 @@ const RAW_SERVICES_DATA = [
     id: 'fun-dawn', category: 'fundives',
     title: 'Dawn Dive',
     short_desc: 'Catch the reef at sunrise.',
-    long_desc: 'See marine life during feeding and sunrise light.',
-    banner: 'assets/bg-video.mp4',
+    long_desc: 'See marine life during active morning feeding and sunrise light.',
+    video: vidDawnCruise,
+    image: c1,
     highlights: 'Certified divers only',
     days_min: '', days_max: '', min_age: ''
   },
-  // 6. Combos
+
+  // 7. Combos
   {
     id: 'combo-1', category: 'combos',
     title: 'PADI DSD + Open Water',
     short_desc: 'Start with Discover Scuba Dive then complete Open Water.',
-    long_desc: 'A progressive bundle for beginners to move into certification.',
-    banner: 'assets/bg-video.mp4',
+    long_desc: 'A progressive bundle for beginners to move into full certification.',
+    video: vidItineraryCombo,
+    image: c2,
     highlights: 'Duration: 3–4 days | Includes PADI registration',
     days_min: 3, days_max: 4, min_age: ''
   },
@@ -351,8 +450,9 @@ const RAW_SERVICES_DATA = [
     id: 'combo-2', category: 'combos',
     title: 'PADI OW + Advanced',
     short_desc: 'Bundle Open Water and Advanced courses.',
-    long_desc: 'Go from beginner to advanced diver.',
-    banner: 'assets/bg-video.mp4',
+    long_desc: 'Go from beginner to advanced diver in one comprehensive adventure.',
+    video: vidHeroFast,
+    image: c3,
     highlights: 'Duration: 5–7 days | Max Depth: 30m',
     days_min: 5, days_max: 7, min_age: ''
   },
@@ -361,17 +461,20 @@ const RAW_SERVICES_DATA = [
     title: 'EFR + Rescue Diver',
     short_desc: 'Combine first aid with rescue training.',
     long_desc: 'Learn EFR then apply skills in Rescue Diver.',
-    banner: 'assets/bg-video.mp4',
+    video: vidHero1,
+    image: c4,
     highlights: 'Duration: 4–6 days | Prerequisite: Advanced OpenWater',
     days_min: 4, days_max: 6, min_age: ''
   },
-  // 7. Pro Courses
+
+  // 8. Pro Courses
   {
     id: 'pro-1', category: 'pro',
     title: 'PADI Divemaster',
     short_desc: 'The first professional step.',
     long_desc: 'Learn to supervise dives, assist instructors, and lead certified divers.',
-    banner: 'assets/bg-video.mp4',
+    video: vidHeroOptimized,
+    image: c5,
     highlights: 'Duration: 20–25 days | Excludes crewpak & PADI fee',
     days_min: 20, days_max: 25, min_age: ''
   },
@@ -380,7 +483,8 @@ const RAW_SERVICES_DATA = [
     title: 'EFR + Rescue + Divemaster',
     short_desc: 'Complete pro-level bundle.',
     long_desc: 'Progress from EFR to Rescue Diver, then Divemaster.',
-    banner: 'assets/bg-video.mp4',
+    video: vidTurtleFast,
+    image: c6,
     highlights: 'Duration: 24–31 days | Excludes crewpak & PADI fees',
     days_min: 24, days_max: 31, min_age: ''
   },
@@ -389,7 +493,8 @@ const RAW_SERVICES_DATA = [
     title: 'EFR + Rescue + DM (prereqs)',
     short_desc: 'Accelerated path with prerequisites.',
     long_desc: 'Skip prior modules and move into Divemaster.',
-    banner: 'assets/bg-video.mp4',
+    video: vidSunsetIsland,
+    image: c1,
     highlights: 'Duration: varies | Excludes crewpak & PADI fees',
     days_min: '', days_max: '', min_age: ''
   },
@@ -398,17 +503,20 @@ const RAW_SERVICES_DATA = [
     title: 'Zero to Hero (OW to DM)',
     short_desc: 'Pathway from beginner to Divemaster.',
     long_desc: 'Start at OW and continue to Divemaster certification.',
-    banner: 'assets/bg-video.mp4',
+    video: vidPanoramic1,
+    image: c2,
     highlights: 'Duration: 90–120 days | Permit included | Food & stay extra',
     days_min: 90, days_max: 120, min_age: ''
   },
-  // 8. Freediving
+
+  // 9. Freediving
   {
     id: 'free-1', category: 'freediving',
     title: 'PADI Basic Freediver',
     short_desc: 'Learn the basics of breath-hold diving.',
     long_desc: 'Focus on static apnea, dynamic apnea, and safety in confined water.',
-    banner: 'assets/bg-video.mp4',
+    video: vidFreediving1,
+    image: c3,
     highlights: 'Duration: 1–2 days | Confined water + theory',
     days_min: 1, days_max: 2, min_age: ''
   },
@@ -417,17 +525,20 @@ const RAW_SERVICES_DATA = [
     title: 'PADI Freediver',
     short_desc: 'Build strong freediving skills.',
     long_desc: 'Expand breath-hold time and depth techniques in open water.',
-    banner: 'assets/bg-video.mp4',
+    video: vidFreediving3,
+    image: c4,
     highlights: 'Duration: 2–3 days | Includes confined + open water',
     days_min: 2, days_max: 3, min_age: ''
   },
-  // 9. Surfing
+
+  // 10. Surfing
   {
     id: 'surf-1', category: 'surfing', categories: ['surfing', 'programs'],
     title: 'Discover Surfing',
     short_desc: 'Introductory surfboard lesson for beginners.',
     long_desc: 'Learn pop-up techniques, wave timing, board balance, and safety in shallow ocean breaks with an experienced instructor.',
-    banner: 'assets/bg-video.mp4',
+    video: vidSurfing,
+    image: c5,
     highlights: 'Duration: 2 hrs | Includes surfboard, rashguard & instructor',
     days_min: '', days_max: '', min_age: 8
   },
@@ -436,7 +547,8 @@ const RAW_SERVICES_DATA = [
     title: 'Surf Safari & Reef Break Trip',
     short_desc: 'Guided surfing session at premier Andaman surf spots.',
     long_desc: 'Catch uncrowded tropical waves with guided boat transport, spot breakdown, and safety watch.',
-    banner: 'assets/bg-video.mp4',
+    video: null,
+    image: c4,
     highlights: 'Duration: Half Day | Includes boat trip & equipment',
     days_min: '', days_max: '', min_age: 12
   },
@@ -445,13 +557,11 @@ const RAW_SERVICES_DATA = [
     title: '3-Day Surf Academy Course',
     short_desc: 'Master wave reading, paddling, and maneuvers.',
     long_desc: 'Comprehensive 3-day surfing course covering ocean currents, line-up positioning, turns, and riding green waves.',
-    banner: 'assets/bg-video.mp4',
+    video: null,
+    image: c5,
     highlights: 'Duration: 3 Days | Video analysis & surf log included',
     days_min: 3, days_max: 3, min_age: 10
   }
 ]
 
-export const SERVICES_DATA = RAW_SERVICES_DATA.map((item, index) => ({
-  ...item,
-  image: CAROUSEL_IMAGES[index % CAROUSEL_IMAGES.length]
-}))
+export default SERVICES_DATA

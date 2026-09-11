@@ -92,7 +92,7 @@ export default function Footer() {
           <h3 className="font-heading text-sm font-bold uppercase tracking-widest text-accent">
             Contact
           </h3>
-          <ul className="mt-4 flex flex-1 flex-col justify-start space-y-4 text-sm text-white/80">
+          <ul className="mt-4 flex flex-col justify-start space-y-3 text-sm text-white/80">
             <li>
               <a href="tel:+918971001010" className="transition duration-hover hover:text-accent">
                 +91 89710 01010
@@ -107,25 +107,28 @@ export default function Footer() {
               </a>
             </li>
           </ul>
-        </div>
-      </div>
 
-      <div className="border-t border-white/10">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 py-6 sm:flex-row sm:px-6 lg:px-8 text-xs text-white/60">
-          <div className="flex gap-4 mb-2 sm:mb-0">
-            {SOCIALS.map(s => (
+          {/* Social Media Icons under Contact Column */}
+          <div className="mt-6 flex flex-wrap items-center gap-2.5">
+            {SOCIALS.map((s) => (
               <a
                 key={s.label}
                 href={s.to}
                 target={s.to.startsWith('http') ? '_blank' : '_self'}
                 rel={s.to.startsWith('http') ? 'noopener noreferrer' : undefined}
-                className="text-white/60 hover:text-accent transition"
+                className="w-9 h-9 rounded-full bg-white/10 hover:!bg-[#FFCD00] text-white/80 hover:!text-[#001e3d] flex items-center justify-center transition-all duration-200 border border-white/15 hover:!border-[#FFCD00] shadow-sm"
                 aria-label={s.label}
               >
                 {s.icon}
               </a>
             ))}
           </div>
+        </div>
+      </div>
+
+      {/* Bottom Copyright Bar without social icons */}
+      <div className="border-t border-white/10">
+        <div className="mx-auto flex max-w-7xl items-center justify-center px-4 py-6 sm:px-6 lg:px-8 text-xs text-white/60 text-center">
           <p>© {new Date().getFullYear()} TheDiveVillage. A Brand of CAF Sourcing.</p>
         </div>
       </div>

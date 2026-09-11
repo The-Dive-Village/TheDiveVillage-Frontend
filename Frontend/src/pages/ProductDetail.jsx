@@ -9,7 +9,6 @@ import { formatCurrency } from '../utils/formatCurrency'
 import Button from '../components/Button'
 import Product3DViewer from '../components/Product3DViewer'
 import SEOHead from '../components/SEOHead'
-import CustomerReviews from '../components/CustomerReviews'
 
 export default function ProductDetail() {
   const { id } = useParams()
@@ -223,7 +222,7 @@ export default function ProductDetail() {
               {/* Main Product Card Media Display */}
               <div className="flex-1 w-full rounded-[28px] overflow-hidden bg-white border border-navy/10 aspect-square sm:aspect-[4/4] max-h-[460px] relative shadow-card group">
                 {activeMedia?.type === 'glb' ? (
-                  <Product3DViewer src={activeMedia.src} alt={product.title} />
+                  <Product3DViewer src={activeMedia.src} alt={product.title} productId={product.id} />
                 ) : activeMedia?.type === 'video' ? (
                   <>
                     <video
@@ -506,9 +505,6 @@ export default function ProductDetail() {
             </div>
           )}
         </div>
-
-        {/* Customer Reviews & Live Water Testing Showcase */}
-        <CustomerReviews className="!px-0 !py-0 mb-20" />
 
         {/* You May Also Like / Recommendations */}
         <div>

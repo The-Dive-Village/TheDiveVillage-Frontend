@@ -3,12 +3,15 @@ import { Link } from 'react-router'
 import { motion, useReducedMotion } from 'framer-motion'
 import PhoneInput from 'react-phone-number-input'
 import 'react-phone-number-input/style.css'
-import { IMAGES, CAROUSEL_IMAGES } from '../utils/images'
+import { IMAGES, CAROUSEL_IMAGES, PANEL_IMAGES } from '../utils/images'
 import bookVideo from '../assets/Book(2).mp4'
+import jellyfishVideo from '../assets/jelly fish.mp4'
+import useNightDive from '../hooks/useNightDive'
 import InteractiveVideoSphere from '../components/InteractiveVideoSphere'
 import SEOHead from '../components/SEOHead'
 
 export default function Contact() {
+  const isNightDive = useNightDive()
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -71,19 +74,36 @@ export default function Contact() {
         canonicalUrl="https://thedivevillage.com/contact"
       />
 
-      {/* 1. HEADER VIDEO HERO (COURSE-PAGE STYLE) */}
+      {/* 1. HEADER VIDEO HERO (DYNAMIC NIGHT DIVE JELLYFISH VIDEO) */}
       <section className="relative h-[75vh] min-h-[540px] w-full flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 z-0">
+        <div 
+          className="absolute inset-0 z-0"
+          style={{
+            maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 55%, rgba(0,0,0,0) 100%)',
+            WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 55%, rgba(0,0,0,0) 100%)'
+          }}
+        >
           <video
-            src={bookVideo}
+            key={isNightDive ? 'night-jellyfish' : 'day-book'}
+            src={isNightDive ? jellyfishVideo : bookVideo}
             autoPlay
             loop
             muted
             playsInline
-            className="w-full h-full object-cover"
+            onPlay={(e) => { e.currentTarget.playbackRate = 0.7 }}
+            className="w-full h-full object-cover transition-opacity duration-700"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#001428]/60 via-[#001428]/40 to-[#FAFAFA]"></div>
+          <div className={`absolute inset-0 bg-gradient-to-b from-[#001428]/60 via-[#001428]/35 ${isNightDive ? 'to-[#030a12]' : 'to-[#FAFAFA]'}`}></div>
         </div>
+
+        {/* Bottom Smooth Dissolve & Merge Layer */}
+        <div 
+          className={`absolute bottom-0 inset-x-0 h-44 sm:h-64 pointer-events-none z-[5] transition-colors duration-500 ${
+            isNightDive 
+              ? 'bg-gradient-to-t from-[#030a12] via-[#030a12]/85 to-transparent' 
+              : 'bg-gradient-to-t from-[#FAFAFA] via-[#FAFAFA]/90 to-transparent'
+          }`} 
+        />
 
         <div className="relative z-10 flex flex-col items-center text-center px-4 max-w-4xl mx-auto pt-16">
           <motion.span
@@ -173,7 +193,7 @@ export default function Contact() {
                   <label className="mb-3 block text-xs font-bold text-navy/70">Phone Number</label>
                   <PhoneInput
                     defaultCountry="IN"
-                    placeholder="89710 01010"
+                    placeholder="Phone number"
                     value={formData.phone}
                     onChange={(val) => setFormData((prev) => ({ ...prev, phone: val }))}
                     className="w-full rounded-2xl bg-[#F0F2F5] px-5 py-4 text-sm font-bold text-navy outline-none focus-within:ring-2 focus-within:ring-accent/50 transition [&_.PhoneInputCountryIcon]:rounded-sm [&_.PhoneInputInput]:bg-transparent [&_.PhoneInputInput]:outline-none [&_.PhoneInputInput]:border-none [&_.PhoneInputCountrySelect]:outline-none [&_.PhoneInputCountryIcon--border]:border-none [&_.PhoneInputInput]:ml-3"
@@ -276,7 +296,7 @@ export default function Contact() {
         </div>
 
         {/* Bottom CTA Banner */}
-        <div className="mt-24 sm:mt-32 rounded-[40px] bg-[#001E36] text-white p-8 sm:p-12 lg:p-16 relative overflow-hidden shadow-2xl border border-white/10">
+        <div className="mt-24 sm:mt-32 rounded-[40px] bg-[#003865] text-white p-8 sm:p-12 lg:p-16 relative overflow-hidden shadow-2xl border border-white/15">
           <div className="absolute -right-20 -top-20 w-96 h-96 bg-accent/15 rounded-full blur-3xl pointer-events-none" />
           <div className="absolute -left-20 -bottom-20 w-80 h-80 bg-[#00AEC7]/15 rounded-full blur-3xl pointer-events-none" />
 
@@ -286,9 +306,9 @@ export default function Contact() {
                 Start Now
               </span>
               <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight tracking-tight mb-4">
-                Discover Your Next <span className="font-serif italic font-normal text-accent"> <br /> Ocean Escape</span>
+                Discover Your Next <span className="font-heading italic font-bold text-accent"><br />Ocean Escape</span>
               </h2>
-              <p className="text-base sm:text-lg font-medium text-white/80 leading-relaxed max-w-lg mb-8">
+              <p className="text-base sm:text-lg font-medium text-white/85 leading-relaxed max-w-lg mb-8">
                 Ready to take the plunge? Plan your trip in minutes and enjoy every moment of your dive adventure with certified PADI experts.
               </p>
 
@@ -314,11 +334,11 @@ export default function Contact() {
 
             <div className="lg:col-span-5 h-72 sm:h-80 lg:h-96 w-full rounded-[32px] overflow-hidden shadow-float relative group border border-white/15">
               <img
-                src={CAROUSEL_IMAGES[3]}
+                src={PANEL_IMAGES[6]}
                 alt="Ocean Escape"
                 className="w-full h-full object-cover transition duration-700 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-navy/60 via-transparent to-transparent pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#003865]/60 via-transparent to-transparent pointer-events-none" />
 
             </div>
           </div>

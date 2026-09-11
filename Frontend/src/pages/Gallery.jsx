@@ -154,34 +154,6 @@ export default function Gallery() {
                 {/* Hover Dark Gradient */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-300" />
                 
-                {/* Top Media Type & Reel Badge */}
-                <div className="absolute top-3.5 left-3.5 flex items-center gap-1.5 flex-wrap">
-                  <span className="rounded-full bg-black/50 backdrop-blur-md px-3 py-1 text-[11px] font-bold text-white shadow-sm flex items-center gap-1.5">
-                    {item.type === 'video' ? (
-                      <>
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                          <polygon points="5 3 19 12 5 21 5 3" />
-                        </svg>
-                        Video
-                      </>
-                    ) : (
-                      <>
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                          <circle cx="8.5" cy="8.5" r="1.5"/>
-                          <polyline points="21 15 16 10 5 21"/>
-                        </svg>
-                        Photo
-                      </>
-                    )}
-                  </span>
-                  {item.reelName && (
-                    <span className="rounded-full bg-black/50 backdrop-blur-md px-2.5 py-1 text-[10px] font-bold text-[#FFCD00] shadow-sm flex items-center gap-1 border border-white/10">
-                      🎬 {item.reelName.split('•')[1]?.trim() || item.reelName}
-                    </span>
-                  )}
-                </div>
-
                 {/* Expand Icon on Hover */}
                 <div className="absolute top-3.5 right-3.5 h-9 w-9 rounded-full bg-white/25 backdrop-blur-md flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition duration-300 hover:scale-110 shadow-md">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -190,28 +162,13 @@ export default function Gallery() {
                 </div>
               </div>
 
-              {/* Information Panel Below Media */}
-              <div className="p-5 flex flex-col flex-grow justify-between gap-3 bg-white">
-                <div>
-                  <div className="flex items-start justify-between gap-2">
-                    <h3 className="font-heading text-lg font-bold text-navy group-hover:text-[#008ba3] transition duration-200 line-clamp-1">
-                      {item.title}
-                    </h3>
-                  </div>
-                  {item.species && (
-                    <p className="text-xs font-semibold italic text-[#007A87] mt-1 tracking-wide line-clamp-1">
-                      {item.species}
-                    </p>
-                  )}
-                  {item.reelName && (
-                    <p className="text-[11px] font-bold text-navy/60 mt-1.5 flex items-center gap-1 tracking-tight">
-                      <span className="text-[#FF6106]">▶</span> {item.reelName}
-                    </p>
-                  )}
-                </div>
-
+              {/* Information Panel Below Media - ONLY Title and Location */}
+              <div className="p-5 flex flex-col flex-grow justify-between gap-1.5 bg-white">
+                <h3 className="font-heading text-lg font-bold text-navy group-hover:text-accent transition duration-200 line-clamp-1">
+                  {item.title}
+                </h3>
                 {item.location && (
-                  <div className="flex items-center gap-1.5 text-xs font-medium text-navy/70 pt-2.5 border-t border-navy/5">
+                  <div className="flex items-center gap-1.5 text-xs font-semibold text-navy/70">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-[#FF6106] shrink-0">
                       <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
                       <circle cx="12" cy="10" r="3" />
@@ -348,29 +305,12 @@ export default function Gallery() {
                 )}
               </div>
 
-              {/* Lightbox Footer Bar with full details */}
+              {/* Lightbox Footer Bar - ONLY Title and Location */}
               <div className="p-5 sm:p-6 bg-[#001830] border-t border-white/10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div className="flex flex-col gap-1 max-w-2xl">
-                  <div className="flex items-center gap-3 flex-wrap">
-                    <h2 className="text-lg sm:text-2xl font-bold font-heading text-white">
-                      {currentItem.title}
-                    </h2>
-                    {currentItem.reelName && (
-                      <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#FFCD00]/20 text-[#FFCD00] border border-[#FFCD00]/30">
-                        🎬 {currentItem.reelName}
-                      </span>
-                    )}
-                    {currentItem.category && (
-                      <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-400/30">
-                        {currentItem.category}
-                      </span>
-                    )}
-                  </div>
-                  {currentItem.species && (
-                    <p className="text-xs sm:text-sm font-semibold italic text-[#00AEC7]">
-                      Species: {currentItem.species}
-                    </p>
-                  )}
+                  <h2 className="text-lg sm:text-2xl font-bold font-heading text-white">
+                    {currentItem.title}
+                  </h2>
                   {currentItem.location && (
                     <p className="text-xs sm:text-sm text-white/80 flex items-center gap-1.5 mt-0.5">
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-[#FF6106] shrink-0">

@@ -5,6 +5,21 @@ import c4 from '../assets/Carosel/WhatsApp Image 2026-07-31 at 9.36.43 AM (2).jp
 import c5 from '../assets/Carosel/WhatsApp Image 2026-07-31 at 9.36.43 AM.jpeg'
 import c6 from '../assets/Carosel/WhatsApp Image 2026-07-31 at 9.36.44 AM.jpeg'
 
+import p1 from '../assets/New folder/Gallery/panel/Life1.JPG'
+import p2 from '../assets/New folder/Gallery/panel/Life2.JPG'
+import p4 from '../assets/New folder/Gallery/panel/Life4.JPG'
+import p14 from '../assets/New folder/Gallery/panel/Life14.JPG'
+import p15 from '../assets/New folder/Gallery/panel/Life 15.JPG'
+import p21 from '../assets/New folder/Gallery/panel/Life21.JPG'
+import p22 from '../assets/New folder/Gallery/panel/Life22.JPG'
+import p23 from '../assets/New folder/Gallery/panel/Life23.JPG'
+import p40 from '../assets/New folder/Gallery/panel/Life40.JPG'
+import p41 from '../assets/New folder/Gallery/panel/Life41.JPG'
+import p59 from '../assets/New folder/Gallery/panel/LIfe59.JPG'
+import p63 from '../assets/New folder/Gallery/panel/Live63.JPG'
+
+export const PANEL_IMAGES = [p1, p2, p4, p14, p15, p21, p22, p23, p40, p41, p59, p63]
+
 export const CAROUSEL_IMAGES = [c1, c2, c3, c4, c5, c6]
 
 /** Verified Unsplash diving photography — stable CDN URLs */

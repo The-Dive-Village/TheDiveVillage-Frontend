@@ -1,452 +1,634 @@
-// Imports from Carousel and New Folder
-import c1 from '../assets/Carosel/WhatsApp Image 2026-07-31 at 9.36.42 AM (1).jpeg'
-import c2 from '../assets/Carosel/WhatsApp Image 2026-07-31 at 9.36.42 AM.jpeg'
-import c3 from '../assets/Carosel/WhatsApp Image 2026-07-31 at 9.36.43 AM (1).jpeg'
-import c4 from '../assets/Carosel/WhatsApp Image 2026-07-31 at 9.36.43 AM (2).jpeg'
-import c5 from '../assets/Carosel/WhatsApp Image 2026-07-31 at 9.36.43 AM.jpeg'
-import c6 from '../assets/Carosel/WhatsApp Image 2026-07-31 at 9.36.44 AM.jpeg'
+// Media assets strictly imported from src/assets/New folder/Gallery
+import vidCloseup1 from '../assets/New folder/Gallery/Closeup1.mp4'
+import vidCloseup3 from '../assets/New folder/Gallery/closeup3.mp4'
+import vidDive from '../assets/New folder/Gallery/Dive.MP4'
+import vidDji0007 from '../assets/New folder/Gallery/DJI_20260525102811_0007_D.MP4'
+import vidDji0011 from '../assets/New folder/Gallery/DJI_20260525104139_0011_D.MP4'
+import vidDji0017 from '../assets/New folder/Gallery/DJI_20260525123656_0017_D.MP4'
+import vidDji0018 from '../assets/New folder/Gallery/DJI_20260525124204_0018_D.MP4'
+import vidDjiMimo1 from '../assets/New folder/Gallery/dji_mimo_20260124_112020_0_1769300692742_video.mp4'
+import vidDjiMimo2 from '../assets/New folder/Gallery/dji_mimo_20260204_084830_0_1770187393265_video.mp4'
+import vidDjiMimo3 from '../assets/New folder/Gallery/dji_mimo_20260204_084858_0_1770187391850_video.mp4'
+import vidDjiMimo4 from '../assets/New folder/Gallery/dji_mimo_20260220_140750_0_1771571076972_video.mp4'
+import vidLobster from '../assets/New folder/Gallery/lobster.mp4'
+import vidManta1 from '../assets/New folder/Gallery/manta1.mp4'
+import vidManta3 from '../assets/New folder/Gallery/manta3.mp4'
+import vidSurfing from '../assets/New folder/Gallery/surfing.mp4'
+import vidTravel from '../assets/New folder/Gallery/Travel.mp4'
+import life1 from '../assets/New folder/Gallery/Life1.JPG'
+import life2 from '../assets/New folder/Gallery/Life2.JPG'
+import life3 from '../assets/New folder/Gallery/Life3.JPG'
+import life4 from '../assets/New folder/Gallery/Life4.JPG'
+import life5 from '../assets/New folder/Gallery/Life5.JPG'
+import life6 from '../assets/New folder/Gallery/Life6.JPG'
+import life7 from '../assets/New folder/Gallery/Life7.JPG'
+import life8 from '../assets/New folder/Gallery/Life8.JPG'
+import life9 from '../assets/New folder/Gallery/Life9.JPG'
+import life10 from '../assets/New folder/Gallery/Life10.JPG'
+import life11 from '../assets/New folder/Gallery/Life11.JPG'
+import life12 from '../assets/New folder/Gallery/Life12.JPG'
+import life13 from '../assets/New folder/Gallery/Life13.JPG'
+import life14 from '../assets/New folder/Gallery/Life14.JPG'
+import life15 from '../assets/New folder/Gallery/Life 15.JPG'
+import life16 from '../assets/New folder/Gallery/Life16.JPG'
+import life17 from '../assets/New folder/Gallery/Life17.JPG'
+import life18 from '../assets/New folder/Gallery/Life18.JPG'
+import life20 from '../assets/New folder/Gallery/Life20.JPG'
+import life21 from '../assets/New folder/Gallery/Life21.JPG'
+import life22 from '../assets/New folder/Gallery/Life22.JPG'
+import life23 from '../assets/New folder/Gallery/Life23.JPG'
+import life24 from '../assets/New folder/Gallery/Life24.JPG'
+import life25 from '../assets/New folder/Gallery/Life25.JPG'
+import life26 from '../assets/New folder/Gallery/Life26.JPG'
+import life28 from '../assets/New folder/Gallery/Life28.JPG'
+import life29 from '../assets/New folder/Gallery/Life29.JPG'
+import life30 from '../assets/New folder/Gallery/Life30.JPG'
+import life31 from '../assets/New folder/Gallery/Life31.JPG'
+import life32 from '../assets/New folder/Gallery/Life32.JPG'
+import life33 from '../assets/New folder/Gallery/Life33.JPG'
+import life34 from '../assets/New folder/Gallery/Life34.JPG'
+import life35 from '../assets/New folder/Gallery/Life35.JPG'
+import life36 from '../assets/New folder/Gallery/Life36.JPG'
+import life37 from '../assets/New folder/Gallery/Life37.JPG'
+import life38 from '../assets/New folder/Gallery/Life38.JPG'
+import life39 from '../assets/New folder/Gallery/Life39.JPG'
+import life40 from '../assets/New folder/Gallery/Life40.JPG'
+import life41 from '../assets/New folder/Gallery/Life41.JPG'
+import life50 from '../assets/New folder/Gallery/Life50.JPG'
+import life51 from '../assets/New folder/Gallery/Life51.JPG'
+import life52 from '../assets/New folder/Gallery/Life52.JPG'
+import life53 from '../assets/New folder/Gallery/Life 53.JPG'
+import life54 from '../assets/New folder/Gallery/Life54.JPG'
+import life55 from '../assets/New folder/Gallery/Life55.JPG'
+import life56 from '../assets/New folder/Gallery/Life56.JPG'
+import life57 from '../assets/New folder/Gallery/Life57.JPG'
+import life58 from '../assets/New folder/Gallery/Life58.JPG'
+import life59 from '../assets/New folder/Gallery/LIfe59.JPG'
+import life60 from '../assets/New folder/Gallery/Life60.JPG'
+import life61 from '../assets/New folder/Gallery/Life61.JPG'
+import live63 from '../assets/New folder/Gallery/Live63.JPG'
+import life74 from '../assets/New folder/Gallery/Life74.JPG'
 
-// Images from New folder
-import imgGallery1 from '../assets/New folder/Galleryimg1.jpg'
-import imgStay from '../assets/New folder/Stay.jpg'
-import imgFood from '../assets/New folder/food.jpg'
-import imgMerch1 from '../assets/New folder/merch1.jpg'
-import imgMerch2 from '../assets/New folder/merch2.jpg'
-import imgMerch3 from '../assets/New folder/merch3.jpg'
-import imgMerch4 from '../assets/New folder/merch4.jpg'
-
-// Videos from New folder
-import vid20260630 from '../assets/New folder/20260630_153650_005.mp4'
-import vid20260707_1 from '../assets/New folder/20260707_165729_460.mp4'
-import vid20260707_2 from '../assets/New folder/20260707_170454_824.mp4'
-import vidDJI_0007 from '../assets/New folder/DJI_20260525102811_0007_D.MP4'
-import vidDJI_0011 from '../assets/New folder/DJI_20260525104139_0011_D.MP4'
-import vidDJI_0017 from '../assets/New folder/DJI_20260525123656_0017_D.MP4'
-import vidDJI_0018 from '../assets/New folder/DJI_20260525124204_0018_D.MP4'
-import vidDive from '../assets/New folder/Dive.MP4'
-import vidFreeDiving1 from '../assets/New folder/Free Diving 1.mov'
-import vidGX8833 from '../assets/New folder/GX018833.mp4'
-import vidGX8841 from '../assets/New folder/GX018841.MP4'
-import vidItinerary from '../assets/New folder/Itinerary.mp4'
-import vidTravel from '../assets/New folder/Travel.mp4'
-import vidTurtleAnna1 from '../assets/New folder/Turtle Anna(1).mp4'
-import vidTurtleAnna from '../assets/New folder/Turtle Anna.mp4'
-import vidTurtleFlyinnn from '../assets/New folder/Turtle Flyinnn.mov'
-import vidDjiMimo1 from '../assets/New folder/dji_mimo_20260124_112020_0_1769300692742_video.mp4'
-import vidDjiMimo2 from '../assets/New folder/dji_mimo_20260204_084830_0_1770187393265_video.mp4'
-import vidDjiMimo3 from '../assets/New folder/dji_mimo_20260204_084858_0_1770187391850_video.mp4'
-import vidDjiMimo4 from '../assets/New folder/dji_mimo_20260220_140750_0_1771571076972_video.mp4'
-import vidFreeDiving2 from '../assets/New folder/free diving .mp4'
-import vidFreeDiving3 from '../assets/New folder/free diving 3.mp4'
-import vidGallery1 from '../assets/New folder/gallery1.mp4'
-import vidMerch5 from '../assets/New folder/merch 5.mp4'
-import vidSurfing from '../assets/New folder/surfing.mp4'
+export const GALLERY_CATEGORIES = [
+  { key: 'all', label: 'All Chronicles' },
+  { key: 'marine', label: 'Marine Life' },
+  { key: 'scuba', label: 'Scuba Diving' },
+  { key: 'activity', label: 'Ocean Activities' },
+  { key: 'videos', label: 'Motion Reels' },
+  { key: 'photos', label: 'High-Res Stills' },
+]
 
 export const GALLERY_ITEMS = [
-  // --- Marine Encounters & Creatures ---
   {
-    id: 'vid-turtle-anna-1',
+    id: 'gallery-1',
     type: 'video',
-    src: vidTurtleAnna1,
-    title: 'Green Sea Turtle Encounter',
-    species: 'Chelonia mydas',
-    reelName: 'Reel #01 • TurtleGlide_Ep1',
-    location: 'Havelock Island, Andaman & Nicobar',
+    src: vidCloseup1,
+    title: 'Macro Coral Polyps and Feather Dusters',
+    location: 'Havelock Island, Andaman',
     category: 'marine'
   },
   {
-    id: 'vid-turtle-anna',
+    id: 'gallery-2',
     type: 'video',
-    src: vidTurtleAnna,
-    title: 'Hawksbill Sea Turtle',
-    species: 'Eretmochelys imbricata',
-    reelName: 'Reel #02 • HawksbillEncounter',
-    location: 'Neil Island, Andaman & Nicobar',
+    src: vidCloseup3,
+    title: 'Nudibranch and Pygmy Seahorse Macro',
+    location: 'Neil Island, Andaman',
     category: 'marine'
   },
   {
-    id: 'vid-turtle-flyinnn',
+    id: 'gallery-3',
     type: 'video',
-    src: vidTurtleFlyinnn,
-    title: 'Gliding Sea Turtle on Coral Ridge',
-    species: 'Chelonia mydas (Green Turtle)',
-    reelName: 'Reel #03 • GlidingSeaTurtle',
-    location: 'South Button Reef, Andamans',
-    category: 'marine'
+    src: vidDive,
+    title: 'Scuba Descent and Wall Exploration',
+    location: 'Dixon\'s Pinnacle, Havelock',
+    category: 'scuba'
   },
   {
-    id: 'vid-dji-mimo2',
+    id: 'gallery-4',
+    type: 'video',
+    src: vidDji0007,
+    title: 'Lagoon Aerial and Dive Boat Cruising',
+    location: 'Radhanagar Coast, Andaman',
+    category: 'activity'
+  },
+  {
+    id: 'gallery-5',
+    type: 'video',
+    src: vidDji0011,
+    title: 'Coral Atoll Aerial Survey',
+    location: 'Elephant Beach Reef, Havelock',
+    category: 'activity'
+  },
+  {
+    id: 'gallery-6',
+    type: 'video',
+    src: vidDji0017,
+    title: 'Tropical Coastline and Dive Village View',
+    location: 'South Button Island Sanctuary',
+    category: 'activity'
+  },
+  {
+    id: 'gallery-7',
+    type: 'video',
+    src: vidDji0018,
+    title: 'Outer Reef Aerial Vista',
+    location: 'Barren Island Marine Park',
+    category: 'activity'
+  },
+  {
+    id: 'gallery-8',
+    type: 'video',
+    src: vidDjiMimo1,
+    title: 'Scuba Diver Reef Navigation',
+    location: 'Minerva Ledge, Havelock',
+    category: 'scuba'
+  },
+  {
+    id: 'gallery-9',
     type: 'video',
     src: vidDjiMimo2,
-    title: 'Oceanic Whale Shark Encounter',
-    species: 'Rhincodon typus',
-    reelName: 'Reel #04 • WhaleSharkSanctuary',
-    location: 'Netrani Island Marine Sanctuary',
+    title: 'Whale Shark Oceanic Encounter',
+    location: 'Netrani Island Sanctuary',
     category: 'marine'
   },
   {
-    id: 'vid-dji-mimo3',
+    id: 'gallery-10',
     type: 'video',
     src: vidDjiMimo3,
     title: 'Reef Manta Ray Oceanic Glide',
-    species: 'Mobula alfredi',
-    reelName: 'Reel #05 • MantaRayFlight',
-    location: "Dixon's Pinnacle, Havelock",
+    location: 'Dixon\'s Pinnacle, Havelock',
     category: 'marine'
   },
   {
-    id: 'vid-dji-mimo4',
+    id: 'gallery-11',
     type: 'video',
     src: vidDjiMimo4,
-    title: 'Clown Anemonefish in Sea Anemone',
-    species: 'Amphiprion ocellaris & Heteractis magnifica',
-    reelName: 'Reel #06 • ClownfishAnemoneHome',
-    location: 'Turtle Bay, Andamans',
+    title: 'Schooling Barracuda Vortex',
+    location: 'The Wall, Neil Island',
     category: 'marine'
   },
   {
-    id: 'vid-dji-0017',
+    id: 'gallery-12',
     type: 'video',
-    src: vidDJI_0017,
-    title: 'Schooling Giant Trevally & Jackfish',
-    species: 'Caranx ignobilis',
-    reelName: 'Reel #07 • SchoolingTrevally',
-    location: 'Netrani Island, Karnataka',
+    src: vidLobster,
+    title: 'Spiny Reef Lobster in Coral Cave',
+    location: 'Lighthouse Reef, Havelock',
     category: 'marine'
   },
   {
-    id: 'vid-dji-0018',
+    id: 'gallery-13',
     type: 'video',
-    src: vidDJI_0018,
-    title: 'Blacktip Reef Shark Coastal Patrol',
-    species: 'Carcharhinus melanopterus',
-    reelName: 'Reel #08 • ReefSharkPatrol',
-    location: 'Elephant Beach, Andamans',
+    src: vidManta1,
+    title: 'Giant Oceanic Manta Ray Flight',
+    location: 'Manta Point, Nusa Penida',
     category: 'marine'
   },
   {
-    id: 'vid-dji-mimo1',
+    id: 'gallery-14',
     type: 'video',
-    src: vidDjiMimo1,
-    title: 'Vibrant Hard Coral Pinnacle',
-    species: 'Porites lutea & Pocillopora damicornis',
-    reelName: 'Reel #09 • CoralPinnacleExpedition',
-    location: 'Lighthouse Point, Andamans',
+    src: vidManta3,
+    title: 'Manta Ray Cleaning Station Glide',
+    location: 'Crystal Bay, Bali',
     category: 'marine'
   },
-
-  // --- Scuba Diving Expeditions ---
   {
-    id: 'vid-dive',
-    type: 'video',
-    src: vidDive,
-    title: 'Coral Wall Exploration & Divers',
-    species: 'Anthozoa Reef Biome & Divers',
-    reelName: 'Reel #10 • CoralWallExploration',
-    location: 'Netrani Island, Karnataka',
-    category: 'scuba'
-  },
-  {
-    id: 'vid-gx8841',
-    type: 'video',
-    src: vidGX8841,
-    title: 'Deep Volcanic Reef Scuba Team',
-    species: 'Tropical Coral Ecosystem',
-    reelName: 'Reel #11 • VolcanicBarrenIsland',
-    location: 'Barren Island, Andamans',
-    category: 'scuba'
-  },
-  {
-    id: 'vid-gx8833',
-    type: 'video',
-    src: vidGX8833,
-    title: 'Sub-surface Coral Formations',
-    species: 'Goniopora & Montipora Corals',
-    reelName: 'Reel #12 • SubSurfaceCorals',
-    location: 'The Wall, Netrani',
-    category: 'scuba'
-  },
-  {
-    id: 'img-gallery1',
-    type: 'image',
-    src: imgGallery1,
-    title: 'Staghorn Coral Reef Discovery',
-    species: 'Acropora cervicornis (Staghorn Coral)',
-    reelName: 'Reel #13 • StaghornDiscovery',
-    location: 'Minicoy Reef, Lakshadweep',
-    category: 'scuba'
-  },
-  {
-    id: 'img-c1',
-    type: 'image',
-    src: c1,
-    title: 'Scuba Explorer at Coral Garden',
-    species: 'Acropora millepora & Tropical Reef Fish',
-    reelName: 'Reel #14 • CoralGardenDrift',
-    location: 'Havelock Island, Andamans',
-    category: 'scuba'
-  },
-  {
-    id: 'img-c3',
-    type: 'image',
-    src: c3,
-    title: 'Deep Wall Scuba Descent',
-    species: 'Gorgonian Sea Fan (Alcyonacea)',
-    reelName: 'Reel #15 • DeepWallDescent',
-    location: 'South Button Island, Andamans',
-    category: 'scuba'
-  },
-  {
-    id: 'img-c6',
-    type: 'image',
-    src: c6,
-    title: 'PADI Open Water Dive Training',
-    species: 'Tropical Marine Coral Reef',
-    reelName: 'Reel #16 • PADICommunityTraining',
-    location: 'Netrani Island, Karnataka',
-    category: 'scuba'
-  },
-
-  // --- Freediving & Ocean Sessions ---
-  {
-    id: 'vid-freediving-1',
-    type: 'video',
-    src: vidFreeDiving1,
-    title: 'Blue Water Freediver Descent',
-    species: 'Homo sapiens & Pelagic Marine Zone',
-    reelName: 'Reel #17 • BlueWaterFreediveDescent',
-    location: 'Minicoy Island, Lakshadweep',
-    category: 'freediving'
-  },
-  {
-    id: 'vid-freediving-2',
-    type: 'video',
-    src: vidFreeDiving2,
-    title: 'Reef Apex Freedive Line Training',
-    species: 'Open Ocean Depth Training',
-    reelName: 'Reel #18 • LineTrainingBangaram',
-    location: 'Bangaram Atoll, Lakshadweep',
-    category: 'freediving'
-  },
-  {
-    id: 'vid-freediving-3',
-    type: 'video',
-    src: vidFreeDiving3,
-    title: 'Breath-Hold Coral Swim-Through',
-    species: 'Acropora Coral Garden Exploration',
-    reelName: 'Reel #19 • BreathHoldSwimThrough',
-    location: 'Kadmat Island, Lakshadweep',
-    category: 'freediving'
-  },
-
-  // --- Ocean, Coastal & Lagoon Scenery ---
-  {
-    id: 'vid-dji-0007',
-    type: 'video',
-    src: vidDJI_0007,
-    title: 'Aerial Coral Reef Lagoon',
-    species: 'Scleractinia Coral Ecosystem',
-    reelName: 'Reel #20 • AerialLagoonSpectacle',
-    location: 'Havelock Island, Andamans',
-    category: 'ocean'
-  },
-  {
-    id: 'vid-dji-0011',
-    type: 'video',
-    src: vidDJI_0011,
-    title: 'Turquoise Atoll Shoreline',
-    species: 'Coastal Marine Sanctuary',
-    reelName: 'Reel #21 • AgattiAtollParadise',
-    location: 'Agatti Island, Lakshadweep',
-    category: 'ocean'
-  },
-  {
-    id: 'vid-gallery1',
-    type: 'video',
-    src: vidGallery1,
-    title: 'Open Ocean Blue Water Dive',
-    species: 'Pelagic Marine Zone',
-    reelName: 'Reel #22 • OpenOceanBlue',
-    location: 'Grand Island, Goa',
-    category: 'ocean'
-  },
-  {
-    id: 'vid-20260630',
-    type: 'video',
-    src: vid20260630,
-    title: 'Crystal Clear Reef Lagoon',
-    species: 'Inshore Fringing Reef Ecosystem',
-    reelName: 'Reel #23 • CrystalLagoonRadhanagar',
-    location: 'Radhanagar, Havelock',
-    category: 'ocean'
-  },
-  {
-    id: 'vid-20260707-1',
-    type: 'video',
-    src: vid20260707_1,
-    title: 'Sunset Ocean Cruise',
-    species: 'Open Marine Coastal Waters',
-    reelName: 'Reel #24 • SunsetOceanCruise',
-    location: 'Havelock Coastal Waters',
-    category: 'ocean'
-  },
-  {
-    id: 'vid-20260707-2',
-    type: 'video',
-    src: vid20260707_2,
-    title: 'Golden Hour Island Waters',
-    species: 'Coral Sea Horizon',
-    reelName: 'Reel #25 • GoldenHourNeilIsland',
-    location: 'Neil Island Shores',
-    category: 'ocean'
-  },
-
-  // --- Surfing Sessions ---
-  {
-    id: 'vid-surfing',
+    id: 'gallery-15',
     type: 'video',
     src: vidSurfing,
-    title: 'Coastal Wave Riding & Surf Session',
-    species: 'Ocean Swell & Coastal Biome',
-    reelName: 'Reel #26 • CoastalSurfSession',
-    location: 'Kovalam Beach, Kerala',
-    category: 'surfing'
+    title: 'Ocean Wave Surfing and Swell Ride',
+    location: 'Butler Bay, Little Andaman',
+    category: 'activity'
   },
   {
-    id: 'img-c4',
-    type: 'image',
-    src: c4,
-    title: 'Surf Lineup & Breaking Swells',
-    species: 'Ocean Coastline Swell',
-    reelName: 'Reel #27 • KovalamSurfBreak',
-    location: 'Kovalam Beach, Kerala',
-    category: 'surfing'
-  },
-
-  // --- Village Life, Stay & Island Experience ---
-  {
-    id: 'vid-travel',
+    id: 'gallery-16',
     type: 'video',
     src: vidTravel,
-    title: 'Expedition Boat Voyage',
-    species: 'Marine Transit Expedition',
-    reelName: 'Reel #28 • IslandExpeditionVoyage',
-    location: 'Port Blair to Havelock, Andamans',
-    category: 'lifestyle'
+    title: 'Dive Expedition Boat Safari',
+    location: 'Ritchie\'s Archipelago, Andaman',
+    category: 'activity'
   },
   {
-    id: 'vid-itinerary',
-    type: 'video',
-    src: vidItinerary,
-    title: 'Dive Village Headquarters & Base',
-    species: 'Community Base & Expedition Briefing',
-    reelName: 'Reel #29 • DiveVillageBriefing',
-    location: 'The Dive Village Base',
-    category: 'lifestyle'
-  },
-  {
-    id: 'img-stay',
+    id: 'gallery-17',
     type: 'image',
-    src: imgStay,
-    title: 'Island Eco-Resort & Dive Camp',
-    species: 'The Dive Village Eco-Lodge',
-    reelName: 'Reel #30 • EcoLodgeStay',
-    location: 'Havelock Island, Andamans',
-    category: 'lifestyle'
-  },
-  {
-    id: 'img-food',
-    type: 'image',
-    src: imgFood,
-    title: 'Post-Dive Community Feast',
-    species: 'Fresh Coastal & Healthy Cuisine',
-    reelName: 'Reel #31 • PostDiveFeast',
-    location: 'Village Beachside Deck',
-    category: 'lifestyle'
-  },
-  {
-    id: 'img-c2',
-    type: 'image',
-    src: c2,
-    title: 'Coral Reef Habitat & Marine Life',
-    species: 'Pocillopora verrucosa (Stony Coral)',
-    reelName: 'Reel #32 • CoralHabitatLife',
-    location: 'Neil Island, Andamans',
+    src: life1,
+    title: 'Oceanic Manta Ray',
+    location: 'Dixon\'s Pinnacle, Havelock',
     category: 'marine'
   },
   {
-    id: 'img-c5',
+    id: 'gallery-18',
     type: 'image',
-    src: c5,
-    title: 'Village Camp Sunset Moments',
-    species: 'Coastal Island Biome',
-    reelName: 'Reel #33 • VillageSunsetVibe',
-    location: 'Havelock Island, Andamans',
-    category: 'lifestyle'
-  },
-
-  // --- Gear & Official Merch ---
-  {
-    id: 'vid-merch5',
-    type: 'video',
-    src: vidMerch5,
-    title: 'The Dive Village Apparel Showcase',
-    species: 'Official Village Divewear & Gear',
-    reelName: 'Reel #34 • OfficialApparelShowcase',
-    location: 'The Dive Village Shop',
-    category: 'merch'
+    src: life2,
+    title: 'Reef Sea Turtle',
+    location: 'Neil Island, Andaman',
+    category: 'marine'
   },
   {
-    id: 'img-merch1',
+    id: 'gallery-19',
     type: 'image',
-    src: imgMerch1,
-    title: 'Ocean Expedition Rashguard',
-    species: 'Recycled Ocean Polymer Gear',
-    reelName: 'Reel #35 • OceanRashguard',
-    location: 'The Dive Village Shop',
-    category: 'merch'
+    src: life3,
+    title: 'Whale Shark',
+    location: 'Netrani Island Sanctuary',
+    category: 'marine'
   },
   {
-    id: 'img-merch2',
+    id: 'gallery-20',
     type: 'image',
-    src: imgMerch2,
-    title: 'Signature Dive Village Ocean Cap',
-    species: 'Organic Cotton Headwear',
-    reelName: 'Reel #36 • SignatureCap',
-    location: 'The Dive Village Shop',
-    category: 'merch'
+    src: life4,
+    title: 'Blacktip Reef Shark',
+    location: 'Shark Reef, Havelock',
+    category: 'marine'
   },
   {
-    id: 'img-merch3',
+    id: 'gallery-21',
     type: 'image',
-    src: imgMerch3,
-    title: 'Expedition Dry Bag 30L',
-    species: 'Heavy-Duty Waterproof TPU',
-    reelName: 'Reel #37 • ExpeditionDryBag',
-    location: 'The Dive Village Shop',
-    category: 'merch'
+    src: life5,
+    title: 'Reef Manta Ray',
+    location: 'Manta Point, Bali',
+    category: 'marine'
   },
   {
-    id: 'img-merch4',
+    id: 'gallery-22',
     type: 'image',
-    src: imgMerch4,
-    title: 'Thermal Dive Hoodie & Jersey',
-    species: 'Marine-Grade Fleece Apparel',
-    reelName: 'Reel #38 • ThermalHoodie',
-    location: 'The Dive Village Shop',
-    category: 'merch'
-  }
-]
-
-export const GALLERY_CATEGORIES = [
-  { key: 'all', label: 'All Media' },
-  { key: 'marine', label: 'Marine Life & Creatures' },
-  { key: 'scuba', label: 'Scuba Diving' },
-  { key: 'freediving', label: 'Freediving' },
-  { key: 'ocean', label: 'Ocean & Lagoons' },
-  { key: 'surfing', label: 'Surfing' },
-  { key: 'lifestyle', label: 'Island Life & Stay' },
-  { key: 'merch', label: 'Gear & Merch' },
-  { key: 'videos', label: 'Videos' },
-  { key: 'photos', label: 'Photos' },
-]
+    src: life6,
+    title: 'Clown Anemonefish',
+    location: 'Aquarium Reef, Neil Island',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-23',
+    type: 'image',
+    src: life7,
+    title: 'Tomato Clownfish',
+    location: 'Coral Garden, Red Sea',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-24',
+    type: 'image',
+    src: life8,
+    title: 'Clark\'s Anemonefish',
+    location: 'Minerva Ledge, Havelock',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-25',
+    type: 'image',
+    src: life9,
+    title: 'Pink Skunk Clownfish',
+    location: 'Nusa Lembongan Reef',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-26',
+    type: 'image',
+    src: life10,
+    title: 'Giant Trevally School',
+    location: 'The Wall, Havelock',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-27',
+    type: 'image',
+    src: life11,
+    title: 'Great Barracuda Whirlpool',
+    location: 'Barren Island Sanctuary',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-28',
+    type: 'image',
+    src: life12,
+    title: 'Bigeye Jackfish Tornado',
+    location: 'Sipadan Drop-Off',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-29',
+    type: 'image',
+    src: life13,
+    title: 'Soft Coral Garden',
+    location: 'Mac Point, Havelock',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-30',
+    type: 'image',
+    src: life14,
+    title: 'Green Sea Turtle',
+    location: 'Turtle Beach, Neil Island',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-31',
+    type: 'image',
+    src: life15,
+    title: 'Gorgonian Sea Fan',
+    location: 'Deep Reef, Netrani',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-32',
+    type: 'image',
+    src: life16,
+    title: 'Hawksbill Sea Turtle',
+    location: 'Elephant Beach Reef, Havelock',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-33',
+    type: 'image',
+    src: life17,
+    title: 'Brain Coral Boulder',
+    location: 'Coral Sanctuary, Havelock',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-34',
+    type: 'image',
+    src: life18,
+    title: 'Loggerhead Turtle',
+    location: 'South Button Island',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-35',
+    type: 'image',
+    src: life20,
+    title: 'Whitetip Reef Shark',
+    location: 'Shark Cave, Havelock',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-36',
+    type: 'image',
+    src: life21,
+    title: 'Tawny Nurse Shark',
+    location: 'Sandy Ledge, Neil Island',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-37',
+    type: 'image',
+    src: life22,
+    title: 'Spotted Eagle Ray',
+    location: 'Lighthouse Point, Havelock',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-38',
+    type: 'image',
+    src: life23,
+    title: 'Sea Anemone Colony',
+    location: 'Minerva Ledge, Andaman',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-39',
+    type: 'image',
+    src: life24,
+    title: 'Scalloped Hammerhead Shark',
+    location: 'Barren Island Open Blue',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-40',
+    type: 'image',
+    src: life25,
+    title: 'Blue-Striped Snappers',
+    location: 'Aquarium Reef, Neil Island',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-41',
+    type: 'image',
+    src: life26,
+    title: 'Neon Fusilier School',
+    location: 'Dixon\'s Pinnacle, Havelock',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-42',
+    type: 'image',
+    src: life28,
+    title: 'Orange Anthias Swarm',
+    location: 'Reef Crest, Havelock',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-43',
+    type: 'image',
+    src: life29,
+    title: 'Spotted Moray Eel',
+    location: 'Coral Crevice, Neil Island',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-44',
+    type: 'image',
+    src: life30,
+    title: 'Giant Moray Hunter',
+    location: 'Deep Pinnacle, Havelock',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-45',
+    type: 'image',
+    src: life31,
+    title: 'Ribbon Eel',
+    location: 'Sandy Coral Slope, Neil Island',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-46',
+    type: 'image',
+    src: life32,
+    title: 'Lionfish Flamboyant Display',
+    location: 'The Wall, Havelock',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-47',
+    type: 'image',
+    src: life33,
+    title: 'Blue-Ringed Octopus',
+    location: 'Macro Ridge, Neil Island',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-48',
+    type: 'image',
+    src: life34,
+    title: 'Day Octopus Hunting',
+    location: 'Shallow Reef Flat, Andaman',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-49',
+    type: 'image',
+    src: life35,
+    title: 'Cuttlefish Color Shift',
+    location: 'Lighthouse Bay, Havelock',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-50',
+    type: 'image',
+    src: life36,
+    title: 'Phyllidia Nudibranch',
+    location: 'Macro Pinnacle, Neil Island',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-51',
+    type: 'image',
+    src: life37,
+    title: 'Chromodoris Nudibranch',
+    location: 'Coral Wall, Havelock',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-52',
+    type: 'image',
+    src: life38,
+    title: 'Spanish Dancer Sea Slug',
+    location: 'Night Dive Reef, Andaman',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-53',
+    type: 'image',
+    src: life39,
+    title: 'Flabellina Sea Slug',
+    location: 'Deep Coral Bommie',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-54',
+    type: 'image',
+    src: life40,
+    title: 'Pygmy Seahorse',
+    location: 'Gorgonian Fan, Havelock',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-55',
+    type: 'image',
+    src: life41,
+    title: 'Thorny Seahorse',
+    location: 'Seagrass Bed, Neil Island',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-56',
+    type: 'image',
+    src: life50,
+    title: 'Harlequin Ghost Pipefish',
+    location: 'Drop-Off Ledge, Havelock',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-57',
+    type: 'image',
+    src: life51,
+    title: 'Robust Ghost Pipefish',
+    location: 'Coral Garden, Neil Island',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-58',
+    type: 'image',
+    src: life52,
+    title: 'Titan Triggerfish',
+    location: 'Outer Reef Flat, Andaman',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-59',
+    type: 'image',
+    src: life53,
+    title: 'Clown Triggerfish',
+    location: 'Deep Coral Ridge, Havelock',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-60',
+    type: 'image',
+    src: life54,
+    title: 'Emperor Angelfish',
+    location: 'Pinnacle Wall, Neil Island',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-61',
+    type: 'image',
+    src: life55,
+    title: 'Regal Angelfish',
+    location: 'Coral Garden, Havelock',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-62',
+    type: 'image',
+    src: life56,
+    title: 'Moorish Idol Pair',
+    location: 'Shallow Coral Bommie',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-63',
+    type: 'image',
+    src: life57,
+    title: 'Threadfin Butterflyfish',
+    location: 'Aquarium Reef, Neil Island',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-64',
+    type: 'image',
+    src: life58,
+    title: 'Longnose Butterflyfish',
+    location: 'Minerva Ledge, Havelock',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-65',
+    type: 'image',
+    src: life59,
+    title: 'Bumphead Parrotfish Herd',
+    location: 'Outer Reef Slope, Andaman',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-66',
+    type: 'image',
+    src: life60,
+    title: 'Napoleon Wrasse',
+    location: 'Blue Corner, Havelock',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-67',
+    type: 'image',
+    src: life61,
+    title: 'Humphead Bannerfish',
+    location: 'Reef Arch, Neil Island',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-68',
+    type: 'image',
+    src: live63,
+    title: 'Yellow Boxfish',
+    location: 'Coral Nook, Havelock',
+    category: 'marine'
+  },
+  {
+    id: 'gallery-69',
+    type: 'image',
+    src: life74,
+    title: 'Coral Grouper',
+    location: 'Deep Cave, Andaman',
+    category: 'marine'
+  },
+];

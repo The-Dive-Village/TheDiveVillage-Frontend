@@ -38,6 +38,7 @@ function useDirectVideoTexture(src) {
     video.loop = true
     video.autoplay = true
     video.preload = 'auto'
+    video.playbackRate = 0.7
     video.setAttribute('fetchpriority', 'high')
     
     domContainer.appendChild(video)
@@ -59,13 +60,17 @@ function useDirectVideoTexture(src) {
 
     const playPromise = video.play()
     if (playPromise !== undefined) {
-      playPromise.then(updateTexture).catch((err) => {
+      playPromise.then(() => {
+        video.playbackRate = 0.7
+        updateTexture()
+      }).catch((err) => {
         console.warn('Video autoplay deferred:', err?.message || err)
       })
     }
 
     const handleUserInteraction = () => {
       if (videoRef.current && videoRef.current.paused) {
+        videoRef.current.playbackRate = 0.7
         videoRef.current.play().then(updateTexture).catch(() => {})
       }
     }
