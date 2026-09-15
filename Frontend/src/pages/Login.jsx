@@ -34,7 +34,7 @@ export default function Login() {
     setLoading(true)
     try {
       const u = await login(email, password)
-      if (email === 'admin@tdv.com' || u?.role === 'admin') {
+      if (u?.role === 'admin') {
         navigate('/admin')
       } else {
         navigate('/dashboard/profile')

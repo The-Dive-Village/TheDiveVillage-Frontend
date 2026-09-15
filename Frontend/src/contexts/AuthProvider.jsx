@@ -32,15 +32,17 @@ export function AuthProvider({ children }) {
     try {
       const { data } = await authService.sync()
       const dbUser = data?.user || {}
+      const userRole = data?.role || (typeof dbUser.role === 'object' ? dbUser.role?.name : dbUser.role) || 'customer'
       const enrichedUser = {
         ...googleMetadata,
         ...dbUser,
         displayName: dbUser.fullName || googleMetadata.displayName,
-        photoURL: dbUser.photoURL || googleMetadata.photoURL,
+        photoURL: dbUser.photoUrl || googleMetadata.photoURL,
         emailVerified: dbUser.emailVerified ?? googleMetadata.emailVerified,
+        role: userRole,
       }
       setUser(enrichedUser)
-      setRole(data?.role || dbUser.role || 'customer')
+      setRole(userRole)
       return enrichedUser
     } catch {
       setUser(googleMetadata)
@@ -51,17 +53,6 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     let unsub = () => {}
-    if (localStorage.getItem('tdv_admin_auth') === 'true') {
-      setUser({
-        uid: 'admin-tdv-01',
-        email: 'admin@tdv.com',
-        displayName: 'TDV Administrator',
-        role: 'admin',
-      })
-      setRole('admin')
-      setLoading(false)
-      return
-    }
     try {
       unsub = firebaseAuth.onAuthStateChanged(async (firebaseUser) => {
         setLoading(true)
@@ -75,28 +66,8 @@ export function AuthProvider({ children }) {
   }, [syncWithBackend])
 
   const login = useCallback(async (email, password) => {
-    if (email === 'admin@tdv.com' && password === '12345') {
-      const adminUser = {
-        uid: 'admin-tdv-01',
-        email: 'admin@tdv.com',
-        displayName: 'TDV Administrator',
-        role: 'admin',
-      }
-      setUser(adminUser)
-      setRole('admin')
-      localStorage.setItem('tdv_id_token', 'admin_session')
-      localStorage.setItem('tdv_admin_auth', 'true')
-      return adminUser
-    }
-    if (email === 'admin@tdv.com' && password !== '12345') {
-      throw new Error('Invalid credentials for admin account')
-    }
-    try {
-      const cred = await firebaseAuth.signInEmail(email, password)
-      return syncWithBackend(cred.user)
-    } catch (err) {
-      throw err
-    }
+    const cred = await firebaseAuth.signInEmail(email, password)
+    return syncWithBackend(cred.user)
   }, [syncWithBackend])
 
   const signup = useCallback(async (email, password, profile = {}) => {
@@ -128,7 +99,6 @@ export function AuthProvider({ children }) {
     setUser(null)
     setRole('guest')
     localStorage.removeItem('tdv_id_token')
-    localStorage.removeItem('tdv_admin_auth')
   }, [])
 
   const value = useMemo(
