@@ -281,12 +281,12 @@ export default function BookUs() {
       />
 
       {/* 1. HEADER VIDEO HERO (DYNAMIC NIGHT DIVE RED LIONFISH VIDEO) */}
-      <section className="relative h-[75vh] min-h-[540px] w-full flex items-center justify-center overflow-hidden">
+      <section className="relative h-[88vh] min-h-[640px] lg:h-[92vh] lg:min-h-[720px] w-full flex items-center justify-center overflow-hidden">
         <div 
           className="absolute inset-0 z-0"
           style={{
-            maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 55%, rgba(0,0,0,0) 100%)',
-            WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 55%, rgba(0,0,0,0) 100%)'
+            maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 82%, rgba(0,0,0,0) 100%)',
+            WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 82%, rgba(0,0,0,0) 100%)'
           }}
         >
           <video
@@ -299,15 +299,15 @@ export default function BookUs() {
             onPlay={(e) => { e.currentTarget.playbackRate = 0.7 }}
             className="w-full h-full object-cover transition-opacity duration-700"
           />
-          <div className={`absolute inset-0 bg-gradient-to-b from-[#001428]/60 via-[#001428]/35 ${isNightDive ? 'to-[#030a12]' : 'to-[#FAFAFA]'}`}></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-[#001428]/65 via-[#001428]/25 to-transparent"></div>
         </div>
 
         {/* Bottom Smooth Dissolve & Merge Layer */}
         <div 
-          className={`absolute bottom-0 inset-x-0 h-44 sm:h-64 pointer-events-none z-[5] transition-colors duration-500 ${
+          className={`absolute bottom-0 inset-x-0 h-24 sm:h-36 pointer-events-none z-[5] transition-colors duration-500 ${
             isNightDive 
-              ? 'bg-gradient-to-t from-[#030a12] via-[#030a12]/85 to-transparent' 
-              : 'bg-gradient-to-t from-[#FAFAFA] via-[#FAFAFA]/90 to-transparent'
+              ? 'bg-gradient-to-t from-[#030a12] via-[#030a12]/70 to-transparent' 
+              : 'bg-gradient-to-t from-[#FAFAFA] via-[#FAFAFA]/70 to-transparent'
           }`} 
         />
 

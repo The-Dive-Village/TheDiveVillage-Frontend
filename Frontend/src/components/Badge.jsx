@@ -1,5 +1,5 @@
 const tones = {
-  accent: 'bg-accent text-white',
+  accent: 'bg-accent text-[#001e3d]',
   cta: 'bg-cta text-white',
   navy: 'bg-navy text-white',
 }

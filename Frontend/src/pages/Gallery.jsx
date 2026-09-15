@@ -7,6 +7,7 @@ import LazyVideo from '../components/LazyVideo'
 import SEOHead from '../components/SEOHead'
 import { GALLERY_ITEMS, GALLERY_CATEGORIES } from '../utils/galleryData'
 import { contentService } from '../services/contentService'
+import ctaVideo from '../assets/New folder/Dive.MP4'
 
 export default function Gallery() {
   const [itemsList, setItemsList] = useState(GALLERY_ITEMS)
@@ -211,17 +212,28 @@ export default function Gallery() {
           </div>
         </div>
 
-        {/* 5. CALL TO ACTION */}
-        <div className="rounded-[40px] bg-navy text-white p-10 sm:p-16 lg:p-20 relative overflow-hidden shadow-lift">
-          <div className="absolute -left-20 -bottom-20 w-96 h-96 bg-accent/20 rounded-full blur-3xl pointer-events-none" />
+        {/* 5. CALL TO ACTION WITH BACKGROUND VIDEO */}
+        <div className="rounded-[40px] bg-navy text-white p-10 sm:p-16 lg:p-20 relative overflow-hidden shadow-lift group border border-white/10">
+          {/* Background Video */}
+          <video
+            src={ctaVideo}
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-[10000ms] group-hover:scale-105 opacity-50 z-0"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/80 to-navy/40 z-0" />
+          <div className="absolute -left-20 -bottom-20 w-96 h-96 bg-accent/20 rounded-full blur-3xl pointer-events-none z-0" />
+
           <div className="relative z-10 max-w-3xl">
-            <span className="inline-block bg-white/10 rounded-full px-4 py-1.5 text-xs font-bold text-accent uppercase tracking-widest mb-6">
+            <span className="inline-block bg-white/10 backdrop-blur-md rounded-full px-4 py-1.5 text-xs font-bold text-accent uppercase tracking-widest mb-6 border border-white/10">
               Create Your Own Stories
             </span>
             <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight text-white mb-6">
               Ready to Be in the Next Frame?
             </h2>
-            <p className="text-lg text-white/80 max-w-xl mb-10 leading-relaxed">
+            <p className="text-lg text-white/80 max-w-xl mb-10 leading-relaxed font-medium">
               Join us for certified diving, reef safaris, and surfing camps. Experience the serenity that only the ocean can offer.
             </p>
             <div className="flex flex-wrap gap-4 items-center">

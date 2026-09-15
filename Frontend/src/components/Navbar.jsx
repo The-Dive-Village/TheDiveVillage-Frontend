@@ -50,9 +50,12 @@ export default function Navbar() {
     }
   }
 
-  const isShopPage = location.pathname.startsWith('/shop') || location.pathname.startsWith('/product') || location.pathname === '/cart' || location.pathname === '/wishlist'
-  const isTranslucentPage = ['/book-us', '/contact', '/'].includes(location.pathname)
-  const isVideoBg = ['/', '/login', '/contact', '/book-us'].includes(location.pathname) || isShopPage
+  const isShopPage = location.pathname.startsWith('/shop') || location.pathname.startsWith('/product') || location.pathname === '/cart' || location.pathname === '/wishlist' || location.pathname === '/checkout'
+  const isServicesPage = location.pathname.startsWith('/services') || location.pathname.startsWith('/our-services') || location.pathname.startsWith('/courses') || ['/scuba-diving', '/snorkeling', '/freediving', '/scuba', '/surfing'].includes(location.pathname)
+  const isBookUsPage = location.pathname.startsWith('/book-us')
+  const isBlueToolbar = isShopPage || isServicesPage || isBookUsPage
+  const isTranslucentPage = ['/contact', '/'].includes(location.pathname)
+  const isVideoBg = ['/', '/login', '/contact', '/book-us'].includes(location.pathname) || isBlueToolbar
   const isDarkBackground = isVideoBg || isNightDive
 
   const textColor = isDarkBackground ? 'text-white' : 'text-navy'
@@ -65,7 +68,7 @@ export default function Navbar() {
   return (
     <header className="fixed top-0 left-0 right-0 z-[9999] w-full px-2 sm:px-4 lg:px-6 pointer-events-none flex flex-col items-center">
       <div className={`pointer-events-auto mx-auto grid grid-cols-[1fr_auto_1fr] h-[58px] sm:h-[64px] lg:h-[68px] w-full max-w-7xl 2xl:max-w-[1700px] items-center px-4 sm:px-8 lg:px-12 rounded-full border border-white/20 ${
-        isShopPage
+        isBlueToolbar
           ? 'bg-[#003865] backdrop-blur-2xl shadow-[0_12px_40px_rgba(0,56,101,0.5)]'
           : isTranslucentPage 
           ? 'bg-[#001e3d]/30 backdrop-blur-2xl shadow-[0_12px_40px_rgba(0,18,32,0.35)]' 
@@ -190,7 +193,7 @@ export default function Navbar() {
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.25 }}
             className={`pointer-events-auto mt-2 w-full max-w-7xl 2xl:max-w-[1700px] overflow-hidden rounded-3xl border border-white/20 shadow-2xl ${
-              isShopPage ? 'bg-[#003865]/95' : 'bg-[#001e3d]/90'
+              isBlueToolbar ? 'bg-[#003865]/95' : 'bg-[#001e3d]/90'
             } backdrop-blur-3xl text-white`}
           >
             <div className="px-6 py-4">

@@ -63,8 +63,15 @@ export default function Login() {
     <div className="min-h-screen flex bg-white text-navy font-body relative overflow-hidden">
       
       {/* Left side - Background Video (hidden on mobile) */}
-      <div className="hidden lg:block lg:w-[60%] xl:w-[62%] shrink-0 relative bg-navy overflow-hidden">
-        <video src={vid2} autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover opacity-80" />
+      <div className="hidden lg:block lg:w-[60%] xl:w-[62%] shrink-0 relative bg-white overflow-hidden">
+        <video
+          src={vid2}
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover scale-105 opacity-85"
+        />
         <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/20 to-transparent pointer-events-none" />
 
         {/* Return to Home on Video Side */}

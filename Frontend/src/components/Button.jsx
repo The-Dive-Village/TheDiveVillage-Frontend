@@ -1,22 +1,28 @@
-import { forwardRef, useRef } from 'react'
-import { motion, useReducedMotion, useMotionValue, useSpring } from 'framer-motion'
+import { forwardRef } from 'react'
+import { motion, useReducedMotion } from 'framer-motion'
 import { prefetchRoute } from '../utils/routePrefetcher'
 
 const variants = {
   primary:
-    'bg-white/15 backdrop-blur-xl border border-white/25 text-white shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] hover:shadow-[0_12px_40px_rgba(255,205,0,0.6)] active:scale-[0.98]',
+    'bg-[#00223D] text-white border border-[#00223D] shadow-md hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] hover:shadow-[0_8px_30px_rgba(255,205,0,0.5)] active:scale-[0.98]',
   secondary:
     'bg-white/10 backdrop-blur-xl border border-white/20 text-white hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] hover:shadow-[0_12px_40px_rgba(255,205,0,0.5)] active:scale-[0.98]',
+  gold:
+    'bg-[#FFCD00] text-[#001e3d] border border-[#FFCD00] shadow-md hover:!bg-[#00223D] hover:!text-white hover:!border-[#00223D] active:scale-[0.98]',
+  navy:
+    'bg-[#00223D] text-white border border-[#00223D] shadow-md hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] active:scale-[0.98]',
+  accent:
+    'bg-accent text-navy border border-accent shadow-md hover:!bg-[#00223D] hover:!text-white hover:!border-[#00223D] active:scale-[0.98]',
+  outline:
+    'bg-[#F0F2F5] border border-navy/15 text-navy hover:!bg-[#00223D] hover:!text-white hover:!border-[#00223D] active:scale-[0.98]',
+  outlineWhite:
+    'bg-white/5 backdrop-blur-md border border-white/25 text-white hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] active:scale-[0.98]',
   glass:
     'bg-white/15 backdrop-blur-xl border border-white/30 text-white shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] hover:shadow-[0_12px_40px_rgba(255,205,0,0.6)] active:scale-[0.98]',
   glassSecondary:
     'bg-white/10 backdrop-blur-xl border border-white/20 text-white shadow-[0_8px_32px_0_rgba(0,0,0,0.2)] hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] hover:shadow-[0_12px_40px_rgba(255,205,0,0.5)] active:scale-[0.98]',
   ghost:
-    'bg-white/5 backdrop-blur-md border border-white/15 text-white hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] active:scale-[0.98]',
-  navy:
-    'bg-[#001e3d]/40 backdrop-blur-xl border border-white/20 text-white shadow-soft hover:shadow-lift hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] active:scale-[0.98]',
-  outline:
-    'bg-white/5 backdrop-blur-md border border-white/25 text-white hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] active:scale-[0.98]',
+    'bg-transparent text-navy hover:bg-navy/10 active:scale-[0.98]',
 }
 
 const Button = forwardRef(function Button(
@@ -32,60 +38,22 @@ const Button = forwardRef(function Button(
 ) {
   const reduce = useReducedMotion()
   const Comp = as ? motion.create(as) : motion.button
-  const localRef = useRef(null)
-  const ref = forwardedRef || localRef
-
-  const x = useMotionValue(0)
-  const y = useMotionValue(0)
-
-  // Use a strong spring for a snappy, magnetic feel
-  const springConfig = { stiffness: 400, damping: 25, mass: 0.5 }
-  const xSpring = useSpring(x, springConfig)
-  const ySpring = useSpring(y, springConfig)
-
-  const rectRef = useRef(null)
 
   const handleMouseEnter = (e) => {
     if (props.to) prefetchRoute(props.to)
     if (props.href && props.href.startsWith('/')) prefetchRoute(props.href)
     if (props.onMouseEnter) props.onMouseEnter(e)
-    if (reduce || !ref.current) return
-    rectRef.current = ref.current.getBoundingClientRect()
-  }
-
-  const handleMouseMove = (e) => {
-    if (reduce || !ref.current) return
-    if (!rectRef.current) {
-      rectRef.current = ref.current.getBoundingClientRect()
-    }
-    const rect = rectRef.current
-    const centerX = rect.left + rect.width / 2
-    const centerY = rect.top + rect.height / 2
-    
-    // Move the button 20% of the distance from the center to the mouse
-    x.set((e.clientX - centerX) * 0.2)
-    y.set((e.clientY - centerY) * 0.2)
-  }
-
-  const handleMouseLeave = () => {
-    rectRef.current = null
-    if (reduce) return
-    x.set(0)
-    y.set(0)
   }
 
   return (
     <Comp
-      ref={ref}
+      ref={forwardedRef}
       type={as ? undefined : type}
       onMouseEnter={handleMouseEnter}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      style={{ x: xSpring, y: ySpring }}
-      whileHover={reduce ? undefined : { scale: 1.05 }}
-      whileTap={reduce ? undefined : { scale: 0.95 }}
+      whileHover={reduce ? undefined : { scale: 1.03 }}
+      whileTap={reduce ? undefined : { scale: 0.97 }}
       transition={{ duration: 0.2, ease: 'easeOut' }}
-      className={`inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 font-heading text-sm font-bold tracking-wide transition-colors duration-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:pointer-events-none disabled:opacity-50 ${variants[variant]} ${className}`}
+      className={`inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 font-heading text-sm font-bold tracking-wide transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:pointer-events-none disabled:opacity-50 cursor-pointer ${variants[variant] || variants.primary} ${className}`}
       {...props}
     >
       {children}

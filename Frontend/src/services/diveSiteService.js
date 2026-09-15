@@ -1,8 +1,8 @@
 import diveSiteData from '../data/padiDiveSites.json'
 
 /**
- * PADI Dive Site Service
- * Provides access to the verified dataset of 4,869 PADI dive sites across 123 countries.
+ * PADI Coastal Dive Site Service
+ * Provides access to verified coastal and ocean dive sites across coastal countries.
  */
 export const getCountries = () => diveSiteData.countries || []
 

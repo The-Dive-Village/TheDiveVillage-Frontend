@@ -453,7 +453,7 @@
 button:not([data-no-glass]):not(.switch__input),
 a.btn,
 .btn {
-  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease !important;
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease !important;
 }
 
 /* Ensure resting state for glass buttons is translucent */

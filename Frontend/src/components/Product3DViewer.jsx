@@ -23,6 +23,89 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
     }
   }, [])
 
+  // Handle two-finger horizontal drag on mobile/touchscreens and trackpads
+  useEffect(() => {
+    const viewer = modelRef.current
+    if (!viewer) return
+
+    let isTwoFingerTouch = false
+    let lastTouchX = 0
+    let thetaDeg = 0
+
+    const readCurrentTheta = () => {
+      try {
+        if (typeof viewer.getCameraOrbit === 'function') {
+          const orbit = viewer.getCameraOrbit()
+          if (orbit && typeof orbit.theta === 'number') {
+            return (orbit.theta * 180) / Math.PI
+          }
+        }
+      } catch (err) {}
+      return thetaDeg
+    }
+
+    const handleTouchStart = (e) => {
+      if (e.touches.length === 2) {
+        isTwoFingerTouch = true
+        lastTouchX = (e.touches[0].clientX + e.touches[1].clientX) / 2
+        thetaDeg = readCurrentTheta()
+      }
+    }
+
+    const handleTouchMove = (e) => {
+      if (e.touches.length === 2 && isTwoFingerTouch) {
+        const currentX = (e.touches[0].clientX + e.touches[1].clientX) / 2
+        const dx = currentX - lastTouchX
+        lastTouchX = currentX
+
+        // Moving fingers right turns model right, moving left turns left
+        thetaDeg -= dx * 0.8
+        viewer.cameraOrbit = `${thetaDeg}deg 75deg 110%`
+        if (typeof viewer.jumpCameraToGoal === 'function') {
+          viewer.jumpCameraToGoal()
+        }
+        if (e.cancelable) {
+          e.preventDefault()
+        }
+      }
+    }
+
+    const handleTouchEnd = (e) => {
+      if (e.touches.length < 2) {
+        isTwoFingerTouch = false
+      }
+    }
+
+    // Two-finger trackpad horizontal swipe / wheel
+    const handleWheel = (e) => {
+      if (Math.abs(e.deltaX) > 1 || (e.shiftKey && Math.abs(e.deltaY) > 1)) {
+        const delta = e.shiftKey ? e.deltaY : e.deltaX
+        thetaDeg = readCurrentTheta() + delta * 0.45
+        viewer.cameraOrbit = `${thetaDeg}deg 75deg 110%`
+        if (typeof viewer.jumpCameraToGoal === 'function') {
+          viewer.jumpCameraToGoal()
+        }
+        if (e.cancelable) {
+          e.preventDefault()
+        }
+      }
+    }
+
+    viewer.addEventListener('touchstart', handleTouchStart, { passive: false })
+    viewer.addEventListener('touchmove', handleTouchMove, { passive: false })
+    viewer.addEventListener('touchend', handleTouchEnd, { passive: true })
+    viewer.addEventListener('touchcancel', handleTouchEnd, { passive: true })
+    viewer.addEventListener('wheel', handleWheel, { passive: false })
+
+    return () => {
+      viewer.removeEventListener('touchstart', handleTouchStart)
+      viewer.removeEventListener('touchmove', handleTouchMove)
+      viewer.removeEventListener('touchend', handleTouchEnd)
+      viewer.removeEventListener('touchcancel', handleTouchEnd)
+      viewer.removeEventListener('wheel', handleWheel)
+    }
+  }, [scriptLoaded])
+
   // Apply non-glossy, soft matte finish and double-sided rendering to 3D materials
   useEffect(() => {
     const viewer = modelRef.current
@@ -72,7 +155,7 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
         camera-controls
         disable-zoom
         disable-pan
-        touch-action="pan-y"
+        touch-action="none"
         interaction-prompt="auto"
         camera-orbit="0deg 75deg 110%"
         camera-target="auto auto auto"

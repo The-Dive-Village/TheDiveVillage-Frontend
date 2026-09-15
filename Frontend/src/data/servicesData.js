@@ -25,7 +25,7 @@ import vidTurquoiseAtoll from '../assets/New folder/DJI_20260525104139_0011_D.MP
 import vidFreedivingBasic from '../assets/New folder/free diving .mp4'
 import vidScubaSkill1 from '../assets/New folder/20260525_114955.mp4'
 import vidScubaTeam from '../assets/New folder/GX018843.mp4'
-import vidCoralPinnacle from '../assets/New folder/dji_mimo_20260124_112020_0_1769300692742_video.mp4'
+import vidCoralPinnacle from '../assets/New folder/Gallery/dji_mimo_20260204_084830_0_1770187393265_video.mp4'
 import vidDiving1 from '../assets/Diving(1).mp4'
 import vidRescueDiver from '../assets/New folder/GX018843.mp4'
 import vidReactivate from '../assets/New folder/20260525_115020.mp4'

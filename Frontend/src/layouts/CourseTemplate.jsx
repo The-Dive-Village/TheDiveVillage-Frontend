@@ -127,7 +127,7 @@ export default function CourseTemplate({
             <div key={i} className="w-[85vw] sm:w-[350px] flex-shrink-0 snap-start bg-[#F8FAFC] rounded-3xl overflow-hidden shadow-sm border border-navy/5 group hover:shadow-xl transition duration-300 relative">
               <div className="aspect-[4/3] relative">
                 <img src={tour.image} alt={tour.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
-                <div className="absolute -bottom-4 right-6 bg-accent text-white font-bold text-sm px-4 py-2 rounded-xl shadow-lg">
+                <div className="absolute -bottom-4 right-6 bg-accent text-[#001e3d] font-bold text-sm px-4 py-2 rounded-xl shadow-lg">
                   Inquire
                 </div>
               </div>
@@ -169,7 +169,7 @@ export default function CourseTemplate({
               <p className="text-navy/70 leading-relaxed text-lg mb-10 max-w-md">
                 {statsDesc}
               </p>
-              <Button as={Link} to={ctaLink} className="bg-accent text-white border-none mb-16">
+              <Button as={Link} to={ctaLink} variant="gold" className="shadow-md mb-16">
                 Book Now
               </Button>
 
@@ -209,7 +209,7 @@ export default function CourseTemplate({
           <p className="text-navy/70 leading-relaxed text-lg mb-10 max-w-md mx-auto">
             {ctaDesc}
           </p>
-          <Button as={Link} to={ctaLink} className="bg-accent text-white border-none shadow-xl hover:scale-105 transition-all px-8 py-4">
+          <Button as={Link} to={ctaLink} variant="gold" className="shadow-xl px-8 py-4 text-base">
             Book Now
           </Button>
         </div>

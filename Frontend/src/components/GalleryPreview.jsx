@@ -98,10 +98,16 @@ export default function GalleryPreview() {
     <section id="gallery" className="relative py-16 sm:py-20 scroll-mt-20 pointer-events-auto overflow-hidden">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionReveal className="mb-12 text-center">
-          <h2 className="font-heading text-h2 font-bold text-[#FFCD00] drop-shadow-md">
-            The Dive Village <em className="font-heading italic font-bold text-[#FFCD00]">Gallery</em>
+          <h2
+            className="font-heading text-h2 font-bold text-white"
+            style={{ textShadow: '0 2px 14px rgba(0, 0, 0, 0.85), 0 1px 4px rgba(0, 0, 0, 0.95)' }}
+          >
+            The Dive Village <em className="font-heading italic font-bold text-accent">Gallery</em>
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-[#00223D] font-bold text-base sm:text-lg text-center drop-shadow-xs">
+          <p
+            className="mx-auto mt-4 max-w-2xl text-white font-medium text-center"
+            style={{ textShadow: '0 2px 10px rgba(0, 0, 0, 0.85), 0 1px 4px rgba(0, 0, 0, 0.95)' }}
+          >
             Where the sea is your classroom, playground, and escape.
           </p>
         </SectionReveal>

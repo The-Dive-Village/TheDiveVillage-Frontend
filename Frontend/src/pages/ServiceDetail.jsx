@@ -226,10 +226,10 @@ export default function ServiceDetail() {
             </ul>
 
             <div className="flex flex-col gap-3">
-              <Button as={Link} to="/book-us" variant="primary" className="w-full justify-center py-4 shadow-md">
+              <Button as={Link} to="/book-us" variant="gold" className="w-full justify-center py-4 text-base shadow-md">
                 Book Now
               </Button>
-              <Button as={Link} to="/contact" variant="outline" className="w-full justify-center py-4 bg-[#F0F2F5] border-none hover:bg-navy/10">
+              <Button as={Link} to="/contact" variant="navy" className="w-full justify-center py-4 text-base shadow-md">
                 Enquire More
               </Button>
             </div>
