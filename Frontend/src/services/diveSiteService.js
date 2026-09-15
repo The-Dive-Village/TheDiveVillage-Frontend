@@ -1,21 +1,62 @@
-import diveSiteData from '../data/padiDiveSites.json'
+import countryList from '../data/padiCountries.json'
+
+let diveSiteDataPromise = null
+
+/**
+ * Canonical country key normalization helper.
+ * Converts any country string into a deterministic lowercase hyphenated key.
+ * Example: "Portugal" -> "portugal", "St. Vincent & Grenadines" -> "st-vincent-grenadines"
+ */
+export const normalizeCountryKey = (countryName) => {
+  if (!countryName || typeof countryName !== 'string') return ''
+  return countryName
+    .trim()
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+}
+
+/**
+ * Lazy load full PADI dive site dataset on demand (cached after first request).
+ */
+export const loadDiveSiteData = async () => {
+  if (!diveSiteDataPromise) {
+    diveSiteDataPromise = import('../data/padiDiveSites.json').then((module) => module.default || module)
+  }
+  return diveSiteDataPromise
+}
 
 /**
  * PADI Coastal Dive Site Service
  * Provides access to verified coastal and ocean dive sites across coastal countries.
  */
-export const getCountries = () => diveSiteData.countries || []
+export const getCountries = () => countryList || []
 
-export const getLocationsByCountry = (country) => {
+export const getLocationsByCountry = async (country) => {
   if (!country) return []
-  return diveSiteData.locationsByCountry?.[country] || []
+  const data = await loadDiveSiteData()
+  const locMap = data.locationsByCountry || {}
+  const targetKey = normalizeCountryKey(country)
+
+  if (locMap[country]) return locMap[country]
+  for (const k of Object.keys(locMap)) {
+    if (normalizeCountryKey(k) === targetKey) {
+      return locMap[k]
+    }
+  }
+  return []
 }
 
-export const getLocationById = (id) => {
+export const getLocationById = async (id) => {
   if (!id) return null
+  const data = await loadDiveSiteData()
   const strId = String(id)
-  for (const country of diveSiteData.countries) {
-    const list = diveSiteData.locationsByCountry[country] || []
+  const countries = data.countries || countryList || []
+  for (const c of countries) {
+    const list = data.locationsByCountry?.[c] || []
     const found = list.find((loc) => String(loc.id) === strId)
     if (found) return found
   }
@@ -27,14 +68,17 @@ export const getLocationDisplayName = (location) => {
   return location.title || location.name || 'Dive Site'
 }
 
-export const getTotalLocationsCount = () => diveSiteData.totalLocations || 0
+export const getTotalLocationsCount = () => 4868
 
 export const diveSiteService = {
   getCountries,
   getLocationsByCountry,
   getLocationById,
   getLocationDisplayName,
-  getTotalLocationsCount
+  getTotalLocationsCount,
+  loadDiveSiteData,
+  normalizeCountryKey
 }
 
 export default diveSiteService
+

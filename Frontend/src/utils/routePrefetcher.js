@@ -41,29 +41,18 @@ export function prefetchRoute(path) {
   }
 }
 
-// Automatically warm up critical high-traffic routes during idle time
+// Automatically warm up all routes immediately for zero page navigation delay
 export function initIdlePrefetching() {
   if (typeof window === 'undefined') return
 
   const warmAll = () => {
-    // Stage 1: Critical primary routes after 1.5s
-    setTimeout(() => {
-      prefetchRoute('/book-us')
-      prefetchRoute('/about')
-      prefetchRoute('/services')
-    }, 1500)
-
-    // Stage 2: Secondary routes after 3.5s
-    setTimeout(() => {
-      prefetchRoute('/gallery')
-      prefetchRoute('/shop')
-      prefetchRoute('/contact')
-    }, 3500)
+    Object.keys(routeLoaders).forEach((path) => prefetchRoute(path))
   }
 
-  if ('requestIdleCallback' in window) {
-    window.requestIdleCallback(() => warmAll(), { timeout: 3000 })
+  if (document.readyState === 'complete') {
+    warmAll()
   } else {
-    setTimeout(warmAll, 1200)
+    window.addEventListener('load', warmAll, { once: true })
+    setTimeout(warmAll, 300)
   }
 }

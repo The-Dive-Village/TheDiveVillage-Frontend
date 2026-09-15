@@ -4,9 +4,9 @@ import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
 import { useLocation } from 'react-router'
-import videoFile from '../assets/Hero_fast.mp4'
+import videoFile from '../assets/Hero(1).mp4'
 import divingFile from '../assets/Diving(1).mp4'
-import bookFile from '../assets/Book_fast.mp4'
+import bookFile from '../assets/Book(2).mp4'
 import turtleVideo from '../assets/Turtle_fast.mp4'
 import nightDiveVideo from '../assets/nightdive_fast.mp4'
 import underwaterAudio from '../assets/Underwater.mp3'
@@ -455,7 +455,8 @@ export default function VideoSphereBackground() {
           />
           <div style={{ width: '100%', height: '100%' }}>
             <Canvas
-              camera={{ position: [0, 0, 0.1], fov: 95 }}
+              dpr={[1, 2]}
+              camera={{ position: [0, 0, 0.1], fov: 85 }}
               gl={{ powerPreference: 'high-performance', antialias: true }}
               onCreated={({ gl, scene }) => {
                 scene.background = new THREE.Color('#001e3d')

@@ -19,6 +19,10 @@ export default function CustomCursor() {
 
     document.body.classList.add('hide-cursors')
 
+    let latestX = -100
+    let latestY = -100
+    let currentTarget = null
+    let rafId = null
     let isHidden = true
     let isHoveringInteractive = false
     let isOverNormalCursor = false
@@ -34,36 +38,41 @@ export default function CustomCursor() {
       return !!target.closest('a, button, input, select, textarea, [role="button"], .cursor-pointer, [data-cursor-interactive], label')
     }
 
-    const onMouseMove = (e) => {
-      const x = e.clientX
-      const y = e.clientY
-
-      const overNormal = checkNormalCursor(e.target)
-      isOverNormalCursor = overNormal
-
+    const updateCursorPosition = () => {
       if (cursorRef.current) {
-        cursorRef.current.style.transform = `translate3d(${x}px, ${y}px, 0)`
-        if (overNormal) {
+        cursorRef.current.style.transform = `translate3d(${latestX}px, ${latestY}px, 0)`
+
+        if (isOverNormalCursor || isHidden) {
           cursorRef.current.style.opacity = '0'
-          return
-        }
-        if (isHidden) {
-          isHidden = false
-          cursorRef.current.style.opacity = '1'
         } else {
           cursorRef.current.style.opacity = '1'
         }
       }
 
-      // Check interactive targets smoothly with time throttling (max once per 40ms)
       const now = performance.now()
-      if (now - lastCheckTime > 40) {
+      if (now - lastCheckTime > 50 && currentTarget) {
         lastCheckTime = now
-        const hovering = checkInteractive(e.target)
+        const hovering = checkInteractive(currentTarget)
         if (hovering !== isHoveringInteractive) {
           isHoveringInteractive = hovering
           setIsHovering(hovering)
         }
+      }
+
+      rafId = requestAnimationFrame(updateCursorPosition)
+    }
+
+    // Start 60fps/120fps smooth render loop
+    rafId = requestAnimationFrame(updateCursorPosition)
+
+    const onMouseMove = (e) => {
+      latestX = e.clientX
+      latestY = e.clientY
+      currentTarget = e.target
+      isOverNormalCursor = checkNormalCursor(e.target)
+
+      if (isHidden) {
+        isHidden = false
       }
     }
 
@@ -88,8 +97,9 @@ export default function CustomCursor() {
       }
     }
 
-    window.addEventListener('pointermove', onMouseMove, { passive: true })
-    window.addEventListener('mousemove', onMouseMove, { passive: true })
+    // Single unified pointer listener to prevent double-firing
+    const eventType = window.PointerEvent ? 'pointermove' : 'mousemove'
+    window.addEventListener(eventType, onMouseMove, { passive: true })
     window.addEventListener('mouseleave', onMouseLeave)
     window.addEventListener('mouseenter', onMouseEnter)
     window.addEventListener('focusin', onFocusIn)
@@ -110,8 +120,8 @@ export default function CustomCursor() {
     }
 
     return () => {
-      window.removeEventListener('pointermove', onMouseMove)
-      window.removeEventListener('mousemove', onMouseMove)
+      if (rafId) cancelAnimationFrame(rafId)
+      window.removeEventListener(eventType, onMouseMove)
       window.removeEventListener('mouseleave', onMouseLeave)
       window.removeEventListener('mouseenter', onMouseEnter)
       window.removeEventListener('focusin', onFocusIn)
@@ -139,7 +149,7 @@ export default function CustomCursor() {
       style={{
         transform: 'translate3d(-100px, -100px, 0)',
         opacity: 0,
-        transition: 'opacity 0.12s ease-out',
+        transition: 'opacity 0.08s ease-out',
       }}
     >
       {/* Night Dive Mode Underwater Flashlight Beam & Spotlight Aura */}
@@ -162,7 +172,7 @@ export default function CustomCursor() {
 
       {/* Scuba Diver with Dynamic Luminescence and Interactive Scale */}
       <div
-        className="will-change-transform transition-transform duration-200"
+        className="will-change-transform transition-transform duration-100 ease-out"
         style={{
           transformOrigin: '4.6% 57.5%',
           transform: `translate(-4.6%, -57.5%) rotate(20deg) scale(${isHovering ? 1.15 : 1.0})`,

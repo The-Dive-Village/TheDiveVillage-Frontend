@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { COUNTRY_CENTROIDS } from '../data/countryCentroids'
-import { diveSiteService, getLocationDisplayName } from '../services/diveSiteService'
+import { diveSiteService, getLocationDisplayName, normalizeCountryKey } from '../services/diveSiteService'
 import { getDiveSiteImage, getDiveSiteCreatureInfo } from '../data/diveSiteImages'
 import { loadCesium } from '../services/cesiumLoader'
 
@@ -108,6 +108,9 @@ export default function InteractiveDiveMap({
   const prevCountryRef = useRef(selectedCountry)
   const prevLocationIdRef = useRef(selectedLocation?.id ?? null)
 
+  const activeCountryTransactionRef = useRef(0)
+  const cameraTransactionVersionRef = useRef(0)
+
   countryLocationsRef.current = countryLocations
   selectedLocationRef.current = selectedLocation
   selectedCountryRef.current = selectedCountry
@@ -116,122 +119,215 @@ export default function InteractiveDiveMap({
   popupSiteRef.current = popupSite
   isPopupOpenRef.current = isPopupOpen
 
-  // Deterministic camera flight to Global Overview
+  // Deterministic camera view to Global Overview
   const flyToGlobalOverview = useCallback(() => {
     const viewer = viewerRef.current
     if (!viewer || viewer.isDestroyed() || !window.Cesium) return
 
+    const currentVersion = ++cameraTransactionVersionRef.current
+    try {
+      viewer.camera.cancelFlight()
+    } catch {}
+
     isProgrammaticFlightRef.current = true
-    viewer.camera.flyTo({
-      destination: window.Cesium.Cartesian3.fromDegrees(80.0, 15.0, 11500000),
-      orientation: {
-        heading: 0.0,
-        pitch: window.Cesium.Math.toRadians(-90),
-        roll: 0.0
-      },
-      duration: 1.8,
-      easingFunction: window.Cesium.EasingFunction.CUBIC_IN_OUT,
-      complete: () => {
-        isProgrammaticFlightRef.current = false
-      },
-      cancel: () => {
-        isProgrammaticFlightRef.current = false
-      }
-    })
+    try {
+      viewer.camera.flyTo({
+        destination: window.Cesium.Cartesian3.fromDegrees(80.0, 15.0, 11500000),
+        orientation: {
+          heading: 0.0,
+          pitch: window.Cesium.Math.toRadians(-90),
+          roll: 0.0
+        },
+        duration: 0.8,
+        complete: () => {
+          if (currentVersion === cameraTransactionVersionRef.current) {
+            isProgrammaticFlightRef.current = false
+          }
+        },
+        cancel: () => {
+          if (currentVersion === cameraTransactionVersionRef.current) {
+            isProgrammaticFlightRef.current = false
+          }
+        }
+      })
+    } catch (err) {
+      console.warn('Camera overview flight notice:', err)
+      isProgrammaticFlightRef.current = false
+    }
   }, [])
 
-  // Deterministic camera flight to Country Bounding Extent
-  const flyToCountryBounds = useCallback((locs, countryName) => {
-    const viewer = viewerRef.current
-    if (!viewer || viewer.isDestroyed() || !window.Cesium) return
+  // Dateline-safe longitude and bounds calculator for country camera framing
+  const getCountryCameraTarget = useCallback((countryName, locs) => {
+    const cKey = normalizeCountryKey(countryName)
+    if (!cKey) return null
 
-    let centerLon = 80.0
-    let centerLat = 15.0
-    let targetAltitude = 2500000
+    // Filter and validate locations belonging strictly to this canonical country
+    const validLocs = (locs || []).filter((l) => {
+      if (!l) return false
+      const lat = Number(l.latitude)
+      const lon = Number(l.longitude)
+      if (isNaN(lat) || isNaN(lon) || !isFinite(lat) || !isFinite(lon)) return false
+      if (lat < -90 || lat > 90 || lon < -180 || lon > 180) return false
+      const lKey = normalizeCountryKey(l.country)
+      if (lKey && lKey !== cKey) return false
+      return true
+    })
 
-    if (locs && locs.length > 0) {
-      let minLat = 90
-      let maxLat = -90
-      let minLon = 180
-      let maxLon = -180
-
-      locs.forEach((l) => {
-        if (l.latitude < minLat) minLat = l.latitude
-        if (l.latitude > maxLat) maxLat = l.latitude
-        if (l.longitude < minLon) minLon = l.longitude
-        if (l.longitude > maxLon) maxLon = l.longitude
-      })
-
-      centerLon = (minLon + maxLon) / 2
-      centerLat = (minLat + maxLat) / 2
+    if (validLocs.length > 0) {
+      const lats = validLocs.map((l) => Number(l.latitude))
+      const lons = validLocs.map((l) => Number(l.longitude))
+      const minLat = Math.min(...lats)
+      const maxLat = Math.max(...lats)
       const latSpan = maxLat - minLat
-      const lonSpan = maxLon - minLon
-      const maxSpan = Math.max(latSpan, lonSpan)
+      const centerLat = (minLat + maxLat) / 2
 
-      if (locs.length === 1 || maxSpan < 0.1) {
+      let centerLon = 0
+      let lonSpan = 0
+
+      if (validLocs.length === 1) {
+        centerLon = lons[0]
+        lonSpan = 0
+      } else {
+        const sortedLons = [...lons].sort((a, b) => a - b)
+        let maxGap = 0
+        let gapIdx = 0
+        for (let i = 0; i < sortedLons.length - 1; i++) {
+          const gap = sortedLons[i + 1] - sortedLons[i]
+          if (gap > maxGap) {
+            maxGap = gap
+            gapIdx = i
+          }
+        }
+        const wrapGap = 360 + sortedLons[0] - sortedLons[sortedLons.length - 1]
+        if (wrapGap > maxGap) {
+          maxGap = wrapGap
+          gapIdx = sortedLons.length - 1
+        }
+
+        if (maxGap > 180) {
+          let gapMid = 0
+          if (gapIdx === sortedLons.length - 1) {
+            gapMid = (sortedLons[sortedLons.length - 1] + (360 + sortedLons[0])) / 2
+          } else {
+            gapMid = (sortedLons[gapIdx] + sortedLons[gapIdx + 1]) / 2
+          }
+          if (gapMid > 180) gapMid -= 360
+          centerLon = gapMid > 0 ? gapMid - 180 : gapMid + 180
+          lonSpan = 360 - maxGap
+        } else {
+          const minLon = sortedLons[0]
+          const maxLon = sortedLons[sortedLons.length - 1]
+          lonSpan = maxLon - minLon
+          centerLon = (minLon + maxLon) / 2
+        }
+      }
+
+      const maxSpan = Math.max(latSpan, lonSpan)
+      let targetAltitude = 2500000
+
+      if (validLocs.length === 1 || maxSpan < 0.1) {
         targetAltitude = 350000
       } else if (maxSpan < 4) {
         targetAltitude = Math.max(450000, maxSpan * 160000 + 200000)
       } else {
         targetAltitude = Math.min(4800000, Math.max(800000, maxSpan * 125000 + 350000))
       }
-    } else if (countryName) {
-      const centroid = COUNTRY_CENTROIDS.find((c) => c.name.toLowerCase() === countryName.toLowerCase())
-      if (centroid) {
-        centerLon = centroid.lon
-        centerLat = centroid.lat
-        targetAltitude = 2800000
+
+      return { centerLon, centerLat, targetAltitude, validLocs }
+    }
+
+    // Fallback to centroid if zero dive sites in dataset array
+    const centroid = COUNTRY_CENTROIDS.find((c) => normalizeCountryKey(c.name) === cKey)
+    if (centroid) {
+      return {
+        centerLon: Number(centroid.lon),
+        centerLat: Number(centroid.lat),
+        targetAltitude: 2800000,
+        validLocs: []
       }
     }
 
-    isProgrammaticFlightRef.current = true
-    viewer.camera.flyTo({
-      destination: window.Cesium.Cartesian3.fromDegrees(centerLon, centerLat, targetAltitude),
-      orientation: {
-        heading: 0.0,
-        pitch: window.Cesium.Math.toRadians(-88),
-        roll: 0.0
-      },
-      duration: 1.8,
-      easingFunction: window.Cesium.EasingFunction.CUBIC_IN_OUT,
-      complete: () => {
-        isProgrammaticFlightRef.current = false
-      },
-      cancel: () => {
-        isProgrammaticFlightRef.current = false
-      }
-    })
+    return null
   }, [])
 
-  // Deterministic camera flight to Dive Center Location
+  // Deterministic camera view execution to target with flight race cancellation
+  const flyToCountryTarget = useCallback((target) => {
+    const viewer = viewerRef.current
+    if (!viewer || viewer.isDestroyed() || !window.Cesium || !target) return
+
+    const currentVersion = ++cameraTransactionVersionRef.current
+    try {
+      viewer.camera.cancelFlight()
+    } catch {}
+
+    const { centerLon, centerLat, targetAltitude } = target
+    if (!isFinite(centerLon) || !isFinite(centerLat) || !isFinite(targetAltitude)) return
+
+    isProgrammaticFlightRef.current = true
+    try {
+      viewer.camera.flyTo({
+        destination: window.Cesium.Cartesian3.fromDegrees(centerLon, centerLat, targetAltitude),
+        orientation: {
+          heading: 0.0,
+          pitch: window.Cesium.Math.toRadians(-88),
+          roll: 0.0
+        },
+        duration: 0.8,
+        complete: () => {
+          if (currentVersion === cameraTransactionVersionRef.current) {
+            isProgrammaticFlightRef.current = false
+          }
+        },
+        cancel: () => {
+          if (currentVersion === cameraTransactionVersionRef.current) {
+            isProgrammaticFlightRef.current = false
+          }
+        }
+      })
+    } catch (err) {
+      console.warn('Camera flight notice:', err)
+      isProgrammaticFlightRef.current = false
+    }
+  }, [])
+
+  // Deterministic camera view to Dive Center Location
   const flyToLocationPoint = useCallback((loc) => {
     const viewer = viewerRef.current
     if (!viewer || viewer.isDestroyed() || !window.Cesium || !loc) return
     const lat = Number(loc.latitude)
     const lon = Number(loc.longitude)
-    if (isNaN(lat) || isNaN(lon)) return
+    if (isNaN(lat) || isNaN(lon) || !isFinite(lat) || !isFinite(lon)) return
+
+    const currentVersion = ++cameraTransactionVersionRef.current
+    try {
+      viewer.camera.cancelFlight()
+    } catch {}
 
     isProgrammaticFlightRef.current = true
-    viewer.camera.flyTo({
-      destination: window.Cesium.Cartesian3.fromDegrees(
-        lon,
-        lat,
-        180000
-      ),
-      orientation: {
-        heading: 0.0,
-        pitch: window.Cesium.Math.toRadians(-75),
-        roll: 0.0
-      },
-      duration: 1.5,
-      easingFunction: window.Cesium.EasingFunction.CUBIC_IN_OUT,
-      complete: () => {
-        isProgrammaticFlightRef.current = false
-      },
-      cancel: () => {
-        isProgrammaticFlightRef.current = false
-      }
-    })
+    try {
+      viewer.camera.flyTo({
+        destination: window.Cesium.Cartesian3.fromDegrees(lon, lat, 180000),
+        orientation: {
+          heading: 0.0,
+          pitch: window.Cesium.Math.toRadians(-75),
+          roll: 0.0
+        },
+        duration: 0.8,
+        complete: () => {
+          if (currentVersion === cameraTransactionVersionRef.current) {
+            isProgrammaticFlightRef.current = false
+          }
+        },
+        cancel: () => {
+          if (currentVersion === cameraTransactionVersionRef.current) {
+            isProgrammaticFlightRef.current = false
+          }
+        }
+      })
+    } catch (err) {
+      console.warn('Camera location flight notice:', err)
+      isProgrammaticFlightRef.current = false
+    }
   }, [])
 
   // 1. ONE-TIME INITIALIZATION: Load Cesium asynchronously and build Viewer ONCE
@@ -271,7 +367,6 @@ export default function InteractiveDiveMap({
 
         viewerRef.current = viewer
         isCesiumReady.current = true
-        setIsLoaded(true)
 
         // ResizeObserver
         if (typeof ResizeObserver !== 'undefined' && containerRef.current) {
@@ -454,7 +549,7 @@ export default function InteractiveDiveMap({
           }
         } catch {}
 
-        // Initial view
+        // Initial view setup
         viewer.camera.setView({
           destination: Cesium.Cartesian3.fromDegrees(80.0, 15.0, 11500000),
           orientation: {
@@ -464,40 +559,50 @@ export default function InteractiveDiveMap({
           }
         })
 
-        // Add Country Billboard Pins & Labels for Initial World View
-        COUNTRY_CENTROIDS.forEach((country) => {
-          viewer.entities.add({
-            id: `country-${country.name}`,
-            name: country.name,
-            position: Cesium.Cartesian3.fromDegrees(country.lon, country.lat),
-            show: !selectedCountryRef.current,
-            billboard: {
-              image: createSitePinSvg(),
-              width: 38,
-              height: 46,
-              verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
-              eyeOffset: new Cesium.Cartesian3(0, 0, -50),
-              scaleByDistance: new Cesium.NearFarScalar(1.0e6, 1.0, 1.8e7, 0.48),
-              translucencyByDistance: new Cesium.NearFarScalar(1.0e6, 1.0, 2.0e7, 0.8)
-            },
-            label: {
-              text: country.name,
-              font: 'bold 11px Outfit, Inter, system-ui, sans-serif',
-              fillColor: Cesium.Color.WHITE,
-              outlineColor: Cesium.Color.fromCssColorString('#00223D'),
-              outlineWidth: 3,
-              style: Cesium.LabelStyle.FILL_AND_OUTLINE,
-              verticalOrigin: Cesium.VerticalOrigin.TOP,
-              pixelOffset: new Cesium.Cartesian2(0, 4),
-              scaleByDistance: new Cesium.NearFarScalar(1.0e6, 1.0, 1.8e7, 0.5),
-              translucencyByDistance: new Cesium.NearFarScalar(1.0e6, 1.0, 2.0e7, 0.8),
-              distanceDisplayCondition: new Cesium.DistanceDisplayCondition(100000, 20000000)
-            },
-            properties: {
-              countryName: country.name
-            }
+        // Add Country Billboard Pins & Labels in a single batched event
+        viewer.entities.suspendEvents()
+        try {
+          COUNTRY_CENTROIDS.forEach((country) => {
+            const cKey = normalizeCountryKey(country.name)
+            viewer.entities.add({
+              id: `country-${cKey}`,
+              name: country.name,
+              position: Cesium.Cartesian3.fromDegrees(Number(country.lon), Number(country.lat)),
+              show: true,
+              billboard: {
+                image: createSitePinSvg(),
+                width: 38,
+                height: 46,
+                verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+                eyeOffset: new Cesium.Cartesian3(0, 0, -50),
+                scaleByDistance: new Cesium.NearFarScalar(1.0e6, 1.0, 1.8e7, 0.48),
+                translucencyByDistance: new Cesium.NearFarScalar(1.0e6, 1.0, 2.0e7, 0.8)
+              },
+              label: {
+                text: country.name,
+                font: 'bold 11px Outfit, Inter, system-ui, sans-serif',
+                fillColor: Cesium.Color.WHITE,
+                outlineColor: Cesium.Color.fromCssColorString('#00223D'),
+                outlineWidth: 3,
+                style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+                verticalOrigin: Cesium.VerticalOrigin.TOP,
+                pixelOffset: new Cesium.Cartesian2(0, 4),
+                scaleByDistance: new Cesium.NearFarScalar(1.0e6, 1.0, 1.8e7, 0.5),
+                translucencyByDistance: new Cesium.NearFarScalar(1.0e6, 1.0, 2.0e7, 0.8),
+                distanceDisplayCondition: new Cesium.DistanceDisplayCondition(100000, 20000000)
+              },
+              properties: {
+                countryName: country.name,
+                countryKey: cKey
+              }
+            })
           })
-        })
+        } finally {
+          viewer.entities.resumeEvents()
+        }
+
+        // Mark globe ready right after initial scene construction
+        setIsLoaded(true)
 
         // Interaction handlers
         handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas)
@@ -509,7 +614,7 @@ export default function InteractiveDiveMap({
             const idStr = String(pickedObject.id.id || '')
             if (
               idStr.startsWith('padi-') ||
-              (idStr.startsWith('country-') && idStr !== 'country-envelope' && !selectedCountryRef.current)
+              (idStr.startsWith('country-') && idStr !== 'country-envelope')
             ) {
               viewer.scene.canvas.style.cursor = 'pointer'
               return
@@ -541,9 +646,9 @@ export default function InteractiveDiveMap({
 
             // 2. Clicked a Country Pin Badge (ONLY on world overview, never country-envelope)
             if (idStr.startsWith('country-') && idStr !== 'country-envelope') {
-              const countryName = pickedObject.id.properties?.countryName?.getValue() || idStr.replace('country-', '')
-              if (countryName && countryName !== 'envelope') {
-                onCountrySelectRef.current?.(countryName)
+              const cName = pickedObject.id.properties?.countryName?.getValue() || pickedObject.id.name
+              if (cName && cName !== 'envelope') {
+                onCountrySelectRef.current?.(cName)
               }
               return
             }
@@ -742,104 +847,138 @@ export default function InteractiveDiveMap({
     if (!viewer || viewer.isDestroyed() || !window.Cesium || !isLoaded) return
 
     const Cesium = window.Cesium
+    const currentTransaction = ++activeCountryTransactionRef.current
+    const canonicalSelectedCountryKey = normalizeCountryKey(selectedCountry)
 
-    // A. Remove existing PADI markers and country highlight envelope
-    const entitiesToRemove = viewer.entities.values.filter(
-      (e) => e.id && (String(e.id).startsWith('padi-') || String(e.id) === 'country-envelope')
-    )
-    entitiesToRemove.forEach((e) => viewer.entities.remove(e))
+    // Filter valid coordinates strictly belonging to the selected country
+    const validLocs = (countryLocations || []).filter((l) => {
+      if (!l) return false
+      const lat = Number(l.latitude)
+      const lon = Number(l.longitude)
+      if (isNaN(lat) || isNaN(lon) || !isFinite(lat) || !isFinite(lon)) return false
+      if (lat < -90 || lat > 90 || lon < -180 || lon > 180) return false
 
-    // B. Toggle country pins visibility
-    COUNTRY_CENTROIDS.forEach((c) => {
-      const countryEntity = viewer.entities.getById(`country-${c.name}`)
-      if (countryEntity) {
-        countryEntity.show = !selectedCountry
+      if (canonicalSelectedCountryKey) {
+        const lKey = normalizeCountryKey(l.country)
+        if (lKey && lKey !== canonicalSelectedCountryKey) {
+          return false
+        }
       }
+      return true
     })
 
-    // Filter valid coordinates for selected country
-    const validLocs = countryLocations.filter(
-      (l) => l.latitude != null && l.longitude != null && !isNaN(l.latitude) && !isNaN(l.longitude)
-    )
+    const selLoc = selectedLocationRef.current
+    const hasSelection = Boolean(selLoc)
 
-    const hasSelection = Boolean(selectedLocation)
-
-    // C. When country is selected, add all PADI dive location markers
-    if (selectedCountry) {
-      validLocs.forEach((loc) => {
-        const isSel = selectedLocation && String(selectedLocation.id) === String(loc.id)
-        const isDimmed = hasSelection && !isSel
-        const displayName = getLocationDisplayName(loc)
-
-        viewer.entities.add({
-          id: `padi-${loc.id}`,
-          name: displayName || loc.title || loc.name,
-          position: Cesium.Cartesian3.fromDegrees(Number(loc.longitude), Number(loc.latitude)),
-          billboard: {
-            image: createPadiPinSvg(isSel, isDimmed),
-            width: isSel ? 48 : 38,
-            height: isSel ? 56 : 46,
-            verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
-            eyeOffset: new Cesium.Cartesian3(0, 0, isSel ? -250 : -80),
-            scaleByDistance: new Cesium.NearFarScalar(2.0e4, 1.0, 1.2e7, 0.5),
-            translucencyByDistance: new Cesium.NearFarScalar(2.0e4, 1.0, 1.5e7, 0.85)
-          },
-          label: {
-            text: displayName || loc.name,
-            font: isSel ? 'bold 12px Outfit, Inter, system-ui, sans-serif' : '10px Outfit, Inter, system-ui, sans-serif',
-            fillColor: isSel ? Cesium.Color.fromCssColorString('#FFCD00') : Cesium.Color.WHITE,
-            outlineColor: Cesium.Color.fromCssColorString('#00223D'),
-            outlineWidth: 3,
-            style: Cesium.LabelStyle.FILL_AND_OUTLINE,
-            verticalOrigin: Cesium.VerticalOrigin.TOP,
-            pixelOffset: new Cesium.Cartesian2(0, 4),
-            scaleByDistance: new Cesium.NearFarScalar(1.0e4, 1.0, 8.0e6, 0.6),
-            translucencyByDistance: new Cesium.NearFarScalar(1.0e4, 1.0, 1.0e7, 0.8),
-            distanceDisplayCondition: new Cesium.DistanceDisplayCondition(1000, 6000000)
-          },
-          properties: {
-            padiLocation: loc,
-            displayName
+    // A. Remove existing PADI markers and country highlight envelope
+    viewer.entities.suspendEvents()
+    try {
+      const idsToRemove = []
+      const currentEntities = viewer.entities.values
+      for (let i = 0; i < currentEntities.length; i++) {
+        const ent = currentEntities[i]
+        if (ent && ent.id) {
+          const idStr = String(ent.id)
+          if (idStr.startsWith('padi-') || idStr === 'country-envelope') {
+            idsToRemove.push(idStr)
           }
-        })
+        }
+      }
+      idsToRemove.forEach((id) => viewer.entities.removeById(id))
+
+      // B. Keep all 123 persistent country pins visible and highlight active country badge
+      COUNTRY_CENTROIDS.forEach((c) => {
+        const cKey = normalizeCountryKey(c.name)
+        const countryEntity = viewer.entities.getById(`country-${cKey}`)
+        if (countryEntity) {
+          const isActive = canonicalSelectedCountryKey && cKey === canonicalSelectedCountryKey
+          countryEntity.show = true
+          if (countryEntity.label) {
+            countryEntity.label.fillColor = isActive
+              ? Cesium.Color.fromCssColorString('#FFCD00')
+              : Cesium.Color.WHITE
+          }
+        }
       })
 
-      // D. Add subtle glowing country territory envelope on globe surface
-      if (validLocs.length > 0) {
-        let minLat = 90
-        let maxLat = -90
-        let minLon = 180
-        let maxLon = -180
+      // C. When country is selected, add all validated PADI dive location markers
+      if (canonicalSelectedCountryKey) {
+        validLocs.forEach((loc) => {
+          const isSel = selLoc && String(selLoc.id) === String(loc.id)
+          const isDimmed = hasSelection && !isSel
+          const displayName = getLocationDisplayName(loc)
 
-        validLocs.forEach((l) => {
-          if (l.latitude < minLat) minLat = l.latitude
-          if (l.latitude > maxLat) maxLat = l.latitude
-          if (l.longitude < minLon) minLon = l.longitude
-          if (l.longitude > maxLon) maxLon = l.longitude
-        })
-
-        const latPadding = Math.max(0.8, (maxLat - minLat) * 0.25)
-        const lonPadding = Math.max(0.8, (maxLon - minLon) * 0.25)
-
-        try {
           viewer.entities.add({
-            id: 'country-envelope',
-            rectangle: {
-              coordinates: Cesium.Rectangle.fromDegrees(
-                Math.max(-180, minLon - lonPadding),
-                Math.max(-85, minLat - latPadding),
-                Math.min(180, maxLon + lonPadding),
-                Math.min(85, maxLat + latPadding)
-              ),
-              material: new Cesium.Color(0.0, 0.68, 0.78, 0.06),
-              outline: true,
-              outlineColor: new Cesium.Color(0.0, 0.9, 1.0, 0.35),
-              outlineWidth: 2
+            id: `padi-${loc.id}`,
+            name: displayName || loc.title || loc.name,
+            position: Cesium.Cartesian3.fromDegrees(Number(loc.longitude), Number(loc.latitude)),
+            billboard: {
+              image: createPadiPinSvg(isSel, isDimmed),
+              width: isSel ? 48 : 38,
+              height: isSel ? 56 : 46,
+              verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+              eyeOffset: new Cesium.Cartesian3(0, 0, isSel ? -250 : -80),
+              scaleByDistance: new Cesium.NearFarScalar(2.0e4, 1.0, 1.2e7, 0.5),
+              translucencyByDistance: new Cesium.NearFarScalar(2.0e4, 1.0, 1.5e7, 0.85)
+            },
+            label: {
+              text: displayName || loc.name,
+              font: isSel ? 'bold 12px Outfit, Inter, system-ui, sans-serif' : '10px Outfit, Inter, system-ui, sans-serif',
+              fillColor: isSel ? Cesium.Color.fromCssColorString('#FFCD00') : Cesium.Color.WHITE,
+              outlineColor: Cesium.Color.fromCssColorString('#00223D'),
+              outlineWidth: 3,
+              style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+              verticalOrigin: Cesium.VerticalOrigin.TOP,
+              pixelOffset: new Cesium.Cartesian2(0, 4),
+              scaleByDistance: new Cesium.NearFarScalar(1.0e4, 1.0, 8.0e6, 0.6),
+              translucencyByDistance: new Cesium.NearFarScalar(1.0e4, 1.0, 1.0e7, 0.8),
+              distanceDisplayCondition: new Cesium.DistanceDisplayCondition(1000, 6000000)
+            },
+            properties: {
+              padiLocation: loc,
+              displayName,
+              countryKey: canonicalSelectedCountryKey
             }
           })
-        } catch {}
+        })
+
+        // D. Add subtle glowing country territory envelope on globe surface
+        if (validLocs.length > 0) {
+          const lats = validLocs.map((l) => Number(l.latitude))
+          const lons = validLocs.map((l) => Number(l.longitude))
+          const minLat = Math.min(...lats)
+          const maxLat = Math.max(...lats)
+          const minLon = Math.min(...lons)
+          const maxLon = Math.max(...lons)
+
+          const latPadding = Math.max(0.8, (maxLat - minLat) * 0.25)
+          const lonPadding = Math.max(0.8, (maxLon - minLon) * 0.25)
+
+          try {
+            viewer.entities.add({
+              id: 'country-envelope',
+              rectangle: {
+                coordinates: Cesium.Rectangle.fromDegrees(
+                  Math.max(-180, minLon - lonPadding),
+                  Math.max(-85, minLat - latPadding),
+                  Math.min(180, maxLon + lonPadding),
+                  Math.min(85, maxLat + latPadding)
+                ),
+                material: new Cesium.Color(0.0, 0.68, 0.78, 0.06),
+                outline: true,
+                outlineColor: new Cesium.Color(0.0, 0.9, 1.0, 0.35),
+                outlineWidth: 2
+              }
+            })
+          } catch {}
+        }
       }
+    } finally {
+      viewer.entities.resumeEvents()
     }
+
+    // Verify transaction is still active before executing camera flight
+    if (currentTransaction !== activeCountryTransactionRef.current) return
 
     // E. Camera Flight Transitions on Country Change
     const countryChanged = prevCountryRef.current !== selectedCountry
@@ -847,16 +986,19 @@ export default function InteractiveDiveMap({
 
     if (countryChanged) {
       if (selectedCountry) {
-        if (!selectedLocation) {
-          flyToCountryBounds(validLocs, selectedCountry)
-        } else {
-          flyToLocationPoint(selectedLocation)
+        const target = getCountryCameraTarget(selectedCountry, validLocs)
+        if (target) {
+          if (!selLoc) {
+            flyToCountryTarget(target)
+          } else {
+            flyToLocationPoint(selLoc)
+          }
         }
       } else {
         flyToGlobalOverview()
       }
     }
-  }, [selectedCountry, countryLocations, isLoaded, flyToCountryBounds, flyToGlobalOverview, flyToLocationPoint])
+  }, [selectedCountry, countryLocations, isLoaded, getCountryCameraTarget, flyToCountryTarget, flyToGlobalOverview, flyToLocationPoint])
 
   // 3. TARGETED LOCATION SELECTION EFFECT (Updates only marker visual state + camera flight)
   useEffect(() => {
@@ -1037,29 +1179,7 @@ export default function InteractiveDiveMap({
                 )}
               </div>
 
-              {/* 4. Action Footer: View Details Link & ID */}
-              <div className="px-3.5 py-2 border-t border-white/10 flex items-center justify-between bg-white/[0.02]">
-                {popupSite.travel_url ? (
-                  <a
-                    href={popupSite.travel_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs font-bold text-cyan-400 hover:text-cyan-300 flex items-center gap-1.5 transition group cursor-pointer"
-                  >
-                    <span>View Details</span>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">
-                      <path d="M7 17L17 7M17 7H7M17 7V17" />
-                    </svg>
-                  </a>
-                ) : (
-                  <span className="text-xs font-bold text-cyan-400/70">
-                    Verified PADI Site
-                  </span>
-                )}
-                <span className="text-[10px] font-mono font-medium text-white/40">
-                  #{popupSite.id}
-                </span>
-              </div>
+
 
               {/* Bottom Marker Pointer Needle */}
               <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-[#00192e] rotate-45 border-r border-b border-cyan-400/35 pointer-events-none" />

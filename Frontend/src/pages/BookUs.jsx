@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 const InteractiveDiveMap = lazy(() => import('../components/InteractiveDiveMap'))
 import CompactTwoMonthCalendarPopover from '../components/CompactTwoMonthCalendarPopover'
 import SEOHead from '../components/SEOHead'
-import { diveSiteService } from '../services/diveSiteService'
+import { diveSiteService, normalizeCountryKey } from '../services/diveSiteService'
 import { getDiveSiteCreatureInfo } from '../data/diveSiteImages'
 import { bookingService } from '../services/bookingService'
 import {
@@ -49,6 +49,8 @@ export default function BookUs() {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false)
   const datePickerBtnRef = useRef(null)
 
+  const countryRequestVersionRef = useRef(0)
+
   const formatDateToDDMMYYYY = (dateStr) => {
     if (!dateStr) return ''
     const parts = dateStr.split('-')
@@ -59,7 +61,42 @@ export default function BookUs() {
 
   // Derived PADI dataset lookups
   const countries = useMemo(() => diveSiteService.getCountries(), [])
-  const availableLocations = useMemo(() => diveSiteService.getLocationsByCountry(country), [country])
+  const [availableLocations, setAvailableLocations] = useState([])
+  const [isLocationsLoading, setIsLocationsLoading] = useState(false)
+
+  // Asynchronous location data resolution on country change with atomic transaction version check
+  useEffect(() => {
+    const currentVersion = ++countryRequestVersionRef.current
+    const requestedCountryKey = normalizeCountryKey(country)
+
+    if (!country) {
+      setAvailableLocations([])
+      setIsLocationsLoading(false)
+      return
+    }
+
+    setIsLocationsLoading(true)
+    diveSiteService
+      .getLocationsByCountry(country)
+      .then((locs) => {
+        if (
+          currentVersion === countryRequestVersionRef.current &&
+          normalizeCountryKey(country) === requestedCountryKey
+        ) {
+          setAvailableLocations(locs || [])
+          setIsLocationsLoading(false)
+        }
+      })
+      .catch(() => {
+        if (
+          currentVersion === countryRequestVersionRef.current &&
+          normalizeCountryKey(country) === requestedCountryKey
+        ) {
+          setAvailableLocations([])
+          setIsLocationsLoading(false)
+        }
+      })
+  }, [country])
 
   // Step 1 Handlers
   const handleCountryChange = (newCountry) => {
@@ -422,13 +459,15 @@ export default function BookUs() {
                       <div className="relative">
                         <select
                           value={locationId}
-                          disabled={!country}
+                          disabled={!country || isLocationsLoading}
                           onChange={(e) => handleLocationChange(e.target.value)}
                           required
                           className="w-full rounded-2xl bg-[#F0F2F5] px-5 py-4 pr-10 text-sm font-bold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition cursor-pointer appearance-none disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           {!country ? (
                             <option value="">Select a country first</option>
+                          ) : isLocationsLoading ? (
+                            <option value="">Loading dive locations...</option>
                           ) : (
                             <>
                               <option value="">Select a dive location</option>
