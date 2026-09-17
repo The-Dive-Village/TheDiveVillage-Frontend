@@ -9,6 +9,7 @@ import jellyfishVideo from '../assets/jelly fish.mp4'
 import useNightDive from '../hooks/useNightDive'
 import InteractiveVideoSphere from '../components/InteractiveVideoSphere'
 import SEOHead from '../components/SEOHead'
+import api from '../services/api'
 
 export default function Contact() {
   const isNightDive = useNightDive()
@@ -35,20 +36,12 @@ export default function Contact() {
     setSuccess(false)
 
     try {
-      const response = await fetch('http://localhost:5000/api/content/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          fullName: formData.name,
-          email: formData.email,
-          subject: formData.subject,
-          message: formData.message,
-        }),
+      await api.post('/api/content/contact', {
+        fullName: formData.name,
+        email: formData.email,
+        subject: formData.subject,
+        message: formData.message,
       })
-
-      if (!response.ok) {
-        throw new Error('Failed to send message. Please try again.')
-      }
 
       setSuccess(true)
       setFormData({
