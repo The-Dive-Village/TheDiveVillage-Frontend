@@ -14,6 +14,8 @@ import { setHeroVideoReady } from '../utils/mediaReadyManager'
 
 function useDirectVideoTexture(src, playbackRate = 0.7, priority = false) {
   const [texture, setTexture] = useState(null)
+  const hasNewFrameRef = useRef(false)
+  const lastTimeRef = useRef(-1)
 
   useEffect(() => {
     if (!src) {
@@ -23,6 +25,7 @@ function useDirectVideoTexture(src, playbackRate = 0.7, priority = false) {
 
     let isMounted = true
     let vidTexture = null
+    let rvfcId = null
 
     const video = document.createElement('video')
     video.src = src
@@ -51,6 +54,17 @@ function useDirectVideoTexture(src, playbackRate = 0.7, priority = false) {
       )
     }
 
+    const registerFrameCallback = () => {
+      if (video.requestVideoFrameCallback) {
+        const onVideoFrame = () => {
+          if (!isMounted) return
+          hasNewFrameRef.current = true
+          rvfcId = video.requestVideoFrameCallback(onVideoFrame)
+        }
+        rvfcId = video.requestVideoFrameCallback(onVideoFrame)
+      }
+    }
+
     const tryActivateTexture = () => {
       if (!isMounted) return
       if (checkReadiness()) {
@@ -63,7 +77,9 @@ function useDirectVideoTexture(src, playbackRate = 0.7, priority = false) {
           if (isMounted) {
             setTexture(vidTexture)
           }
+          registerFrameCallback()
         }
+        hasNewFrameRef.current = true
         vidTexture.needsUpdate = true
         if (priority) setHeroVideoReady(true)
       }
@@ -119,6 +135,9 @@ function useDirectVideoTexture(src, playbackRate = 0.7, priority = false) {
 
     return () => {
       isMounted = false
+      if (rvfcId && video.cancelVideoFrameCallback) {
+        video.cancelVideoFrameCallback(rvfcId)
+      }
       window.removeEventListener('pointerdown', handleUserInteraction)
       window.removeEventListener('touchstart', handleUserInteraction)
       mediaEvents.forEach((evt) => {
@@ -135,7 +154,7 @@ function useDirectVideoTexture(src, playbackRate = 0.7, priority = false) {
     }
   }, [src, playbackRate, priority])
 
-  return texture
+  return { texture, hasNewFrameRef, lastTimeRef }
 }
 
 function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
@@ -151,10 +170,10 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
   const isAbout = location.pathname === '/about'
 
   // Primary video is prioritized with 'auto' preload and high priority (calm slowed playback)
-  const texture = useDirectVideoTexture(videoSrc, 0.7, true)
+  const { texture, hasNewFrameRef: hasNewFrame1, lastTimeRef: lastTime1 } = useDirectVideoTexture(videoSrc, 0.7, true)
   // Secondary videos are strictly lazy-loaded only when user scrolls or needs them
-  const texture2 = useDirectVideoTexture(isHome && !isNightDive && loadSecondary ? bookFile : null, 0.7, false)
-  const texture3 = useDirectVideoTexture(isHome && !isNightDive && loadSecondary ? turtleVideo : null, 0.7, false)
+  const { texture: texture2, hasNewFrameRef: hasNewFrame2, lastTimeRef: lastTime2 } = useDirectVideoTexture(isHome && !isNightDive && loadSecondary ? bookFile : null, 0.7, false)
+  const { texture: texture3, hasNewFrameRef: hasNewFrame3, lastTimeRef: lastTime3 } = useDirectVideoTexture(isHome && !isNightDive && loadSecondary ? turtleVideo : null, 0.7, false)
 
   // Flip turtle video texture horizontally so it displays correctly on the sphere
   useEffect(() => {
@@ -286,14 +305,50 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
 
   useFrame((state, delta) => {
     if (meshRef.current) {
-      if (texture && texture.image && texture.image.readyState >= 2 && texture.image.videoWidth > 0 && texture.image.videoHeight > 0) {
-        texture.needsUpdate = true
+      // 1. Frame-gated texture 1 update
+      if (texture && texture.image) {
+        const vid = texture.image
+        if (vid.readyState >= 2 && vid.videoWidth > 0 && vid.videoHeight > 0) {
+          if (hasNewFrame1.current || vid.currentTime !== lastTime1.current) {
+            lastTime1.current = vid.currentTime
+            hasNewFrame1.current = false
+            texture.needsUpdate = true
+          }
+        }
       }
-      if (texture2 && targetOpacity2.current > 0.01 && texture2.image && texture2.image.readyState >= 2 && texture2.image.videoWidth > 0 && texture2.image.videoHeight > 0) {
-        texture2.needsUpdate = true
+
+      // 2. Secondary texture 2 update (pause when opacity === 0, frame-gated update when opacity > 0)
+      if (texture2 && texture2.image) {
+        const vid2 = texture2.image
+        if (targetOpacity2.current > 0.01) {
+          if (vid2.paused) vid2.play().catch(() => {})
+          if (vid2.readyState >= 2 && vid2.videoWidth > 0 && vid2.videoHeight > 0) {
+            if (hasNewFrame2.current || vid2.currentTime !== lastTime2.current) {
+              lastTime2.current = vid2.currentTime
+              hasNewFrame2.current = false
+              texture2.needsUpdate = true
+            }
+          }
+        } else {
+          if (!vid2.paused) vid2.pause()
+        }
       }
-      if (texture3 && targetOpacity3.current > 0.01 && texture3.image && texture3.image.readyState >= 2 && texture3.image.videoWidth > 0 && texture3.image.videoHeight > 0) {
-        texture3.needsUpdate = true
+
+      // 3. Secondary texture 3 update (pause when opacity === 0, frame-gated update when opacity > 0)
+      if (texture3 && texture3.image) {
+        const vid3 = texture3.image
+        if (targetOpacity3.current > 0.01) {
+          if (vid3.paused) vid3.play().catch(() => {})
+          if (vid3.readyState >= 2 && vid3.videoWidth > 0 && vid3.videoHeight > 0) {
+            if (hasNewFrame3.current || vid3.currentTime !== lastTime3.current) {
+              lastTime3.current = vid3.currentTime
+              hasNewFrame3.current = false
+              texture3.needsUpdate = true
+            }
+          }
+        } else {
+          if (!vid3.paused) vid3.pause()
+        }
       }
 
       if (joystickVelocity && joystickVelocity.current) {
@@ -501,9 +556,9 @@ export default function VideoSphereBackground() {
           />
           <div style={{ width: '100%', height: '100%' }}>
             <Canvas
-              dpr={[1, 2]}
+              dpr={[1, 1.5]}
               camera={{ position: [0, 0, 0.1], fov: 85 }}
-              gl={{ powerPreference: 'high-performance', antialias: true }}
+              gl={{ powerPreference: 'high-performance', antialias: false }}
               onCreated={({ gl, scene }) => {
                 scene.background = new THREE.Color('#001e3d')
                 gl.domElement.addEventListener('webglcontextlost', (e) => {

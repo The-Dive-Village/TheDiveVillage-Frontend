@@ -18,6 +18,8 @@ function getOrCreateDomVideoContainer() {
 function useDirectVideoTexture(src) {
   const [texture, setTexture] = useState(null)
   const videoRef = useRef(null)
+  const hasNewFrameRef = useRef(false)
+  const lastTimeRef = useRef(-1)
 
   useEffect(() => {
     if (!src) {
@@ -27,6 +29,7 @@ function useDirectVideoTexture(src) {
 
     let isMounted = true
     let vidTexture = null
+    let rvfcId = null
 
     const domContainer = getOrCreateDomVideoContainer()
     const video = document.createElement('video')
@@ -56,6 +59,17 @@ function useDirectVideoTexture(src) {
       )
     }
 
+    const registerFrameCallback = () => {
+      if (video.requestVideoFrameCallback) {
+        const onVideoFrame = () => {
+          if (!isMounted) return
+          hasNewFrameRef.current = true
+          rvfcId = video.requestVideoFrameCallback(onVideoFrame)
+        }
+        rvfcId = video.requestVideoFrameCallback(onVideoFrame)
+      }
+    }
+
     const tryActivateTexture = () => {
       if (!isMounted) return
       if (checkReadiness()) {
@@ -68,7 +82,9 @@ function useDirectVideoTexture(src) {
           if (isMounted) {
             setTexture(vidTexture)
           }
+          registerFrameCallback()
         }
+        hasNewFrameRef.current = true
         vidTexture.needsUpdate = true
       }
     }
@@ -127,6 +143,9 @@ function useDirectVideoTexture(src) {
 
     return () => {
       isMounted = false
+      if (rvfcId && video.cancelVideoFrameCallback) {
+        video.cancelVideoFrameCallback(rvfcId)
+      }
       window.removeEventListener('pointerdown', handleUserInteraction)
       window.removeEventListener('touchstart', handleUserInteraction)
       mediaEvents.forEach((evt) => {
@@ -147,12 +166,25 @@ function useDirectVideoTexture(src) {
     }
   }, [src])
 
-  return texture
+  return { texture, hasNewFrameRef, lastTimeRef }
 }
 
 function SphereMesh({ autoRotate }) {
   const meshRef = useRef()
-  const texture = useDirectVideoTexture(videoFile)
+  const { texture, hasNewFrameRef, lastTimeRef } = useDirectVideoTexture(videoFile)
+
+  useFrame(() => {
+    if (meshRef.current && texture && texture.image) {
+      const vid = texture.image
+      if (vid.readyState >= 2 && vid.videoWidth > 0 && vid.videoHeight > 0) {
+        if (hasNewFrameRef.current || vid.currentTime !== lastTimeRef.current) {
+          lastTimeRef.current = vid.currentTime
+          hasNewFrameRef.current = false
+          texture.needsUpdate = true
+        }
+      }
+    }
+  })
 
   if (!texture) return null
 
@@ -221,7 +253,7 @@ export default function InteractiveVideoSphere({ autoRotate = true, className = 
 
   return (
     <div className={`relative w-full h-full bg-[#001e3d] overflow-hidden cursor-grab active:cursor-grabbing ${className}`}>
-      <Canvas camera={{ position: [0, 0, 0.1], fov: 75 }}>
+      <Canvas dpr={[1, 1.5]} camera={{ position: [0, 0, 0.1], fov: 75 }} gl={{ powerPreference: 'high-performance', antialias: false }}>
         <color attach="background" args={['#001e3d']} />
         <Suspense fallback={null}>
           <SphereMesh autoRotate={autoRotate} />
