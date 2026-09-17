@@ -1,6 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "git lfs pull && node scripts/verify-lfs-assets.js && npm run build --workspace=Frontend",
+  "buildCommand": "node scripts/hydrate-lfs-assets.js && node scripts/verify-lfs-assets.js && npm run build --workspace=Frontend",
   "outputDirectory": "Frontend/dist",
   "routes": [
     {

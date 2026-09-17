@@ -1,6 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import https from 'https'
+import crypto from 'crypto'
 import { fileURLToPath } from 'url'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -12,6 +13,7 @@ const assetsDir = path.resolve(__dirname, '../Frontend/src/assets')
 
 function getFilesRecursively(dir) {
   let results = []
+  if (!fs.existsSync(dir)) return results
   const list = fs.readdirSync(dir)
   list.forEach(file => {
     const filePath = path.join(dir, file)
@@ -77,7 +79,7 @@ function fetchLfsDownloadUrl(oid, size) {
             reject(e)
           }
         } else {
-          reject(new Error(`LFS Batch API returned HTTP ${res.statusCode}: ${data}`))
+          reject(new Error(`LFS Batch API HTTP ${res.statusCode}: ${data}`))
         }
       })
     })
@@ -96,7 +98,7 @@ function downloadFile(url, destPath) {
       }
 
       if (res.statusCode !== 200) {
-        return reject(new Error(`Failed to download binary: HTTP ${res.statusCode}`))
+        return reject(new Error(`HTTP ${res.statusCode}`))
       }
 
       const fileStream = fs.createWriteStream(destPath)
@@ -112,48 +114,99 @@ function downloadFile(url, destPath) {
   })
 }
 
-async function hydrateLfsAssets() {
-  console.log('💧 [LFS Hydrator] Checking repository assets for unhydrated Git LFS pointers...')
+function calculateSha256(filePath) {
+  return new Promise((resolve, reject) => {
+    const hash = crypto.createHash('sha256')
+    const stream = fs.createReadStream(filePath)
+    stream.on('data', data => hash.update(data))
+    stream.on('end', () => resolve(hash.digest('hex')))
+    stream.on('error', reject)
+  })
+}
+
+async function main() {
+  console.log('💧 [LFS Hydrator] Starting build-time Git LFS asset hydration...')
+
+  if (!fs.existsSync(assetsDir)) {
+    console.error(`❌ [LFS Hydrator Error] Assets directory not found: ${assetsDir}`)
+    process.exit(1)
+  }
+
   const files = getFilesRecursively(assetsDir)
   let pointersFound = 0
-  let hydrated = 0
+  let hydratedCount = 0
+  let skippedCount = 0
+  let failedCount = 0
 
   for (const filePath of files) {
     const ext = path.extname(filePath).toLowerCase()
     if (!['.mp4', '.mov', '.webm', '.png', '.jpg', '.jpeg'].includes(ext)) continue
 
+    const relPath = path.relative(assetsDir, filePath)
     const stats = fs.statSync(filePath)
-    if (stats.size > 1024) continue
+
+    if (stats.size > 1024) {
+      skippedCount++
+      continue
+    }
 
     const content = fs.readFileSync(filePath, 'utf8')
-    if (!content.includes('version https://git-lfs.github.com/spec/v1')) continue
+    if (!content.includes('version https://git-lfs.github.com/spec/v1')) {
+      skippedCount++
+      continue
+    }
 
     const pointer = parseLfsPointer(content)
-    if (!pointer) continue
+    if (!pointer) {
+      skippedCount++
+      continue
+    }
 
     pointersFound++
-    const relPath = path.relative(assetsDir, filePath)
-    console.log(`⬇️ [LFS Hydrating] Fetching LFS binary for ${relPath} (${pointer.size} bytes)...`)
+    console.log(`⬇️ [LFS Hydrating] ${relPath} (Target size: ${(pointer.size / (1024 * 1024)).toFixed(2)} MB)...`)
 
     try {
       const downloadUrl = await fetchLfsDownloadUrl(pointer.oid, pointer.size)
-      await downloadFile(downloadUrl, filePath)
-      const newStats = fs.statSync(filePath)
-      console.log(`✅ [LFS Hydrated] ${relPath} successfully downloaded (${(newStats.size / (1024 * 1024)).toFixed(2)} MB)`)
-      hydrated++
+      const tempPath = `${filePath}.lfs_tmp`
+      await downloadFile(downloadUrl, tempPath)
+
+      const tempStats = fs.statSync(tempPath)
+      if (tempStats.size !== pointer.size) {
+        throw new Error(`Size mismatch: expected ${pointer.size} bytes, got ${tempStats.size} bytes`)
+      }
+
+      const calculatedHash = await calculateSha256(tempPath)
+      if (calculatedHash.toLowerCase() !== pointer.oid.toLowerCase()) {
+        throw new Error(`SHA-256 hash mismatch: expected ${pointer.oid}, got ${calculatedHash}`)
+      }
+
+      fs.renameSync(tempPath, filePath)
+      const finalStats = fs.statSync(filePath)
+      console.log(`✅ [LFS Hydrated & Verified] ${relPath} (${(finalStats.size / (1024 * 1024)).toFixed(2)} MB) SHA-256 OK`)
+      hydratedCount++
     } catch (err) {
       console.error(`❌ [LFS Hydrate Error] Failed to hydrate ${relPath}: ${err.message}`)
+      failedCount++
+      const tempPath = `${filePath}.lfs_tmp`
+      if (fs.existsSync(tempPath)) fs.unlinkSync(tempPath)
     }
   }
 
-  if (pointersFound === 0) {
-    console.log('✨ [LFS Hydrator] All assets are already fully hydrated binaries!')
-  } else {
-    console.log(`🎉 [LFS Hydrator] Hydrated ${hydrated} / ${pointersFound} Git LFS pointer files!`)
+  console.log(`\n📊 [LFS Hydration Summary]`)
+  console.log(`   - Pointer files discovered: ${pointersFound}`)
+  console.log(`   - Already hydrated / binary: ${skippedCount}`)
+  console.log(`   - Successfully hydrated: ${hydratedCount}`)
+  console.log(`   - Failed: ${failedCount}`)
+
+  if (failedCount > 0) {
+    console.error('❌ [LFS Hydration Failure] One or more Git LFS assets failed to hydrate.')
+    process.exit(1)
   }
+
+  console.log('🚀 [LFS Hydrator] Build-time asset hydration complete!')
 }
 
-hydrateLfsAssets().catch(err => {
-  console.error('❌ [LFS Hydrator Error]', err)
+main().catch(err => {
+  console.error('❌ [LFS Hydrator Fatal Error]', err)
   process.exit(1)
 })
