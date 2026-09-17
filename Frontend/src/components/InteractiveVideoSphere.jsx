@@ -25,6 +25,9 @@ function useDirectVideoTexture(src) {
       return
     }
 
+    let isMounted = true
+    let vidTexture = null
+
     const domContainer = getOrCreateDomVideoContainer()
     const video = document.createElement('video')
     video.src = src
@@ -44,57 +47,103 @@ function useDirectVideoTexture(src) {
     domContainer.appendChild(video)
     videoRef.current = video
 
-    const vidTexture = new THREE.VideoTexture(video)
-    vidTexture.colorSpace = THREE.SRGBColorSpace
-    vidTexture.minFilter = THREE.LinearFilter
-    vidTexture.magFilter = THREE.LinearFilter
-    vidTexture.generateMipmaps = false
+    const checkReadiness = () => {
+      if (!isMounted) return false
+      return (
+        video.readyState >= 2 &&
+        video.videoWidth > 0 &&
+        video.videoHeight > 0
+      )
+    }
 
-    const updateTexture = () => {
-      if (video.readyState >= 2 && video.videoWidth > 0 && video.videoHeight > 0) {
+    const tryActivateTexture = () => {
+      if (!isMounted) return
+      if (checkReadiness()) {
+        if (!vidTexture) {
+          vidTexture = new THREE.VideoTexture(video)
+          vidTexture.colorSpace = THREE.SRGBColorSpace
+          vidTexture.minFilter = THREE.LinearFilter
+          vidTexture.magFilter = THREE.LinearFilter
+          vidTexture.generateMipmaps = false
+          if (isMounted) {
+            setTexture(vidTexture)
+          }
+        }
         vidTexture.needsUpdate = true
       }
     }
 
-    video.addEventListener('loadeddata', updateTexture)
-    video.addEventListener('playing', updateTexture)
-    video.addEventListener('timeupdate', updateTexture)
+    const handleEvent = () => {
+      if (!isMounted) return
+      tryActivateTexture()
+    }
+
+    const mediaEvents = [
+      'loadstart',
+      'loadedmetadata',
+      'loadeddata',
+      'canplay',
+      'canplaythrough',
+      'playing',
+      'timeupdate',
+      'resize'
+    ]
+
+    mediaEvents.forEach((evt) => {
+      video.addEventListener(evt, handleEvent)
+    })
 
     const playPromise = video.play()
     if (playPromise !== undefined) {
-      playPromise.then(() => {
-        video.playbackRate = 0.7
-        updateTexture()
-      }).catch((err) => {
-        console.warn('Video autoplay deferred:', err?.message || err)
-      })
+      playPromise
+        .then(() => {
+          if (isMounted) {
+            video.playbackRate = 0.7
+            tryActivateTexture()
+          }
+        })
+        .catch((err) => {
+          console.warn('Video autoplay deferred:', err?.message || err)
+        })
     }
 
     const handleUserInteraction = () => {
+      if (!isMounted) return
       if (videoRef.current && videoRef.current.paused) {
         videoRef.current.playbackRate = 0.7
-        videoRef.current.play().then(updateTexture).catch(() => {})
+        videoRef.current
+          .play()
+          .then(() => {
+            if (isMounted) tryActivateTexture()
+          })
+          .catch(() => {})
+      } else {
+        tryActivateTexture()
       }
     }
-    window.addEventListener('pointerdown', handleUserInteraction, { once: true })
-    window.addEventListener('touchstart', handleUserInteraction, { once: true })
 
-    setTexture(vidTexture)
+    window.addEventListener('pointerdown', handleUserInteraction, { once: true, passive: true })
+    window.addEventListener('touchstart', handleUserInteraction, { once: true, passive: true })
 
     return () => {
+      isMounted = false
       window.removeEventListener('pointerdown', handleUserInteraction)
       window.removeEventListener('touchstart', handleUserInteraction)
-      video.removeEventListener('loadeddata', updateTexture)
-      video.removeEventListener('playing', updateTexture)
-      video.removeEventListener('timeupdate', updateTexture)
+      mediaEvents.forEach((evt) => {
+        video.removeEventListener(evt, handleEvent)
+      })
       video.pause()
       video.removeAttribute('src')
       video.load()
       if (video.parentNode) {
         video.parentNode.removeChild(video)
       }
-      vidTexture.dispose()
+      if (vidTexture) {
+        vidTexture.dispose()
+        vidTexture = null
+      }
       videoRef.current = null
+      setTexture(null)
     }
   }, [src])
 

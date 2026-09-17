@@ -22,6 +22,7 @@ function useDirectVideoTexture(src, playbackRate = 0.7, priority = false) {
     }
 
     let isMounted = true
+    let vidTexture = null
 
     const video = document.createElement('video')
     video.src = src
@@ -41,58 +42,96 @@ function useDirectVideoTexture(src, playbackRate = 0.7, priority = false) {
       video.setAttribute('fetchpriority', 'high')
     }
 
-    const vidTexture = new THREE.VideoTexture(video)
-    vidTexture.colorSpace = THREE.SRGBColorSpace
-    vidTexture.minFilter = THREE.LinearFilter
-    vidTexture.magFilter = THREE.LinearFilter
-    vidTexture.generateMipmaps = false
+    const checkReadiness = () => {
+      if (!isMounted) return false
+      return (
+        video.readyState >= 2 &&
+        video.videoWidth > 0 &&
+        video.videoHeight > 0
+      )
+    }
 
-    if (isMounted) {
-      setTexture(vidTexture)
+    const tryActivateTexture = () => {
+      if (!isMounted) return
+      if (checkReadiness()) {
+        if (!vidTexture) {
+          vidTexture = new THREE.VideoTexture(video)
+          vidTexture.colorSpace = THREE.SRGBColorSpace
+          vidTexture.minFilter = THREE.LinearFilter
+          vidTexture.magFilter = THREE.LinearFilter
+          vidTexture.generateMipmaps = false
+          if (isMounted) {
+            setTexture(vidTexture)
+          }
+        }
+        vidTexture.needsUpdate = true
+        if (priority) setHeroVideoReady(true)
+      }
     }
 
     const startPlayback = () => {
       if (!isMounted) return
-      if (video.readyState >= 2 && video.videoWidth > 0) {
-        vidTexture.needsUpdate = true
-      }
-      if (priority) setHeroVideoReady(true)
+      tryActivateTexture()
       if (video.paused) {
-        video.play().then(() => {
-          if (isMounted && video.readyState >= 2 && video.videoWidth > 0) {
-            vidTexture.needsUpdate = true
-            if (priority) setHeroVideoReady(true)
-          }
-        }).catch(() => {})
+        const playPromise = video.play()
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              if (isMounted) {
+                video.playbackRate = playbackRate
+                tryActivateTexture()
+              }
+            })
+            .catch(() => {})
+        }
       }
     }
 
-    video.addEventListener('canplay', startPlayback)
-    video.addEventListener('canplaythrough', startPlayback)
-    video.addEventListener('loadeddata', startPlayback)
-    video.addEventListener('playing', startPlayback)
-
-    // Trigger immediately
-    startPlayback()
+    const handleEvent = () => {
+      if (!isMounted) return
+      tryActivateTexture()
+    }
 
     const handleUserInteraction = () => {
+      if (!isMounted) return
       startPlayback()
     }
-    window.addEventListener('pointerdown', handleUserInteraction)
-    window.addEventListener('touchstart', handleUserInteraction)
+
+    const mediaEvents = [
+      'loadstart',
+      'loadedmetadata',
+      'loadeddata',
+      'canplay',
+      'canplaythrough',
+      'playing',
+      'timeupdate',
+      'resize'
+    ]
+
+    mediaEvents.forEach((evt) => {
+      video.addEventListener(evt, handleEvent)
+    })
+
+    startPlayback()
+
+    window.addEventListener('pointerdown', handleUserInteraction, { passive: true })
+    window.addEventListener('touchstart', handleUserInteraction, { passive: true })
 
     return () => {
       isMounted = false
       window.removeEventListener('pointerdown', handleUserInteraction)
       window.removeEventListener('touchstart', handleUserInteraction)
-      video.removeEventListener('canplay', startPlayback)
-      video.removeEventListener('canplaythrough', startPlayback)
-      video.removeEventListener('loadeddata', startPlayback)
-      video.removeEventListener('playing', startPlayback)
+      mediaEvents.forEach((evt) => {
+        video.removeEventListener(evt, handleEvent)
+      })
       video.pause()
       video.removeAttribute('src')
       video.load()
-      vidTexture.dispose()
+      if (vidTexture) {
+        vidTexture.dispose()
+        vidTexture = null
+      }
+      setTexture(null)
     }
   }, [src, playbackRate, priority])
 
