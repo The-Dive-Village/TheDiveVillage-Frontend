@@ -46,7 +46,6 @@ function useDirectVideoTexture(src, playbackRate = 0.7, priority = false) {
     vidTexture.minFilter = THREE.LinearFilter
     vidTexture.magFilter = THREE.LinearFilter
     vidTexture.generateMipmaps = false
-    vidTexture.needsUpdate = true
 
     if (isMounted) {
       setTexture(vidTexture)
@@ -54,11 +53,13 @@ function useDirectVideoTexture(src, playbackRate = 0.7, priority = false) {
 
     const startPlayback = () => {
       if (!isMounted) return
-      vidTexture.needsUpdate = true
+      if (video.readyState >= 2 && video.videoWidth > 0) {
+        vidTexture.needsUpdate = true
+      }
       if (priority) setHeroVideoReady(true)
       if (video.paused) {
         video.play().then(() => {
-          if (isMounted) {
+          if (isMounted && video.readyState >= 2 && video.videoWidth > 0) {
             vidTexture.needsUpdate = true
             if (priority) setHeroVideoReady(true)
           }
@@ -246,9 +247,15 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
 
   useFrame((state, delta) => {
     if (meshRef.current) {
-      if (texture) texture.needsUpdate = true
-      if (texture2 && targetOpacity2.current > 0.01) texture2.needsUpdate = true
-      if (texture3 && targetOpacity3.current > 0.01) texture3.needsUpdate = true
+      if (texture && texture.image && texture.image.readyState >= 2 && texture.image.videoWidth > 0 && texture.image.videoHeight > 0) {
+        texture.needsUpdate = true
+      }
+      if (texture2 && targetOpacity2.current > 0.01 && texture2.image && texture2.image.readyState >= 2 && texture2.image.videoWidth > 0 && texture2.image.videoHeight > 0) {
+        texture2.needsUpdate = true
+      }
+      if (texture3 && targetOpacity3.current > 0.01 && texture3.image && texture3.image.readyState >= 2 && texture3.image.videoWidth > 0 && texture3.image.videoHeight > 0) {
+        texture3.needsUpdate = true
+      }
 
       if (joystickVelocity && joystickVelocity.current) {
         dragOffset.current.y += joystickVelocity.current.x * delta * 0.4

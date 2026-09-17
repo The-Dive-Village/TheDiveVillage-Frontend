@@ -51,7 +51,9 @@ function useDirectVideoTexture(src) {
     vidTexture.generateMipmaps = false
 
     const updateTexture = () => {
-      vidTexture.needsUpdate = true
+      if (video.readyState >= 2 && video.videoWidth > 0 && video.videoHeight > 0) {
+        vidTexture.needsUpdate = true
+      }
     }
 
     video.addEventListener('loadeddata', updateTexture)
