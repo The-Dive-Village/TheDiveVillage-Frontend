@@ -2,7 +2,7 @@ import { useState, useEffect, Suspense, useRef } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls, useVideoTexture } from '@react-three/drei'
 import * as THREE from 'three'
-import videoFile from '../assets/Hero_fast.mp4'
+import videoFile from '../assets/Hero(1).mp4'
 
 function getOrCreateDomVideoContainer() {
   let container = document.getElementById('interactive-video-dom-root')
