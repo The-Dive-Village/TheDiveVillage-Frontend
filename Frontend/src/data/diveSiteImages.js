@@ -726,10 +726,12 @@ export const getDiveSiteCreatureInfo = (id, siteObj = null) => {
     return SITE_SPECIFIC_OVERRIDES[strId]
   }
 
-  const name = ((siteObj && (siteObj.title || siteObj.name)) || '').toLowerCase()
+  const rawName = (siteObj && (siteObj.title || siteObj.name)) || ''
+  const url = (siteObj && siteObj.travel_url) || ''
+  const name = (rawName || url).toLowerCase()
   const types = ((siteObj && siteObj.types) || '').toLowerCase()
   const country = ((siteObj && siteObj.country) || '').toLowerCase()
-  const combined = `${name} ${types} ${country}`
+  const combined = `${name} ${types} ${country} ${url.toLowerCase()}`
   const hash = getConsistentHash(strId || name || 'dive_site')
 
   // 2. Creature keyword detection in site name / description

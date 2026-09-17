@@ -65,7 +65,19 @@ export const getLocationById = async (id) => {
 
 export const getLocationDisplayName = (location) => {
   if (!location) return 'Dive Site'
-  return location.title || location.name || 'Dive Site'
+  if (location.title && location.title.trim()) return location.title.trim()
+  if (location.name && location.name.trim()) return location.name.trim()
+  if (location.travel_url && typeof location.travel_url === 'string') {
+    const parts = location.travel_url.replace(/\/$/, '').split('/')
+    const slug = parts[parts.length - 1]
+    if (slug && slug !== 'dive-site') {
+      return slug
+        .split('-')
+        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(' ')
+    }
+  }
+  return 'Dive Site'
 }
 
 export const getTotalLocationsCount = () => 4868

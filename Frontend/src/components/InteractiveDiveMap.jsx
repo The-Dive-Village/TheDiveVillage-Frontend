@@ -106,6 +106,7 @@ export default function InteractiveDiveMap({
   const lastInteractionTimeRef = useRef(Date.now())
 
   const prevCountryRef = useRef(selectedCountry)
+  const lastFramedCountryKeyRef = useRef(null)
   const prevLocationIdRef = useRef(selectedLocation?.id ?? null)
 
   const activeCountryTransactionRef = useRef(0)
@@ -531,6 +532,53 @@ export default function InteractiveDiveMap({
           if (Date.now() - lastInteractionTimeRef.current > 3500) {
             viewer.camera.rotate(Cesium.Cartesian3.UNIT_Z, -0.00025)
           }
+
+          // 3. Camera bounds & initial world-view camera restoration
+          if (viewer.camera && viewer.camera.positionCartographic) {
+            const carto = viewer.camera.positionCartographic
+            if (carto) {
+              // Safety altitude floor
+              if (carto.height < 15000) {
+                viewer.camera.position = Cesium.Cartesian3.fromRadians(carto.longitude, carto.latitude, 15000)
+              }
+              // High-altitude camera normalization (roll safety)
+              if (carto.height > 2000000) {
+                if (Math.abs(viewer.camera.roll) > 0.01) {
+                  viewer.camera.setView({
+                    orientation: {
+                      heading: viewer.camera.heading,
+                      pitch: viewer.camera.pitch,
+                      roll: 0.0
+                    }
+                  })
+                }
+              }
+              // World-scale view camera restoration (altitude >= 8,000,000m)
+              // When camera returns to global scale, restore initial world framing (heading: 0, pitch: -90 deg, roll: 0)
+              if (
+                carto.height >= 8000000 &&
+                !selectedCountryRef.current &&
+                !isProgrammaticFlightRef.current &&
+                !isUserInteractingRef.current
+              ) {
+                const targetPitch = Cesium.Math.toRadians(-90)
+                const diffHeading = Math.abs(viewer.camera.heading)
+                const diffPitch = Math.abs(viewer.camera.pitch - targetPitch)
+                const diffRoll = Math.abs(viewer.camera.roll)
+
+                if (diffHeading > 0.03 || diffPitch > 0.03 || diffRoll > 0.01) {
+                  viewer.camera.setView({
+                    destination: Cesium.Cartesian3.fromDegrees(80.0, 15.0, carto.height),
+                    orientation: {
+                      heading: 0.0,
+                      pitch: targetPitch,
+                      roll: 0.0
+                    }
+                  })
+                }
+              }
+            }
+          }
         })
 
         // World terrain progressive loading
@@ -609,54 +657,84 @@ export default function InteractiveDiveMap({
 
         handler.setInputAction((movement) => {
           lastInteractionTimeRef.current = Date.now()
-          const pickedObject = viewer.scene.pick(movement.endPosition)
-          if (Cesium.defined(pickedObject) && pickedObject.id) {
-            const idStr = String(pickedObject.id.id || '')
-            if (
-              idStr.startsWith('padi-') ||
-              (idStr.startsWith('country-') && idStr !== 'country-envelope')
-            ) {
-              viewer.scene.canvas.style.cursor = 'pointer'
-              return
+          const pickedObjects = viewer.scene.drillPick(movement.endPosition, 3)
+          let isPointer = false
+          if (pickedObjects && pickedObjects.length > 0) {
+            for (const obj of pickedObjects) {
+              if (obj && obj.id) {
+                const idStr = String(obj.id.id || '')
+                if (
+                  idStr.startsWith('padi-') ||
+                  (idStr.startsWith('country-') && idStr !== 'country-envelope')
+                ) {
+                  isPointer = true
+                  break
+                }
+              }
             }
           }
-          viewer.scene.canvas.style.cursor = 'default'
+          viewer.scene.canvas.style.cursor = isPointer ? 'pointer' : 'default'
         }, Cesium.ScreenSpaceEventType.MOUSE_MOVE)
 
         handler.setInputAction((click) => {
           lastInteractionTimeRef.current = Date.now()
-          const pickedObject = viewer.scene.pick(click.position)
-          if (Cesium.defined(pickedObject) && pickedObject.id) {
-            const idStr = String(pickedObject.id.id || '')
+          const pickedObjects = viewer.scene.drillPick(click.position, 5)
 
-            // 1. Clicked a PADI Dive Location marker
-            if (idStr.startsWith('padi-')) {
-              const locId = idStr.replace('padi-', '')
-              const loc = countryLocationsRef.current.find(
-                (l) => String(l.id) === locId || String(l.padiId) === locId
-              )
-              if (loc) {
-                onLocationSelectRef.current?.(loc)
-                flyToLocationPoint(loc)
-                setPopupSite(loc)
-                setIsPopupOpen(true)
+          if (pickedObjects && pickedObjects.length > 0) {
+            // 1. Check if user clicked a PADI Dive Location marker first
+            for (const pickedObject of pickedObjects) {
+              if (pickedObject && pickedObject.id) {
+                const idStr = String(pickedObject.id.id || '')
+                if (idStr.startsWith('padi-')) {
+                  const locId = idStr.replace('padi-', '')
+                  let loc = null
+                  if (pickedObject.id.properties && pickedObject.id.properties.padiLocation) {
+                    const propVal = pickedObject.id.properties.padiLocation
+                    loc = typeof propVal.getValue === 'function' ? propVal.getValue(window.Cesium?.JulianDate?.now?.() || new Date()) : propVal
+                  }
+                  if (!loc) {
+                    const cleanId = String(locId).trim()
+                    loc = countryLocationsRef.current.find(
+                      (l) => l && (String(l.id).trim() === cleanId || (l.padiId && String(l.padiId).trim() === cleanId))
+                    )
+                  }
+                  if (loc) {
+                    prevLocationIdRef.current = loc.id ?? null
+                    setPopupSite(loc)
+                    setIsPopupOpen(true)
+                    onLocationSelectRef.current?.(loc)
+                    flyToLocationPoint(loc)
+                  }
+                  return
+                }
               }
-              return
             }
 
-            // 2. Clicked a Country Pin Badge (ONLY on world overview, never country-envelope)
-            if (idStr.startsWith('country-') && idStr !== 'country-envelope') {
-              const cName = pickedObject.id.properties?.countryName?.getValue() || pickedObject.id.name
-              if (cName && cName !== 'envelope') {
-                onCountrySelectRef.current?.(cName)
+            // 2. Check if user clicked a Country Pin Badge
+            for (const pickedObject of pickedObjects) {
+              if (pickedObject && pickedObject.id) {
+                const idStr = String(pickedObject.id.id || '')
+                if (idStr.startsWith('country-') && idStr !== 'country-envelope') {
+                  let cName = null
+                  if (pickedObject.id.properties && pickedObject.id.properties.countryName) {
+                    const propVal = pickedObject.id.properties.countryName
+                    cName = typeof propVal.getValue === 'function' ? propVal.getValue(window.Cesium?.JulianDate?.now?.() || new Date()) : propVal
+                  }
+                  if (!cName) cName = pickedObject.id.name
+                  if (cName && cName !== 'envelope') {
+                    onCountrySelectRef.current?.(cName)
+                  }
+                  return
+                }
               }
-              return
             }
           }
 
-          // 3. Clicked empty terrain / ocean / non-selectable object:
-          // Close popup if open. DO NOT reset country or booking state!
+          // 3. Clicked empty terrain / ocean / non-selectable object
           setIsPopupOpen(false)
+          setPopupSite(null)
+          prevLocationIdRef.current = null
+          onLocationSelectRef.current?.(null)
         }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
         // Trackpad & Touch Two-Finger Rotation Gesture Controller (Rotates Globe Up/Down/Left/Right - NO ZOOM)
         const containerEl = containerRef.current
@@ -701,6 +779,7 @@ export default function InteractiveDiveMap({
             // 2-FINGER SLIDE: ROTATES GLOBE UP/DOWN & LEFT/RIGHT (NO ZOOM)
             // ----------------------------------------------------
             const rotateFactor = Math.min(Math.max(height / 7000000000, 0.0003), 0.002)
+            const verticalRotateFactor = rotateFactor * 0.25
 
             const moveX = e.deltaX
             const moveY = e.deltaY
@@ -710,9 +789,9 @@ export default function InteractiveDiveMap({
             }
 
             if (Math.abs(moveY) > 0) {
-              // Sliding 2 fingers Up (deltaY < 0) -> rotates globe Upwards
-              // Sliding 2 fingers Down (deltaY > 0) -> rotates globe Downwards
-              camera.rotate(camera.right, moveY * rotateFactor)
+              // Sliding 2 fingers Up (deltaY < 0) -> rotates globe Upwards (75% reduced sensitivity)
+              // Sliding 2 fingers Down (deltaY > 0) -> rotates globe Downwards (75% reduced sensitivity)
+              camera.rotate(camera.right, moveY * verticalRotateFactor)
             }
           }
 
@@ -748,14 +827,15 @@ export default function InteractiveDiveMap({
               const deltaY = currentY - touchStartY
 
               const rotateFactor = Math.min(Math.max(height / 3500000000, 0.0006), 0.004)
+              const verticalRotateFactor = rotateFactor * 0.25
 
               if (Math.abs(deltaX) > 0.1) {
                 camera.rotateLeft(-deltaX * rotateFactor)
               }
               if (Math.abs(deltaY) > 0.1) {
-                // Dragging 2 fingers Up (deltaY < 0) -> rotates globe Upwards
-                // Dragging 2 fingers Down (deltaY > 0) -> rotates globe Downwards
-                camera.rotate(camera.right, deltaY * rotateFactor)
+                // Dragging 2 fingers Up (deltaY < 0) -> rotates globe Upwards (75% reduced sensitivity)
+                // Dragging 2 fingers Down (deltaY > 0) -> rotates globe Downwards (75% reduced sensitivity)
+                camera.rotate(camera.right, deltaY * verticalRotateFactor)
               }
             }
 
@@ -901,7 +981,7 @@ export default function InteractiveDiveMap({
         }
       })
 
-      // C. When country is selected, add all validated PADI dive location markers
+      // C. When country is selected, add all validated PADI dive location markers (NO TEXT LABELS)
       if (canonicalSelectedCountryKey) {
         validLocs.forEach((loc) => {
           const isSel = selLoc && String(selLoc.id) === String(loc.id)
@@ -920,19 +1000,6 @@ export default function InteractiveDiveMap({
               eyeOffset: new Cesium.Cartesian3(0, 0, isSel ? -250 : -80),
               scaleByDistance: new Cesium.NearFarScalar(2.0e4, 1.0, 1.2e7, 0.5),
               translucencyByDistance: new Cesium.NearFarScalar(2.0e4, 1.0, 1.5e7, 0.85)
-            },
-            label: {
-              text: displayName || loc.name,
-              font: isSel ? 'bold 12px Outfit, Inter, system-ui, sans-serif' : '10px Outfit, Inter, system-ui, sans-serif',
-              fillColor: isSel ? Cesium.Color.fromCssColorString('#FFCD00') : Cesium.Color.WHITE,
-              outlineColor: Cesium.Color.fromCssColorString('#00223D'),
-              outlineWidth: 3,
-              style: Cesium.LabelStyle.FILL_AND_OUTLINE,
-              verticalOrigin: Cesium.VerticalOrigin.TOP,
-              pixelOffset: new Cesium.Cartesian2(0, 4),
-              scaleByDistance: new Cesium.NearFarScalar(1.0e4, 1.0, 8.0e6, 0.6),
-              translucencyByDistance: new Cesium.NearFarScalar(1.0e4, 1.0, 1.0e7, 0.8),
-              distanceDisplayCondition: new Cesium.DistanceDisplayCondition(1000, 6000000)
             },
             properties: {
               padiLocation: loc,
@@ -980,11 +1047,14 @@ export default function InteractiveDiveMap({
     // Verify transaction is still active before executing camera flight
     if (currentTransaction !== activeCountryTransactionRef.current) return
 
-    // E. Camera Flight Transitions on Country Change
+    // E. Camera Flight Transitions on Country Change & Async Location Load
+    const countryKey = canonicalSelectedCountryKey
     const countryChanged = prevCountryRef.current !== selectedCountry
     prevCountryRef.current = selectedCountry
 
-    if (countryChanged) {
+    const needsFraming = countryChanged || (countryKey && lastFramedCountryKeyRef.current !== countryKey && validLocs.length > 0)
+
+    if (needsFraming) {
       if (selectedCountry) {
         const target = getCountryCameraTarget(selectedCountry, validLocs)
         if (target) {
@@ -993,9 +1063,13 @@ export default function InteractiveDiveMap({
           } else {
             flyToLocationPoint(selLoc)
           }
+          if (validLocs.length > 0) {
+            lastFramedCountryKeyRef.current = countryKey
+          }
         }
       } else {
         flyToGlobalOverview()
+        lastFramedCountryKeyRef.current = null
       }
     }
   }, [selectedCountry, countryLocations, isLoaded, getCountryCameraTarget, flyToCountryTarget, flyToGlobalOverview, flyToLocationPoint])
@@ -1023,10 +1097,6 @@ export default function InteractiveDiveMap({
           entity.billboard.height = isSel ? 56 : 46
           entity.billboard.eyeOffset = new window.Cesium.Cartesian3(0, 0, isSel ? -250 : -80)
         }
-        if (entity.label) {
-          entity.label.fillColor = isSel ? window.Cesium.Color.fromCssColorString('#FFCD00') : window.Cesium.Color.WHITE
-          entity.label.font = isSel ? 'bold 12px Outfit, Inter, system-ui, sans-serif' : '10px Outfit, Inter, system-ui, sans-serif'
-        }
       }
     })
 
@@ -1034,6 +1104,9 @@ export default function InteractiveDiveMap({
       setPopupSite(selectedLocation)
       setIsPopupOpen(true)
       flyToLocationPoint(selectedLocation)
+    } else {
+      setPopupSite(null)
+      setIsPopupOpen(false)
     }
   }, [selectedLocation, countryLocations, isLoaded, flyToLocationPoint])
 
@@ -1121,6 +1194,9 @@ export default function InteractiveDiveMap({
                   onClick={(e) => {
                     e.stopPropagation()
                     setIsPopupOpen(false)
+                    setPopupSite(null)
+                    prevLocationIdRef.current = null
+                    onLocationSelectRef.current?.(null)
                   }}
                   className="text-white/60 hover:text-white w-6 h-6 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition cursor-pointer text-xs font-bold shrink-0"
                   aria-label="Close"
@@ -1132,8 +1208,9 @@ export default function InteractiveDiveMap({
               {/* 2. Resident Creature & Dive Photo with Dynamic Badge */}
               <div className="w-full h-36 bg-[#021426] overflow-hidden relative group">
                 <img
+                  key={popupSite.id}
                   src={creature?.image || getDiveSiteImage(popupSite.id, popupSite)}
-                  alt={creature?.creatureName || popupSite.title || 'Marine Life'}
+                  alt={creature?.creatureName || getLocationDisplayName(popupSite) || 'Marine Life'}
                   className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
                   loading="lazy"
                 />
