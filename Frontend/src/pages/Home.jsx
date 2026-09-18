@@ -11,10 +11,16 @@ import img1 from '../assets/1.png'
 import img2 from '../assets/2.png'
 import img3 from '../assets/3.png'
 import img4 from '../assets/4.png'
-import travelVid from '../assets/New folder/Travel.mp4'
-import stayImg from '../assets/New folder/Stay.jpg'
-import foodImg from '../assets/New folder/food.jpg'
-import itineraryVid from '../assets/New folder/Itinerary.mp4'
+import travelVid from '../assets/Gallery/boat.mp4'
+import stayImg from '../assets/Gallery/Stay.jpg'
+import foodImg from '../assets/Gallery/food.jpg'
+import itineraryVid from '../assets/Gallery/gallery1.mp4'
+import imgIntroductoryPrograms from '../assets/Gallery/Introductory Programs.png'
+import imgGuidedSnorkeling from '../assets/Gallery/Snorkeling.png'
+import imgCertifiedCourses from '../assets/Gallery/Certified Courses.jpg'
+import imgFreeDiving from '../assets/Gallery/Free Diving.png'
+import imgFlexibleFunDives from '../assets/Gallery/Flexible Fun Dives.png'
+
 const ProgramsPreview = lazy(() => import('../components/ProgramsPreview'))
 
 const GalleryPreview = lazy(() => import('../components/GalleryPreview'))
@@ -27,7 +33,7 @@ const HIGHLIGHTS_DATA = [
     id: 'scuba',
     title: 'Introductory Programs',
     desc: 'Experience scuba safely in shallow water alongside our professionals.',
-    image: IMAGES.scubaHero,
+    image: imgIntroductoryPrograms,
     link: '/services?category=programs',
     btnText: 'Explore'
   },
@@ -35,7 +41,7 @@ const HIGHLIGHTS_DATA = [
     id: 'snorkeling',
     title: 'Guided Snorkeling',
     desc: 'Discover snorkeling and explore the coral reefs along side our experts.',
-    image: IMAGES.snorkelingHero,
+    image: imgGuidedSnorkeling,
     link: '/services?category=snorkeling',
     btnText: 'Explore'
   },
@@ -43,7 +49,7 @@ const HIGHLIGHTS_DATA = [
     id: 'courses',
     title: 'Certified Courses',
     desc: 'From your first breath underwater to professional divemaster courses.',
-    image: IMAGES.hero,
+    image: imgCertifiedCourses,
     link: '/services?category=courses',
     btnText: 'Explore'
   },
@@ -51,7 +57,7 @@ const HIGHLIGHTS_DATA = [
     id: 'surfing',
     title: 'Freediving',
     desc: 'Explore the ocean with free diving and rely on your natural abilities.',
-    image: IMAGES.surfingHero,
+    image: imgFreeDiving,
     link: '/services?category=freediving',
     btnText: 'Explore'
   },
@@ -59,7 +65,7 @@ const HIGHLIGHTS_DATA = [
     id: 'products',
     title: 'Flexible Fun Dives',
     desc: 'Every single experience is one step deeper into the world of the ocean.',
-    image: IMAGES.gear1,
+    image: imgFlexibleFunDives,
     link: '/services?category=fundives',
     btnText: 'Explore'
   },
@@ -67,19 +73,19 @@ const HIGHLIGHTS_DATA = [
 
 const TESTIMONIALS = [
   {
-    name: "Alex Johnson",
+    name: "Sofia Stalance",
     role: "PADI Open Water Diver",
     text: "The Dive Village completely changed my perspective on the ocean. The instructors were incredibly patient, and the focus on safety made my first dive unforgettable.",
     image: CAROUSEL_IMAGES[1]
   },
   {
-    name: "Maria Garcia",
+    name: "Krishawn Rahul",
     role: "Marine Biologist",
     text: "I've dived all over the world, but the dedication to eco-stewardship here is unmatched. It's inspiring to see a dive center that truly cares about coral restoration and leaving no trace.",
     image: CAROUSEL_IMAGES[2]
   },
   {
-    name: "David Chen",
+    name: "Michael Antony",
     role: "Advanced Adventurer",
     text: "From the seamless booking process to the personalized dive charters, everything was flawless. A vibrant community that genuinely feels like a second home.",
     image: CAROUSEL_IMAGES[0]
@@ -243,16 +249,23 @@ export default function Home() {
                   className="h-full group cursor-pointer relative mt-8 flex flex-col pointer-events-auto"
                 >
 
-                  {/* Floating transparent PNG image */}
+                  {/* Floating transparent PNG image centered with respect to bg panel */}
                   {item.img ? (
-                    <img
-                      src={item.img}
-                      alt={item.t}
-                      className={`absolute h-auto object-contain drop-shadow-2xl z-20 pointer-events-none hover-float-png transition-all duration-500 ${i === 2
-                        ? 'top-2 right-0 w-[80%] max-w-[210px]'
-                        : 'top-12 sm:top-16 left-0 right-0 mx-auto w-[100%] max-w-[260px]'
+                    <div
+                      className={`absolute top-1 sm:top-2 inset-x-0 mx-auto w-full flex items-center justify-center z-20 pointer-events-none px-1 ${
+                        i === 1 || i === 2
+                          ? 'max-w-[250px] sm:max-w-[270px] h-[230px] sm:h-[260px]'
+                          : 'max-w-[300px] sm:max-w-[320px] h-[260px] sm:h-[290px]'
+                      }`}
+                    >
+                      <img
+                        src={item.img}
+                        alt={item.t}
+                        className={`w-full h-full max-w-full max-h-full object-contain drop-shadow-[0_15px_30px_rgba(0,0,0,0.8)] hover-float-png transition-all duration-500 ${
+                          i === 1 || i === 2 ? 'scale-95' : 'scale-105'
                         }`}
-                    />
+                      />
+                    </div>
                   ) : null}
 
                   {/* Actual Card Background & Content */}
@@ -301,20 +314,26 @@ export default function Home() {
       <section id="testimonials-section" className="relative py-24 sm:py-32 pointer-events-auto">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionReveal className="text-center max-w-2xl mx-auto mb-12">
-            <span className="text-[#FFCD00] font-bold tracking-widest uppercase text-xs mb-3 block">
+            <span className="text-[#FFCD00] font-bold tracking-widest uppercase text-xs mb-3 block drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
               Community Voices
             </span>
-            <h2 className="font-heading text-3xl sm:text-5xl font-bold text-white drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)]">
+            <h2
+              className="font-heading text-3xl sm:text-5xl font-bold text-white drop-shadow-[0_8px_24px_rgba(0,0,0,0.95)]"
+              style={{ textShadow: '0 4px 20px rgba(0,0,0,0.95), 0 2px 8px rgba(0,0,0,0.9)' }}
+            >
               What Our Divers Say
             </h2>
-            <p className="mt-4 text-white/80 drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] text-justify">
+            <p
+              className="mt-4 text-white/90 drop-shadow-[0_4px_12px_rgba(0,0,0,0.95)] text-justify"
+              style={{ textShadow: '0 2px 10px rgba(0,0,0,0.9), 0 1px 4px rgba(0,0,0,0.85)' }}
+            >
               Don't just take our word for it.<br />Hear from the community of ocean lovers who have dived with us.
             </p>
             <div className="mt-6">
               <button
                 type="button"
                 onClick={() => setShowReviewModal(true)}
-                className="inline-flex items-center gap-2 rounded-full bg-white/15 backdrop-blur-xl border border-white/30 text-white font-bold text-xs uppercase tracking-widest px-6 py-3 transition-all duration-300 hover:scale-105 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] shadow-md cursor-pointer"
+                className="inline-flex items-center gap-2 rounded-full bg-white/15 backdrop-blur-xl border border-white/30 text-white font-bold text-xs uppercase tracking-widest px-6 py-3 transition-all duration-300 hover:scale-105 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] shadow-[0_4px_16px_rgba(0,0,0,0.6)] cursor-pointer"
               >
                 <span>+ Write a Review</span>
               </button>
@@ -324,7 +343,7 @@ export default function Home() {
           <StaggerGrid className="grid md:grid-cols-3 gap-8 items-stretch">
             {approvedReviews.slice(0, 3).map((t, i) => (
               <StaggerItem key={t.id || i} className="h-full">
-                <div className="h-full flex flex-col justify-between bg-white/10 backdrop-blur-2xl rounded-3xl p-8 border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.37)] hover:bg-white/15 hover:border-white/40 hover:-translate-y-2 transition-all duration-500">
+                <div className="h-full flex flex-col justify-between bg-white/10 backdrop-blur-2xl rounded-3xl p-8 border border-white/20 shadow-[0_8px_24px_rgba(0,0,0,0.25)] hover:bg-white/15 hover:border-white/40 hover:-translate-y-2 hover:shadow-[0_12px_32px_rgba(0,0,0,0.35)] transition-all duration-500">
                   <div>
                     <div className="flex gap-1 mb-6">
                       {[...Array(t.rating || 5)].map((_, j) => (
@@ -333,15 +352,21 @@ export default function Home() {
                         </svg>
                       ))}
                     </div>
-                    <p className="text-white/95 font-medium italic mb-8 leading-relaxed text-justify">"{t.text}"</p>
+                    <p className="text-white/95 font-medium italic mb-8 leading-relaxed text-justify">
+                      "{t.text}"
+                    </p>
                   </div>
                   <div className="flex items-center gap-4 mt-auto">
                     <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white/30 shrink-0 shadow-md">
                       <SafeImage src={t.image} alt={t.name} className="w-full h-full object-cover" />
                     </div>
                     <div>
-                      <h4 className="font-bold text-white text-sm tracking-wide">{t.name}</h4>
-                      <span className="text-xs text-[#FFCD00] font-medium">{t.role}</span>
+                      <h4 className="font-bold text-white text-sm tracking-wide">
+                        {t.name}
+                      </h4>
+                      <span className="text-xs text-[#FFCD00] font-medium">
+                        {t.role}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -355,13 +380,14 @@ export default function Home() {
       <section className="relative py-24 text-white sm:py-32 pointer-events-auto">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionReveal className="text-center mb-16 max-w-3xl mx-auto">
-            <span className="inline-block bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-1.5 text-xs font-bold text-accent uppercase tracking-widest mb-4 shadow-sm">
+            <span className="inline-block bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-5 py-2 text-xs font-bold text-[#FFCD00] uppercase tracking-widest mb-4 shadow-sm">
               End-to-End Island Care
             </span>
-            <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight drop-shadow-lg mb-4">From Airport to Airport<br />
-              <span className="text-accent font-bold">We've Got You Covered</span>
+            <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight drop-shadow-md mb-4">
+              From Airport to Airport<br />
+              <span className="text-[#FFCD00] font-bold">We've Got You Covered</span>
             </h2>
-            <p className="text-base sm:text-lg text-white/80 font-medium leading-relaxed drop-shadow-md text-justify">
+            <p className="text-base sm:text-lg text-white/90 font-medium leading-relaxed drop-shadow-sm text-justify">
               Relax, slow down, and immerse yourself in the ocean's endless beauty!<br />We handle every detail of your island holiday from arrival to departure.
             </p>
           </SectionReveal>
@@ -417,31 +443,31 @@ export default function Home() {
               <StaggerItem key={i}>
                 <div
                   onClick={() => navigate('/contact')}
-                  className="group relative h-full rounded-[32px] bg-[#00223D]/30 backdrop-blur-md border border-white/20 p-6 sm:p-7 shadow-2xl transition-all duration-500 hover:-translate-y-3 hover:bg-[#00223D]/50 hover:border-[#00AEC7] hover:shadow-[0_20px_50px_rgba(0,174,199,0.3)] flex flex-col justify-between cursor-pointer"
+                  className="group relative h-full rounded-[32px] bg-[#00172b]/40 backdrop-blur-2xl border border-white/20 p-6 sm:p-7 shadow-[0_8px_30px_rgba(0,0,0,0.3)] transition-all duration-500 hover:-translate-y-3 hover:bg-[#00172b]/60 hover:border-[#00AEC7] hover:shadow-[0_12px_40px_rgba(0,174,199,0.25)] flex flex-col justify-between cursor-pointer"
                 >
                   <div className="flex flex-col flex-1">
                     {/* Top Bar: Icon Box & Number */}
-                    <div className="flex items-center justify-between mb-6">
-                      <div className="w-12 h-12 rounded-2xl bg-[#00AEC7]/10 border border-[#00AEC7]/40 flex items-center justify-center shadow-inner group-hover:bg-[#00AEC7]/20 group-hover:border-[#00AEC7] transition duration-300">
+                    <div className="flex items-center justify-between mb-5">
+                      <div className="w-12 h-12 rounded-2xl bg-[#00AEC7]/20 border border-[#00AEC7]/50 flex items-center justify-center shadow-sm group-hover:bg-[#00AEC7]/30 group-hover:border-[#00AEC7] transition duration-300">
                         {item.icon}
                       </div>
-                      <span className="font-heading font-bold text-lg text-[#00AEC7] tracking-wider">
+                      <span className="font-heading font-bold text-lg text-[#FFCD00] tracking-wider">
                         {item.num}
                       </span>
                     </div>
 
                     {/* Main Heading Text */}
-                    <h3 className="font-heading text-xl sm:text-2xl font-bold text-white uppercase tracking-wide leading-tight mb-2 text-left group-hover:text-[#00AEC7] transition-colors">
+                    <h3 className="font-heading text-xl sm:text-2xl font-bold text-white uppercase tracking-wide leading-tight mb-2 text-left group-hover:text-[#FFCD00] transition-colors">
                       {item.title}
                     </h3>
 
                     {/* Description Text */}
-                    <p className="text-white/70 text-xs sm:text-sm font-medium leading-relaxed mb-6 text-justify min-h-[40px]">
+                    <p className="text-white/85 text-xs sm:text-sm font-medium leading-relaxed mb-6 text-justify min-h-[44px]">
                       {item.desc}
                     </p>
 
-                    {/* Media Frame (Video or Image) */}
-                    <div className="relative aspect-[16/10] w-full rounded-2xl overflow-hidden bg-black/30 mb-6 border border-white/10 shadow-inner">
+                    {/* Media Frame (Video or Image) - Expanded larger size */}
+                    <div className="relative h-56 sm:h-64 w-full rounded-2xl overflow-hidden bg-black/40 mb-6 border border-white/20 shadow-md">
                       {item.video ? (
                         <video
                           src={item.video}
@@ -458,14 +484,16 @@ export default function Home() {
                           className="w-full h-full object-cover transition duration-700 group-hover:scale-105"
                         />
                       ) : null}
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#00223D]/60 via-transparent to-transparent pointer-events-none" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent pointer-events-none" />
                     </div>
                   </div>
 
                   {/* Footer: Learn More & Circular Arrow */}
-                  <div className="flex items-center justify-between pt-2 border-t border-white/10 text-xs font-bold">
-                    <span className="text-white/90 group-hover:text-[#00AEC7] transition-colors">Learn more</span>
-                    <div className="w-8 h-8 rounded-full border border-[#00AEC7] flex items-center justify-center text-[#00AEC7] group-hover:bg-[#00AEC7] group-hover:text-[#00223D] transition-all duration-300 shadow-sm">
+                  <div className="flex items-center justify-between pt-3 border-t border-white/20 text-xs font-bold">
+                    <span className="text-white/90 group-hover:text-[#FFCD00] transition-colors">
+                      Learn more
+                    </span>
+                    <div className="w-8 h-8 rounded-full border border-[#00AEC7] bg-[#00AEC7]/10 flex items-center justify-center text-[#00AEC7] group-hover:bg-[#FFCD00] group-hover:border-[#FFCD00] group-hover:text-[#001e3d] transition-all duration-300 shadow-sm">
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-0.5">
                         <path d="M5 12h14" />
                         <path d="m12 5 7 7-7 7" />
@@ -478,7 +506,7 @@ export default function Home() {
             ))}
           </StaggerGrid>
         </div>
-      </section >
+      </section>
 
       {/* 8. GALLERY PREVIEW */}
       < div id="gallery-section" className="pointer-events-auto" >
@@ -772,11 +800,13 @@ function InteractiveHighlights() {
               style={{ width: `${cardWidth}px` }}
               className="h-[410px] sm:h-[450px] flex-shrink-0 rounded-[28px] overflow-hidden shadow-2xl relative border border-white/20 bg-[#001E36] group cursor-pointer pointer-events-auto transition-all duration-500 hover:border-[#FFCD00]/70 hover:shadow-[0_12px_36px_rgba(0,0,0,0.85)] hover:-translate-y-1.5"
             >
-              <img
-                src={current.image}
-                alt={current.title}
-                className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110 opacity-90"
-              />
+              {current.image ? (
+                <img
+                  src={current.image}
+                  alt={current.title}
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110 opacity-90"
+                />
+              ) : null}
               <div className="absolute inset-0 bg-gradient-to-t from-[#001224] via-[#001428]/60 to-transparent pointer-events-none" />
 
               <div className="absolute inset-0 p-5 sm:p-6 lg:p-7 flex flex-col justify-end pointer-events-auto">
@@ -825,13 +855,13 @@ function AutoCarousel({ images, showContent = true }) {
   }, [images])
 
   return (
-    <div className="relative overflow-hidden rounded-[32px] sm:rounded-[40px] shadow-float w-full h-[400px] lg:h-[450px] bg-[#001e3d]">
+    <div className="relative overflow-hidden rounded-[32px] sm:rounded-[40px] shadow-[0_20px_60px_rgba(0,0,0,0.8)] w-full h-[420px] lg:h-[480px] bg-[#001e3d] border border-white/20">
       {/* Base Layer: Previous image stays 100% solid underneath so background is NEVER visible during transition */}
       {images[prevIndex] && (
         <img
           src={images[prevIndex]}
           alt="Ocean Life"
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover object-center scale-[1.35]"
         />
       )}
 
@@ -841,34 +871,41 @@ function AutoCarousel({ images, showContent = true }) {
           key={i}
           src={src}
           alt={`Marine Life ${i + 1}`}
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
+          className={`absolute inset-0 w-full h-full object-cover object-center scale-[1.35] transition-opacity duration-1000 ease-in-out ${
             i === index ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
           }`}
           loading="lazy"
         />
       ))}
 
-      <div className="absolute inset-0 bg-navy/20 mix-blend-multiply z-10 pointer-events-none" />
-      <div className="absolute inset-0 bg-gradient-to-r from-navy/90 via-navy/40 to-transparent z-10 pointer-events-none" />
+      {/* Full-bleed ambient overlay so image is completely visible across both sides of the panel */}
+      <div className="absolute inset-0 bg-black/25 pointer-events-none z-10" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 pointer-events-none z-10" />
 
       {showContent && (
-        <div className="absolute inset-0 z-20 flex flex-col justify-center p-8 sm:p-12 lg:p-16">
-          <div className="max-w-xl">
-            <span className="inline-block text-accent font-heading font-bold uppercase tracking-widest text-xs mb-4">
+        <div className="absolute inset-0 z-20 flex flex-col justify-center p-6 sm:p-10 lg:p-16">
+          <div className="max-w-xl bg-[#00172b]/70 backdrop-blur-md p-6 sm:p-8 rounded-3xl border border-white/20 shadow-[0_16px_40px_rgba(0,0,0,0.6)]">
+            <span className="inline-block text-[#FFCD00] font-heading font-bold uppercase tracking-widest text-xs mb-3 drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
               The Sea is Calling
             </span>
-            <h3 className="font-heading text-4xl sm:text-5xl lg:text-5xl font-bold text-white leading-[1.1] mb-6 tracking-tight">
+            <h3
+              className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-[1.15] mb-4 tracking-tight drop-shadow-[0_4px_16px_rgba(0,0,0,0.95)]"
+              style={{ textShadow: '0 3px 12px rgba(0,0,0,0.9)' }}
+            >
               Come for the adventure.<br />
-              <span className="text-white/60">Stay for the calm.</span>
+              <span className="text-[#FFCD00] font-bold">Stay for the calm.</span>
             </h3>
-            <p className="text-white/80 font-medium text-base sm:text-lg mb-8 max-w-sm text-justify">
+            <p
+              className="text-white font-medium text-sm sm:text-base mb-6 drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]"
+              style={{ textShadow: '0 1px 4px rgba(0,0,0,0.9)' }}
+            >
               Leave with stories that last a lifetime.
             </p>
             <Button
               as={Link}
               to="/book-us"
               variant="secondary"
-              className="!bg-white/20 !text-white !border !border-white/40 backdrop-blur-md hover:!bg-[#FFCD00] hover:!text-navy hover:!border-[#FFCD00] shadow-lg transition-all duration-300 hover:scale-105"
+              className="!bg-[#FFCD00] !text-[#001e3d] !border !border-[#FFCD00] font-bold shadow-xl transition-all duration-300 hover:scale-105 hover:!bg-white hover:!text-[#001e3d]"
             >
               Book Your Dive
               <ArrowIcon />

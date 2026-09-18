@@ -4,7 +4,7 @@ import { CAROUSEL_IMAGES } from '../utils/images'
 const INITIAL_REVIEWS = [
   {
     id: 'rev-1',
-    name: "Rohan Deshmukh",
+    name: "Sofia Stalance",
     role: "PADI Advanced Open Water Diver",
     text: "Did my Advanced Open Water with Sanjeev and the crew in Havelock. Having instructors who genuinely emphasize neutral buoyancy and reef protection made all the difference. Saw manta rays at Dixon's Pinnacle—an unforgettable dive.",
     rating: 5,
@@ -14,7 +14,7 @@ const INITIAL_REVIEWS = [
   },
   {
     id: 'rev-2',
-    name: "Dr. Ananya Sen",
+    name: "Krishawn Rahul",
     role: "Marine Ecology Enthusiast",
     text: "As someone passionate about coral ecosystems, their respect for marine wildlife blew me away. Intimate small-group dives, zero touch policies, and the instructors know every reef species by name. It really feels like family.",
     rating: 5,
@@ -24,7 +24,7 @@ const INITIAL_REVIEWS = [
   },
   {
     id: 'rev-3',
-    name: "Vikramaditya Rathore",
+    name: "Michael Antony",
     role: "Rescue Diver & Underwater Photographer",
     text: "From seamless logistics and custom boat charters to top-tier safety gear, everything was top notch. The night dive with glowing bioluminescence was pure magic. Easily the best dive community in the region.",
     rating: 5,
@@ -42,9 +42,18 @@ export function ReviewsProvider({ children }) {
       const saved = localStorage.getItem('tdv_reviews')
       if (!saved) return INITIAL_REVIEWS
       const parsed = JSON.parse(saved)
-      if (parsed.some((r) => r.name === 'Alex Johnson' || r.name === 'Maria Garcia' || r.name === 'David Chen')) {
+      const hasOldNames = parsed.some(
+        (r) =>
+          r.name === 'Alex Johnson' ||
+          r.name === 'Maria Garcia' ||
+          r.name === 'David Chen' ||
+          r.name === 'Rohan Deshmukh' ||
+          r.name === 'Dr. Ananya Sen' ||
+          r.name === 'Vikramaditya Rathore'
+      )
+      if (hasOldNames) {
         const customOnes = parsed.filter(
-          (r) => !['rev-1', 'rev-2', 'rev-3'].includes(r.id) && r.name !== 'Alex Johnson' && r.name !== 'Maria Garcia' && r.name !== 'David Chen'
+          (r) => !['rev-1', 'rev-2', 'rev-3'].includes(r.id)
         )
         return [...INITIAL_REVIEWS, ...customOnes]
       }
