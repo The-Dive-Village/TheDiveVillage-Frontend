@@ -42,7 +42,7 @@ export default function SafeImage({
   const y = useTransform(scrollYProgress, [0, 1], ["-10%", "10%"])
 
   if (!src || failed) {
-    return <Placeholder alt={alt} className={className} />
+    return <div className={className} />
   }
 
   return (

@@ -1,5 +1,5 @@
-// Dynamically import all media from src/assets/New folder/Gallery using Vite's native import.meta.glob
-const mediaModules = import.meta.glob('../assets/New folder/Gallery/*.*', {
+// Dynamically import all media from src/assets/Gallery using Vite's native import.meta.glob
+const mediaModules = import.meta.glob(['../assets/Gallery/*.*', '../assets/New folder/Gallery/*.*'], {
   eager: true,
   import: 'default',
 })

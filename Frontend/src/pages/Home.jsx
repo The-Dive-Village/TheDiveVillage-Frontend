@@ -244,23 +244,27 @@ export default function Home() {
                 >
 
                   {/* Floating transparent PNG image */}
-                  <img
-                    src={item.img}
-                    alt={item.t}
-                    className={`absolute h-auto object-contain drop-shadow-2xl z-20 pointer-events-none hover-float-png transition-all duration-500 ${i === 2
-                      ? 'top-2 right-0 w-[80%] max-w-[210px]'
-                      : 'top-12 sm:top-16 left-0 right-0 mx-auto w-[100%] max-w-[260px]'
-                      }`}
-                  />
+                  {item.img ? (
+                    <img
+                      src={item.img}
+                      alt={item.t}
+                      className={`absolute h-auto object-contain drop-shadow-2xl z-20 pointer-events-none hover-float-png transition-all duration-500 ${i === 2
+                        ? 'top-2 right-0 w-[80%] max-w-[210px]'
+                        : 'top-12 sm:top-16 left-0 right-0 mx-auto w-[100%] max-w-[260px]'
+                        }`}
+                    />
+                  ) : null}
 
                   {/* Actual Card Background & Content */}
                   <div className="h-full w-full rounded-2xl overflow-hidden border border-white/30 relative flex flex-col p-5 sm:p-6 pt-64 sm:pt-72 pb-6 sm:pb-7 z-10 transition duration-500 group-hover:border-white/60 shadow-2xl justify-end">
 
-                    <img
-                      src={item.bgImg}
-                      alt={item.t}
-                      className="absolute inset-0 w-full h-full object-cover z-0 opacity-85 blur-[2px] scale-105 transition-transform duration-700 group-hover:scale-110"
-                    />
+                    {item.bgImg ? (
+                      <img
+                        src={item.bgImg}
+                        alt={item.t}
+                        className="absolute inset-0 w-full h-full object-cover z-0 opacity-85 blur-[2px] scale-105 transition-transform duration-700 group-hover:scale-110"
+                      />
+                    ) : null}
 
                     <div className="absolute bottom-0 inset-x-0 h-3/5 bg-gradient-to-t from-navy via-navy/80 to-transparent z-0 pointer-events-none" />
 
@@ -447,13 +451,13 @@ export default function Home() {
                           playsInline
                           className="w-full h-full object-cover transition duration-700 group-hover:scale-105"
                         />
-                      ) : (
+                      ) : item.img ? (
                         <img
                           src={item.img}
                           alt={item.title}
                           className="w-full h-full object-cover transition duration-700 group-hover:scale-105"
                         />
-                      )}
+                      ) : null}
                       <div className="absolute inset-0 bg-gradient-to-t from-[#00223D]/60 via-transparent to-transparent pointer-events-none" />
                     </div>
                   </div>

@@ -92,13 +92,13 @@ function Card({ program }) {
             playsInline
             className="w-full h-full object-cover transition duration-700 group-hover:scale-105"
           />
-        ) : (
+        ) : program.img ? (
           <img
             src={program.img}
             alt={program.title}
             className="w-full h-full object-cover transition duration-700 group-hover:scale-105"
           />
-        )}
+        ) : null}
         <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-transparent to-transparent pointer-events-none" />
         <span className="absolute top-3 left-3 bg-navy/80 backdrop-blur-md border border-white/20 text-accent text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full shadow-sm">
           {program.tag}
