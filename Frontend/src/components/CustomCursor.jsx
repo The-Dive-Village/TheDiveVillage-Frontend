@@ -50,19 +50,23 @@ export default function CustomCursor() {
       }
 
       const now = performance.now()
-      if (now - lastCheckTime > 50 && currentTarget) {
+      if (now - lastCheckTime > 30 && latestX >= 0 && latestY >= 0) {
         lastCheckTime = now
-        const hovering = checkInteractive(currentTarget)
-        if (hovering !== isHoveringInteractive) {
-          isHoveringInteractive = hovering
-          setIsHovering(hovering)
+        const elUnderPoint = document.elementFromPoint(latestX, latestY) || currentTarget
+        if (elUnderPoint) {
+          isOverNormalCursor = checkNormalCursor(elUnderPoint)
+          const hovering = checkInteractive(elUnderPoint)
+          if (hovering !== isHoveringInteractive) {
+            isHoveringInteractive = hovering
+            setIsHovering(hovering)
+          }
         }
       }
 
       rafId = requestAnimationFrame(updateCursorPosition)
     }
 
-    // Start 60fps/120fps smooth render loop
+    // Start high-performance rAF loop
     rafId = requestAnimationFrame(updateCursorPosition)
 
     const onMouseMove = (e) => {
@@ -73,6 +77,16 @@ export default function CustomCursor() {
 
       if (isHidden) {
         isHidden = false
+      }
+    }
+
+    const onScroll = () => {
+      if (latestX >= 0 && latestY >= 0) {
+        const el = document.elementFromPoint(latestX, latestY)
+        if (el) {
+          currentTarget = el
+          isOverNormalCursor = checkNormalCursor(el)
+        }
       }
     }
 
@@ -97,9 +111,10 @@ export default function CustomCursor() {
       }
     }
 
-    // Single unified pointer listener to prevent double-firing
+    // Listener setups
     const eventType = window.PointerEvent ? 'pointermove' : 'mousemove'
     window.addEventListener(eventType, onMouseMove, { passive: true })
+    window.addEventListener('scroll', onScroll, { passive: true })
     window.addEventListener('mouseleave', onMouseLeave)
     window.addEventListener('mouseenter', onMouseEnter)
     window.addEventListener('focusin', onFocusIn)
@@ -122,6 +137,7 @@ export default function CustomCursor() {
     return () => {
       if (rafId) cancelAnimationFrame(rafId)
       window.removeEventListener(eventType, onMouseMove)
+      window.removeEventListener('scroll', onScroll)
       window.removeEventListener('mouseleave', onMouseLeave)
       window.removeEventListener('mouseenter', onMouseEnter)
       window.removeEventListener('focusin', onFocusIn)

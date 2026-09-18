@@ -1274,29 +1274,41 @@ export default function InteractiveDiveMap({
 function GlobeJoystick({ viewerRef }) {
   const containerRef = useRef(null)
   const isDragging = useRef(false)
+  const animFrameId = useRef(null)
+  const velocityRef = useRef({ x: 0, y: 0 })
   const [thumbPos, setThumbPos] = useState({ x: 0, y: 0 })
   const MAX_RADIUS = 14
 
-  const handlePointerDown = (e) => {
-    isDragging.current = true
-    updateJoystick(e)
-    try {
-      e.target.setPointerCapture(e.pointerId)
-    } catch {}
+  const tick = () => {
+    if (isDragging.current) {
+      if (viewerRef.current && !viewerRef.current.isDestroyed()) {
+        const vx = velocityRef.current.x
+        const vy = velocityRef.current.y
+        if (Math.abs(vx) > 0.001 || Math.abs(vy) > 0.001) {
+          viewerRef.current.camera.rotateLeft(vx * 0.015)
+          viewerRef.current.camera.rotateUp(vy * 0.015)
+        }
+      }
+      animFrameId.current = requestAnimationFrame(tick)
+    }
   }
 
-  const handlePointerMove = (e) => {
-    if (!isDragging.current) return
-    updateJoystick(e)
+  const startLoop = () => {
+    if (!animFrameId.current) {
+      animFrameId.current = requestAnimationFrame(tick)
+    }
   }
 
-  const handlePointerUp = (e) => {
-    isDragging.current = false
-    setThumbPos({ x: 0, y: 0 })
-    try {
-      e.target.releasePointerCapture(e.pointerId)
-    } catch {}
+  const stopLoop = () => {
+    if (animFrameId.current) {
+      cancelAnimationFrame(animFrameId.current)
+      animFrameId.current = null
+    }
   }
+
+  useEffect(() => {
+    return () => stopLoop()
+  }, [])
 
   const updateJoystick = (e) => {
     if (!containerRef.current) return
@@ -1311,15 +1323,44 @@ function GlobeJoystick({ viewerRef }) {
       dy = (dy / distance) * MAX_RADIUS
     }
     setThumbPos({ x: dx, y: dy })
-    if (viewerRef.current && !viewerRef.current.isDestroyed()) {
-      viewerRef.current.camera.rotateLeft(dx * 0.003)
-      viewerRef.current.camera.rotateUp(dy * 0.003)
+    velocityRef.current = {
+      x: dx / MAX_RADIUS,
+      y: dy / MAX_RADIUS
     }
+  }
+
+  const handlePointerDown = (e) => {
+    e.stopPropagation()
+    if (e.cancelable) e.preventDefault()
+    isDragging.current = true
+    updateJoystick(e)
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId)
+    } catch {}
+    startLoop()
+  }
+
+  const handlePointerMove = (e) => {
+    if (!isDragging.current) return
+    e.stopPropagation()
+    if (e.cancelable) e.preventDefault()
+    updateJoystick(e)
+  }
+
+  const handlePointerUp = (e) => {
+    e.stopPropagation()
+    isDragging.current = false
+    velocityRef.current = { x: 0, y: 0 }
+    setThumbPos({ x: 0, y: 0 })
+    try {
+      e.currentTarget.releasePointerCapture(e.pointerId)
+    } catch {}
+    stopLoop()
   }
 
   return (
     <div className="absolute bottom-6 right-6 z-10 flex flex-col items-center gap-2 pointer-events-auto">
-      <span className="text-[10px] font-bold text-white/70 uppercase tracking-widest bg-navy/50 px-2 py-1 rounded-md backdrop-blur-md">
+      <span className="text-[10px] font-bold text-white/70 uppercase tracking-widest bg-navy/50 px-2 py-1 rounded-md backdrop-blur-md select-none">
         360° Control
       </span>
       <div 

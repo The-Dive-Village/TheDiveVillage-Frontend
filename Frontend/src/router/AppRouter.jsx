@@ -9,36 +9,56 @@ import ErrorBoundary from '../components/ErrorBoundary'
 // Initial home page is direct for fast startup
 import Home from '../pages/Home'
 
+// Helper to retry dynamic component imports if chunk loading fails
+const lazyWithRetry = (componentImport) =>
+  lazy(async () => {
+    const pageAlreadyRefreshed = JSON.parse(
+      window.sessionStorage.getItem('page_has_been_refreshed') || 'false'
+    )
+    try {
+      const component = await componentImport()
+      window.sessionStorage.setItem('page_has_been_refreshed', 'false')
+      return component
+    } catch (error) {
+      if (!pageAlreadyRefreshed) {
+        window.sessionStorage.setItem('page_has_been_refreshed', 'true')
+        window.location.reload()
+        return { default: () => null }
+      }
+      throw error
+    }
+  })
+
 // Dynamic lazy imports for all secondary routes to enable route-level code splitting
-const About = lazy(() => import('../pages/About'))
-const Services = lazy(() => import('../pages/Services'))
-const ServiceDetail = lazy(() => import('../pages/ServiceDetail'))
-const AllCourses = lazy(() => import('../pages/AllCourses'))
-const Scuba = lazy(() => import('../pages/Scuba'))
-const Snorkeling = lazy(() => import('../pages/Snorkeling'))
-const Surfing = lazy(() => import('../pages/Surfing'))
-const Gallery = lazy(() => import('../pages/Gallery'))
-const BookUs = lazy(() => import('../pages/BookUs'))
-const Shop = lazy(() => import('../pages/Shop'))
-const ProductDetail = lazy(() => import('../pages/ProductDetail'))
-const Cart = lazy(() => import('../pages/Cart'))
-const Checkout = lazy(() => import('../pages/Checkout'))
-const Contact = lazy(() => import('../pages/Contact'))
-const Login = lazy(() => import('../pages/Login'))
-const Signup = lazy(() => import('../pages/Signup'))
-const Wishlist = lazy(() => import('../pages/Wishlist'))
+const About = lazyWithRetry(() => import('../pages/About'))
+const Services = lazyWithRetry(() => import('../pages/Services'))
+const ServiceDetail = lazyWithRetry(() => import('../pages/ServiceDetail'))
+const AllCourses = lazyWithRetry(() => import('../pages/AllCourses'))
+const Scuba = lazyWithRetry(() => import('../pages/Scuba'))
+const Snorkeling = lazyWithRetry(() => import('../pages/Snorkeling'))
+const Surfing = lazyWithRetry(() => import('../pages/Surfing'))
+const Gallery = lazyWithRetry(() => import('../pages/Gallery'))
+const BookUs = lazyWithRetry(() => import('../pages/BookUs'))
+const Shop = lazyWithRetry(() => import('../pages/Shop'))
+const ProductDetail = lazyWithRetry(() => import('../pages/ProductDetail'))
+const Cart = lazyWithRetry(() => import('../pages/Cart'))
+const Checkout = lazyWithRetry(() => import('../pages/Checkout'))
+const Contact = lazyWithRetry(() => import('../pages/Contact'))
+const Login = lazyWithRetry(() => import('../pages/Login'))
+const Signup = lazyWithRetry(() => import('../pages/Signup'))
+const Wishlist = lazyWithRetry(() => import('../pages/Wishlist'))
 
 // Dashboard pages
-const Dashboard = lazy(() => import('../pages/Dashboard'))
-const Profile = lazy(() => import('../pages/Profile'))
-const Orders = lazy(() => import('../pages/Orders'))
+const Dashboard = lazyWithRetry(() => import('../pages/Dashboard'))
+const Profile = lazyWithRetry(() => import('../pages/Profile'))
+const Orders = lazyWithRetry(() => import('../pages/Orders'))
 
 // Admin pages
-const AdminDashboard = lazy(() => import('../pages/admin/Dashboard'))
-const AdminCatalog = lazy(() => import('../pages/admin/Catalog'))
-const AdminOrders = lazy(() => import('../pages/admin/Orders'))
-const AdminCustomers = lazy(() => import('../pages/admin/Customers'))
-const AdminContent = lazy(() => import('../pages/admin/Content'))
+const AdminDashboard = lazyWithRetry(() => import('../pages/admin/Dashboard'))
+const AdminCatalog = lazyWithRetry(() => import('../pages/admin/Catalog'))
+const AdminOrders = lazyWithRetry(() => import('../pages/admin/Orders'))
+const AdminCustomers = lazyWithRetry(() => import('../pages/admin/Customers'))
+const AdminContent = lazyWithRetry(() => import('../pages/admin/Content'))
 
 function PageLiquid({ children }) {
   return (

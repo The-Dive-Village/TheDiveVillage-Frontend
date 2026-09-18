@@ -2,13 +2,22 @@ let app = null
 let auth = null
 let authModule = null
 
+const DEFAULT_FIREBASE_CONFIG = {
+  apiKey: 'AIzaSyC5-WeuVzMZxq5A31jMqoTq33TZH9Mx008',
+  authDomain: 'dive-village-testing.firebaseapp.com',
+  projectId: 'dive-village-testing',
+  storageBucket: 'dive-village-testing.firebasestorage.app',
+  messagingSenderId: '65243166255',
+  appId: '1:65243166255:web:f4d281ac4e5bf9525c38da',
+}
+
 const firebaseConfig = {
-  apiKey: (import.meta.env.VITE_FIREBASE_API_KEY || '').trim(),
-  authDomain: (import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || '').trim(),
-  projectId: (import.meta.env.VITE_FIREBASE_PROJECT_ID || '').trim(),
-  storageBucket: (import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || '').trim(),
-  messagingSenderId: (import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '').trim(),
-  appId: (import.meta.env.VITE_FIREBASE_APP_ID || '').trim(),
+  apiKey: (import.meta.env.VITE_FIREBASE_API_KEY || DEFAULT_FIREBASE_CONFIG.apiKey).trim(),
+  authDomain: (import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || DEFAULT_FIREBASE_CONFIG.authDomain).trim(),
+  projectId: (import.meta.env.VITE_FIREBASE_PROJECT_ID || DEFAULT_FIREBASE_CONFIG.projectId).trim(),
+  storageBucket: (import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || DEFAULT_FIREBASE_CONFIG.storageBucket).trim(),
+  messagingSenderId: (import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || DEFAULT_FIREBASE_CONFIG.messagingSenderId).trim(),
+  appId: (import.meta.env.VITE_FIREBASE_APP_ID || DEFAULT_FIREBASE_CONFIG.appId).trim(),
 }
 
 export const isFirebaseConfigured = Boolean(
@@ -17,11 +26,11 @@ export const isFirebaseConfigured = Boolean(
     firebaseConfig.projectId
 )
 
-if (import.meta.env.DEV) {
+if (typeof window !== 'undefined' && import.meta.env.DEV) {
   console.log('[Firebase] Loaded Config:', {
     projectId: firebaseConfig.projectId,
-    apiKeyLength: firebaseConfig.apiKey.length,
-    apiKeyStart: firebaseConfig.apiKey.substring(0, 8) + '...',
+    authDomain: firebaseConfig.authDomain,
+    hostname: window.location.hostname,
     isConfigured: isFirebaseConfigured,
   })
 }
@@ -37,6 +46,16 @@ async function getAuthModule() {
   auth = authMod.getAuth(app)
   authModule = authMod
   return { auth, app, authMod }
+}
+
+const handleAuthError = (err) => {
+  if (err?.code === 'auth/unauthorized-domain' && typeof window !== 'undefined') {
+    console.error(
+      `[Firebase Auth Error] Unauthorized Domain: "${window.location.hostname}". ` +
+      `Please add "${window.location.hostname}" to Firebase Console -> Authentication -> Settings -> Authorized domains.`
+    )
+  }
+  throw err
 }
 
 export const firebaseAuth = {
@@ -56,21 +75,37 @@ export const firebaseAuth = {
     return () => unsub()
   },
   signInEmail: async (email, password) => {
-    const { auth: a, authMod } = await getAuthModule()
-    return authMod.signInWithEmailAndPassword(a, email, password)
+    try {
+      const { auth: a, authMod } = await getAuthModule()
+      return await authMod.signInWithEmailAndPassword(a, email, password)
+    } catch (err) {
+      handleAuthError(err)
+    }
   },
   signUpEmail: async (email, password) => {
-    const { auth: a, authMod } = await getAuthModule()
-    return authMod.createUserWithEmailAndPassword(a, email, password)
+    try {
+      const { auth: a, authMod } = await getAuthModule()
+      return await authMod.createUserWithEmailAndPassword(a, email, password)
+    } catch (err) {
+      handleAuthError(err)
+    }
   },
   signInGoogle: async () => {
-    const { auth: a, authMod } = await getAuthModule()
-    const provider = new authMod.GoogleAuthProvider()
-    return authMod.signInWithPopup(a, provider)
+    try {
+      const { auth: a, authMod } = await getAuthModule()
+      const provider = new authMod.GoogleAuthProvider()
+      return await authMod.signInWithPopup(a, provider)
+    } catch (err) {
+      handleAuthError(err)
+    }
   },
   sendPasswordReset: async (email) => {
-    const { auth: a, authMod } = await getAuthModule()
-    return authMod.sendPasswordResetEmail(a, email)
+    try {
+      const { auth: a, authMod } = await getAuthModule()
+      return await authMod.sendPasswordResetEmail(a, email)
+    } catch (err) {
+      handleAuthError(err)
+    }
   },
   signOut: async () => {
     if (!isFirebaseConfigured) return

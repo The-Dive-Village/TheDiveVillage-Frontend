@@ -1,5 +1,5 @@
 import { useState, useEffect, Suspense, useRef } from 'react'
-import { Canvas } from '@react-three/fiber'
+import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls, useVideoTexture } from '@react-three/drei'
 import * as THREE from 'three'
 import videoFile from '../assets/Hero(1).mp4'
