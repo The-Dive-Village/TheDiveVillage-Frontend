@@ -2,7 +2,8 @@ let app = null
 let auth = null
 let authModule = null
 
-const DEFAULT_FIREBASE_CONFIG = {
+// Fallback configuration strictly for local development when environment variables are omitted
+const DEV_FALLBACK_FIREBASE_CONFIG = {
   apiKey: 'AIzaSyC5-WeuVzMZxq5A31jMqoTq33TZH9Mx008',
   authDomain: 'dive-village-testing.firebaseapp.com',
   projectId: 'dive-village-testing',
@@ -11,13 +12,28 @@ const DEFAULT_FIREBASE_CONFIG = {
   appId: '1:65243166255:web:f4d281ac4e5bf9525c38da',
 }
 
+const getEnvVar = (key) => (import.meta.env[key] || '').trim()
+
+// Primary Vercel Production environment variables
+const envApiKey = getEnvVar('VITE_FIREBASE_API_KEY')
+const envAuthDomain = getEnvVar('VITE_FIREBASE_AUTH_DOMAIN')
+const envProjectId = getEnvVar('VITE_FIREBASE_PROJECT_ID')
+const envStorageBucket = getEnvVar('VITE_FIREBASE_STORAGE_BUCKET')
+const envMessagingSenderId = getEnvVar('VITE_FIREBASE_MESSAGING_SENDER_ID')
+const envAppId = getEnvVar('VITE_FIREBASE_APP_ID')
+
+const hasEnvConfig = Boolean(envApiKey && envProjectId && envApiKey !== 'placeholder')
+
+// In production, strictly use environment variables. In DEV mode, allow fallback if env vars are missing.
+const useFallback = !hasEnvConfig && import.meta.env.DEV
+
 const firebaseConfig = {
-  apiKey: (import.meta.env.VITE_FIREBASE_API_KEY || DEFAULT_FIREBASE_CONFIG.apiKey).trim(),
-  authDomain: (import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || DEFAULT_FIREBASE_CONFIG.authDomain).trim(),
-  projectId: (import.meta.env.VITE_FIREBASE_PROJECT_ID || DEFAULT_FIREBASE_CONFIG.projectId).trim(),
-  storageBucket: (import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || DEFAULT_FIREBASE_CONFIG.storageBucket).trim(),
-  messagingSenderId: (import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || DEFAULT_FIREBASE_CONFIG.messagingSenderId).trim(),
-  appId: (import.meta.env.VITE_FIREBASE_APP_ID || DEFAULT_FIREBASE_CONFIG.appId).trim(),
+  apiKey: envApiKey || (useFallback ? DEV_FALLBACK_FIREBASE_CONFIG.apiKey : ''),
+  authDomain: envAuthDomain || (useFallback ? DEV_FALLBACK_FIREBASE_CONFIG.authDomain : ''),
+  projectId: envProjectId || (useFallback ? DEV_FALLBACK_FIREBASE_CONFIG.projectId : ''),
+  storageBucket: envStorageBucket || (useFallback ? DEV_FALLBACK_FIREBASE_CONFIG.storageBucket : ''),
+  messagingSenderId: envMessagingSenderId || (useFallback ? DEV_FALLBACK_FIREBASE_CONFIG.messagingSenderId : ''),
+  appId: envAppId || (useFallback ? DEV_FALLBACK_FIREBASE_CONFIG.appId : ''),
 }
 
 export const isFirebaseConfigured = Boolean(
@@ -27,9 +43,11 @@ export const isFirebaseConfigured = Boolean(
 )
 
 if (typeof window !== 'undefined' && import.meta.env.DEV) {
-  console.log('[Firebase] Loaded Config:', {
+  console.log('[Firebase] Active Configuration:', {
     projectId: firebaseConfig.projectId,
     authDomain: firebaseConfig.authDomain,
+    usingEnvVars: hasEnvConfig,
+    usingDevFallback: useFallback,
     hostname: window.location.hostname,
     isConfigured: isFirebaseConfigured,
   })
@@ -52,7 +70,7 @@ const handleAuthError = (err) => {
   if (err?.code === 'auth/unauthorized-domain' && typeof window !== 'undefined') {
     console.error(
       `[Firebase Auth Error] Unauthorized Domain: "${window.location.hostname}". ` +
-      `Please add "${window.location.hostname}" to Firebase Console -> Authentication -> Settings -> Authorized domains.`
+      `Please ensure "${window.location.hostname}" is listed in Firebase Console -> Authentication -> Settings -> Authorized domains.`
     )
   }
   throw err
