@@ -22,7 +22,6 @@ export const CERTIFICATIONS = {
 
 // User-facing normalized certification and prior experience options
 export const CERTIFICATION_OPTIONS = [
-<<<<<<< HEAD
   // Age 8-9 prior experience options (supported by TDV spreadsheet)
   { id: CERTIFICATIONS.TRY_DIVE, name: 'Try Dive', minAgeToHold: 8 },
   { id: CERTIFICATIONS.PADI_BUBBLEMAKER, name: 'PADI Bubblemaker', minAgeToHold: 8, maxAgeToHold: 10 },
@@ -39,17 +38,6 @@ export const CERTIFICATION_OPTIONS = [
   { id: CERTIFICATIONS.LOGGED_40_DIVES, name: '40+ Logged Dives', minAgeToHold: 10 },
   { id: CERTIFICATIONS.BASIC_FREEDIVER, name: 'PADI Basic Freediver (or equivalent)', minAgeToHold: 12 },
   { id: CERTIFICATIONS.DIVEMASTER, name: 'PADI Divemaster / Pro', minAgeToHold: 18 },
-=======
-  { id: CERTIFICATIONS.PADI_DSD, name: 'Discover Scuba Dive (DSD)' },
-  { id: CERTIFICATIONS.OPEN_WATER, name: 'Open Water Diver (or equivalent)' },
-  { id: CERTIFICATIONS.ADVENTURE_DIVER, name: 'Adventure Diver' },
-  { id: CERTIFICATIONS.ADVANCED_OPEN_WATER, name: 'Advanced Open Water' },
-  { id: CERTIFICATIONS.EFR, name: 'EFR Primary & Secondary Care' },
-  { id: CERTIFICATIONS.RESCUE_DIVER, name: 'Rescue Diver' },
-  { id: CERTIFICATIONS.LOGGED_40_DIVES, name: '40+ Logged Dives' },
-  { id: CERTIFICATIONS.BASIC_FREEDIVER, name: 'Basic Freediver (or equivalent)' },
-  { id: CERTIFICATIONS.DIVEMASTER, name: 'Divemaster / Pro' },
->>>>>>> 0b1df8b82e2ff2527dbe468ba8b49a28ad964a0b
 ]
 
 /**
