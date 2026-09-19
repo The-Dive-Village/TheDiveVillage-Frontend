@@ -40,7 +40,23 @@ export default function Login() {
         navigate('/dashboard/profile')
       }
     } catch (err) {
-      setError(err.message || 'Failed to sign in. Please check your credentials.')
+      let friendlyMsg = 'Failed to sign in. Please check your credentials.'
+      const code = err?.code || ''
+      const rawMsg = err?.message || ''
+
+      if (code === 'auth/invalid-credential' || rawMsg.includes('invalid-credential') || code === 'auth/wrong-password' || code === 'auth/user-not-found') {
+        friendlyMsg = 'Invalid email or password. Please check your credentials and try again.'
+      } else if (code === 'auth/invalid-email' || rawMsg.includes('invalid-email')) {
+        friendlyMsg = 'Please enter a valid email address.'
+      } else if (code === 'auth/too-many-requests' || rawMsg.includes('too-many-requests')) {
+        friendlyMsg = 'Too many failed login attempts. Access temporarily disabled. Please reset your password or try again later.'
+      } else if (code === 'auth/user-disabled' || rawMsg.includes('user-disabled')) {
+        friendlyMsg = 'This account has been disabled. Please contact support.'
+      } else if (rawMsg) {
+        friendlyMsg = rawMsg.replace(/^Firebase:\s*/i, '').replace(/\s*\([^\)]+\)\.?$/i, '')
+      }
+
+      setError(friendlyMsg)
     } finally {
       setLoading(false)
     }

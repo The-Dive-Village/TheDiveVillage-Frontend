@@ -460,7 +460,8 @@ export default function VideoSphereBackground() {
     const audio = audioRef.current
     if (!audio) return
 
-    audio.volume = 0.5
+    audio.muted = isMuted
+    audio.volume = isMuted ? 0 : 0.5
 
     if (!isMuted) {
       const playPromise = audio.play()
@@ -470,6 +471,8 @@ export default function VideoSphereBackground() {
           console.log('Autoplay waiting for initial user interaction:', err)
           const unlockAudio = () => {
             if (audioRef.current && localStorage.getItem('dive_village_user_muted') !== 'true') {
+              audioRef.current.muted = false
+              audioRef.current.volume = 0.5
               audioRef.current.play().catch(() => {})
             }
             window.removeEventListener('pointerdown', unlockAudio)
@@ -488,6 +491,7 @@ export default function VideoSphereBackground() {
       }
     } else {
       audio.pause()
+      audio.currentTime = 0
     }
   }, [isMuted])
 
@@ -496,8 +500,18 @@ export default function VideoSphereBackground() {
       const next = !prev
       if (next) {
         localStorage.setItem('dive_village_user_muted', 'true')
+        if (audioRef.current) {
+          audioRef.current.muted = true
+          audioRef.current.volume = 0
+          audioRef.current.pause()
+        }
       } else {
         localStorage.removeItem('dive_village_user_muted')
+        if (audioRef.current) {
+          audioRef.current.muted = false
+          audioRef.current.volume = 0.5
+          audioRef.current.play().catch(() => {})
+        }
       }
       return next
     })
@@ -519,7 +533,7 @@ export default function VideoSphereBackground() {
 
   return (
     <>
-      <audio ref={audioRef} src={underwaterAudio} loop playsInline autoPlay />
+      <audio ref={audioRef} src={underwaterAudio} loop playsInline />
       <div className="absolute inset-0 -z-10">
         <div 
           className="sticky top-0 h-[100dvh] w-full overflow-hidden"

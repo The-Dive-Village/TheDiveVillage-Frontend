@@ -48,7 +48,7 @@ export const CERTIFICATION_OPTIONS = [
  */
 export function getAvailableCertificationsForAge(age) {
   const numericAge = parseInt(age, 10)
-  if (isNaN(numericAge) || numericAge < 8) return []
+  if (isNaN(numericAge) || numericAge < 8 || numericAge > 110) return []
   return CERTIFICATION_OPTIONS.filter((opt) => {
     if (numericAge < opt.minAgeToHold) return false
     if (opt.maxAgeToHold && numericAge > opt.maxAgeToHold) return false
@@ -641,7 +641,7 @@ export function isPrerequisiteSatisfied(course, hasCert = false, userCerts = [])
  */
 export function isCourseEligible(course, age, hasCert = false, userCerts = []) {
   const numericAge = parseInt(age, 10)
-  if (isNaN(numericAge) || numericAge < 8) {
+  if (isNaN(numericAge) || numericAge < 8 || numericAge > 110) {
     return false
   }
 
@@ -669,7 +669,7 @@ export function isCourseEligible(course, age, hasCert = false, userCerts = []) {
  */
 export function getEligibleCourses(age, hasCert = false, userCerts = []) {
   const numericAge = parseInt(age, 10)
-  if (isNaN(numericAge) || numericAge < 8) {
+  if (isNaN(numericAge) || numericAge < 8 || numericAge > 110) {
     return []
   }
 
@@ -686,8 +686,8 @@ export function validateParticipantBooking(participant) {
   if (!participant) return { valid: false, error: 'Participant data missing.' }
   
   const age = parseInt(participant.age, 10)
-  if (isNaN(age) || age < 8) {
-    return { valid: false, error: `Invalid age for ${participant.name || 'participant'}. Minimum age for any diving activity is 8 years.` }
+  if (isNaN(age) || age < 8 || age > 110) {
+    return { valid: false, error: `Invalid age for ${participant.name || 'participant'}. Age must be between 8 and 110 years.` }
   }
 
   if (!participant.selectedProgram) {

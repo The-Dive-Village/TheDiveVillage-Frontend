@@ -181,7 +181,7 @@ export default function BookUs() {
       if (field === 'age' || field === 'hasCertification' || field === 'certifications') {
         const p = updated[index]
         const ageNum = parseInt(p.age, 10)
-        if (isNaN(ageNum) || ageNum < 8) {
+        if (isNaN(ageNum) || ageNum < 8 || ageNum > 110) {
           updated[index].hasCertification = false
           updated[index].certifications = []
           updated[index].selectedProgram = ''
@@ -650,7 +650,7 @@ export default function BookUs() {
                     <div data-lenis-prevent className="space-y-6 max-h-[550px] overflow-y-auto overscroll-contain pr-1">
                       {participants.map((p, idx) => {
                         const ageNum = parseInt(p.age, 10)
-                        const isAgeValid = !isNaN(ageNum) && ageNum >= 8
+                        const isAgeValid = !isNaN(ageNum) && ageNum >= 8 && ageNum <= 110
                         const eligibleCourses = isAgeValid ? getEligibleCourses(p.age, p.hasCertification, p.certifications) : []
                         const availableCertOptions = getAvailableCertificationsForAge(p.age)
 
@@ -686,11 +686,20 @@ export default function BookUs() {
                                 <label className="mb-2 block text-xs font-bold text-navy/70">Age (Years)</label>
                                 <input
                                   type="number"
-                                  min="1"
-                                  max="100"
+                                  min="8"
+                                  max="110"
                                   placeholder="e.g. 12"
                                   value={p.age}
-                                  onChange={(e) => handleParticipantChange(idx, 'age', e.target.value)}
+                                  onChange={(e) => {
+                                    let rawVal = e.target.value
+                                    if (rawVal !== '') {
+                                      const parsed = parseInt(rawVal, 10)
+                                      if (!isNaN(parsed) && parsed > 110) {
+                                        rawVal = '110'
+                                      }
+                                    }
+                                    handleParticipantChange(idx, 'age', rawVal)
+                                  }}
                                   required
                                   className="w-full rounded-2xl bg-white border border-navy/10 px-4 py-3.5 text-sm font-bold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition"
                                 />
@@ -705,13 +714,19 @@ export default function BookUs() {
                               </div>
                             )}
 
-                            {/* Under minimum age (age < 8) notice */}
+                            {/* Invalid age (age < 8 or age > 110) notice */}
                             {p.age !== '' && !isAgeValid && (
                               <div className="rounded-2xl bg-red-50 border border-red-200 p-4 text-xs font-medium text-red-600 flex items-start gap-3">
                                 <span className="text-base">⚠️</span>
                                 <div>
-                                  <span className="font-bold block mb-0.5">Minimum Diving Age Requirement (8 Years)</span>
-                                  <span>The minimum age for any diving activity or course is 8 years old. Participants under 8 years old are not eligible to participate or proceed with booking.</span>
+                                  <span className="font-bold block mb-0.5">
+                                    {ageNum < 8 ? 'Minimum Diving Age Requirement (8 Years)' : 'Maximum Diving Age Limit (110 Years)'}
+                                  </span>
+                                  <span>
+                                    {ageNum < 8
+                                      ? 'The minimum age for any diving activity or course is 8 years old. Participants under 8 years old are not eligible to participate.'
+                                      : 'Please enter a valid age up to 110 years.'}
+                                  </span>
                                 </div>
                               </div>
                             )}
