@@ -3,8 +3,12 @@
  * Source of truth: TDV_Course_MinAge_Certifications.xlsx
  */
 
-// Normalized Certification Keys
+// Normalized Certification & Prior Experience Keys
 export const CERTIFICATIONS = {
+  TRY_DIVE: 'try_dive',
+  PADI_BUBBLEMAKER: 'padi_bubblemaker',
+  PADI_SKIN_DIVER: 'padi_skin_diver',
+  REEF_EXPLORER: 'reef_explorer',
   PADI_DSD: 'padi_dsd',
   OPEN_WATER: 'open_water',
   ADVENTURE_DIVER: 'adventure_diver',
@@ -16,18 +20,41 @@ export const CERTIFICATIONS = {
   DIVEMASTER: 'divemaster',
 }
 
-// User-facing normalized certification options
+// User-facing normalized certification and prior experience options
 export const CERTIFICATION_OPTIONS = [
-  { id: CERTIFICATIONS.PADI_DSD, name: 'PADI Discover Scuba Dive (DSD)' },
-  { id: CERTIFICATIONS.OPEN_WATER, name: 'PADI Open Water Diver (or equivalent)' },
-  { id: CERTIFICATIONS.ADVENTURE_DIVER, name: 'PADI Adventure Diver' },
-  { id: CERTIFICATIONS.ADVANCED_OPEN_WATER, name: 'PADI Advanced Open Water' },
-  { id: CERTIFICATIONS.EFR, name: 'EFR Primary & Secondary Care' },
-  { id: CERTIFICATIONS.RESCUE_DIVER, name: 'PADI Rescue Diver' },
-  { id: CERTIFICATIONS.LOGGED_40_DIVES, name: '40+ Logged Dives' },
-  { id: CERTIFICATIONS.BASIC_FREEDIVER, name: 'PADI Basic Freediver (or equivalent)' },
-  { id: CERTIFICATIONS.DIVEMASTER, name: 'PADI Divemaster / Pro' },
+  // Age 8-9 prior experience options (supported by TDV spreadsheet)
+  { id: CERTIFICATIONS.TRY_DIVE, name: 'Try Dive', minAgeToHold: 8 },
+  { id: CERTIFICATIONS.PADI_BUBBLEMAKER, name: 'PADI Bubblemaker', minAgeToHold: 8, maxAgeToHold: 10 },
+  { id: CERTIFICATIONS.PADI_SKIN_DIVER, name: 'PADI Skin Diver', minAgeToHold: 8 },
+  { id: CERTIFICATIONS.REEF_EXPLORER, name: 'Reef Explorer', minAgeToHold: 8 },
+
+  // Age 10+ formal certifications
+  { id: CERTIFICATIONS.PADI_DSD, name: 'PADI Discover Scuba Dive (DSD)', minAgeToHold: 10 },
+  { id: CERTIFICATIONS.OPEN_WATER, name: 'PADI Open Water Diver (or equivalent)', minAgeToHold: 10 },
+  { id: CERTIFICATIONS.ADVENTURE_DIVER, name: 'PADI Adventure Diver', minAgeToHold: 10 },
+  { id: CERTIFICATIONS.ADVANCED_OPEN_WATER, name: 'PADI Advanced Open Water', minAgeToHold: 12 },
+  { id: CERTIFICATIONS.EFR, name: 'EFR Primary & Secondary Care', minAgeToHold: 12 },
+  { id: CERTIFICATIONS.RESCUE_DIVER, name: 'PADI Rescue Diver', minAgeToHold: 12 },
+  { id: CERTIFICATIONS.LOGGED_40_DIVES, name: '40+ Logged Dives', minAgeToHold: 10 },
+  { id: CERTIFICATIONS.BASIC_FREEDIVER, name: 'PADI Basic Freediver (or equivalent)', minAgeToHold: 12 },
+  { id: CERTIFICATIONS.DIVEMASTER, name: 'PADI Divemaster / Pro', minAgeToHold: 18 },
 ]
+
+/**
+ * Get user-selectable certification / experience options available for a given age.
+ *
+ * @param {number|string} age Participant age
+ * @returns {Object[]} Available certification/experience options for this age
+ */
+export function getAvailableCertificationsForAge(age) {
+  const numericAge = parseInt(age, 10)
+  if (isNaN(numericAge) || numericAge < 8) return []
+  return CERTIFICATION_OPTIONS.filter((opt) => {
+    if (numericAge < opt.minAgeToHold) return false
+    if (opt.maxAgeToHold && numericAge > opt.maxAgeToHold) return false
+    return true
+  })
+}
 
 // Master 44-Course Catalog from TDV_Course_MinAge_Certifications.xlsx
 export const COURSE_CATALOG = [
@@ -614,7 +641,7 @@ export function isPrerequisiteSatisfied(course, hasCert = false, userCerts = [])
  */
 export function isCourseEligible(course, age, hasCert = false, userCerts = []) {
   const numericAge = parseInt(age, 10)
-  if (isNaN(numericAge) || numericAge < 7) {
+  if (isNaN(numericAge) || numericAge < 8) {
     return false
   }
 
@@ -642,7 +669,7 @@ export function isCourseEligible(course, age, hasCert = false, userCerts = []) {
  */
 export function getEligibleCourses(age, hasCert = false, userCerts = []) {
   const numericAge = parseInt(age, 10)
-  if (isNaN(numericAge) || numericAge < 7) {
+  if (isNaN(numericAge) || numericAge < 8) {
     return []
   }
 
@@ -659,8 +686,8 @@ export function validateParticipantBooking(participant) {
   if (!participant) return { valid: false, error: 'Participant data missing.' }
   
   const age = parseInt(participant.age, 10)
-  if (isNaN(age) || age < 7) {
-    return { valid: false, error: `Invalid age for ${participant.name || 'participant'}. Minimum age is 7 years.` }
+  if (isNaN(age) || age < 8) {
+    return { valid: false, error: `Invalid age for ${participant.name || 'participant'}. Minimum age for any diving activity is 8 years.` }
   }
 
   if (!participant.selectedProgram) {
@@ -682,6 +709,17 @@ export function validateParticipantBooking(participant) {
   const hasCert = Boolean(participant.hasCertification)
   const certs = participant.certifications || (participant.experienceLevel ? [participant.experienceLevel] : [])
 
+  // Check if participant claims any certification that is age-inappropriate for them
+  for (const certId of certs) {
+    const certOpt = CERTIFICATION_OPTIONS.find((c) => c.id === certId)
+    if (certOpt && age < certOpt.minAgeToHold) {
+      return {
+        valid: false,
+        error: `${participant.name || 'Participant'} (age ${age}) cannot hold certification '${certOpt.name}', which requires minimum age ${certOpt.minAgeToHold}.`
+      }
+    }
+  }
+
   if (!isPrerequisiteSatisfied(course, hasCert, certs)) {
     return {
       valid: false,
@@ -700,5 +738,6 @@ export default {
   isPrerequisiteSatisfied,
   isCourseEligible,
   getEligibleCourses,
+  getAvailableCertificationsForAge,
   validateParticipantBooking,
 }
