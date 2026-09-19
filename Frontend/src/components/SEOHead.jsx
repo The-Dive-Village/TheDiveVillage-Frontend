@@ -2,8 +2,8 @@ import { useEffect } from 'react'
 
 export default function SEOHead({
   title = "The Dive Village | It's a Community",
-  description = 'Experience world-class scuba diving certifications, guided freediving excursions, and premium ocean apparel with certified PADI & SSI divemasters at The Dive Village.',
-  keywords = 'scuba diving, freediving, scuba certification, PADI courses, SSI dive center, dive gear, underwater exploration, ocean apparel, dive village',
+  description = 'Experience world-class scuba diving certifications, guided freediving excursions, and premium ocean apparel with certified professional divemasters at The Dive Village.',
+  keywords = 'scuba diving, freediving, scuba certification, diving courses, dive center, dive gear, underwater exploration, ocean apparel, dive village',
   canonicalUrl = 'https://thedivevillage.co',
   ogImage = '/src/assets/logo.png',
   ogType = 'website'

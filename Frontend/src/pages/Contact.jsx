@@ -62,8 +62,8 @@ export default function Contact() {
     <div className="bg-[#FAFAFA] min-h-screen text-navy font-body overflow-x-hidden" style={{ textShadow: 'none' }}>
       <SEOHead
         title="Contact Us & Custom Dive Charters | The Dive Village"
-        description="Get in touch with The Dive Village for custom scuba itineraries, PADI course enquiries, private boat charters, and island travel logistics."
-        keywords="contact dive village, scuba diving inquiry, PADI course booking, custom dive charter, island travel assistance"
+        description="Get in touch with The Dive Village for custom scuba itineraries, diving course enquiries, private boat charters, and island travel logistics."
+        keywords="contact dive village, scuba diving inquiry, course booking, custom dive charter, island travel assistance"
         canonicalUrl="https://thedivevillage.com/contact"
       />
 
@@ -302,7 +302,7 @@ export default function Contact() {
                 Discover Your Next <span className="font-heading italic font-bold text-accent"><br />Ocean Escape</span>
               </h2>
               <p className="text-base sm:text-lg font-medium text-white/85 leading-relaxed max-w-lg mb-8">
-                Ready to take the plunge? Plan your trip in minutes and enjoy every moment of your dive adventure with certified PADI experts.
+                Ready to take the plunge? Plan your trip in minutes and enjoy every moment of your dive adventure with certified dive experts.
               </p>
 
               <div className="flex flex-wrap items-center gap-4">

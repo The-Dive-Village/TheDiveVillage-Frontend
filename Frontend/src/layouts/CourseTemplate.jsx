@@ -67,7 +67,7 @@ export default function CourseTemplate({
             className="mt-10 flex items-center gap-3 bg-white/15 backdrop-blur-md rounded-full px-6 py-3 border border-white/30 shadow-lg text-white font-bold text-xs sm:text-sm tracking-widest uppercase"
           >
             <span className="w-2.5 h-2.5 rounded-full bg-accent animate-pulse" />
-            <span>PADI Certified Course Experience</span>
+            <span>Certified Course Experience</span>
           </motion.div>
         </div>
       </section>

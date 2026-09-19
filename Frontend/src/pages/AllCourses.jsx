@@ -92,7 +92,7 @@ export default function AllCourses() {
               Not Sure Which Program is Right for You?
             </h2>
             <p className="text-lg text-white/80 max-w-xl mb-10 leading-relaxed">
-              Talk to our PADI Master Instructors. We will guide you to the perfect training path based on your schedule, experience, and goals.
+              Talk to our Master Instructors. We will guide you to the perfect training path based on your schedule, experience, and goals.
             </p>
             <div className="flex flex-wrap gap-4 items-center">
               <Button as={Link} to="/book-us" variant="primary">

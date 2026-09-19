@@ -313,8 +313,8 @@ export default function BookUs() {
     <div className="bg-[#FAFAFA] min-h-screen text-navy font-body overflow-x-hidden" style={{ textShadow: 'none' }}>
       <SEOHead
         title="Book Scuba Diving Courses & Expeditions Online | The Dive Village"
-        description="Book PADI scuba diving courses, Discovery dives, snorkeling trips, and freediving packages online with instant confirmation at The Dive Village."
-        keywords="book scuba dive online, PADI course reservation, dive charter booking, snorkeling trip reservation, dive village booking"
+        description="Book certified scuba diving courses, Discovery dives, snorkeling trips, and freediving packages online with instant confirmation at The Dive Village."
+        keywords="book scuba dive online, scuba course reservation, dive charter booking, snorkeling trip reservation, dive village booking"
         canonicalUrl="https://thedivevillage.com/book-us"
       />
 
@@ -511,7 +511,7 @@ export default function BookUs() {
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center justify-between gap-2 mb-1">
                                 <span className="text-[9px] font-bold uppercase tracking-wider text-accent bg-navy px-2.5 py-0.5 rounded-full truncate">
-                                  {creature?.creatureName || selectedLocation.membershipLevel || 'PADI Dive Site'}
+                                  {creature?.creatureName || selectedLocation.membershipLevel || 'Certified Dive Site'}
                                 </span>
                                 <span className="text-[10px] font-mono font-bold text-navy/40 shrink-0">
                                   #{selectedLocation.id}

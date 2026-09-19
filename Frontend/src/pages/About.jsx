@@ -13,7 +13,7 @@ const SAFETY_PROMISES = [
   {
     num: '01',
     title: 'Globally Certified Instructors',
-    desc: 'Globally certified PADI instructors and professional guides dedicated to your safety and growth.',
+    desc: 'Globally certified instructors and professional guides dedicated to your safety and growth.',
   },
   {
     num: '02',
@@ -35,7 +35,7 @@ const SAFETY_PROMISES = [
 const TESTIMONIALS = [
   {
     name: "Alex Johnson",
-    role: "PADI Open Water Diver",
+    role: "Open Water Diver",
     text: "The Dive Village completely changed my perspective on the ocean. The instructors were incredibly patient, and the focus on safety made my first dive an unforgettable and peaceful experience.",
     image: CAROUSEL_IMAGES[1]
   },
@@ -86,9 +86,9 @@ export default function About() {
   return (
     <div className="bg-[#003865] min-h-screen font-body overflow-x-hidden pointer-events-none relative">
       <SEOHead
-        title="About Us | Certified PADI Scuba Instructors & Ocean Sanctuary | The Dive Village"
-        description="Discover the story behind The Dive Village. Dedicated to safety, marine conservation, PADI diving excellence, and building an inclusive underwater community."
-        keywords="about the dive village, PADI certified instructors, marine conservation dive center, eco scuba diving, ocean community"
+        title="About Us | Certified Scuba Instructors & Ocean Sanctuary | The Dive Village"
+        description="Discover the story behind The Dive Village. Dedicated to safety, marine conservation, diving excellence, and building an inclusive underwater community."
+        keywords="about the dive village, certified instructors, marine conservation dive center, eco scuba diving, ocean community"
         canonicalUrl="https://thedivevillage.com/about"
       />
       

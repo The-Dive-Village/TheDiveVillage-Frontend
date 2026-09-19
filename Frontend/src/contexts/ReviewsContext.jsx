@@ -5,7 +5,7 @@ const INITIAL_REVIEWS = [
   {
     id: 'rev-1',
     name: "Sofia Stalance",
-    role: "PADI Advanced Open Water Diver",
+    role: "Advanced Open Water Diver",
     text: "Did my Advanced Open Water with Sanjeev and the crew in Havelock. Having instructors who genuinely emphasize neutral buoyancy and reef protection made all the difference. Saw manta rays at Dixon's Pinnacle—an unforgettable dive.",
     rating: 5,
     image: CAROUSEL_IMAGES[1],

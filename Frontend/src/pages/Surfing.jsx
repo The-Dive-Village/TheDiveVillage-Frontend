@@ -7,7 +7,7 @@ export default function Surfing() {
   const tours = [
     {
       id: 'surf-1',
-      title: 'PADI Skin Diver',
+      title: 'Skin Diver',
       desc: 'Focus on breath-hold diving and safe descents.',
       price: 'Contact Us',
       image: IMAGES.surfingFeat1,
