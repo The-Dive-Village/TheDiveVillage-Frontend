@@ -4,13 +4,24 @@ import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
 import { useLocation } from 'react-router'
-import videoFile from '../assets/Hero(1).mp4'
+import videoFile from '../assets/Hero_3840x1920_production.mp4'
 import divingFile from '../assets/Diving(1).mp4'
 import bookFile from '../assets/Book(2).mp4'
 import turtleVideo from '../assets/Turtle_fast.mp4'
 import nightDiveVideo from '../assets/nightdive_fast.mp4'
 import underwaterAudio from '../assets/Underwater.mp3'
 import { setHeroVideoReady } from '../utils/mediaReadyManager'
+
+function getOrCreateDomVideoContainer() {
+  let container = document.getElementById('hero-360-video-dom-root')
+  if (!container) {
+    container = document.createElement('div')
+    container.id = 'hero-360-video-dom-root'
+    container.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;opacity:0.001;pointer-events:none;overflow:hidden;z-index:-99999;'
+    document.body.appendChild(container)
+  }
+  return container
+}
 
 function useDirectVideoTexture(src, playbackRate = 0.7, priority = false) {
   const [texture, setTexture] = useState(null)
@@ -26,7 +37,9 @@ function useDirectVideoTexture(src, playbackRate = 0.7, priority = false) {
     let isMounted = true
     let vidTexture = null
     let rvfcId = null
+    let fallbackCleanup = null
 
+    const domContainer = getOrCreateDomVideoContainer()
     const video = document.createElement('video')
     video.src = src
     video.crossOrigin = 'anonymous'
@@ -45,6 +58,8 @@ function useDirectVideoTexture(src, playbackRate = 0.7, priority = false) {
       video.setAttribute('fetchpriority', 'high')
     }
 
+    domContainer.appendChild(video)
+
     const checkReadiness = () => {
       if (!isMounted) return false
       return (
@@ -62,6 +77,17 @@ function useDirectVideoTexture(src, playbackRate = 0.7, priority = false) {
           rvfcId = video.requestVideoFrameCallback(onVideoFrame)
         }
         rvfcId = video.requestVideoFrameCallback(onVideoFrame)
+      } else {
+        const onTimeUpdate = () => {
+          if (!isMounted) return
+          hasNewFrameRef.current = true
+        }
+        video.addEventListener('timeupdate', onTimeUpdate)
+        video.addEventListener('playing', onTimeUpdate)
+        fallbackCleanup = () => {
+          video.removeEventListener('timeupdate', onTimeUpdate)
+          video.removeEventListener('playing', onTimeUpdate)
+        }
       }
     }
 
@@ -70,6 +96,7 @@ function useDirectVideoTexture(src, playbackRate = 0.7, priority = false) {
       if (checkReadiness()) {
         if (!vidTexture) {
           vidTexture = new THREE.VideoTexture(video)
+          vidTexture.update = () => {} // Disable Three.js per-frame auto-update so requestVideoFrameCallback controls needsUpdate
           vidTexture.colorSpace = THREE.SRGBColorSpace
           vidTexture.minFilter = THREE.LinearFilter
           vidTexture.magFilter = THREE.LinearFilter
@@ -98,14 +125,16 @@ function useDirectVideoTexture(src, playbackRate = 0.7, priority = false) {
                 tryActivateTexture()
               }
             })
-            .catch(() => {})
+            .catch((err) => {
+              console.warn('360 Video autoplay status:', err?.name || err)
+            })
         }
       }
     }
 
     const handleEvent = () => {
       if (!isMounted) return
-      tryActivateTexture()
+      startPlayback()
     }
 
     const handleUserInteraction = () => {
@@ -138,6 +167,9 @@ function useDirectVideoTexture(src, playbackRate = 0.7, priority = false) {
       if (rvfcId && video.cancelVideoFrameCallback) {
         video.cancelVideoFrameCallback(rvfcId)
       }
+      if (fallbackCleanup) {
+        fallbackCleanup()
+      }
       window.removeEventListener('pointerdown', handleUserInteraction)
       window.removeEventListener('touchstart', handleUserInteraction)
       mediaEvents.forEach((evt) => {
@@ -146,6 +178,9 @@ function useDirectVideoTexture(src, playbackRate = 0.7, priority = false) {
       video.pause()
       video.removeAttribute('src')
       video.load()
+      if (video.parentNode) {
+        video.parentNode.removeChild(video)
+      }
       if (vidTexture) {
         vidTexture.dispose()
         vidTexture = null
@@ -164,6 +199,8 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
   const targetRotation = useRef({ x: 0, y: 0 })
   const targetOpacity2 = useRef(0)
   const targetOpacity3 = useRef(0)
+  const vid2PlayingRef = useRef(false)
+  const vid3PlayingRef = useRef(false)
   const [loadSecondary, setLoadSecondary] = useState(false)
   const location = useLocation()
   const isHome = location.pathname === '/'
@@ -305,49 +342,55 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
 
   useFrame((state, delta) => {
     if (meshRef.current) {
-      // 1. Frame-gated texture 1 update
+      // 1. Frame-driven texture 1 update (checks currentTime advancement to guarantee updates even if offscreen callback throttled)
       if (texture && texture.image) {
-        const vid = texture.image
-        if (vid.readyState >= 2 && vid.videoWidth > 0 && vid.videoHeight > 0) {
-          if (hasNewFrame1.current || vid.currentTime !== lastTime1.current) {
-            lastTime1.current = vid.currentTime
-            hasNewFrame1.current = false
-            texture.needsUpdate = true
-          }
+        const vid1 = texture.image
+        if (hasNewFrame1.current || vid1.currentTime !== lastTime1.current) {
+          lastTime1.current = vid1.currentTime
+          hasNewFrame1.current = false
+          texture.needsUpdate = true
         }
       }
 
-      // 2. Secondary texture 2 update (pause when opacity === 0, frame-gated update when opacity > 0)
+      // 2. Secondary texture 2 update with state-transition play/pause
       if (texture2 && texture2.image) {
         const vid2 = texture2.image
         if (targetOpacity2.current > 0.01) {
-          if (vid2.paused) vid2.play().catch(() => {})
-          if (vid2.readyState >= 2 && vid2.videoWidth > 0 && vid2.videoHeight > 0) {
-            if (hasNewFrame2.current || vid2.currentTime !== lastTime2.current) {
-              lastTime2.current = vid2.currentTime
-              hasNewFrame2.current = false
-              texture2.needsUpdate = true
-            }
+          if (!vid2PlayingRef.current) {
+            vid2PlayingRef.current = true
+            vid2.play().catch(() => {})
+          }
+          if (hasNewFrame2.current || vid2.currentTime !== lastTime2.current) {
+            lastTime2.current = vid2.currentTime
+            hasNewFrame2.current = false
+            texture2.needsUpdate = true
           }
         } else {
-          if (!vid2.paused) vid2.pause()
+          if (vid2PlayingRef.current) {
+            vid2PlayingRef.current = false
+            vid2.pause()
+          }
         }
       }
 
-      // 3. Secondary texture 3 update (pause when opacity === 0, frame-gated update when opacity > 0)
+      // 3. Secondary texture 3 update with state-transition play/pause
       if (texture3 && texture3.image) {
         const vid3 = texture3.image
         if (targetOpacity3.current > 0.01) {
-          if (vid3.paused) vid3.play().catch(() => {})
-          if (vid3.readyState >= 2 && vid3.videoWidth > 0 && vid3.videoHeight > 0) {
-            if (hasNewFrame3.current || vid3.currentTime !== lastTime3.current) {
-              lastTime3.current = vid3.currentTime
-              hasNewFrame3.current = false
-              texture3.needsUpdate = true
-            }
+          if (!vid3PlayingRef.current) {
+            vid3PlayingRef.current = true
+            vid3.play().catch(() => {})
+          }
+          if (hasNewFrame3.current || vid3.currentTime !== lastTime3.current) {
+            lastTime3.current = vid3.currentTime
+            hasNewFrame3.current = false
+            texture3.needsUpdate = true
           }
         } else {
-          if (!vid3.paused) vid3.pause()
+          if (vid3PlayingRef.current) {
+            vid3PlayingRef.current = false
+            vid3.pause()
+          }
         }
       }
 

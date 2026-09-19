@@ -738,9 +738,7 @@ export default function BookUs() {
                                   <>
                                     <div>
                                       <label className="mb-2.5 block text-xs font-bold text-navy/80 uppercase tracking-wider">
-                                        {ageNum < 10
-                                          ? 'Do you have prior diving or snorkeling experience?'
-                                          : 'Do you already have a diving certification?'}
+                                        Do you already have a diving certification?
                                       </label>
                                       <div className="grid sm:grid-cols-2 gap-3">
                                         <button
@@ -752,9 +750,7 @@ export default function BookUs() {
                                             }`}
                                         >
                                           <div>
-                                            <span className="font-bold text-sm block">
-                                              {ageNum < 10 ? 'No, I am a beginner' : "No, I don't have a certification"}
-                                            </span>
+                                            <span className="font-bold text-sm block">No, I don't have a certification</span>
                                             <span className={`text-[11px] block mt-0.5 ${!p.hasCertification ? 'text-white/70' : 'text-navy/50'}`}>
                                               {ageNum < 10 ? 'Introductory & Snorkeling options' : 'Beginner, Discover Scuba & Pathway options'}
                                             </span>
