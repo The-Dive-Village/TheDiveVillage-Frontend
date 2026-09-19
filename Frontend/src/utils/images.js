@@ -59,7 +59,7 @@ export const FEATURED_EXPERIENCES = [
   },
   {
     id: 'exp-2',
-    title: 'PADI Open Water Diver',
+    title: 'Open Water Diver',
     location: 'Agatti Island, Lakshadweep',
     category: 'Certification',
     price: 19999,

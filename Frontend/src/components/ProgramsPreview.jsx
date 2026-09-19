@@ -29,7 +29,7 @@ const PROGRAMS = [
   {
     id: 'certification',
     title: 'Certification Pathway',
-    tag: 'PADI Courses',
+    tag: 'Certified Courses',
     desc: 'From Open Water Diver to Divemaster, start or advance your international dive certification.',
     img: CAROUSEL_IMAGES[1],
     video: certVid,

@@ -75,7 +75,7 @@ const HIGHLIGHTS_DATA = [
 const TESTIMONIALS = [
   {
     name: "Sofia Stalance",
-    role: "PADI Open Water Diver",
+    role: "Open Water Diver",
     text: "The Dive Village completely changed my perspective on the ocean. The instructors were incredibly patient, and the focus on safety made my first dive unforgettable.",
     image: CAROUSEL_IMAGES[1]
   },
@@ -123,8 +123,8 @@ export default function Home() {
     <div className="overflow-x-hidden relative isolate pointer-events-none">
       <SEOHead
         title="The Dive Village | It's a Community"
-        description="Experience world-class scuba diving, PADI certifications, guided snorkeling tours, and freediving with The Dive Village. Explore ocean gear and sustainable apparel."
-        keywords="scuba diving center, PADI certification courses, guided snorkeling tours, freediving school, ocean apparel, dive gear shop, eco diving village"
+        description="Experience world-class scuba diving, professional certifications, guided snorkeling tours, and freediving with The Dive Village. Explore ocean gear and sustainable apparel."
+        keywords="scuba diving center, certification courses, guided snorkeling tours, freediving school, ocean apparel, dive gear shop, eco diving village"
         canonicalUrl="https://thedivevillage.com/"
       />
 
@@ -379,7 +379,7 @@ export default function Home() {
 
       {/* 6. AIRPORT TO AIRPORT - HOSPITALITY */}
       <section className="relative py-24 text-white sm:py-32 pointer-events-auto">
-        <div className="mx-auto max-w-[1650px] px-4 sm:px-6 lg:px-8 xl:px-12">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionReveal className="text-center mb-16 max-w-3xl mx-auto">
             <span className="inline-block bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-5 py-2 text-xs font-bold text-[#FFCD00] uppercase tracking-widest mb-4 shadow-sm">
               End-to-End Island Care
@@ -393,7 +393,7 @@ export default function Home() {
             </p>
           </SectionReveal>
 
-          <StaggerGrid className="grid gap-4 sm:gap-5 lg:gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <StaggerGrid className="grid gap-6 lg:gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {[
               {
                 num: '01',
@@ -873,7 +873,7 @@ function AutoCarousel({ images, showContent = true }) {
         <img
           src={images[prevIndex]}
           alt="Ocean Life"
-          className="absolute inset-0 w-full h-full object-cover object-center scale-[1.35]"
+          className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
         />
       )}
 
@@ -883,17 +883,16 @@ function AutoCarousel({ images, showContent = true }) {
           key={i}
           src={src}
           alt={`Marine Life ${i + 1}`}
-          className={`absolute inset-0 w-full h-full object-cover object-center scale-[1.35] transition-opacity duration-1000 ease-in-out ${
+          className={`absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-1000 ease-in-out pointer-events-none ${
             i === index ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
           }`}
           loading="lazy"
         />
       ))}
 
-      {/* Full-bleed ambient overlay so image is completely visible across both sides of the panel */}
-      <div className="absolute inset-0 bg-black/30 pointer-events-none z-10" />
-      <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent pointer-events-none z-10" />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 pointer-events-none z-10" />
+      {/* Full-bleed ambient overlay so image is completely visible across both sides of the panel without blank spaces */}
+      <div className="absolute inset-0 bg-[#00172b]/20 pointer-events-none z-10" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20 pointer-events-none z-10" />
 
       {showContent && (
         <div className="absolute inset-0 z-20 flex flex-col justify-center p-6 sm:p-10 lg:p-16 pointer-events-none">

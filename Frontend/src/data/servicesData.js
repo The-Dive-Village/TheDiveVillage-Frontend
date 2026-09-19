@@ -96,9 +96,9 @@ export const SERVICES_DATA = [
   },
   {
     id: 'prog-3', category: 'recreation', categories: ['recreation', 'programs'],
-    title: 'PADI Discover Scuba Dive',
-    short_desc: 'The official PADI Discover Scuba Diving program.',
-    long_desc: 'PADI\'s official introductory scuba diving program where you will learn the basics of scuba diving, practice skills in confined water, and do an open water dive up to 12 meters for 45 mins under the close supervision of a PADI Instructor.',
+    title: 'Discover Scuba Dive',
+    short_desc: 'The official Discover Scuba Diving program.',
+    long_desc: 'Our introductory scuba diving program where you will learn the basics of scuba diving, practice skills in confined water, and do an open water dive up to 12 meters for 45 mins under the close supervision of a certified Instructor.',
     video: vidBookFast,
     image: c3,
     highlights: 'Max Depth: 12m | Dive Time: 45 mins | Total Time: 3 hrs | Photos & videos included',
@@ -108,7 +108,7 @@ export const SERVICES_DATA = [
     id: 'prog-5', category: 'recreation', categories: ['recreation', 'programs'],
     title: 'Additional Dive after DSD',
     short_desc: 'Extra guided dive after DSD.',
-    long_desc: 'Extend your Discover Scuba Dive experience with a guided dive with a PADI Pro.',
+    long_desc: 'Extend your Discover Scuba Dive experience with a guided dive with a certified Pro.',
     video: vidScubaSub,
     image: c4,
     highlights: 'Dive Time: 45 mins | Photos & videos may be included',
@@ -118,12 +118,12 @@ export const SERVICES_DATA = [
   // 2. Bubblemaker
   {
     id: 'prog-4', category: 'bubble', categories: ['bubble', 'programs'],
-    title: 'PADI Bubblemaker',
+    title: 'Bubblemaker',
     short_desc: 'Scuba fun for kids aged between 8 to 10.',
-    long_desc: 'The PADI Bubblemaker introduces children to scuba in a safe pool-like environment, swimming with colorful clownfish and gentle marine life.',
+    long_desc: 'The Bubblemaker introduces children to scuba in a safe pool-like environment, swimming with colorful clownfish and gentle marine life.',
     video: vidClownfish,
     image: c5,
-    highlights: 'Max Depth: 2m | Dive Time: 30 mins | PADI registration included',
+    highlights: 'Max Depth: 2m | Dive Time: 30 mins | Registration included',
     days_min: '', days_max: '', min_age: 8
   },
 
@@ -162,7 +162,7 @@ export const SERVICES_DATA = [
   // 4. Courses
   {
     id: 'course-1', category: 'courses',
-    title: 'PADI Skin Diver',
+    title: 'Skin Diver',
     short_desc: 'Learn snorkeling & skin diving.',
     long_desc: 'Dive on a single breath up to 6 meters. Learn the basics of breath-hold diving, safety considerations and efficient technique.',
     video: vidFreedivingBasic,
@@ -172,7 +172,7 @@ export const SERVICES_DATA = [
   },
   {
     id: 'course-2', category: 'courses',
-    title: 'PADI Scuba Diver',
+    title: 'Scuba Diver',
     short_desc: 'Entry-level certification.',
     long_desc: 'The first step towards scuba certification for beginners with limited time. The certification will enable you to dive up to 12m under professional supervision. Upgrade to open water diver anytime by completing the remaining training sections. Includes theory, confined water skill development and 2 open water dives up to 12 meters.',
     video: vidScubaSkill1,
@@ -182,7 +182,7 @@ export const SERVICES_DATA = [
   },
   {
     id: 'course-3', category: 'courses',
-    title: 'PADI Open Water Diver',
+    title: 'Open Water Diver',
     short_desc: 'The world’s most popular scuba certification.',
     long_desc: 'Learn essential dive theory, skills, and complete 4 open water dives. This certification lets you dive up to 18m without professional supervision.',
     video: vidScubaTeam,
@@ -192,7 +192,7 @@ export const SERVICES_DATA = [
   },
   {
     id: 'course-4', category: 'courses',
-    title: 'PADI Adventure Diver',
+    title: 'Adventure Diver',
     short_desc: 'Complete 3 adventure dives.',
     long_desc: 'Expand skills in areas like navigation, buoyancy, or night diving.',
     video: vidCoralPinnacle,
@@ -202,7 +202,7 @@ export const SERVICES_DATA = [
   },
   {
     id: 'course-5', category: 'courses',
-    title: 'PADI Advanced Open Water',
+    title: 'Advanced Open Water',
     short_desc: 'Take your skills deeper.',
     long_desc: 'Includes 5 adventure dives: Deep + Navigation + 3 electives.',
     video: vidDiving1,
@@ -222,7 +222,7 @@ export const SERVICES_DATA = [
   },
   {
     id: 'course-7', category: 'courses',
-    title: 'PADI Rescue Diver',
+    title: 'Rescue Diver',
     short_desc: 'Expand your rescue skills and become a safer diver.',
     long_desc: 'Learn to manage dive emergencies and assist other divers.',
     video: vidRescueDiver,
@@ -232,7 +232,7 @@ export const SERVICES_DATA = [
   },
   {
     id: 'course-8', category: 'courses',
-    title: 'PADI Reactivate (with dive)',
+    title: 'Reactivate (with dive)',
     short_desc: 'Refresh your skills with certification credit.',
     long_desc: 'Includes theory review and 1 open water dive.',
     video: vidReactivate,
@@ -438,17 +438,17 @@ export const SERVICES_DATA = [
   // 7. Combos
   {
     id: 'combo-1', category: 'combos',
-    title: 'PADI DSD + Open Water',
+    title: 'DSD + Open Water',
     short_desc: 'Start with Discover Scuba Dive then complete Open Water.',
     long_desc: 'A progressive bundle for beginners to move into full certification.',
     video: vidItineraryCombo,
     image: c2,
-    highlights: 'Duration: 3–4 days | Includes PADI registration',
+    highlights: 'Duration: 3–4 days | Includes course registration',
     days_min: 3, days_max: 4, min_age: ''
   },
   {
     id: 'combo-2', category: 'combos',
-    title: 'PADI OW + Advanced',
+    title: 'OW + Advanced',
     short_desc: 'Bundle Open Water and Advanced courses.',
     long_desc: 'Go from beginner to advanced diver in one comprehensive adventure.',
     video: vidHeroFast,
@@ -470,12 +470,12 @@ export const SERVICES_DATA = [
   // 8. Pro Courses
   {
     id: 'pro-1', category: 'pro',
-    title: 'PADI Divemaster',
+    title: 'Divemaster',
     short_desc: 'The first professional step.',
     long_desc: 'Learn to supervise dives, assist instructors, and lead certified divers.',
     video: vidHeroOptimized,
     image: c5,
-    highlights: 'Duration: 20–25 days | Excludes crewpak & PADI fee',
+    highlights: 'Duration: 20–25 days | Excludes crewpak & professional fee',
     days_min: 20, days_max: 25, min_age: ''
   },
   {
@@ -485,7 +485,7 @@ export const SERVICES_DATA = [
     long_desc: 'Progress from EFR to Rescue Diver, then Divemaster.',
     video: vidTurtleFast,
     image: c6,
-    highlights: 'Duration: 24–31 days | Excludes crewpak & PADI fees',
+    highlights: 'Duration: 24–31 days | Excludes crewpak & professional fees',
     days_min: 24, days_max: 31, min_age: ''
   },
   {
@@ -495,7 +495,7 @@ export const SERVICES_DATA = [
     long_desc: 'Skip prior modules and move into Divemaster.',
     video: vidSunsetIsland,
     image: c1,
-    highlights: 'Duration: varies | Excludes crewpak & PADI fees',
+    highlights: 'Duration: varies | Excludes crewpak & professional fees',
     days_min: '', days_max: '', min_age: ''
   },
   {
@@ -512,7 +512,7 @@ export const SERVICES_DATA = [
   // 9. Freediving
   {
     id: 'free-1', category: 'freediving',
-    title: 'PADI Basic Freediver',
+    title: 'Basic Freediver',
     short_desc: 'Learn the basics of breath-hold diving.',
     long_desc: 'Focus on static apnea, dynamic apnea, and safety in confined water.',
     video: vidFreediving1,
@@ -522,7 +522,7 @@ export const SERVICES_DATA = [
   },
   {
     id: 'free-2', category: 'freediving',
-    title: 'PADI Freediver',
+    title: 'Freediver',
     short_desc: 'Build strong freediving skills.',
     long_desc: 'Expand breath-hold time and depth techniques in open water.',
     video: vidFreediving3,
