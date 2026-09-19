@@ -24,6 +24,7 @@ import imgFlexibleFunDives from '../assets/Gallery/Flexible Fun Dives.png'
 const ProgramsPreview = lazy(() => import('../components/ProgramsPreview'))
 
 const GalleryPreview = lazy(() => import('../components/GalleryPreview'))
+const CustomizeExperiencePanel = lazy(() => import('../components/CustomizeExperiencePanel'))
 
 const ADVENTURE_CALM_IMAGES = PANEL_IMAGES
 
@@ -378,7 +379,7 @@ export default function Home() {
 
       {/* 6. AIRPORT TO AIRPORT - HOSPITALITY */}
       <section className="relative py-24 text-white sm:py-32 pointer-events-auto">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-[1650px] px-4 sm:px-6 lg:px-8 xl:px-12">
           <SectionReveal className="text-center mb-16 max-w-3xl mx-auto">
             <span className="inline-block bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-5 py-2 text-xs font-bold text-[#FFCD00] uppercase tracking-widest mb-4 shadow-sm">
               End-to-End Island Care
@@ -387,12 +388,12 @@ export default function Home() {
               From Airport to Airport<br />
               <span className="text-[#FFCD00] font-bold">We've Got You Covered</span>
             </h2>
-            <p className="text-base sm:text-lg text-white/90 font-medium leading-relaxed drop-shadow-sm text-justify">
+            <p className="text-base sm:text-lg text-white/90 font-medium leading-relaxed drop-shadow-sm">
               Relax, slow down, and immerse yourself in the ocean's endless beauty!<br />We handle every detail of your island holiday from arrival to departure.
             </p>
           </SectionReveal>
 
-          <StaggerGrid className="grid gap-6 lg:gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          <StaggerGrid className="grid gap-4 sm:gap-5 lg:gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {[
               {
                 num: '01',
@@ -443,12 +444,12 @@ export default function Home() {
               <StaggerItem key={i}>
                 <div
                   onClick={() => navigate('/contact')}
-                  className="group relative h-full rounded-[32px] bg-[#00172b]/40 backdrop-blur-2xl border border-white/20 p-6 sm:p-7 shadow-[0_8px_30px_rgba(0,0,0,0.3)] transition-all duration-500 hover:-translate-y-3 hover:bg-[#00172b]/60 hover:border-[#00AEC7] hover:shadow-[0_12px_40px_rgba(0,174,199,0.25)] flex flex-col justify-between cursor-pointer"
+                  className="group relative h-full rounded-[28px] lg:rounded-[32px] bg-[#00172b]/40 backdrop-blur-2xl border border-white/20 p-5 lg:p-6 shadow-[0_8px_30px_rgba(0,0,0,0.3)] transition-all duration-500 hover:-translate-y-3 hover:bg-[#00172b]/60 hover:border-[#00AEC7] hover:shadow-[0_12px_40px_rgba(0,174,199,0.25)] flex flex-col justify-between cursor-pointer"
                 >
                   <div className="flex flex-col flex-1">
                     {/* Top Bar: Icon Box & Number */}
-                    <div className="flex items-center justify-between mb-5">
-                      <div className="w-12 h-12 rounded-2xl bg-[#00AEC7]/20 border border-[#00AEC7]/50 flex items-center justify-center shadow-sm group-hover:bg-[#00AEC7]/30 group-hover:border-[#00AEC7] transition duration-300">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="w-11 h-11 lg:w-12 lg:h-12 rounded-2xl bg-[#00AEC7]/20 border border-[#00AEC7]/50 flex items-center justify-center shadow-sm group-hover:bg-[#00AEC7]/30 group-hover:border-[#00AEC7] transition duration-300">
                         {item.icon}
                       </div>
                       <span className="font-heading font-bold text-lg text-[#FFCD00] tracking-wider">
@@ -457,17 +458,17 @@ export default function Home() {
                     </div>
 
                     {/* Main Heading Text */}
-                    <h3 className="font-heading text-xl sm:text-2xl font-bold text-white uppercase tracking-wide leading-tight mb-2 text-left group-hover:text-[#FFCD00] transition-colors">
+                    <h3 className="font-heading text-xl lg:text-2xl font-bold text-white uppercase tracking-wide leading-tight mb-2 text-left group-hover:text-[#FFCD00] transition-colors">
                       {item.title}
                     </h3>
 
                     {/* Description Text */}
-                    <p className="text-white/85 text-xs sm:text-sm font-medium leading-relaxed mb-6 text-justify min-h-[44px]">
+                    <p className="text-white/85 text-xs lg:text-sm font-medium leading-relaxed mb-5 text-left min-h-[40px]">
                       {item.desc}
                     </p>
 
-                    {/* Media Frame (Video or Image) - Expanded larger size */}
-                    <div className="relative h-56 sm:h-64 w-full rounded-2xl overflow-hidden bg-black/40 mb-6 border border-white/20 shadow-md">
+                    {/* Media Frame (Video or Image) - Expanded wider size */}
+                    <div className="relative w-full aspect-[16/11] rounded-2xl overflow-hidden bg-black/40 mb-5 border border-white/20 shadow-md">
                       {item.video ? (
                         <video
                           src={item.video}
@@ -505,6 +506,17 @@ export default function Home() {
               </StaggerItem>
             ))}
           </StaggerGrid>
+        </div>
+      </section>
+
+      {/* 7.5 CUSTOMIZE DIVE EXPERIENCE */}
+      <section className="py-12 sm:py-16 pointer-events-auto">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionReveal>
+            <Suspense fallback={<div className="h-64 rounded-3xl bg-navy/20 animate-pulse" />}>
+              <CustomizeExperiencePanel />
+            </Suspense>
+          </SectionReveal>
         </div>
       </section>
 
@@ -879,37 +891,47 @@ function AutoCarousel({ images, showContent = true }) {
       ))}
 
       {/* Full-bleed ambient overlay so image is completely visible across both sides of the panel */}
-      <div className="absolute inset-0 bg-black/25 pointer-events-none z-10" />
+      <div className="absolute inset-0 bg-black/30 pointer-events-none z-10" />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent pointer-events-none z-10" />
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 pointer-events-none z-10" />
 
       {showContent && (
-        <div className="absolute inset-0 z-20 flex flex-col justify-center p-6 sm:p-10 lg:p-16">
-          <div className="max-w-xl bg-[#00172b]/70 backdrop-blur-md p-6 sm:p-8 rounded-3xl border border-white/20 shadow-[0_16px_40px_rgba(0,0,0,0.6)]">
-            <span className="inline-block text-[#FFCD00] font-heading font-bold uppercase tracking-widest text-xs mb-3 drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
+        <div className="absolute inset-0 z-20 flex flex-col justify-center p-6 sm:p-10 lg:p-16 pointer-events-none">
+          <div className="max-w-2xl pointer-events-auto">
+            <span className="inline-block text-[#FFCD00] font-heading font-bold uppercase tracking-widest text-xs mb-3 drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]">
               The Sea is Calling
             </span>
             <h3
-              className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-[1.15] mb-4 tracking-tight drop-shadow-[0_4px_16px_rgba(0,0,0,0.95)]"
-              style={{ textShadow: '0 3px 12px rgba(0,0,0,0.9)' }}
+              className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-[1.15] mb-4 tracking-tight drop-shadow-[0_4px_20px_rgba(0,0,0,0.95)]"
+              style={{ textShadow: '0 4px 20px rgba(0,0,0,0.95), 0 2px 8px rgba(0,0,0,0.9)' }}
             >
               Come for the adventure.<br />
               <span className="text-[#FFCD00] font-bold">Stay for the calm.</span>
             </h3>
             <p
-              className="text-white font-medium text-sm sm:text-base mb-6 drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]"
-              style={{ textShadow: '0 1px 4px rgba(0,0,0,0.9)' }}
+              className="text-white/95 font-medium text-sm sm:text-base mb-8 drop-shadow-[0_2px_10px_rgba(0,0,0,0.95)]"
+              style={{ textShadow: '0 2px 10px rgba(0,0,0,0.95)' }}
             >
               Leave with stories that last a lifetime.
             </p>
-            <Button
-              as={Link}
-              to="/book-us"
-              variant="secondary"
-              className="!bg-[#FFCD00] !text-[#001e3d] !border !border-[#FFCD00] font-bold shadow-xl transition-all duration-300 hover:scale-105 hover:!bg-white hover:!text-[#001e3d]"
-            >
-              Book Your Dive
-              <ArrowIcon />
-            </Button>
+            <div className="flex flex-wrap items-center gap-4">
+              <Button
+                as={Link}
+                to="/book-us"
+                variant="secondary"
+                className="!bg-[#FFCD00] !text-[#001e3d] !border !border-[#FFCD00] font-bold shadow-xl transition-all duration-300 hover:scale-105 hover:!bg-white hover:!text-[#001e3d]"
+              >
+                Book Your Dive
+                <ArrowIcon />
+              </Button>
+              <Link
+                to="/gallery"
+                className="inline-flex items-center gap-2 rounded-full bg-white/15 backdrop-blur-xl border border-white/30 px-7 py-3.5 font-body text-xs sm:text-sm tracking-wider font-bold text-white uppercase shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] transition-all duration-300 hover:scale-105 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] hover:shadow-[0_12px_40px_rgba(255,205,0,0.5)] cursor-pointer"
+              >
+                <span>View Gallery</span>
+                <ArrowIcon />
+              </Link>
+            </div>
           </div>
         </div>
       )}

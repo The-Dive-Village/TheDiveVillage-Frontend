@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, useRef, lazy, Suspense } from 'react'
 import { useSearchParams } from 'react-router'
 import { motion } from 'framer-motion'
 const InteractiveDiveMap = lazy(() => import('../components/InteractiveDiveMap'))
+import CustomizeExperiencePanel from '../components/CustomizeExperiencePanel'
 import CompactTwoMonthCalendarPopover from '../components/CompactTwoMonthCalendarPopover'
 import SEOHead from '../components/SEOHead'
 import { diveSiteService, normalizeCountryKey } from '../services/diveSiteService'
@@ -1115,6 +1116,11 @@ export default function BookUs() {
             </div>
           </div>
 
+        </div>
+
+        {/* Customize Dive Experience Panel */}
+        <div className="mt-16 sm:mt-24">
+          <CustomizeExperiencePanel />
         </div>
 
       </div>
