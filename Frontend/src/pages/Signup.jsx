@@ -20,7 +20,21 @@ export default function Signup() {
       await signup(email, password, { displayName: name })
       navigate('/dashboard/profile')
     } catch (err) {
-      setError(err.message || 'Failed to create account. Please check your information.')
+      let friendlyMsg = 'Failed to create account. Please check your information.'
+      const code = err?.code || ''
+      const rawMsg = err?.message || ''
+
+      if (code === 'auth/email-already-in-use' || rawMsg.includes('email-already-in-use')) {
+        friendlyMsg = 'An account with this email address already exists. Please sign in instead.'
+      } else if (code === 'auth/invalid-email' || rawMsg.includes('invalid-email')) {
+        friendlyMsg = 'Please enter a valid email address.'
+      } else if (code === 'auth/weak-password' || rawMsg.includes('weak-password')) {
+        friendlyMsg = 'Password should be at least 6 characters long.'
+      } else if (rawMsg) {
+        friendlyMsg = rawMsg.replace(/^Firebase:\s*/i, '').replace(/\s*\([^\)]+\)\.?$/i, '')
+      }
+
+      setError(friendlyMsg)
     } finally {
       setLoading(false)
     }

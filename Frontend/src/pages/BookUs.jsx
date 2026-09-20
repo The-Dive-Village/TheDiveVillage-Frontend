@@ -11,6 +11,7 @@ import {
   COURSE_CATALOG,
   CERTIFICATION_OPTIONS,
   getEligibleCourses,
+  getAvailableCertificationsForAge,
   validateParticipantBooking,
 } from '../utils/courseEligibility'
 import 'react-phone-number-input/style.css'
@@ -175,13 +176,32 @@ export default function BookUs() {
         updated[index].certifications = []
       }
 
-      // Reset selected program if age, hasCertification, or certifications change and current program is no longer eligible
+      // Reset selected program and certification state if age, hasCertification, or certifications change
       if (field === 'age' || field === 'hasCertification' || field === 'certifications') {
         const p = updated[index]
-        const eligible = getEligibleCourses(p.age, p.hasCertification, p.certifications)
-        const isCurrentEligible = eligible.some((course) => course.id === p.selectedProgram)
-        if (!isCurrentEligible) {
-          updated[index].selectedProgram = eligible[0]?.id || ''
+        const ageNum = parseInt(p.age, 10)
+        if (isNaN(ageNum) || ageNum < 8 || ageNum > 110) {
+          updated[index].hasCertification = false
+          updated[index].certifications = []
+          updated[index].selectedProgram = ''
+        } else {
+          // Remove any certifications/experiences that are age-inappropriate for the new age
+          const validCertsForAge = (updated[index].certifications || []).filter((certId) => {
+            const opt = CERTIFICATION_OPTIONS.find((c) => c.id === certId)
+            return opt && ageNum >= opt.minAgeToHold && (!opt.maxAgeToHold || ageNum <= opt.maxAgeToHold)
+          })
+          updated[index].certifications = validCertsForAge
+
+          const availableCertOpts = getAvailableCertificationsForAge(ageNum)
+          if (availableCertOpts.length === 0) {
+            updated[index].hasCertification = false
+          }
+
+          const eligible = getEligibleCourses(p.age, updated[index].hasCertification, updated[index].certifications)
+          const isCurrentEligible = eligible.some((course) => course.id === p.selectedProgram)
+          if (!isCurrentEligible) {
+            updated[index].selectedProgram = eligible[0]?.id || ''
+          }
         }
       }
       return updated
@@ -626,11 +646,12 @@ export default function BookUs() {
                       <p className="text-xs text-navy/60 mt-1">Enter age and prior scuba certification level for each person to unlock eligible programs.</p>
                     </div>
 
-                    <div className="space-y-6 max-h-[550px] overflow-y-auto pr-1">
+                    <div data-lenis-prevent className="space-y-6 max-h-[550px] overflow-y-auto overscroll-contain pr-1">
                       {participants.map((p, idx) => {
                         const ageNum = parseInt(p.age, 10)
-                        const isAgeValid = !isNaN(ageNum) && ageNum >= 7
+                        const isAgeValid = !isNaN(ageNum) && ageNum >= 8 && ageNum <= 110
                         const eligibleCourses = isAgeValid ? getEligibleCourses(p.age, p.hasCertification, p.certifications) : []
+                        const availableCertOptions = getAvailableCertificationsForAge(p.age)
 
                         return (
                           <div key={p.id} className="rounded-3xl bg-[#FAFAFA] border border-navy/10 p-5 sm:p-6 space-y-5">
@@ -664,11 +685,20 @@ export default function BookUs() {
                                 <label className="mb-2 block text-xs font-bold text-navy/70">Age (Years)</label>
                                 <input
                                   type="number"
-                                  min="1"
-                                  max="100"
+                                  min="8"
+                                  max="110"
                                   placeholder="e.g. 12"
                                   value={p.age}
-                                  onChange={(e) => handleParticipantChange(idx, 'age', e.target.value)}
+                                  onChange={(e) => {
+                                    let rawVal = e.target.value
+                                    if (rawVal !== '') {
+                                      const parsed = parseInt(rawVal, 10)
+                                      if (!isNaN(parsed) && parsed > 110) {
+                                        rawVal = '110'
+                                      }
+                                    }
+                                    handleParticipantChange(idx, 'age', rawVal)
+                                  }}
                                   required
                                   className="w-full rounded-2xl bg-white border border-navy/10 px-4 py-3.5 text-sm font-bold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition"
                                 />
@@ -683,96 +713,110 @@ export default function BookUs() {
                               </div>
                             )}
 
-                            {/* Age below 7 notice */}
+                            {/* Invalid age (age < 8 or age > 110) notice */}
                             {p.age !== '' && !isAgeValid && (
                               <div className="rounded-2xl bg-red-50 border border-red-200 p-4 text-xs font-medium text-red-600 flex items-start gap-3">
                                 <span className="text-base">⚠️</span>
                                 <div>
-                                  <span className="font-bold block mb-0.5">Age Notice (Under 7)</span>
-                                  <span>Minimum age for water & ocean programs is 7 years (Discover Snorkeling). There aren't any courses available for this age yet.</span>
+                                  <span className="font-bold block mb-0.5">
+                                    {ageNum < 8 ? 'Minimum Diving Age Requirement (8 Years)' : 'Maximum Diving Age Limit (110 Years)'}
+                                  </span>
+                                  <span>
+                                    {ageNum < 8
+                                      ? 'The minimum age for any diving activity or course is 8 years old. Participants under 8 years old are not eligible to participate.'
+                                      : 'Please enter a valid age up to 110 years.'}
+                                  </span>
                                 </div>
                               </div>
                             )}
 
-                            {/* Once Age is Valid: Certification Choice */}
+                            {/* Once Age is Valid (age >= 8): Certification & Prior Experience Choice */}
                             {isAgeValid && (
                               <div className="space-y-4 pt-1">
-                                <div>
-                                  <label className="mb-2.5 block text-xs font-bold text-navy/80 uppercase tracking-wider">
-                                    Do you already have a diving certification?
-                                  </label>
-                                  <div className="grid sm:grid-cols-2 gap-3">
-                                    <button
-                                      type="button"
-                                      onClick={() => handleParticipantChange(idx, 'hasCertification', false)}
-                                      className={`p-4 rounded-2xl border text-left transition-all flex items-center justify-between gap-3 ${!p.hasCertification
-                                        ? 'bg-navy text-white border-navy shadow-sm'
-                                        : 'bg-white text-navy border-navy/15 hover:border-navy/30'
-                                        }`}
-                                    >
-                                      <div>
-                                        <span className="font-bold text-sm block">No, I don't have a certification</span>
-                                        <span className={`text-[11px] block mt-0.5 ${!p.hasCertification ? 'text-white/70' : 'text-navy/50'}`}>
-                                          Beginner, Discover Scuba & Pathway options
-                                        </span>
-                                      </div>
-                                      <div className={`w-5 h-5 rounded-full border flex items-center justify-center shrink-0 ${!p.hasCertification ? 'border-accent bg-accent text-navy' : 'border-navy/20'
-                                        }`}>
-                                        {!p.hasCertification && <span className="text-[10px] font-bold">✓</span>}
-                                      </div>
-                                    </button>
-
-                                    <button
-                                      type="button"
-                                      onClick={() => handleParticipantChange(idx, 'hasCertification', true)}
-                                      className={`p-4 rounded-2xl border text-left transition-all flex items-center justify-between gap-3 ${p.hasCertification
-                                        ? 'bg-navy text-white border-navy shadow-sm'
-                                        : 'bg-white text-navy border-navy/15 hover:border-navy/30'
-                                        }`}
-                                    >
-                                      <div>
-                                        <span className="font-bold text-sm block">Yes, I have a certification</span>
-                                        <span className={`text-[11px] block mt-0.5 ${p.hasCertification ? 'text-white/70' : 'text-navy/50'}`}>
-                                          Advanced, Rescue, Specialities & Fun Dives
-                                        </span>
-                                      </div>
-                                      <div className={`w-5 h-5 rounded-full border flex items-center justify-center shrink-0 ${p.hasCertification ? 'border-accent bg-accent text-navy' : 'border-navy/20'
-                                        }`}>
-                                        {p.hasCertification && <span className="text-[10px] font-bold">✓</span>}
-                                      </div>
-                                    </button>
-                                  </div>
-                                </div>
-
-                                {/* If Certified: Show Which Certification Do You Have */}
-                                {p.hasCertification && (
-                                  <div className="space-y-2.5 pt-2">
-                                    <label className="block text-xs font-bold text-navy/80 uppercase tracking-wider">
-                                      Which certification(s) do you currently have?
-                                    </label>
-                                    <div className="grid sm:grid-cols-2 gap-2">
-                                      {CERTIFICATION_OPTIONS.map((opt) => {
-                                        const isSelected = (p.certifications || []).includes(opt.id)
-                                        return (
-                                          <button
-                                            key={opt.id}
-                                            type="button"
-                                            onClick={() => handleToggleCertification(idx, opt.id)}
-                                            className={`p-3 rounded-xl border text-left text-xs font-bold transition flex items-center justify-between gap-2 ${isSelected
-                                              ? 'bg-accent/15 text-navy border-accent/60 shadow-sm'
-                                              : 'bg-white text-navy/80 border-navy/10 hover:border-navy/30 hover:bg-navy/[0.02]'
-                                              }`}
-                                          >
-                                            <span className="truncate">{opt.name}</span>
-                                            <span className={`w-4 h-4 rounded-md border flex items-center justify-center shrink-0 text-[10px] ${isSelected ? 'bg-navy text-white border-navy font-bold' : 'border-navy/20'
-                                              }`}>
-                                              {isSelected ? '✓' : ''}
+                                {availableCertOptions.length > 0 && (
+                                  <>
+                                    <div>
+                                      <label className="mb-2.5 block text-xs font-bold text-navy/80 uppercase tracking-wider">
+                                        Do you already have a diving certification?
+                                      </label>
+                                      <div className="grid sm:grid-cols-2 gap-3">
+                                        <button
+                                          type="button"
+                                          onClick={() => handleParticipantChange(idx, 'hasCertification', false)}
+                                          className={`p-4 rounded-2xl border text-left transition-all flex items-center justify-between gap-3 ${!p.hasCertification
+                                            ? 'bg-navy text-white border-navy shadow-sm'
+                                            : 'bg-white text-navy border-navy/15 hover:border-navy/30'
+                                            }`}
+                                        >
+                                          <div>
+                                            <span className="font-bold text-sm block">No, I don't have a certification</span>
+                                            <span className={`text-[11px] block mt-0.5 ${!p.hasCertification ? 'text-white/70' : 'text-navy/50'}`}>
+                                              {ageNum < 10 ? 'Introductory & Snorkeling options' : 'Beginner, Discover Scuba & Pathway options'}
                                             </span>
-                                          </button>
-                                        )
-                                      })}
+                                          </div>
+                                          <div className={`w-5 h-5 rounded-full border flex items-center justify-center shrink-0 ${!p.hasCertification ? 'border-accent bg-accent text-navy' : 'border-navy/20'
+                                            }`}>
+                                            {!p.hasCertification && <span className="text-[10px] font-bold">✓</span>}
+                                          </div>
+                                        </button>
+
+                                        <button
+                                          type="button"
+                                          onClick={() => handleParticipantChange(idx, 'hasCertification', true)}
+                                          className={`p-4 rounded-2xl border text-left transition-all flex items-center justify-between gap-3 ${p.hasCertification
+                                            ? 'bg-navy text-white border-navy shadow-sm'
+                                            : 'bg-white text-navy border-navy/15 hover:border-navy/30'
+                                            }`}
+                                        >
+                                          <div>
+                                            <span className="font-bold text-sm block">
+                                              {ageNum < 10 ? 'Yes, I have prior experience' : 'Yes, I have a certification'}
+                                            </span>
+                                            <span className={`text-[11px] block mt-0.5 ${p.hasCertification ? 'text-white/70' : 'text-navy/50'}`}>
+                                              {ageNum < 10 ? 'Select completed youth programs' : 'Advanced, Rescue, Specialities & Fun Dives'}
+                                            </span>
+                                          </div>
+                                          <div className={`w-5 h-5 rounded-full border flex items-center justify-center shrink-0 ${p.hasCertification ? 'border-accent bg-accent text-navy' : 'border-navy/20'
+                                            }`}>
+                                            {p.hasCertification && <span className="text-[10px] font-bold">✓</span>}
+                                          </div>
+                                        </button>
+                                      </div>
                                     </div>
-                                  </div>
+
+                                    {/* If Certified / Has Prior Experience: Show Which Option(s) Do You Have */}
+                                    {p.hasCertification && (
+                                      <div className="space-y-2.5 pt-2">
+                                        <label className="block text-xs font-bold text-navy/80 uppercase tracking-wider">
+                                          {ageNum < 10
+                                            ? 'Which program(s) have you previously completed?'
+                                            : 'Which certification(s) do you currently have?'}
+                                        </label>
+                                        <div className="grid sm:grid-cols-2 gap-2">
+                                          {availableCertOptions.map((opt) => {
+                                            const isSelected = (p.certifications || []).includes(opt.id)
+                                            return (
+                                              <button
+                                                key={opt.id}
+                                                type="button"
+                                                onClick={() => handleToggleCertification(idx, opt.id)}
+                                                className={`p-3 rounded-xl border text-left text-xs font-bold transition flex items-center justify-between gap-2 ${isSelected
+                                                  ? 'bg-accent/15 text-navy border-accent/60 shadow-sm'
+                                                  : 'bg-white text-navy/80 border-navy/10 hover:border-navy/30 hover:bg-navy/[0.02]'
+                                                  }`}
+                                              >
+                                                <span className="truncate">{opt.name}</span>
+                                                <span className={`w-4 h-4 rounded-md border flex items-center justify-center shrink-0 text-[10px] ${isSelected ? 'bg-navy text-white border-navy font-bold' : 'border-navy/20'
+                                                  }`}>
+                                                  {isSelected ? '✓' : ''}
+                                                </span>
+                                              </button>
+                                            )
+                                          })}
+                                        </div>
+                                      </div>
+                                    )}
+                                  </>
                                 )}
 
                                 {/* Dynamic Eligibility Summary Badge */}
@@ -781,7 +825,7 @@ export default function BookUs() {
                                     <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0 animate-pulse" />
                                     <span>
                                       {!p.hasCertification
-                                        ? `Beginner mode: ${eligibleCourses.length} course(s) & pathways unlocked for age ${p.age}`
+                                        ? `${eligibleCourses.length} course(s) & pathways unlocked for age ${p.age}`
                                         : `${eligibleCourses.length} course(s) unlocked for age ${p.age} with your certification(s)`}
                                     </span>
                                   </div>
@@ -807,7 +851,7 @@ export default function BookUs() {
                       <p className="text-xs text-navy/60 mt-1">Based on age and prerequisite certification eligibility matrix, select a program for each person.</p>
                     </div>
 
-                    <div className="space-y-8 max-h-[550px] overflow-y-auto pr-1">
+                    <div data-lenis-prevent className="space-y-8 max-h-[550px] overflow-y-auto overscroll-contain pr-1">
                       {participants.map((p, idx) => {
                         const eligible = getEligibleCourses(p.age, p.hasCertification, p.certifications)
                         const certNames = (p.certifications || [])
@@ -838,7 +882,7 @@ export default function BookUs() {
                                 <div className="w-5 h-5 rounded-full bg-navy/10 text-navy shrink-0 flex items-center justify-center font-bold text-[10px] mt-0.5">
                                   i
                                 </div>
-                                <span>No water or diving programs available for age {p.age || '0–6'} year(s). Minimum age for Snorkeling is 7 years; minimum age for introductory diving is 8 years.</span>
+                                <span>No diving programs available for age {p.age || 'under 8'}. Minimum age for any diving activity is 8 years.</span>
                               </div>
                             ) : (
                               <div className="space-y-4">
@@ -1038,9 +1082,9 @@ export default function BookUs() {
                           setStepError('Please fill in the Name and Age for all participants.')
                           return
                         }
-                        const hasInvalidAge = participants.some((p) => parseInt(p.age, 10) < 7)
+                        const hasInvalidAge = participants.some((p) => parseInt(p.age, 10) < 8)
                         if (hasInvalidAge) {
-                          setStepError('Minimum age for booking water & dive programs is 7 years.')
+                          setStepError('Minimum age for participating in diving activities is 8 years. Participants under 8 cannot proceed.')
                           return
                         }
                         setStepError('')

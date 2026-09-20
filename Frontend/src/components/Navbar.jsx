@@ -4,6 +4,7 @@ import { Link, NavLink, useLocation } from 'react-router'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import Logo from './Logo'
 import ThemeToggle from './ThemeToggle'
+import ViberQRModal from './ViberQRModal'
 import { useCart } from '../hooks/useCart'
 import { useWishlist } from '../hooks/useWishlist'
 import { useAuth } from '../hooks/useAuth'
@@ -22,6 +23,7 @@ const NAV = [
 export default function Navbar() {
   const [open, setOpen] = useState(false)
   const [isCallModalOpen, setIsCallModalOpen] = useState(false)
+  const [isViberQrOpen, setIsViberQrOpen] = useState(false)
   const { itemCount } = useCart()
   const { count: wishlistCount } = useWishlist()
   const { isAuthenticated, user } = useAuth()
@@ -246,7 +248,15 @@ export default function Navbar() {
         )}
       </AnimatePresence>
 
-      <CallModal isOpen={isCallModalOpen} onClose={() => setIsCallModalOpen(false)} />
+      <CallModal 
+        isOpen={isCallModalOpen} 
+        onClose={() => setIsCallModalOpen(false)} 
+        onOpenViberQr={() => setIsViberQrOpen(true)}
+      />
+      <ViberQRModal 
+        isOpen={isViberQrOpen} 
+        onClose={() => setIsViberQrOpen(false)} 
+      />
     </header>
   )
 }
@@ -305,7 +315,7 @@ function CloseIcon() {
   )
 }
 
-function CallModal({ isOpen, onClose }) {
+function CallModal({ isOpen, onClose, onOpenViberQr }) {
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') onClose()
@@ -365,7 +375,7 @@ function CallModal({ isOpen, onClose }) {
       id: 'viber',
       title: 'Viber',
       subtitle: 'Connect via Viber (+91 89710 01010)',
-      href: '#',
+      href: 'viber://add?number=918971001010',
       icon: (
         <svg className="w-5 h-5 text-navy" fill="currentColor" viewBox="0 0 24 24">
           <path d="M19.39 14.88c-.64-.26-3.76-1.85-4.35-2.07-.59-.22-1.02-.33-1.45.33-.43.66-1.68 2.07-2.07 2.51-.39.44-.78.5-1.42.22-3.64-1.57-6.03-5.26-6.42-5.92-.39-.66.39-.66 1.13-2.14.15-.3.07-.56-.04-.78-.11-.22-.98-2.36-1.34-3.23-.35-.85-.71-.73-1-.75l-.85-.02c-.3 0-.78.11-1.19.56-.41.45-1.56 1.52-1.56 3.71 0 2.19 1.6 4.31 1.82 4.61.22.3 3.15 4.81 7.63 6.75 3.7 1.6 4.45 1.28 5.25 1.2.8-.08 2.57-1.05 2.93-2.07.36-1.02.36-1.89.25-2.07-.11-.18-.41-.29-1.05-.55z"/>
@@ -373,6 +383,32 @@ function CallModal({ isOpen, onClose }) {
       )
     }
   ]
+
+  const handleCardClick = (opt, e) => {
+    if (opt.id === 'viber') {
+      e.preventDefault()
+      onClose()
+
+      const isMobilePhone = /Android|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+      if (isMobilePhone) {
+        const start = Date.now()
+        window.location.href = 'viber://add?number=918971001010'
+        setTimeout(() => {
+          if (!document.hidden && Date.now() - start < 2000) {
+            onOpenViberQr()
+          }
+        }, 1200)
+      } else {
+        onOpenViberQr()
+      }
+      return
+    }
+
+    if (!opt.href || opt.href === '#') {
+      e.preventDefault()
+    }
+    onClose()
+  }
 
   if (typeof document === 'undefined') return null
 
@@ -424,12 +460,7 @@ function CallModal({ isOpen, onClose }) {
                   href={opt.href || '#'}
                   target={['whatsapp', 'messenger'].includes(opt.id) ? '_blank' : '_self'}
                   rel={['whatsapp', 'messenger'].includes(opt.id) ? 'noopener noreferrer' : undefined}
-                  onClick={(e) => {
-                    if (!opt.href || opt.href === '#') {
-                      e.preventDefault()
-                    }
-                    onClose()
-                  }}
+                  onClick={(e) => handleCardClick(opt, e)}
                   className="flex items-center justify-between p-4 rounded-2xl bg-navy/5 hover:bg-navy/10 border border-navy/10 transition duration-200 group shadow-sm cursor-pointer"
                 >
                   <div className="flex items-center gap-3.5">
@@ -454,5 +485,6 @@ function CallModal({ isOpen, onClose }) {
     document.body
   )
 }
+
 
 

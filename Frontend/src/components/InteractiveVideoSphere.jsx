@@ -2,7 +2,7 @@ import { useState, useEffect, Suspense, useRef } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls, useVideoTexture } from '@react-three/drei'
 import * as THREE from 'three'
-import videoFile from '../assets/Hero(1).mp4'
+import videoFile from '../assets/Hero_3840x1920_production.mp4'
 
 function getOrCreateDomVideoContainer() {
   let container = document.getElementById('interactive-video-dom-root')
@@ -59,6 +59,8 @@ function useDirectVideoTexture(src) {
       )
     }
 
+    let fallbackCleanup = null
+
     const registerFrameCallback = () => {
       if (video.requestVideoFrameCallback) {
         const onVideoFrame = () => {
@@ -67,6 +69,17 @@ function useDirectVideoTexture(src) {
           rvfcId = video.requestVideoFrameCallback(onVideoFrame)
         }
         rvfcId = video.requestVideoFrameCallback(onVideoFrame)
+      } else {
+        const onTimeUpdate = () => {
+          if (!isMounted) return
+          hasNewFrameRef.current = true
+        }
+        video.addEventListener('timeupdate', onTimeUpdate)
+        video.addEventListener('playing', onTimeUpdate)
+        fallbackCleanup = () => {
+          video.removeEventListener('timeupdate', onTimeUpdate)
+          video.removeEventListener('playing', onTimeUpdate)
+        }
       }
     }
 
@@ -75,6 +88,7 @@ function useDirectVideoTexture(src) {
       if (checkReadiness()) {
         if (!vidTexture) {
           vidTexture = new THREE.VideoTexture(video)
+          vidTexture.update = () => {} // Disable Three.js per-frame auto-update so requestVideoFrameCallback controls needsUpdate
           vidTexture.colorSpace = THREE.SRGBColorSpace
           vidTexture.minFilter = THREE.LinearFilter
           vidTexture.magFilter = THREE.LinearFilter
@@ -89,9 +103,29 @@ function useDirectVideoTexture(src) {
       }
     }
 
-    const handleEvent = () => {
+    const startPlayback = () => {
       if (!isMounted) return
       tryActivateTexture()
+      if (video.paused) {
+        const playPromise = video.play()
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              if (isMounted) {
+                video.playbackRate = 0.7
+                tryActivateTexture()
+              }
+            })
+            .catch((err) => {
+              console.warn('Interactive video autoplay status:', err?.name || err)
+            })
+        }
+      }
+    }
+
+    const handleEvent = () => {
+      if (!isMounted) return
+      startPlayback()
     }
 
     const mediaEvents = [
@@ -109,19 +143,7 @@ function useDirectVideoTexture(src) {
       video.addEventListener(evt, handleEvent)
     })
 
-    const playPromise = video.play()
-    if (playPromise !== undefined) {
-      playPromise
-        .then(() => {
-          if (isMounted) {
-            video.playbackRate = 0.7
-            tryActivateTexture()
-          }
-        })
-        .catch((err) => {
-          console.warn('Video autoplay deferred:', err?.message || err)
-        })
-    }
+    startPlayback()
 
     const handleUserInteraction = () => {
       if (!isMounted) return
@@ -145,6 +167,9 @@ function useDirectVideoTexture(src) {
       isMounted = false
       if (rvfcId && video.cancelVideoFrameCallback) {
         video.cancelVideoFrameCallback(rvfcId)
+      }
+      if (fallbackCleanup) {
+        fallbackCleanup()
       }
       window.removeEventListener('pointerdown', handleUserInteraction)
       window.removeEventListener('touchstart', handleUserInteraction)
@@ -176,12 +201,10 @@ function SphereMesh({ autoRotate }) {
   useFrame(() => {
     if (meshRef.current && texture && texture.image) {
       const vid = texture.image
-      if (vid.readyState >= 2 && vid.videoWidth > 0 && vid.videoHeight > 0) {
-        if (hasNewFrameRef.current || vid.currentTime !== lastTimeRef.current) {
-          lastTimeRef.current = vid.currentTime
-          hasNewFrameRef.current = false
-          texture.needsUpdate = true
-        }
+      if (hasNewFrameRef.current || vid.currentTime !== lastTimeRef.current) {
+        lastTimeRef.current = vid.currentTime
+        hasNewFrameRef.current = false
+        texture.needsUpdate = true
       }
     }
   })

@@ -18,6 +18,8 @@ export function AuthProvider({ children }) {
     const token = await firebaseUser.getIdToken()
     localStorage.setItem('tdv_id_token', token)
 
+    const isAdminEmail = firebaseUser.email?.toLowerCase() === 'admin@tdv.com'
+
     const googleMetadata = {
       uid: firebaseUser.uid,
       email: firebaseUser.email,
@@ -31,8 +33,11 @@ export function AuthProvider({ children }) {
 
     try {
       const { data } = await authService.sync()
-      const dbUser = data?.user || {}
-      const userRole = data?.role || (typeof dbUser.role === 'object' ? dbUser.role?.name : dbUser.role) || 'customer'
+      const payload = data?.data || data || {}
+      const dbUser = payload?.user || {}
+      const rawRole = payload?.role || (typeof dbUser.role === 'object' ? dbUser.role?.name : dbUser.role)
+      const userRole = isAdminEmail ? 'admin' : (rawRole || 'customer')
+
       const enrichedUser = {
         ...googleMetadata,
         ...dbUser,
@@ -45,9 +50,14 @@ export function AuthProvider({ children }) {
       setRole(userRole)
       return enrichedUser
     } catch {
-      setUser(googleMetadata)
-      setRole('customer')
-      return googleMetadata
+      const fallbackRole = isAdminEmail ? 'admin' : 'customer'
+      const fallbackUser = {
+        ...googleMetadata,
+        role: fallbackRole,
+      }
+      setUser(fallbackUser)
+      setRole(fallbackRole)
+      return fallbackUser
     }
   }, [])
 
