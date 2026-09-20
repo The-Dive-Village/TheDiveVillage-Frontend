@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router'
 import SectionReveal, { StaggerGrid, StaggerItem } from './SectionReveal'
 import { CAROUSEL_IMAGES } from '../utils/images'
-import diveSuitVid from '../assets/New folder/merch 5.mp4'
+import diveSuitVid from '../assets/Products/merch 5.mp4'
 import tryDiveVid from '../assets/New folder/Dive.MP4'
 import certVid from '../assets/Diving(1).mp4'
 
@@ -47,7 +47,7 @@ export default function ProgramsPreview() {
             Featured Offerings
           </span>
           <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight drop-shadow-lg">
-            Explore <span className="text-accent italic font-bold">The Dive Village</span>
+            Explore <span className="text-accent font-bold">The Dive Village</span>
           </h2>
           <p className="mt-4 max-w-xl mx-auto text-base sm:text-lg text-white/90 font-medium drop-shadow-md text-justify">
             From your very first breath underwater to professional divemaster certifications.

@@ -53,8 +53,10 @@ export default function Navbar() {
   const isShopPage = location.pathname.startsWith('/shop') || location.pathname.startsWith('/product') || location.pathname === '/cart' || location.pathname === '/wishlist' || location.pathname === '/checkout'
   const isServicesPage = location.pathname.startsWith('/services') || location.pathname.startsWith('/our-services') || location.pathname.startsWith('/courses') || ['/scuba-diving', '/snorkeling', '/freediving', '/scuba', '/surfing'].includes(location.pathname)
   const isBookUsPage = location.pathname.startsWith('/book-us')
-  const isBlueToolbar = isShopPage || isServicesPage || isBookUsPage
-  const isTranslucentPage = ['/contact', '/'].includes(location.pathname)
+  const isGalleryPage = location.pathname.startsWith('/gallery')
+  const isContactPage = location.pathname.startsWith('/contact')
+  const isBlueToolbar = isShopPage || isServicesPage || isBookUsPage || isGalleryPage || isContactPage
+  const isTranslucentPage = location.pathname === '/'
   const isVideoBg = ['/', '/login', '/contact', '/book-us'].includes(location.pathname) || isBlueToolbar
   const isDarkBackground = isVideoBg || isNightDive
 

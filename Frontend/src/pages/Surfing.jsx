@@ -1,7 +1,7 @@
 import CourseTemplate from '../layouts/CourseTemplate'
 import SEOHead from '../components/SEOHead'
 import { IMAGES } from '../utils/images'
-import freediveVideo from '../assets/New folder/free diving 3.mp4'
+import freediveVideo from '../assets/Gallery/Free Diving 1.mov'
 
 export default function Surfing() {
   const tours = [

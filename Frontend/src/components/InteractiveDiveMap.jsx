@@ -1234,7 +1234,7 @@ export default function InteractiveDiveMap({
                     <span className="block text-[8.5px] font-extrabold uppercase tracking-widest text-cyan-400/80">
                       SPECIES / HABITAT
                     </span>
-                    <p className="text-[11px] font-medium text-white italic truncate">
+                    <p className="text-[11px] font-medium text-white truncate">
                       {creature.species}
                     </p>
                   </div>

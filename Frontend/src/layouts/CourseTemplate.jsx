@@ -57,7 +57,7 @@ export default function CourseTemplate({
             style={{ textShadow: '0 4px 20px rgba(0,0,0,0.4)' }}
           >
             {titleTop} <br />
-            <span className="font-bold italic text-white/95">{titleBottom}</span>
+            <span className="font-bold text-white/95">{titleBottom}</span>
           </motion.h1>
           
           <motion.div

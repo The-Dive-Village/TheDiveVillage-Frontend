@@ -235,7 +235,7 @@ export default function AdminCustomers() {
                   {selectedBooking.specialRequests && (
                     <div className="bg-white/5 p-4 rounded-2xl border border-white/10">
                       <span className="text-white/50 block font-bold mb-1 uppercase tracking-wider text-[10px]">Special Requests / Notes</span>
-                      <p className="text-white/90 text-xs italic">{selectedBooking.specialRequests}</p>
+                      <p className="text-white/90 text-xs">{selectedBooking.specialRequests}</p>
                     </div>
                   )}
 

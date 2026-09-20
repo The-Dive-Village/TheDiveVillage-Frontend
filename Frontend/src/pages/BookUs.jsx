@@ -2,7 +2,6 @@ import { useState, useEffect, useMemo, useRef, lazy, Suspense } from 'react'
 import { useSearchParams } from 'react-router'
 import { motion } from 'framer-motion'
 const InteractiveDiveMap = lazy(() => import('../components/InteractiveDiveMap'))
-import CustomizeExperiencePanel from '../components/CustomizeExperiencePanel'
 import CompactTwoMonthCalendarPopover from '../components/CompactTwoMonthCalendarPopover'
 import SEOHead from '../components/SEOHead'
 import { diveSiteService, normalizeCountryKey } from '../services/diveSiteService'
@@ -17,7 +16,7 @@ import {
 import 'react-phone-number-input/style.css'
 import PhoneInput from 'react-phone-number-input'
 import turtleAnnaVideo from '../assets/New folder/Turtle Anna.mp4'
-import redLionfishVideo from '../assets/Red Lionfish.mp4'
+import compiledNightDiveVideo from '../assets/Compiled Night Dive Video(2).mp4'
 import useNightDive from '../hooks/useNightDive'
 
 // Backwards-compatible export alias for any legacy imports
@@ -310,7 +309,7 @@ export default function BookUs() {
   }
 
   return (
-    <div className="bg-[#FAFAFA] min-h-screen text-navy font-body overflow-x-hidden" style={{ textShadow: 'none' }}>
+    <div className={`min-h-screen text-navy font-body overflow-x-hidden ${isNightDive ? 'bg-[#0b1726]' : 'bg-[#FAFAFA]'}`} style={{ textShadow: 'none' }}>
       <SEOHead
         title="Book Scuba Diving Courses & Expeditions Online | The Dive Village"
         description="Book certified scuba diving courses, Discovery dives, snorkeling trips, and freediving packages online with instant confirmation at The Dive Village."
@@ -318,34 +317,34 @@ export default function BookUs() {
         canonicalUrl="https://thedivevillage.com/book-us"
       />
 
-      {/* 1. HEADER VIDEO HERO (DYNAMIC NIGHT DIVE RED LIONFISH VIDEO) */}
-      <section className="relative h-[88vh] min-h-[640px] lg:h-[92vh] lg:min-h-[720px] w-full flex items-center justify-center overflow-hidden">
+      {/* 1. HEADER VIDEO HERO (DYNAMIC COMPILED NIGHT DIVE VIDEO) */}
+      <section className="relative h-[85vh] min-h-[600px] lg:h-[90vh] lg:min-h-[680px] w-full flex items-center justify-center overflow-hidden">
         <div 
-          className="absolute inset-0 z-0"
+          className="absolute inset-0 z-0 overflow-hidden"
           style={{
-            maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 82%, rgba(0,0,0,0) 100%)',
-            WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 82%, rgba(0,0,0,0) 100%)'
+            maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 40%, rgba(0,0,0,0.5) 75%, rgba(0,0,0,0) 100%)',
+            WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 40%, rgba(0,0,0,0.5) 75%, rgba(0,0,0,0) 100%)'
           }}
         >
           <video
-            key={isNightDive ? 'night-lionfish' : 'day-turtle'}
-            src={isNightDive ? redLionfishVideo : turtleAnnaVideo}
+            key={isNightDive ? 'night-compiled' : 'day-turtle'}
+            src={isNightDive ? compiledNightDiveVideo : turtleAnnaVideo}
             autoPlay
             loop
             muted
             playsInline
             onPlay={(e) => { e.currentTarget.playbackRate = 0.7 }}
-            className="w-full h-full object-cover transition-opacity duration-700"
+            className="w-full h-full object-cover scale-110 origin-center transition-all duration-700"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#001428]/65 via-[#001428]/25 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-[#001428]/65 via-[#001428]/25 to-transparent pointer-events-none" />
         </div>
 
-        {/* Bottom Smooth Dissolve & Merge Layer */}
+        {/* Bottom Ultra-Smooth Dissolve & Merge Layer */}
         <div 
-          className={`absolute bottom-0 inset-x-0 h-24 sm:h-36 pointer-events-none z-[5] transition-colors duration-500 ${
+          className={`absolute bottom-0 inset-x-0 h-44 sm:h-64 lg:h-80 pointer-events-none z-[5] transition-colors duration-500 ${
             isNightDive 
-              ? 'bg-gradient-to-t from-[#030a12] via-[#030a12]/70 to-transparent' 
-              : 'bg-gradient-to-t from-[#FAFAFA] via-[#FAFAFA]/70 to-transparent'
+              ? 'bg-gradient-to-t from-[#0b1726] via-[#0b1726]/85 via-45% to-transparent' 
+              : 'bg-gradient-to-t from-[#FAFAFA] via-[#FAFAFA]/90 via-45% to-transparent'
           }`} 
         />
 
@@ -538,7 +537,7 @@ export default function BookUs() {
                           {creature?.species && (
                             <div className="pt-2 border-t border-navy/5 flex items-center justify-between text-[11px]">
                               <span className="text-navy/50 font-bold uppercase text-[9px]">Marine Life:</span>
-                              <span className="font-semibold text-navy italic truncate max-w-[200px]">{creature.species}</span>
+                              <span className="font-semibold text-navy truncate max-w-[200px]">{creature.species}</span>
                             </div>
                           )}
                         </div>
@@ -1116,11 +1115,6 @@ export default function BookUs() {
             </div>
           </div>
 
-        </div>
-
-        {/* Customize Dive Experience Panel */}
-        <div className="mt-16 sm:mt-24">
-          <CustomizeExperiencePanel />
         </div>
 
       </div>

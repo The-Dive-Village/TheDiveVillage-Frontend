@@ -20,6 +20,7 @@ import imgGuidedSnorkeling from '../assets/Gallery/Snorkeling.png'
 import imgCertifiedCourses from '../assets/Gallery/Certified Courses.jpg'
 import imgFreeDiving from '../assets/Gallery/Free Diving.png'
 import imgFlexibleFunDives from '../assets/Gallery/Flexible Fun Dives.png'
+import michaelPfp from '../assets/Products/merch0.jpg'
 
 const ProgramsPreview = lazy(() => import('../components/ProgramsPreview'))
 
@@ -89,7 +90,7 @@ const TESTIMONIALS = [
     name: "Michael Antony",
     role: "Advanced Adventurer",
     text: "From the seamless booking process to the personalized dive charters, everything was flawless. A vibrant community that genuinely feels like a second home.",
-    image: CAROUSEL_IMAGES[0]
+    image: michaelPfp
   }
 ]
 
@@ -188,7 +189,7 @@ export default function Home() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionReveal className="mb-12 flex flex-col items-center text-center">
             <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-white drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)] leading-tight">
-              Explore Our <span className="text-[#FFCD00] italic">Programs</span>
+              Explore Our <span className="text-[#FFCD00]">Programs</span>
             </h2>
             <p className="mt-4 max-w-2xl mx-auto text-base sm:text-lg text-white/90 font-medium drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] text-justify">
               From your very first breath under the water <br />To professional dive master certifications.
@@ -207,7 +208,7 @@ export default function Home() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionReveal className="mb-16 flex flex-col items-center text-center">
             <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-white drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)] leading-tight">
-              The Ocean <span className="text-[#FFCD00] italic">Welcomes All</span>
+              The Ocean <span className="text-[#FFCD00]">Welcomes All</span>
             </h2>
             <p className="mt-4 max-w-2xl mx-auto text-base sm:text-lg text-white/90 font-medium drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] text-justify">
               You don't need to be an athlete or an expert to dive<br />You only need curiosity to explore what lies below.
@@ -353,7 +354,7 @@ export default function Home() {
                         </svg>
                       ))}
                     </div>
-                    <p className="text-white/95 font-medium italic mb-8 leading-relaxed text-justify">
+                    <p className="text-white/95 font-medium mb-8 leading-relaxed text-justify">
                       "{t.text}"
                     </p>
                   </div>
@@ -510,7 +511,7 @@ export default function Home() {
       </section>
 
       {/* 7.5 CUSTOMIZE DIVE EXPERIENCE */}
-      <section className="py-12 sm:py-16 pointer-events-auto">
+      <section id="customize-dive-section" className="py-12 sm:py-16 pointer-events-auto">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionReveal>
             <Suspense fallback={<div className="h-64 rounded-3xl bg-navy/20 animate-pulse" />}>
@@ -896,33 +897,31 @@ function AutoCarousel({ images, showContent = true }) {
 
       {showContent && (
         <div className="absolute inset-0 z-20 flex flex-col justify-center p-6 sm:p-10 lg:p-16 pointer-events-none">
-          <div className="max-w-2xl pointer-events-auto">
-            <span className="inline-block text-[#FFCD00] font-heading font-bold uppercase tracking-widest text-xs mb-3 drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]">
+          <div className="max-w-2xl pointer-events-auto flex flex-col justify-center">
+            <span className="inline-block self-start bg-white/15 backdrop-blur-md border border-white/25 rounded-full px-4 py-1.5 text-xs font-bold text-[#FFCD00] uppercase tracking-widest mb-4 shadow-sm">
               The Sea is Calling
             </span>
             <h3
-              className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-[1.15] mb-4 tracking-tight drop-shadow-[0_4px_20px_rgba(0,0,0,0.95)]"
+              className="font-heading text-3xl sm:text-5xl lg:text-6xl font-bold uppercase tracking-tight text-white leading-tight mb-4 drop-shadow-[0_4px_20px_rgba(0,0,0,0.95)]"
               style={{ textShadow: '0 4px 20px rgba(0,0,0,0.95), 0 2px 8px rgba(0,0,0,0.9)' }}
             >
-              Come for the adventure.<br />
-              <span className="text-[#FFCD00] font-bold">Stay for the calm.</span>
+              COME FOR THE ADVENTURE.<br />
+              <span className="font-heading font-bold text-[#FFCD00]">STAY FOR THE CALM.</span>
             </h3>
             <p
-              className="text-white/95 font-medium text-sm sm:text-base mb-8 drop-shadow-[0_2px_10px_rgba(0,0,0,0.95)]"
+              className="text-white/90 font-medium text-sm sm:text-base mb-8 drop-shadow-[0_2px_10px_rgba(0,0,0,0.95)] max-w-xl leading-relaxed"
               style={{ textShadow: '0 2px 10px rgba(0,0,0,0.95)' }}
             >
               Leave with stories that last a lifetime.
             </p>
             <div className="flex flex-wrap items-center gap-4">
-              <Button
-                as={Link}
+              <Link
                 to="/book-us"
-                variant="secondary"
-                className="!bg-[#FFCD00] !text-[#001e3d] !border !border-[#FFCD00] font-bold shadow-xl transition-all duration-300 hover:scale-105 hover:!bg-white hover:!text-[#001e3d]"
+                className="inline-flex items-center gap-2 rounded-full bg-white/15 backdrop-blur-xl border border-white/30 px-7 py-3.5 font-body text-xs sm:text-sm tracking-wider font-bold text-white uppercase shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] transition-all duration-300 hover:scale-105 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] hover:shadow-[0_12px_40px_rgba(255,205,0,0.5)] cursor-pointer"
               >
-                Book Your Dive
+                <span>Book Your Dive</span>
                 <ArrowIcon />
-              </Button>
+              </Link>
               <Link
                 to="/gallery"
                 className="inline-flex items-center gap-2 rounded-full bg-white/15 backdrop-blur-xl border border-white/30 px-7 py-3.5 font-body text-xs sm:text-sm tracking-wider font-bold text-white uppercase shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] transition-all duration-300 hover:scale-105 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] hover:shadow-[0_12px_40px_rgba(255,205,0,0.5)] cursor-pointer"

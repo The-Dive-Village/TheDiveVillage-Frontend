@@ -102,7 +102,7 @@ export default function GalleryPreview() {
             className="font-heading text-h2 font-bold text-white"
             style={{ textShadow: '0 2px 14px rgba(0, 0, 0, 0.85), 0 1px 4px rgba(0, 0, 0, 0.95)' }}
           >
-            The Dive Village <em className="font-heading italic font-bold text-accent">Gallery</em>
+            The Dive Village <span className="font-heading font-bold text-accent">Gallery</span>
           </h2>
           <p
             className="mx-auto mt-4 max-w-2xl text-white font-medium text-center"
@@ -180,20 +180,16 @@ export default function GalleryPreview() {
                   loading="lazy"
                 />
               )}
-              {/* Overlay with ONLY Title and Location */}
+              {/* Overlay with Title and Serial Number */}
               <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/30 to-transparent flex flex-col justify-end p-4">
-                <h4 className="text-white font-heading font-bold text-base leading-tight drop-shadow-md">
-                  {item.title}
-                </h4>
-                {item.location && (
-                  <p className="text-white/80 text-xs font-semibold mt-1 flex items-center gap-1 drop-shadow-sm">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-[#FFCD00] shrink-0">
-                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                      <circle cx="12" cy="10" r="3" />
-                    </svg>
-                    <span className="truncate">{item.location}</span>
-                  </p>
-                )}
+                <div className="flex items-center gap-2">
+                  <span className="text-[11px] font-bold font-mono text-accent bg-black/40 px-2 py-0.5 rounded border border-white/10 shrink-0">
+                    #{String((i % previewItems.length) + 1).padStart(2, '0')}
+                  </span>
+                  <h4 className="text-white font-heading font-bold text-base leading-tight drop-shadow-md truncate">
+                    {item.title}
+                  </h4>
+                </div>
               </div>
             </div>
           ))}

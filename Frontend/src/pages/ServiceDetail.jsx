@@ -14,7 +14,7 @@ const FAQS = [
   },
   {
     q: "Is scuba diving safe?",
-    a: "Yes! Scuba diving is extremely safe when guided by our certified PADI professionals. We maintain strict safety protocols and a maximum 4:1 student-to-instructor ratio."
+    a: "Yes! Scuba diving is extremely safe when guided by our certified diving professionals. We maintain strict safety protocols and a maximum 4:1 student-to-instructor ratio."
   },
   {
     q: "What should I bring with me?",
@@ -111,7 +111,7 @@ export default function ServiceDetail() {
                   </h4>
                   <ul className="space-y-3">
                     <li className="text-sm font-medium text-navy/70 flex items-center gap-2">Premium Dive Equipment</li>
-                    <li className="text-sm font-medium text-navy/70 flex items-center gap-2">Certified PADI Instructor</li>
+                    <li className="text-sm font-medium text-navy/70 flex items-center gap-2">Certified Instructor</li>
                     <li className="text-sm font-medium text-navy/70 flex items-center gap-2">Underwater Photos & Videos</li>
                     <li className="text-sm font-medium text-navy/70 flex items-center gap-2">Safety Briefing & Training</li>
                   </ul>
@@ -125,24 +125,6 @@ export default function ServiceDetail() {
                     <li className="text-sm font-medium text-navy/70 flex items-center gap-2">Personal Travel Insurance</li>
                     <li className="text-sm font-medium text-navy/70 flex items-center gap-2">Meals & Beverages</li>
                   </ul>
-                </div>
-              </div>
-            </div>
-
-            {/* GALLERY */}
-            <div className="mb-16">
-              <h3 className="font-heading text-2xl font-bold text-navy mb-6">Experience Gallery</h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="h-64 sm:h-80 rounded-3xl overflow-hidden relative">
-                  <SafeImage src={IMAGES.gallery1} alt="Diving" className="w-full h-full object-cover hover:scale-105 transition duration-700" />
-                </div>
-                <div className="grid grid-rows-2 gap-4 h-64 sm:h-80">
-                  <div className="rounded-3xl overflow-hidden relative h-full">
-                    <SafeImage src={IMAGES.scubaFeat1} alt="Diving" className="w-full h-full object-cover hover:scale-105 transition duration-700" />
-                  </div>
-                  <div className="rounded-3xl overflow-hidden relative h-full">
-                    <SafeImage src={IMAGES.dest3} alt="Diving" className="w-full h-full object-cover hover:scale-105 transition duration-700" />
-                  </div>
                 </div>
               </div>
             </div>

@@ -10,7 +10,7 @@ export default function AboutSection() {
               Our Story
             </span>
             <h2 className="mt-4 font-heading text-h2 font-bold text-white">
-              About <em className="font-heading italic font-bold text-accent">Sanjeev</em> and His Passion for Diving
+              About <span className="font-heading font-bold text-accent">Sanjeev</span> and His Passion for Diving
             </h2>
             <p className="mt-6 text-lg text-white/90 leading-relaxed">
               The Dive Village began with one man and one belief. For Sanjeev, the ocean was more than a passion—it was a sanctuary. A place of healing, discovery, and profound transformation. And he knew, deep down, that this magic was not meant to be kept to himself.

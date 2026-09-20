@@ -7,7 +7,7 @@ export default function PlaceholderPage({ title, accent, blurb }) {
         <h1 className="font-heading text-h1 font-bold text-white">
           {title}{' '}
           {accent && (
-            <em className="font-heading italic font-bold text-accent">{accent}</em>
+            <span className="font-heading font-bold text-accent">{accent}</span>
           )}
         </h1>
         <p className="mt-4 max-w-xl text-white/80">

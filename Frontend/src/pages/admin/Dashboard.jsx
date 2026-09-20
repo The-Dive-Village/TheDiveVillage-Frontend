@@ -270,7 +270,7 @@ export default function AdminDashboard() {
                             <span key={i}>★</span>
                           ))}
                         </div>
-                        <p className="text-xs sm:text-sm text-white/90 italic pt-0.5 leading-relaxed break-words">
+                        <p className="text-xs sm:text-sm text-white/90 pt-0.5 leading-relaxed break-words">
                           "{rev.text}"
                         </p>
                       </div>
@@ -320,7 +320,7 @@ export default function AdminDashboard() {
                         <span key={i}>★</span>
                       ))}
                     </div>
-                    <p className="text-xs sm:text-sm text-white/90 italic pt-0.5 leading-relaxed break-words">
+                    <p className="text-xs sm:text-sm text-white/90 pt-0.5 leading-relaxed break-words">
                       "{rev.text}"
                     </p>
                   </div>

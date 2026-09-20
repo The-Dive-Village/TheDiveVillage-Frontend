@@ -1,7 +1,7 @@
 import CourseTemplate from '../layouts/CourseTemplate'
 import SEOHead from '../components/SEOHead'
 import { IMAGES, FEATURED_EXPERIENCES } from '../utils/images'
-import scubaDiveVideo from '../assets/New folder/GX018843.mp4'
+import scubaDiveVideo from '../assets/Gallery/Scuba3.MP4'
 
 export default function Scuba() {
   const tours = [

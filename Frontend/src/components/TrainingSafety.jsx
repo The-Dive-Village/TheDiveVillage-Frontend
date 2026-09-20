@@ -1,22 +1,31 @@
 import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 
+import zero2HeroImg from '../assets/Gallery/zero2hero.jpg'
+import introProgImg from '../assets/Gallery/Introductory Programs.png'
+import freeDivingImg from '../assets/Gallery/Free Diving.png'
+import flexibleFunImg from '../assets/Gallery/Flexible Fun Dives.png'
+
 const SAFETY_PROMISES = [
   {
     title: 'Globally Certified Instructors',
     desc: 'Professional guides trained to handle any situation with calm and expertise.',
+    image: zero2HeroImg,
   },
   {
     title: 'Personalized Training',
     desc: 'Instruction tailored to your skill level, whether you are a beginner or a pro.',
+    image: introProgImg,
   },
   {
     title: 'High-Quality Equipment',
     desc: 'Top-tier dive gear that is regularly serviced and rigorously checked.',
+    image: freeDivingImg,
   },
   {
     title: 'Emergency-Ready Staff',
     desc: 'Rescue-trained professionals prepared for any scenario on the water.',
+    image: flexibleFunImg,
   },
 ]
 
@@ -63,7 +72,7 @@ export default function TrainingSafety() {
             className="w-full text-center z-10 px-4 pointer-events-auto"
           >
             <h2 className="font-heading text-4xl sm:text-h2 font-bold drop-shadow-md">
-              Confidence Beneath <em className="font-heading italic font-bold text-[#FFCD00]">Every Wave</em>
+              Confidence Beneath <span className="font-heading font-bold text-[#FFCD00]">Every Wave</span>
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-white/90 drop-shadow-md font-medium text-lg">
               At Dive Village, every adventure begins with safety. Our focus is on comfort, skill, and confidence for every participant.
@@ -125,12 +134,22 @@ function SafetyPromiseCard({ promise, i, scrollYProgress, totalCount }) {
       style={{ opacity, x, scale }}
       className="absolute w-full max-w-3xl px-6 z-20 mt-20"
     >
-      <div className="rounded-3xl bg-black/40 backdrop-blur-md border border-white/10 p-8 sm:p-12 text-center shadow-2xl">
-        <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-[#FFCD00] text-navy">
-          <CheckIcon />
-        </div>
-        <h3 className="font-heading text-2xl sm:text-3xl font-bold mb-4">{promise.title}</h3>
-        <p className="text-lg text-white/90 leading-relaxed font-medium">{promise.desc}</p>
+      <div className="rounded-3xl bg-black/40 backdrop-blur-md border border-white/10 p-6 sm:p-8 text-center shadow-2xl overflow-hidden max-w-xl mx-auto">
+        {promise.image && (
+          <div className="h-44 w-full rounded-2xl overflow-hidden mb-5 border border-white/15 relative bg-black/30 shadow-md">
+            <img 
+              src={promise.image} 
+              alt={promise.title} 
+              className="w-full h-full object-cover" 
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
+            <div className="absolute top-3 right-3 flex h-10 w-10 items-center justify-center rounded-full bg-[#FFCD00] text-navy shadow-md">
+              <CheckIcon />
+            </div>
+          </div>
+        )}
+        <h3 className="font-heading text-2xl sm:text-3xl font-bold mb-3">{promise.title}</h3>
+        <p className="text-base sm:text-lg text-white/90 leading-relaxed font-medium">{promise.desc}</p>
       </div>
     </motion.div>
   )

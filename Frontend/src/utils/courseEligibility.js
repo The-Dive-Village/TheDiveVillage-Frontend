@@ -71,31 +71,7 @@ export const COURSE_CATALOG = [
     prerequisites: null,
     certLabel: 'No prior certification required'
   },
-  // 5. Bubblemaker
-  {
-    id: 'padi-bubblemaker',
-    name: 'Bubblemaker',
-    category: 'Kids & Family',
-    minimumAge: 8,
-    maxAge: 10,
-    bookingType: 'beginner',
-    prerequisites: null,
-    certLabel: 'No prior certification required'
-  },
-  // 6. Additional Dive after DSD
-  {
-    id: 'add-dive-after-dsd',
-    name: 'Additional Dive after DSD',
-    category: 'Introductory Programs',
-    minimumAge: 10,
-    bookingType: 'certification_required',
-    prerequisites: {
-      type: 'SINGLE',
-      requirement: CERTIFICATIONS.PADI_DSD
-    },
-    certLabel: 'Discover Scuba Dive (DSD)'
-  },
-  // 7. Skin Diver
+  // 4. Skin Diver
   {
     id: 'padi-skin-diver',
     name: 'Skin Diver',
@@ -399,7 +375,7 @@ export const COURSE_CATALOG = [
     prerequisites: null,
     certLabel: 'Pathway from beginner to Advanced'
   },
-  // 35. EFR + Rescue Diver
+  // 35. EFR + Rescue Diver (Bundled Pathway)
   {
     id: 'efr-rescue-combo',
     name: 'EFR + Rescue Diver',
@@ -451,11 +427,11 @@ export const COURSE_CATALOG = [
     },
     certLabel: 'Advanced Open Water + 40 logged dives'
   },
-  // 39. Zero to Hero (OW to DM) (Complete Pathway)
+  // 39. Zero to Hero (OW to DM)
   {
     id: 'zero-to-hero',
     name: 'Zero to Hero (OW to DM)',
-    category: 'Bundled Pathways',
+    category: 'Professional Track',
     minimumAge: 18,
     bookingType: 'pathway',
     prerequisites: null,

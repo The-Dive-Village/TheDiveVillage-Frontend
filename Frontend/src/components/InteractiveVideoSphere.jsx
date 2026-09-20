@@ -253,7 +253,7 @@ export default function InteractiveVideoSphere({ autoRotate = true, className = 
 
   return (
     <div className={`relative w-full h-full bg-[#001e3d] overflow-hidden cursor-grab active:cursor-grabbing ${className}`}>
-      <Canvas dpr={[1, 1.5]} camera={{ position: [0, 0, 0.1], fov: 75 }} gl={{ powerPreference: 'high-performance', antialias: false }}>
+      <Canvas dpr={[1, 1.5]} camera={{ position: [0, 0, 0.1], fov: 52 }} gl={{ powerPreference: 'high-performance', antialias: false }}>
         <color attach="background" args={['#001e3d']} />
         <Suspense fallback={null}>
           <SphereMesh autoRotate={autoRotate} />

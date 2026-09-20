@@ -152,6 +152,11 @@ export default function Gallery() {
                   />
                 )}
 
+                {/* Serial Number Badge */}
+                <div className="absolute top-3.5 left-3.5 z-10 px-2.5 py-1 rounded-full bg-navy/85 backdrop-blur-md border border-white/20 text-accent font-heading font-bold text-xs shadow-md tracking-wider">
+                  #{String(idx + 1).padStart(2, '0')}
+                </div>
+
                 {/* Hover Dark Gradient */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-300" />
                 
@@ -163,20 +168,14 @@ export default function Gallery() {
                 </div>
               </div>
 
-              {/* Information Panel Below Media - ONLY Title and Location */}
-              <div className="p-5 flex flex-col flex-grow justify-between gap-1.5 bg-white">
-                <h3 className="font-heading text-lg font-bold text-navy group-hover:text-accent transition duration-200 line-clamp-1">
+              {/* Information Panel Below Media - Title and Serial Number */}
+              <div className="p-5 flex items-center justify-between gap-3 bg-white">
+                <h3 className="font-heading text-lg font-bold text-navy group-hover:text-accent transition duration-200 line-clamp-1 flex-1">
                   {item.title}
                 </h3>
-                {item.location && (
-                  <div className="flex items-center gap-1.5 text-xs font-semibold text-navy/70">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-[#FF6106] shrink-0">
-                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                      <circle cx="12" cy="10" r="3" />
-                    </svg>
-                    <span className="truncate">{item.location}</span>
-                  </div>
-                )}
+                <span className="text-xs font-bold font-mono text-navy/50 bg-[#F0F2F5] px-2 py-0.5 rounded-full shrink-0">
+                  #{String(idx + 1).padStart(2, '0')}
+                </span>
               </div>
             </motion.div>
           ))}
@@ -317,21 +316,15 @@ export default function Gallery() {
                 )}
               </div>
 
-              {/* Lightbox Footer Bar - ONLY Title and Location */}
+              {/* Lightbox Footer Bar - Title, Serial Number, Action */}
               <div className="p-5 sm:p-6 bg-[#001830] border-t border-white/10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <div className="flex flex-col gap-1 max-w-2xl">
+                <div className="flex items-center gap-3 max-w-2xl">
+                  <span className="text-xs sm:text-sm font-bold font-mono text-accent bg-white/10 px-2.5 py-1 rounded-lg border border-white/10 shrink-0">
+                    #{String(selectedMediaIndex + 1).padStart(2, '0')}
+                  </span>
                   <h2 className="text-lg sm:text-2xl font-bold font-heading text-white">
                     {currentItem.title}
                   </h2>
-                  {currentItem.location && (
-                    <p className="text-xs sm:text-sm text-white/80 flex items-center gap-1.5 mt-0.5">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-[#FF6106] shrink-0">
-                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                        <circle cx="12" cy="10" r="3" />
-                      </svg>
-                      {currentItem.location}
-                    </p>
-                  )}
                 </div>
 
                 <div className="flex items-center gap-4 shrink-0 w-full sm:w-auto justify-between sm:justify-end">

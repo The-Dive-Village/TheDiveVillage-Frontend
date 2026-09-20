@@ -98,7 +98,7 @@ function useDirectVideoTexture(src, playbackRate = 0.7, priority = false) {
                 tryActivateTexture()
               }
             })
-            .catch(() => {})
+            .catch(() => { })
         }
       }
     }
@@ -189,13 +189,14 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
     const handleScroll = () => {
       const scrollY = window.scrollY
       const INITIAL_YAW = Math.PI / 2.65 - (Math.PI * 1.1)
-      const INITIAL_PITCH = isAbout ? -(Math.PI / 6) : (Math.PI / 5.2)
+      const INITIAL_PITCH = isAbout ? -(Math.PI / 6) : (Math.PI / 17.1)
 
       const aboutEl = document.getElementById('about-section')
       const programsEl = document.getElementById('programs-section')
       const diveSectionEl = document.getElementById('who-can-dive-section')
       const testimonialsEl = document.getElementById('testimonials-section')
 
+      const customizeEl = document.getElementById('customize-dive-section') || document.getElementById('customize-section')
       const galleryEl = document.getElementById('gallery-section') || document.getElementById('gallery')
 
       if (isHome) {
@@ -203,11 +204,12 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
           setLoadSecondary(true)
         }
 
-        const triggerThreshold = window.innerHeight * 0.7
+        const triggerThreshold = window.innerHeight * 0.8
+        const isCustomizeInView = customizeEl && customizeEl.getBoundingClientRect().top < triggerThreshold
         const isGalleryInView = galleryEl && galleryEl.getBoundingClientRect().top < triggerThreshold
 
-        if (isGalleryInView) {
-          // When Dive Gallery comes into view, transition back to the first video (Hero(1).mp4)
+        if (isCustomizeInView || isGalleryInView) {
+          // When Customize Dive Experience or Dive Gallery comes into view, transition back to the first video (Hero(1).mp4)
           targetOpacity2.current = 0
           targetOpacity3.current = 0
         } else {
@@ -321,7 +323,7 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
       if (texture2 && texture2.image) {
         const vid2 = texture2.image
         if (targetOpacity2.current > 0.01) {
-          if (vid2.paused) vid2.play().catch(() => {})
+          if (vid2.paused) vid2.play().catch(() => { })
           if (vid2.readyState >= 2 && vid2.videoWidth > 0 && vid2.videoHeight > 0) {
             if (hasNewFrame2.current || vid2.currentTime !== lastTime2.current) {
               lastTime2.current = vid2.currentTime
@@ -338,7 +340,7 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
       if (texture3 && texture3.image) {
         const vid3 = texture3.image
         if (targetOpacity3.current > 0.01) {
-          if (vid3.paused) vid3.play().catch(() => {})
+          if (vid3.paused) vid3.play().catch(() => { })
           if (vid3.readyState >= 2 && vid3.videoWidth > 0 && vid3.videoHeight > 0) {
             if (hasNewFrame3.current || vid3.currentTime !== lastTime3.current) {
               lastTime3.current = vid3.currentTime
@@ -370,7 +372,7 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
 
       if (meshRef3.current && isHome) {
         meshRef3.current.rotation.y = meshRef.current.rotation.y + (Math.PI * 1.45)
-        meshRef3.current.rotation.x = meshRef.current.rotation.x - (Math.PI * 1.3)
+        meshRef3.current.rotation.x = meshRef.current.rotation.x - (Math.PI * 1.1)
         meshRef3.current.material.opacity += (targetOpacity3.current - meshRef3.current.material.opacity) * delta * 2.5
       }
     }
@@ -440,7 +442,7 @@ export default function VideoSphereBackground() {
             const handleInteract = () => {
               if (video) {
                 video.playbackRate = 0.7
-                video.play().catch(() => {})
+                video.play().catch(() => { })
               }
               window.removeEventListener('pointerdown', handleInteract)
               window.removeEventListener('touchstart', handleInteract)
@@ -470,7 +472,7 @@ export default function VideoSphereBackground() {
           console.log('Autoplay waiting for initial user interaction:', err)
           const unlockAudio = () => {
             if (audioRef.current && localStorage.getItem('dive_village_user_muted') !== 'true') {
-              audioRef.current.play().catch(() => {})
+              audioRef.current.play().catch(() => { })
             }
             window.removeEventListener('pointerdown', unlockAudio)
             window.removeEventListener('click', unlockAudio)
@@ -509,7 +511,15 @@ export default function VideoSphereBackground() {
   const currentVideo = isNightDive ? nightDiveVideo : (isAbout ? bookFile : videoFile)
 
   const isHiddenJoystickPath =
+    location.pathname.startsWith('/gallery') ||
     location.pathname.startsWith('/services') ||
+    location.pathname.startsWith('/courses') ||
+    location.pathname.startsWith('/shop') ||
+    location.pathname.startsWith('/product') ||
+    location.pathname.startsWith('/cart') ||
+    location.pathname.startsWith('/wishlist') ||
+    location.pathname.startsWith('/checkout') ||
+    location.pathname.startsWith('/contact') ||
     location.pathname.startsWith('/scuba') ||
     location.pathname.startsWith('/snorkeling') ||
     location.pathname.startsWith('/surfing') ||
@@ -521,7 +531,7 @@ export default function VideoSphereBackground() {
     <>
       <audio ref={audioRef} src={underwaterAudio} loop playsInline autoPlay />
       <div className="absolute inset-0 -z-10">
-        <div 
+        <div
           className="sticky top-0 h-[100dvh] w-full overflow-hidden"
           style={{
             background: 'radial-gradient(circle at center, #003865 0%, #001e3d 55%, #000e1c 100%)'
@@ -598,39 +608,52 @@ export default function VideoSphereBackground() {
 }
 
 function AudioToggle({ isMuted, onToggle }) {
+  const location = useLocation()
+  const isLightPage =
+    location.pathname.startsWith('/gallery') ||
+    location.pathname.startsWith('/services') ||
+    location.pathname.startsWith('/shop') ||
+    location.pathname.startsWith('/product') ||
+    location.pathname === '/cart' ||
+    location.pathname === '/wishlist' ||
+    location.pathname === '/checkout'
+
   return (
     <button
       onClick={onToggle}
-      className="fixed bottom-6 right-6 z-[9000] flex h-8 w-8 items-center justify-center rounded-full border border-white/25 bg-white/10 backdrop-blur-2xl text-white/90 shadow-[0_4px_20px_rgba(0,0,0,0.3)] transition-all duration-300 hover:scale-110 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] cursor-pointer"
+      className={`fixed bottom-6 right-6 z-[9000] flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full border shadow-2xl transition-all duration-300 hover:scale-110 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] cursor-pointer ${isLightPage
+        ? 'bg-[#001e3d] text-white border-white/20 shadow-[0_6px_24px_rgba(0,30,61,0.35)]'
+        : 'bg-[#001e3d]/85 text-white border-white/30 backdrop-blur-2xl shadow-[0_6px_24px_rgba(0,0,0,0.5)]'
+        }`}
       aria-label={isMuted ? 'Play underwater ambiance' : 'Mute underwater ambiance'}
     >
       {!isMuted ? (
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path
             d="M11 5L6 9H2V15H6L11 19V5Z"
             stroke="currentColor"
-            strokeWidth="2"
+            strokeWidth="2.2"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
           <path
             d="M15.54 8.46C16.4774 9.39764 17.004 10.6692 17.004 11.995C17.004 13.3208 16.4774 14.5924 15.54 15.53M19.07 4.93C20.9447 6.80528 21.9979 9.34836 21.9979 12C21.9979 14.6516 20.9447 17.1947 19.07 19.07"
             stroke="currentColor"
-            strokeWidth="2"
+            strokeWidth="2.2"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
         </svg>
       ) : (
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path
             d="M11 5L6 9H2V15H6L11 19V5Z"
             stroke="currentColor"
-            strokeWidth="2"
+            strokeWidth="2.2"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
-          <line x1="23" y1="1" x2="1" y2="23" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          <line x1="23" y1="1" x2="1" y2="23" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
         </svg>
       )}
     </button>
@@ -643,7 +666,17 @@ function JoystickControl({ joystickVelocity }) {
   const isDragging = useRef(false)
   const [thumbPos, setThumbPos] = useState({ x: 0, y: 0 })
 
-  if (location.pathname.startsWith('/shop') || location.pathname.startsWith('/contact')) {
+  if (
+    location.pathname.startsWith('/gallery') ||
+    location.pathname.startsWith('/services') ||
+    location.pathname.startsWith('/courses') ||
+    location.pathname.startsWith('/shop') ||
+    location.pathname.startsWith('/product') ||
+    location.pathname.startsWith('/cart') ||
+    location.pathname.startsWith('/wishlist') ||
+    location.pathname.startsWith('/checkout') ||
+    location.pathname.startsWith('/contact')
+  ) {
     return null
   }
 

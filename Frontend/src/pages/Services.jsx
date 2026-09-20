@@ -64,9 +64,9 @@ export default function Services() {
   return (
     <div className="bg-[#FAFAFA] min-h-screen text-navy font-body pt-24 sm:pt-32 pb-24 overflow-x-hidden" style={{ textShadow: 'none' }}>
       <SEOHead
-        title="Scuba Diving & Ocean Services | PADI Courses, Snorkeling & Charters | The Dive Village"
-        description="Explore professional scuba diving courses, PADI certifications, guided snorkeling safaris, freediving, and bespoke dive charters at The Dive Village."
-        keywords="scuba diving services, PADI diving courses, snorkeling excursions, freediving lessons, dive charters, marine gear rental"
+        title="Scuba Diving & Ocean Services | Certified Courses, Snorkeling & Charters | The Dive Village"
+        description="Explore professional scuba diving courses, certifications, guided snorkeling safaris, freediving, and bespoke dive charters at The Dive Village."
+        keywords="scuba diving services, diving courses, snorkeling excursions, freediving lessons, dive charters, marine gear rental"
         canonicalUrl="https://thedivevillage.com/services"
       />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -133,13 +133,25 @@ export default function Services() {
                   }}
                   className="group rounded-[32px] bg-white border border-navy/5 shadow-sm hover:shadow-float transition duration-300 flex flex-col justify-between cursor-pointer overflow-hidden relative"
                 >
-                  <div className="relative h-48 w-full overflow-hidden bg-navy/10 shrink-0">
+                  <div className="relative h-56 w-full overflow-hidden bg-navy/10 shrink-0">
                     {service.video ? (
-                      <video src={service.video} loop muted playsInline className="w-full h-full object-cover transition duration-700 group-hover:scale-105" />
+                      <video
+                        src={service.video}
+                        loop
+                        muted
+                        playsInline
+                        className="absolute inset-0 w-full h-full object-cover object-center transition duration-700 group-hover:scale-105"
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      />
                     ) : (
-                      <SafeImage src={service.image} alt={service.title} className="w-full h-full object-cover transition duration-700 group-hover:scale-105" />
+                      <SafeImage
+                        src={service.image}
+                        alt={service.title}
+                        className="absolute inset-0 w-full h-full object-cover object-center transition duration-700 group-hover:scale-105"
+                        imgClassName="w-full h-full object-cover object-center"
+                      />
                     )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-navy/60 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-navy/20 to-transparent pointer-events-none" />
                     <div className="absolute bottom-4 left-5">
                        <span className="text-[10px] font-bold uppercase tracking-wider text-accent mb-1 block">
                         {CATEGORIES.find(c => c.key === service.category)?.label}

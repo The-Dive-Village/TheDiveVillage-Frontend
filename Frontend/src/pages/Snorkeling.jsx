@@ -1,7 +1,7 @@
 import CourseTemplate from '../layouts/CourseTemplate'
 import SEOHead from '../components/SEOHead'
 import { IMAGES, FEATURED_EXPERIENCES } from '../utils/images'
-import turtleSnorkelVideo from '../assets/New folder/Turtle Anna.mp4'
+import turtleSnorkelVideo from '../assets/Gallery/Snorkelling2.mp4'
 
 export default function Snorkeling() {
   const tours = [

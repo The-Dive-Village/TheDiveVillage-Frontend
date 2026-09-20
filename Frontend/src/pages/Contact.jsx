@@ -1,25 +1,48 @@
-import { useState } from 'react'
-import { Link } from 'react-router'
+import { useState, useEffect } from 'react'
+import { Link, useSearchParams, useLocation } from 'react-router'
 import { motion, useReducedMotion } from 'framer-motion'
 import PhoneInput from 'react-phone-number-input'
 import 'react-phone-number-input/style.css'
 import { IMAGES, CAROUSEL_IMAGES, PANEL_IMAGES } from '../utils/images'
 import bookVideo from '../assets/Book(2).mp4'
-import jellyfishVideo from '../assets/jelly fish.mp4'
+import compiledNightDiveVideo from '../assets/Compiled Night Dive Video(2).mp4'
 import useNightDive from '../hooks/useNightDive'
-import InteractiveVideoSphere from '../components/InteractiveVideoSphere'
+import deepDiverVideo from '../assets/Gallery/Deepdiver.mp4'
 import SEOHead from '../components/SEOHead'
 import api from '../services/api'
 
 export default function Contact() {
   const isNightDive = useNightDive()
+  const [searchParams] = useSearchParams()
+  const location = useLocation()
+
+  const getInitialMessage = () => {
+    return searchParams.get('message') || searchParams.get('special_requests') || location.state?.message || ''
+  }
+
+  const getInitialSubject = () => {
+    return searchParams.get('subject') || location.state?.subject || (getInitialMessage() ? 'Special Request' : 'General Enquiry')
+  }
+
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
     email: '',
-    subject: 'General Enquiry',
-    message: '',
+    subject: getInitialSubject(),
+    message: getInitialMessage(),
   })
+
+  useEffect(() => {
+    const msg = searchParams.get('message') || searchParams.get('special_requests') || location.state?.message
+    const subj = searchParams.get('subject') || location.state?.subject
+    if (msg !== undefined && msg !== null) {
+      setFormData((prev) => ({
+        ...prev,
+        message: msg,
+        subject: subj || prev.subject || 'Special Request'
+      }))
+    }
+  }, [searchParams, location.state])
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
@@ -59,7 +82,7 @@ export default function Contact() {
   }
 
   return (
-    <div className="bg-[#FAFAFA] min-h-screen text-navy font-body overflow-x-hidden" style={{ textShadow: 'none' }}>
+    <div className={`min-h-screen text-navy font-body overflow-x-hidden ${isNightDive ? 'bg-[#0b1726]' : 'bg-[#FAFAFA]'}`} style={{ textShadow: 'none' }}>
       <SEOHead
         title="Contact Us & Custom Dive Charters | The Dive Village"
         description="Get in touch with The Dive Village for custom scuba itineraries, diving course enquiries, private boat charters, and island travel logistics."
@@ -67,43 +90,43 @@ export default function Contact() {
         canonicalUrl="https://thedivevillage.com/contact"
       />
 
-      {/* 1. HEADER VIDEO HERO (DYNAMIC NIGHT DIVE JELLYFISH VIDEO) */}
-      <section className="relative h-[75vh] min-h-[540px] w-full flex items-center justify-center overflow-hidden">
+      {/* 1. HEADER VIDEO HERO (DYNAMIC COMPILED NIGHT DIVE VIDEO) */}
+      <section className="relative h-[80vh] min-h-[560px] lg:h-[85vh] lg:min-h-[640px] w-full flex items-center justify-center overflow-hidden">
         <div 
-          className="absolute inset-0 z-0"
+          className="absolute inset-0 z-0 overflow-hidden"
           style={{
-            maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 55%, rgba(0,0,0,0) 100%)',
-            WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 55%, rgba(0,0,0,0) 100%)'
+            maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 40%, rgba(0,0,0,0.5) 75%, rgba(0,0,0,0) 100%)',
+            WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 40%, rgba(0,0,0,0.5) 75%, rgba(0,0,0,0) 100%)'
           }}
         >
           <video
-            key={isNightDive ? 'night-jellyfish' : 'day-book'}
-            src={isNightDive ? jellyfishVideo : bookVideo}
+            key={isNightDive ? 'night-compiled' : 'day-book'}
+            src={isNightDive ? compiledNightDiveVideo : bookVideo}
             autoPlay
             loop
             muted
             playsInline
             onPlay={(e) => { e.currentTarget.playbackRate = 0.7 }}
-            className="w-full h-full object-cover transition-opacity duration-700"
+            className="w-full h-full object-cover scale-135 sm:scale-145 lg:scale-155 origin-center transition-all duration-700"
           />
-          <div className={`absolute inset-0 bg-gradient-to-b from-[#001428]/60 via-[#001428]/35 ${isNightDive ? 'to-[#030a12]' : 'to-[#FAFAFA]'}`}></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-[#001428]/65 via-[#001428]/25 to-transparent pointer-events-none" />
         </div>
 
-        {/* Bottom Smooth Dissolve & Merge Layer */}
+        {/* Bottom Ultra-Smooth Dissolve & Merge Layer */}
         <div 
-          className={`absolute bottom-0 inset-x-0 h-44 sm:h-64 pointer-events-none z-[5] transition-colors duration-500 ${
+          className={`absolute bottom-0 inset-x-0 h-44 sm:h-64 lg:h-80 pointer-events-none z-[5] transition-colors duration-500 ${
             isNightDive 
-              ? 'bg-gradient-to-t from-[#030a12] via-[#030a12]/85 to-transparent' 
-              : 'bg-gradient-to-t from-[#FAFAFA] via-[#FAFAFA]/90 to-transparent'
+              ? 'bg-gradient-to-t from-[#0b1726] via-[#0b1726]/85 via-45% to-transparent' 
+              : 'bg-gradient-to-t from-[#FAFAFA] via-[#FAFAFA]/90 via-45% to-transparent'
           }`} 
         />
 
-        <div className="relative z-10 flex flex-col items-center text-center px-4 max-w-4xl mx-auto pt-16">
+        <div className="relative z-10 flex flex-col items-center text-center px-4 max-w-4xl mx-auto pt-6 sm:pt-8">
           <motion.span
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="inline-block bg-white/10 backdrop-blur-md rounded-full px-4 py-1.5 text-xs font-bold text-accent uppercase tracking-widest mb-6 border border-white/20 shadow-sm"
+            className="inline-block bg-white/10 backdrop-blur-md rounded-full px-4 py-1.5 text-xs font-bold text-accent uppercase tracking-widest mb-3 sm:mb-4 border border-white/20 shadow-sm"
           >
             Plan Your Journey
           </motion.span>
@@ -235,9 +258,29 @@ export default function Contact() {
             </form>
           </div>
 
-          {/* Right Video / Interactive Sphere */}
-          <div className="relative w-full aspect-[3/4] lg:aspect-auto min-h-[460px] rounded-[36px] overflow-hidden shadow-card border border-navy/5">
-            <InteractiveVideoSphere autoRotate={false} />
+          {/* Right Video - Deepdiver */}
+          <div className="relative w-full aspect-[3/4] lg:aspect-auto min-h-[480px] rounded-[36px] overflow-hidden shadow-card border border-navy/5 group bg-[#001e3d]">
+            <video
+              src={deepDiverVideo}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            />
+            {/* Subtle Gradient & Floating Info Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#001428]/85 via-transparent to-black/20 pointer-events-none" />
+            <div className="absolute bottom-8 left-8 right-8 z-10 text-white pointer-events-none">
+              <span className="inline-block bg-[#FFCD00] text-[#001e3d] font-heading font-bold text-xs uppercase tracking-wider px-3.5 py-1 rounded-full mb-3 shadow-md">
+                The Dive Experience
+              </span>
+              <h3 className="font-heading text-2xl sm:text-3xl font-bold text-white drop-shadow-md">
+                Discover The Deep
+              </h3>
+              <p className="text-xs sm:text-sm text-white/90 font-medium drop-shadow-sm mt-1.5 max-w-md leading-relaxed">
+                Experience the wonders beneath the surface with certified dive guides and tailored itineraries.
+              </p>
+            </div>
           </div>
         </div>
 
@@ -288,51 +331,49 @@ export default function Contact() {
           </a>
         </div>
 
-        {/* Bottom CTA Banner */}
-        <div className="mt-24 sm:mt-32 rounded-[40px] bg-[#003865] text-white p-8 sm:p-12 lg:p-16 relative overflow-hidden shadow-2xl border border-white/15">
+        {/* Bottom CTA Banner with Full Background Image */}
+        <div className="mt-24 sm:mt-32 rounded-[40px] text-white p-8 sm:p-14 lg:p-20 relative overflow-hidden shadow-2xl border border-white/20 group">
+          {/* Full-bleed Background Image */}
+          <img
+            src={PANEL_IMAGES[6]}
+            alt="Ocean Escape"
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+          />
+
+          {/* Ambient Overlays for Contrast & Readability */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#001428]/95 via-[#001428]/70 to-[#001428]/35 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#001428]/85 via-transparent to-black/20 pointer-events-none" />
           <div className="absolute -right-20 -top-20 w-96 h-96 bg-accent/15 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute -left-20 -bottom-20 w-80 h-80 bg-[#00AEC7]/15 rounded-full blur-3xl pointer-events-none" />
 
-          <div className="grid lg:grid-cols-12 gap-10 lg:gap-12 items-center relative z-10">
-            <div className="lg:col-span-7 flex flex-col justify-center">
-              <span className="inline-block self-start bg-white/10 border border-white/20 rounded-full px-4 py-1.5 text-xs font-bold text-accent uppercase tracking-widest mb-6">
-                Start Now
-              </span>
-              <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight tracking-tight mb-4">
-                Discover Your Next <span className="font-heading italic font-bold text-accent"><br />Ocean Escape</span>
-              </h2>
-              <p className="text-base sm:text-lg font-medium text-white/85 leading-relaxed max-w-lg mb-8">
-                Ready to take the plunge? Plan your trip in minutes and enjoy every moment of your dive adventure with certified dive experts.
-              </p>
+          {/* Content Overlay */}
+          <div className="relative z-10 max-w-2xl flex flex-col justify-center">
+            <span className="inline-block self-start bg-white/15 backdrop-blur-md border border-white/25 rounded-full px-4 py-1.5 text-xs font-bold text-accent uppercase tracking-widest mb-6 shadow-sm">
+              Start Now
+            </span>
+            <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight tracking-tight mb-4 drop-shadow-md">
+              Discover Your Next <span className="font-heading font-bold text-accent"><br />Ocean Escape</span>
+            </h2>
+            <p className="text-base sm:text-lg font-medium text-white/90 leading-relaxed max-w-xl mb-8 drop-shadow-sm">
+              Ready to take the plunge? Plan your trip in minutes and enjoy every moment of your dive adventure with certified dive experts.
+            </p>
 
-              <div className="flex flex-wrap items-center gap-4">
-                <Link
-                  to="/book-us"
-                  className="rounded-full bg-white/15 backdrop-blur-xl border border-white/25 text-white font-bold px-8 py-4 text-sm uppercase tracking-wider transition-all duration-300 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] shadow-lg flex items-center gap-2 cursor-pointer"
-                >
-                  <span>Book Your Dive Now</span>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M5 12h14" />
-                    <path d="m12 5 7 7-7 7" />
-                  </svg>
-                </Link>
-                <Link
-                  to="/services"
-                  className="rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold px-6 py-4 text-sm uppercase tracking-wider transition duration-300 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] cursor-pointer"
-                >
-                  Explore Programs
-                </Link>
-              </div>
-            </div>
-
-            <div className="lg:col-span-5 h-72 sm:h-80 lg:h-96 w-full rounded-[32px] overflow-hidden shadow-float relative group border border-white/15">
-              <img
-                src={PANEL_IMAGES[6]}
-                alt="Ocean Escape"
-                className="w-full h-full object-cover transition duration-700 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#003865]/60 via-transparent to-transparent pointer-events-none" />
-
+            <div className="flex flex-wrap items-center gap-4">
+              <Link
+                to="/book-us"
+                className="rounded-full bg-white/15 backdrop-blur-xl border border-white/30 text-white font-bold px-8 py-4 text-sm uppercase tracking-wider transition-all duration-300 hover:scale-105 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] flex items-center gap-2 cursor-pointer"
+              >
+                <span>Book Your Dive Now</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 12h14" />
+                  <path d="m12 5 7 7-7 7" />
+                </svg>
+              </Link>
+              <Link
+                to="/services"
+                className="rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold px-6 py-4 text-sm uppercase tracking-wider transition-all duration-300 hover:scale-105 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] cursor-pointer"
+              >
+                Explore Programs
+              </Link>
             </div>
           </div>
         </div>

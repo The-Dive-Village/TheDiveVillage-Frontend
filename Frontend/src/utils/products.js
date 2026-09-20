@@ -2,20 +2,35 @@ import { IMAGES, CAROUSEL_IMAGES } from './images'
 
 import imgWomensShirtFront from '../assets/Products/Womans sweetheart front upscaled.png'
 import imgWomensShirtBack from '../assets/Products/Womans sweetheart back upscaled.png'
+import imgWomensShirtModel from '../assets/Products/womans sweetheart neck.jpg'
+
 import imgWomensPantsFront from '../assets/Products/Womans pants front upscaled.png'
 import imgWomensPantsBack from '../assets/Products/Womans pants back upscaled.png'
+import imgWomensPantsModel from '../assets/Products/womans pant.jpg'
+
 import imgWomensStrapFront from '../assets/Products/Womans front upscaled.png'
 import imgWomensStrapBack from '../assets/Products/Womans Back Upscaled.png'
+import imgWomensStrapModel from '../assets/Products/womans shortie.jpg'
+
 import imgUnisexShortsFront from '../assets/Products/Unisex Shorts front upscaled.png'
 import imgUnisexShortsBack from '../assets/Products/Unisex shorts back upscaled.png'
+import imgUnisexShortsModel from '../assets/Products/unisex shorts.jpg'
+
 import imgUnisexShirtFront from '../assets/Products/unisex front upscaled.png'
 import imgUnisexShirtBack from '../assets/Products/Unisex back upscaled.png'
+import imgUnisexShirtModel from '../assets/Products/unisex round neck.jpg'
+
 import imgSkinSuitFront from '../assets/Products/Dive Suit Front.png'
 import imgSkinSuitBack from '../assets/Products/Dive suit back.png'
+import imgPop1 from '../assets/Products/pop1.jpeg'
+import imgPop2 from '../assets/Products/pop2.jpeg'
+
 import imgCapFront from '../assets/Products/catf.png'
 import imgCapBack from '../assets/Products/capb.png'
+
 import imgBagFront from '../assets/Products/bag front.png'
 import imgBagBack from '../assets/Products/bagback.png'
+import imgBagIn from '../assets/Products/bagin.png'
 import imgBagOpen1 from '../assets/Products/bagopen1.png'
 import imgBagOpen2 from '../assets/Products/bagopen2.png'
 
@@ -37,7 +52,8 @@ export const SHOP_PRODUCTS = [
     price: 2499,
     oldPrice: 2999,
     image: imgWomensShirtFront,
-    images: [imgWomensShirtFront, imgWomensShirtBack],
+    images: [imgWomensShirtFront, imgWomensShirtBack, imgWomensShirtModel],
+    imageLabels: ['Front', 'Back', 'Lookbook'],
     glb: glbWomensShirt,
     category: 'Tops',
     tag: 'New Arrival',
@@ -64,7 +80,8 @@ export const SHOP_PRODUCTS = [
     price: 2999,
     oldPrice: 3499,
     image: imgWomensPantsFront,
-    images: [imgWomensPantsFront, imgWomensPantsBack],
+    images: [imgWomensPantsFront, imgWomensPantsBack, imgWomensPantsModel],
+    imageLabels: ['Front', 'Back', 'Lookbook'],
     glb: glbWomensPants,
     category: 'Bottoms',
     tag: 'Bestseller',
@@ -91,7 +108,8 @@ export const SHOP_PRODUCTS = [
     price: 1999,
     oldPrice: 2499,
     image: imgWomensStrapFront,
-    images: [imgWomensStrapFront, imgWomensStrapBack],
+    images: [imgWomensStrapFront, imgWomensStrapBack, imgWomensStrapModel],
+    imageLabels: ['Front', 'Back', 'Lookbook'],
     glb: glbWomensStrap,
     category: 'Tops',
     tag: 'Essential',
@@ -118,7 +136,8 @@ export const SHOP_PRODUCTS = [
     price: 1799,
     oldPrice: 2199,
     image: imgUnisexShortsFront,
-    images: [imgUnisexShortsFront, imgUnisexShortsBack],
+    images: [imgUnisexShortsFront, imgUnisexShortsBack, imgUnisexShortsModel],
+    imageLabels: ['Front', 'Back', 'Lookbook'],
     glb: glbUnisexShorts,
     category: 'Bottoms',
     tag: 'Comfort',
@@ -145,7 +164,8 @@ export const SHOP_PRODUCTS = [
     price: 2299,
     oldPrice: 2799,
     image: imgUnisexShirtFront,
-    images: [imgUnisexShirtFront, imgUnisexShirtBack],
+    images: [imgUnisexShirtFront, imgUnisexShirtBack, imgUnisexShirtModel],
+    imageLabels: ['Front', 'Back', 'Lookbook'],
     glb: glbUnisexShirt,
     category: 'Tops',
     tag: 'Essential',
@@ -172,7 +192,8 @@ export const SHOP_PRODUCTS = [
     price: 6999,
     oldPrice: 8999,
     image: imgSkinSuitFront,
-    images: [imgSkinSuitFront, imgSkinSuitBack],
+    images: [imgSkinSuitFront, imgSkinSuitBack, imgPop1, imgPop2],
+    imageLabels: ['Front', 'Back', 'Lookbook 1', 'Lookbook 2'],
     glb: glbFullSuit,
     category: 'Skin Wear',
     tag: 'Premium',
@@ -200,6 +221,7 @@ export const SHOP_PRODUCTS = [
     oldPrice: 1599,
     image: imgCapFront,
     images: [imgCapFront, imgCapBack],
+    imageLabels: ['Front', 'Back'],
     glb: glbCap,
     category: 'Accessories',
     tag: 'New Arrival',
@@ -226,8 +248,8 @@ export const SHOP_PRODUCTS = [
     price: 3499,
     oldPrice: 3999,
     image: imgBagFront,
-    images: [imgBagFront, imgBagBack, imgBagOpen1, imgBagOpen2],
-    imageLabels: ['Front', 'Back', 'Open 1', 'Open 2'],
+    images: [imgBagFront, imgBagBack, imgBagIn, imgBagOpen1, imgBagOpen2],
+    imageLabels: ['Front', 'Back', 'Inside', 'Open Top', 'Detail'],
     glb: glbBag,
     category: 'Accessories',
     tag: 'Essential',

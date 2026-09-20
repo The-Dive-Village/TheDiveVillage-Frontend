@@ -1,13 +1,15 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import merch1 from '../assets/New folder/merch1.jpg'
-import merch2 from '../assets/New folder/merch2.jpg'
-import merch3 from '../assets/New folder/merch3.jpg'
-import merch4 from '../assets/New folder/merch4.jpg'
-import merch5 from '../assets/New folder/merch 5.mp4'
+import merch0 from '../assets/Products/merch0.jpg'
+import merch1 from '../assets/Products/merch1.jpg'
+import merch2 from '../assets/Products/merch2.jpg'
+import merch3 from '../assets/Products/merch3.jpg'
+import merch4 from '../assets/Products/merch4.jpg'
+import merch5 from '../assets/Products/merch 5.mp4'
 import LazyVideo from './LazyVideo'
 
 export const MERCH_MEDIA_ITEMS = [
+  { id: 'm0', src: merch0, type: 'image', alt: 'Customer Merch 0' },
   { id: 'm1', src: merch1, type: 'image', alt: 'Customer Merch 1' },
   { id: 'm2', src: merch2, type: 'image', alt: 'Customer Merch 2' },
   { id: 'm3', src: merch3, type: 'image', alt: 'Customer Merch 3' },
@@ -30,8 +32,8 @@ export default function CustomerReviews({ className = '' }) {
         </h2>
       </div>
 
-      {/* Media Grid: 5 Items (Images & Video) */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6">
+      {/* Media Grid: 6 Items (Images & Video) */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6">
         {MERCH_MEDIA_ITEMS.map((item, idx) => (
           <div
             key={item.id}
@@ -48,10 +50,6 @@ export default function CustomerReviews({ className = '' }) {
                   playsInline
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
-                <div className="absolute top-3 right-3 bg-navy/80 backdrop-blur-md px-2.5 py-1 rounded-full text-[10px] font-bold text-white flex items-center gap-1 shadow-sm">
-                  <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
-                  Video
-                </div>
               </div>
             ) : (
               <img
