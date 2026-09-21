@@ -145,6 +145,7 @@ export default function BookUs() {
   })
 
   const [submitted, setSubmitted] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   // Sync group size changes to participants array
   useEffect(() => {
@@ -235,6 +236,13 @@ export default function BookUs() {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
+    if (isSubmitting) return
+
+    if (!contact.name || !contact.email) {
+      setStepError('Please enter your contact Name and Email.')
+      return
+    }
+
     // Pre-submission validation: Confirm every participant satisfies age & prerequisites
     for (const p of participants) {
       const validation = validateParticipantBooking(p)
@@ -245,26 +253,44 @@ export default function BookUs() {
       }
     }
 
+    setIsSubmitting(true)
+    setStepError('')
+
     try {
-      const selectedProg = COURSE_CATALOG.find((pr) => pr.id === participants[0]?.selectedProgram)
-      await bookingService.createBooking({
+      const res = await bookingService.createBooking({
         country,
+        locationId: locationId ? String(locationId) : null,
         location,
-        preferredDate: date,
-        peopleCount: participants.length,
-        programId: participants[0]?.selectedProgram || null,
-        programName: selectedProg?.name || 'Dive Trip',
+        date,
+        groupSize: participants.length,
         contactName: contact.name,
         contactEmail: contact.email,
         contactPhone: contact.phone || null,
+        specialRequests: contact.requests || null,
         participants,
-        notes: contact.notes || null,
       })
-    } catch (err) {
-      console.warn('Booking API error, proceeding locally:', err)
-    }
 
-    setSubmitted(true)
+      const isSuccess = Boolean(
+        res && (
+          res.status === 'success' ||
+          res.data?.status === 'success' ||
+          res.data?.booking ||
+          res.booking
+        )
+      )
+
+      if (isSuccess) {
+        setSubmitted(true)
+      } else {
+        throw new Error('Server returned an invalid or incomplete booking response.')
+      }
+    } catch (err) {
+      console.error('Booking submission error:', err)
+      const errorMsg = err.message || 'Failed to submit booking. Please try again.'
+      setStepError(`Booking submission failed: ${errorMsg}`)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   if (submitted) {
@@ -1106,9 +1132,17 @@ export default function BookUs() {
                 ) : (
                   <button
                     type="submit"
-                    className="rounded-full bg-accent hover:!bg-navy hover:!text-white px-8 py-4 text-sm font-extrabold text-[#001e3d] transition-all duration-200 shadow-md ml-auto cursor-pointer border border-[#FFCD00]"
+                    disabled={isSubmitting}
+                    className="rounded-full bg-accent hover:!bg-navy hover:!text-white px-8 py-4 text-sm font-extrabold text-[#001e3d] transition-all duration-200 shadow-md ml-auto cursor-pointer border border-[#FFCD00] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                   >
-                    Confirm Booking Request
+                    {isSubmitting ? (
+                      <>
+                        <span className="w-4 h-4 border-2 border-navy border-t-transparent rounded-full animate-spin inline-block" />
+                        <span>Confirming Booking...</span>
+                      </>
+                    ) : (
+                      <span>Confirm Booking Request</span>
+                    )}
                   </button>
                 )}
               </div>
