@@ -233,11 +233,11 @@ export const CREATURE_PROFILES = {
     description: 'Golden-yellow schooling snappers hovering above reef bommies.'
   },
   pelagic_fusilier: {
-    creatureName: 'Neon Fusilier School',
-    species: 'Caesio teres',
+    creatureName: 'Dark Banded Fusilier',
+    species: 'Pterocaesio tile',
     category: 'pelagic',
     image: life26,
-    description: 'Flash of electric blue and yellow racing across reef crests.'
+    description: 'Massive shimmering school of dark-banded fusiliers in deep ocean currents.'
   },
 
   // --- Corals, Gorgonian Fans & Gardens ---
