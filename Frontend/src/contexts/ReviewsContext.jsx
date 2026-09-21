@@ -1,6 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
 import { CAROUSEL_IMAGES } from '../utils/images'
-import michaelPfp from '../assets/Products/merch0.jpg'
 
 const INITIAL_REVIEWS = [
   {
@@ -29,7 +28,7 @@ const INITIAL_REVIEWS = [
     role: "Rescue Diver & Underwater Photographer",
     text: "From seamless logistics and custom boat charters to top-tier safety gear, everything was top notch. The night dive with glowing bioluminescence was pure magic. Easily the best dive community in the region.",
     rating: 5,
-    image: michaelPfp,
+    image: CAROUSEL_IMAGES[0],
     approved: true,
     createdAt: '2026-08-28',
   }

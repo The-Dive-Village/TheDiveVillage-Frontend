@@ -53,7 +53,7 @@ export default function CourseTemplate({
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-5xl sm:text-7xl lg:text-8xl font-serif text-white tracking-tight leading-tight"
+            className="text-4xl xs:text-5xl sm:text-7xl lg:text-8xl font-serif text-white tracking-tight leading-tight"
             style={{ textShadow: '0 4px 20px rgba(0,0,0,0.4)' }}
           >
             {titleTop} <br />
@@ -96,11 +96,11 @@ export default function CourseTemplate({
             </div>
           </div>
 
-          <div className="mt-20 grid grid-cols-2 gap-8 relative">
-            <div className="rounded-3xl overflow-hidden aspect-[4/3] shadow-xl transform translate-y-12">
+          <div className="mt-12 sm:mt-20 grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 relative">
+            <div className="rounded-3xl overflow-hidden aspect-[4/3] shadow-xl transform sm:translate-y-12">
               <img src={aboutImg1} alt="About 1" className="w-full h-full object-cover" />
             </div>
-            <div className="rounded-3xl overflow-hidden aspect-[4/3] shadow-xl transform -translate-y-12">
+            <div className="rounded-3xl overflow-hidden aspect-[4/3] shadow-xl transform sm:-translate-y-12">
               <img src={aboutImg2} alt="About 2" className="w-full h-full object-cover" />
             </div>
           </div>

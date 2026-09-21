@@ -103,7 +103,7 @@ export default function Gallery() {
         </div>
 
         {/* 2. CATEGORIES FILTER */}
-        <div className="flex flex-wrap gap-2 sm:gap-3 mb-12 border-b border-navy/10 pb-6">
+        <div className="flex gap-2 sm:gap-3 mb-12 border-b border-navy/10 pb-6 overflow-x-auto scrollbar-none flex-nowrap sm:flex-wrap">
           {GALLERY_CATEGORIES.map((cat) => (
             <button
               key={cat.key}
@@ -111,7 +111,7 @@ export default function Gallery() {
                 setActiveCategory(cat.key)
                 setSelectedMediaIndex(null)
               }}
-              className={`rounded-full px-5 py-2.5 text-xs sm:text-sm font-bold transition-all duration-200 cursor-pointer ${
+              className={`rounded-full px-5 py-2.5 text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 cursor-pointer shrink-0 ${
                 activeCategory === cat.key
                   ? 'bg-navy text-white shadow-md'
                   : 'bg-[#F0F2F5] text-navy/70 hover:bg-navy/10 hover:text-navy'
@@ -252,16 +252,16 @@ export default function Gallery() {
       <AnimatePresence>
         {selectedMediaIndex !== null && currentItem && (
           <div 
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 sm:p-6 backdrop-blur-md"
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-3 sm:p-6 backdrop-blur-md"
             onClick={() => setSelectedMediaIndex(null)}
           >
             {/* Close Button */}
             <button
               onClick={() => setSelectedMediaIndex(null)}
-              className="absolute top-6 right-6 z-20 flex h-12 w-12 items-center justify-center rounded-full bg-white/20 text-white transition hover:bg-accent hover:text-navy hover:scale-110 cursor-pointer shadow-lg"
+              className="absolute top-4 right-4 sm:top-6 sm:right-6 z-30 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-white/20 text-white transition hover:bg-accent hover:text-navy hover:scale-110 cursor-pointer shadow-lg backdrop-blur-md"
               aria-label="Close Lightbox"
             >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M18 6L6 18M6 6l12 12" />
               </svg>
             </button>
@@ -269,10 +269,10 @@ export default function Gallery() {
             {/* Left Nav */}
             <button
               onClick={(e) => { e.stopPropagation(); prevMedia() }}
-              className="absolute left-4 sm:left-8 z-20 flex h-12 w-12 items-center justify-center rounded-full bg-white/20 text-white transition hover:bg-accent hover:text-navy hover:scale-110 cursor-pointer shadow-lg"
+              className="absolute left-2 sm:left-8 z-20 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-white/20 text-white transition hover:bg-accent hover:text-navy hover:scale-110 cursor-pointer shadow-lg backdrop-blur-md"
               aria-label="Previous media"
             >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M15 19l-7-7 7-7" />
               </svg>
             </button>
@@ -280,10 +280,10 @@ export default function Gallery() {
             {/* Right Nav */}
             <button
               onClick={(e) => { e.stopPropagation(); nextMedia() }}
-              className="absolute right-4 sm:right-8 z-20 flex h-12 w-12 items-center justify-center rounded-full bg-white/20 text-white transition hover:bg-accent hover:text-navy hover:scale-110 cursor-pointer shadow-lg"
+              className="absolute right-2 sm:right-8 z-20 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-white/20 text-white transition hover:bg-accent hover:text-navy hover:scale-110 cursor-pointer shadow-lg backdrop-blur-md"
               aria-label="Next media"
             >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M9 5l7 7-7 7" />
               </svg>
             </button>

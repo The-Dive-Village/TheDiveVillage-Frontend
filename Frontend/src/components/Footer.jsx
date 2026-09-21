@@ -28,14 +28,14 @@ const SOCIALS = [
 export default function Footer() {
   return (
     <footer className="bg-navy border-t border-white/20 text-white mt-auto relative z-10 pointer-events-auto">
-      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-2 lg:grid-cols-4 lg:px-8">
-        <div className="flex flex-col items-start justify-between">
+      <div className="mx-auto grid max-w-7xl gap-8 lg:gap-10 px-4 py-12 sm:py-14 sm:px-6 lg:grid-cols-12 lg:px-8">
+        <div className="flex flex-col items-center sm:items-start justify-between lg:col-span-3">
           <div className="flex flex-col items-center w-fit">
             <Link to="/" className="inline-block transition duration-300 hover:opacity-90">
               <img
                 src={footerLogoImg}
                 alt="The Dive Village"
-                className="h-24 sm:h-28 lg:h-32 xl:h-36 w-auto object-contain brightness-0 invert drop-shadow-md"
+                className="h-20 sm:h-28 lg:h-32 xl:h-36 w-auto object-contain brightness-0 invert drop-shadow-md"
               />
             </Link>
             <div className="mt-3 w-fit text-white/80">
@@ -52,76 +52,79 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="flex flex-col">
-          <h3 className="font-heading text-sm font-bold uppercase tracking-widest text-accent">
-            Quick Links
-          </h3>
-          <ul className="mt-4 flex flex-1 flex-col justify-between space-y-2.5 sm:space-y-0">
-            {QUICK.map((l) => (
-              <li key={l.label}>
-                <Link
-                  to={l.to}
-                  className="text-sm text-white/80 transition duration-hover hover:text-accent"
-                >
-                  {l.label}
-                </Link>
+        {/* 3 Columns on the same row: Quick Links, Legal, Contact */}
+        <div className="grid grid-cols-3 gap-2.5 xs:gap-4 sm:gap-8 lg:col-span-9 lg:grid-cols-3">
+          <div className="flex flex-col">
+            <h3 className="font-heading text-xs sm:text-sm font-bold uppercase tracking-wider sm:tracking-widest text-accent">
+              Quick Links
+            </h3>
+            <ul className="mt-3 sm:mt-4 flex flex-1 flex-col justify-start space-y-2 sm:space-y-3">
+              {QUICK.map((l) => (
+                <li key={l.label}>
+                  <Link
+                    to={l.to}
+                    className="text-xs sm:text-sm text-white/80 transition duration-hover hover:text-accent whitespace-nowrap"
+                  >
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="flex flex-col">
+            <h3 className="font-heading text-xs sm:text-sm font-bold uppercase tracking-wider sm:tracking-widest text-accent">
+              Legal
+            </h3>
+            <ul className="mt-3 sm:mt-4 flex flex-1 flex-col justify-start space-y-2 sm:space-y-3">
+              {LEGAL.map((l) => (
+                <li key={l.label}>
+                  <Link
+                    to={l.to}
+                    className="text-xs sm:text-sm text-white/80 transition duration-hover hover:text-accent whitespace-nowrap"
+                  >
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="flex flex-col">
+            <h3 className="font-heading text-xs sm:text-sm font-bold uppercase tracking-wider sm:tracking-widest text-accent">
+              Contact
+            </h3>
+            <ul className="mt-3 sm:mt-4 flex flex-col justify-start space-y-2 sm:space-y-3 text-xs sm:text-sm text-white/80">
+              <li className="break-all sm:break-normal">
+                <a href="tel:+918971001010" className="transition duration-hover hover:text-accent whitespace-nowrap">
+                  +91 89710 01010
+                </a>
               </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="flex flex-col">
-          <h3 className="font-heading text-sm font-bold uppercase tracking-widest text-accent">
-            Legal
-          </h3>
-          <ul className="mt-4 flex flex-1 flex-col justify-between space-y-5 sm:space-y-0">
-            {LEGAL.map((l) => (
-              <li key={l.label}>
-                <Link
-                  to={l.to}
-                  className="text-sm text-white/80 transition duration-hover hover:text-accent"
+              <li className="break-all sm:break-normal">
+                <a
+                  href="mailto:sanjeev.bajaj@thedivevillage.co"
+                  className="transition duration-hover hover:text-accent text-[10px] xs:text-[11px] sm:text-sm leading-tight block"
                 >
-                  {l.label}
-                </Link>
+                  sanjeev.bajaj@thedivevillage.co
+                </a>
               </li>
-            ))}
-          </ul>
-        </div>
+            </ul>
 
-        <div className="flex flex-col">
-          <h3 className="font-heading text-sm font-bold uppercase tracking-widest text-accent">
-            Contact
-          </h3>
-          <ul className="mt-4 flex flex-col justify-start space-y-3 text-sm text-white/80">
-            <li>
-              <a href="tel:+918971001010" className="transition duration-hover hover:text-accent">
-                +91 89710 01010
-              </a>
-            </li>
-            <li>
-              <a
-                href="mailto:sanjeev.bajaj@thedivevillage.co"
-                className="transition duration-hover hover:text-accent"
-              >
-                sanjeev.bajaj@thedivevillage.co
-              </a>
-            </li>
-          </ul>
-
-          {/* Social Media Icons under Contact Column */}
-          <div className="mt-6 flex flex-wrap items-center gap-2.5">
-            {SOCIALS.map((s) => (
-              <a
-                key={s.label}
-                href={s.to}
-                target={s.to.startsWith('http') ? '_blank' : '_self'}
-                rel={s.to.startsWith('http') ? 'noopener noreferrer' : undefined}
-                className="w-9 h-9 rounded-full bg-white/10 hover:!bg-[#FFCD00] text-white/80 hover:!text-[#001e3d] flex items-center justify-center transition-all duration-200 border border-white/15 hover:!border-[#FFCD00] shadow-sm"
-                aria-label={s.label}
-              >
-                {s.icon}
-              </a>
-            ))}
+            {/* Social Media Icons under Contact Column */}
+            <div className="mt-3 sm:mt-6 flex flex-wrap items-center gap-1.5 sm:gap-2.5">
+              {SOCIALS.map((s) => (
+                <a
+                  key={s.label}
+                  href={s.to}
+                  target={s.to.startsWith('http') ? '_blank' : '_self'}
+                  rel={s.to.startsWith('http') ? 'noopener noreferrer' : undefined}
+                  className="w-6.5 h-6.5 xs:w-8 xs:h-8 sm:w-9 sm:h-9 rounded-full bg-white/10 hover:!bg-[#FFCD00] text-white/80 hover:!text-[#001e3d] flex items-center justify-center transition-all duration-200 border border-white/15 hover:!border-[#FFCD00] shadow-sm [&>svg]:w-3 [&>svg]:h-3 xs:[&>svg]:w-3.5 xs:[&>svg]:h-3.5 sm:[&>svg]:w-5 sm:[&>svg]:h-5"
+                  aria-label={s.label}
+                >
+                  {s.icon}
+                </a>
+              ))}
+            </div>
           </div>
         </div>
       </div>

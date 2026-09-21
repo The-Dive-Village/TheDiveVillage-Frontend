@@ -91,7 +91,7 @@ export default function Contact() {
       />
 
       {/* 1. HEADER VIDEO HERO (DYNAMIC COMPILED NIGHT DIVE VIDEO) */}
-      <section className="relative h-[80vh] min-h-[560px] lg:h-[85vh] lg:min-h-[640px] w-full flex items-center justify-center overflow-hidden">
+      <section className="relative h-[56vh] min-h-[420px] lg:h-[60vh] lg:min-h-[460px] w-full flex items-center justify-center overflow-hidden">
         <div 
           className="absolute inset-0 z-0 overflow-hidden"
           style={{
@@ -114,28 +114,19 @@ export default function Contact() {
 
         {/* Bottom Ultra-Smooth Dissolve & Merge Layer */}
         <div 
-          className={`absolute bottom-0 inset-x-0 h-44 sm:h-64 lg:h-80 pointer-events-none z-[5] transition-colors duration-500 ${
+          className={`absolute bottom-0 inset-x-0 h-28 sm:h-36 lg:h-44 pointer-events-none z-[5] transition-colors duration-500 ${
             isNightDive 
               ? 'bg-gradient-to-t from-[#0b1726] via-[#0b1726]/85 via-45% to-transparent' 
               : 'bg-gradient-to-t from-[#FAFAFA] via-[#FAFAFA]/90 via-45% to-transparent'
           }`} 
         />
 
-        <div className="relative z-10 flex flex-col items-center text-center px-4 max-w-4xl mx-auto pt-6 sm:pt-8">
-          <motion.span
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="inline-block bg-white/10 backdrop-blur-md rounded-full px-4 py-1.5 text-xs font-bold text-accent uppercase tracking-widest mb-3 sm:mb-4 border border-white/20 shadow-sm"
-          >
-            Plan Your Journey
-          </motion.span>
-
+        <div className="relative z-10 flex flex-col items-center text-center px-4 max-w-4xl mx-auto pt-4 sm:pt-6">
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.1 }}
-            className="font-heading text-5xl sm:text-7xl lg:text-8xl font-bold uppercase tracking-tight text-white leading-none drop-shadow-[0_4px_25px_rgba(0,0,0,0.6)]"
+            className="font-heading text-4xl xs:text-5xl sm:text-7xl lg:text-8xl font-bold uppercase tracking-tight text-white leading-none drop-shadow-[0_4px_25px_rgba(0,0,0,0.6)]"
             style={{ textShadow: '0 4px 20px rgba(0,0,0,0.3)' }}
           >
             Contact <span className="text-[#FFCD00]">Us</span>
@@ -153,12 +144,12 @@ export default function Contact() {
       </section>
 
       {/* 2. MAIN FORM & INTERACTIVE SPHERE SECTION */}
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-16 sm:pb-24">
 
         {/* Main Split Section */}
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-stretch">
           {/* Form */}
-          <div className="w-full bg-white rounded-[36px] p-6 sm:p-10 border border-navy/5 shadow-card">
+          <div className="w-full bg-white rounded-[28px] sm:rounded-[36px] p-5 sm:p-10 border border-navy/5 shadow-card">
             <div className="mb-8">
               <span className="text-accent font-bold tracking-widest uppercase text-xs mb-2 block">Direct Inquiry</span>
               <h2 className="font-heading text-3xl sm:text-4xl font-bold text-navy">Send Us a Message</h2>

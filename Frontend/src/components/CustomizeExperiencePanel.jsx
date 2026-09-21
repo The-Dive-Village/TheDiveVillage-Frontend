@@ -72,7 +72,7 @@ export default function CustomizeExperiencePanel({ className = '', images = PANE
   }
 
   return (
-    <div className={`relative overflow-hidden rounded-[36px] sm:rounded-[44px] shadow-[0_20px_60px_rgba(0,0,0,0.8)] w-full min-h-[460px] lg:min-h-[520px] flex flex-col justify-center border border-white/20 text-white ${className}`}>
+    <div className={`relative overflow-hidden rounded-[36px] sm:rounded-[44px] shadow-[0_20px_60px_rgba(0,0,0,0.8)] w-full min-h-[460px] lg:min-h-[520px] flex flex-col justify-center text-white ${className}`}>
       {/* Base Layer: Previous image stays solid extending fully to both ends */}
       {images[prevIndex] && (
         <img
@@ -95,9 +95,9 @@ export default function CustomizeExperiencePanel({ className = '', images = PANE
         />
       ))}
 
-      {/* Uniform Light Ambient Overlays */}
-      <div className="absolute inset-0 bg-gradient-to-r from-[#001428]/95 via-[#001428]/75 to-[#001428]/45 pointer-events-none z-10" />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#001428]/90 via-transparent to-black/20 pointer-events-none z-10" />
+      {/* Soft Ambient Overlays */}
+      <div className="absolute inset-0 bg-gradient-to-r from-[#001428]/60 via-[#001428]/40 to-[#001428]/25 pointer-events-none z-10" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#001428]/45 via-transparent to-black/10 pointer-events-none z-10" />
       <div className="absolute -right-20 -top-20 w-96 h-96 bg-[#FFCD00]/15 rounded-full blur-3xl pointer-events-none" />
 
       {/* Main Content */}

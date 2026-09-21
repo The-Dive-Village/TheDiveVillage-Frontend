@@ -585,9 +585,9 @@ export default function VideoSphereBackground() {
   return (
     <>
       <audio ref={audioRef} src={underwaterAudio} loop playsInline />
-      <div className="absolute inset-0 -z-10">
+      <div className="fixed inset-0 -z-10 pointer-events-none">
         <div
-          className="sticky top-0 h-[100dvh] w-full overflow-hidden"
+          className="h-full w-full overflow-hidden"
           style={{
             background: 'radial-gradient(circle at center, #003865 0%, #001e3d 55%, #000e1c 100%)'
           }}

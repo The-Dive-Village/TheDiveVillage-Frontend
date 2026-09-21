@@ -71,7 +71,7 @@ export default function Navbar() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-[9999] w-full px-2 sm:px-4 lg:px-6 pointer-events-none flex flex-col items-center">
-      <div className={`pointer-events-auto mx-auto grid grid-cols-[1fr_auto_1fr] h-[58px] sm:h-[64px] lg:h-[68px] w-full max-w-7xl 2xl:max-w-[1700px] items-center px-4 sm:px-8 lg:px-12 rounded-full border border-white/20 ${
+      <div className={`pointer-events-auto mx-auto grid grid-cols-[1fr_auto_1fr] h-[56px] sm:h-[64px] lg:h-[68px] w-full max-w-7xl 2xl:max-w-[1700px] items-center px-2.5 sm:px-8 lg:px-12 rounded-full border border-white/20 ${
         isBlueToolbar
           ? 'bg-[#003865] backdrop-blur-2xl shadow-[0_12px_40px_rgba(0,56,101,0.5)]'
           : isTranslucentPage 
@@ -80,14 +80,14 @@ export default function Navbar() {
       } transition-all duration-300`}>
         
         {/* Left Side: Home, Book Us, Contact Us */}
-        <div className="flex items-center justify-start gap-4 lg:gap-8 pl-1 sm:pl-2">
+        <div className="flex items-center justify-start gap-3 sm:gap-4 lg:gap-8 pl-0.5 sm:pl-2">
           <NavLink
             to="/"
             end
             onMouseEnter={() => prefetchRoute('/')}
             onTouchStart={() => prefetchRoute('/')}
             className={({ isActive }) =>
-              `relative whitespace-nowrap font-body text-[14px] sm:text-[15px] font-bold tracking-wide transition-all duration-300 ${
+              `relative whitespace-nowrap font-body text-[13px] sm:text-[15px] font-bold tracking-wide transition-all duration-300 ${
                 isActive 
                   ? 'text-accent after:content-[""] after:absolute after:-bottom-1 after:left-0 after:w-full after:h-[2px] after:bg-accent' 
                   : 'text-white hover:text-accent after:content-[""] after:absolute after:-bottom-1 after:left-0 after:w-full after:h-[2px] after:bg-accent after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300'
@@ -101,7 +101,7 @@ export default function Navbar() {
             onMouseEnter={() => prefetchRoute('/book-us')}
             onTouchStart={() => prefetchRoute('/book-us')}
             className={({ isActive }) =>
-              `relative whitespace-nowrap font-body text-[14px] sm:text-[15px] font-bold tracking-wide transition-all duration-300 ${
+              `relative whitespace-nowrap font-body text-[13px] sm:text-[15px] font-bold tracking-wide transition-all duration-300 ${
                 isActive 
                   ? 'text-accent after:content-[""] after:absolute after:-bottom-1 after:left-0 after:w-full after:h-[2px] after:bg-accent' 
                   : 'text-white hover:text-accent after:content-[""] after:absolute after:-bottom-1 after:left-0 after:w-full after:h-[2px] after:bg-accent after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300'
@@ -131,17 +131,17 @@ export default function Navbar() {
         </div>
 
         {/* Middle: Logo (Absolute Center) */}
-        <div className="flex justify-center items-center px-3 shrink-0">
-          <Logo light={true} compact={true} className="[&>img]:h-9 sm:[&>img]:h-11 lg:[&>img]:h-13" />
+        <div className="flex justify-center items-center px-1.5 sm:px-3 shrink-0">
+          <Logo light={true} compact={true} className="[&>img]:h-8 xs:[&>img]:h-9 sm:[&>img]:h-11 lg:[&>img]:h-13" />
         </div>
 
         {/* Right Side: Phone, Night toggle, profile, menu */}
-        <div className="flex items-center justify-end gap-2.5 sm:gap-3 pr-1 sm:pr-2">
+        <div className="flex items-center justify-end gap-1.5 sm:gap-3 pr-0.5 sm:pr-2">
 
           <button
             type="button"
             onClick={() => setIsCallModalOpen(true)}
-            className="flex h-9 sm:h-10 items-center justify-center gap-1.5 rounded-xl border border-white/20 bg-white/10 backdrop-blur-md px-3 text-white transition duration-300 hover:bg-[#FFCD00] hover:text-[#001e3d] hover:border-[#FFCD00] cursor-pointer shadow-sm"
+            className="flex h-8.5 w-8.5 sm:h-10 sm:w-auto items-center justify-center gap-1.5 rounded-xl border border-white/20 bg-white/10 backdrop-blur-md px-2 sm:px-3 text-white transition duration-300 hover:bg-[#FFCD00] hover:text-[#001e3d] hover:border-[#FFCD00] cursor-pointer shadow-sm active:scale-95"
             aria-label="Call & Contact Options"
           >
             <PhoneIcon />
@@ -151,7 +151,7 @@ export default function Navbar() {
           <button
             type="button"
             onClick={toggleNightDive}
-            className="flex h-9 sm:h-10 items-center justify-center gap-1.5 rounded-xl border border-white/20 bg-white/10 backdrop-blur-md px-3 text-white transition duration-300 hover:bg-[#FFCD00] hover:text-[#001e3d] hover:border-[#FFCD00] shrink-0 cursor-pointer shadow-sm"
+            className="flex h-8.5 w-8.5 sm:h-10 sm:w-auto items-center justify-center gap-1.5 rounded-xl border border-white/20 bg-white/10 backdrop-blur-md px-2 sm:px-3 text-white transition duration-300 hover:bg-[#FFCD00] hover:text-[#001e3d] hover:border-[#FFCD00] shrink-0 cursor-pointer shadow-sm active:scale-95"
             aria-label="Toggle Night Dive mode"
           >
             <ThemeToggle isNightDive={isNightDive} />
@@ -162,7 +162,7 @@ export default function Navbar() {
 
           <Link
             to={isAuthenticated ? '/dashboard/profile' : '/login'}
-            className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl border border-white/20 bg-white/10 backdrop-blur-md text-white transition duration-300 hover:bg-[#FFCD00] hover:text-[#001e3d] hover:border-[#FFCD00] shrink-0 shadow-sm"
+            className="flex h-8.5 w-8.5 sm:h-10 sm:w-10 items-center justify-center rounded-xl border border-white/20 bg-white/10 backdrop-blur-md text-white transition duration-300 hover:bg-[#FFCD00] hover:text-[#001e3d] hover:border-[#FFCD00] shrink-0 shadow-sm active:scale-95"
             aria-label={isAuthenticated ? 'Account' : 'Login'}
             title={user?.displayName || user?.email || 'Account'}
           >
@@ -179,7 +179,7 @@ export default function Navbar() {
 
           <button
             type="button"
-            className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full border border-white/20 bg-white/10 backdrop-blur-md text-white transition duration-300 hover:bg-[#FFCD00] hover:text-[#001e3d] hover:border-[#FFCD00] lg:hidden"
+            className="flex h-8.5 w-8.5 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full border border-white/20 bg-white/10 backdrop-blur-md text-white transition duration-300 hover:bg-[#FFCD00] hover:text-[#001e3d] hover:border-[#FFCD00] lg:hidden active:scale-95 cursor-pointer"
             aria-label="Toggle menu"
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}

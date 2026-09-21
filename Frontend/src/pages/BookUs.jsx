@@ -338,7 +338,7 @@ export default function BookUs() {
       />
 
       {/* 1. HEADER VIDEO HERO (DYNAMIC COMPILED NIGHT DIVE VIDEO) */}
-      <section className="relative h-[85vh] min-h-[600px] lg:h-[90vh] lg:min-h-[680px] w-full flex items-center justify-center overflow-hidden">
+      <section className="relative h-[56vh] min-h-[420px] lg:h-[60vh] lg:min-h-[460px] w-full flex items-center justify-center overflow-hidden">
         <div 
           className="absolute inset-0 z-0 overflow-hidden"
           style={{
@@ -361,23 +361,14 @@ export default function BookUs() {
 
         {/* Bottom Ultra-Smooth Dissolve & Merge Layer */}
         <div 
-          className={`absolute bottom-0 inset-x-0 h-44 sm:h-64 lg:h-80 pointer-events-none z-[5] transition-colors duration-500 ${
+          className={`absolute bottom-0 inset-x-0 h-28 sm:h-36 lg:h-44 pointer-events-none z-[5] transition-colors duration-500 ${
             isNightDive 
               ? 'bg-gradient-to-t from-[#0b1726] via-[#0b1726]/85 via-45% to-transparent' 
               : 'bg-gradient-to-t from-[#FAFAFA] via-[#FAFAFA]/90 via-45% to-transparent'
           }`} 
         />
 
-        <div className="relative z-10 flex flex-col items-center text-center px-4 max-w-4xl mx-auto pt-16">
-          <motion.span
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="inline-block bg-white/10 backdrop-blur-md rounded-full px-4 py-1.5 text-xs font-bold text-accent uppercase tracking-widest mb-6 border border-white/20 shadow-sm"
-          >
-            Step-by-Step Experience Planner
-          </motion.span>
-
+        <div className="relative z-10 flex flex-col items-center text-center px-4 max-w-4xl mx-auto pt-4 sm:pt-6">
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -400,7 +391,7 @@ export default function BookUs() {
       </section>
 
       {/* 2. MAIN 4-STEP BOOKING WIZARD */}
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-16 sm:pb-24">
         {/* Main 4-Step Layout */}
         <div className="grid lg:grid-cols-12 gap-10 lg:gap-14">
 
@@ -408,15 +399,15 @@ export default function BookUs() {
           <div className="lg:col-span-7 flex flex-col">
 
             {/* Step Indicator Bar */}
-            <div className="flex items-center justify-between mb-8 bg-white/80 backdrop-blur-xl p-4 sm:p-5 rounded-3xl border border-navy/10 shadow-sm overflow-x-auto">
+            <div className="flex items-center justify-between mb-8 bg-white/80 backdrop-blur-xl p-3 sm:p-5 rounded-2xl sm:rounded-3xl border border-navy/10 shadow-sm overflow-x-auto scrollbar-none gap-3 sm:gap-0">
               {[
                 { num: 1, title: 'Location & Group' },
                 { num: 2, title: 'Participant Details' },
                 { num: 3, title: 'Matching Programs' },
                 { num: 4, title: 'Contact Info' },
               ].map((s) => (
-                <div key={s.num} className="flex items-center gap-2.5 shrink-0">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${currentStep === s.num
+                <div key={s.num} className="flex items-center gap-2 sm:gap-2.5 shrink-0">
+                  <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${currentStep === s.num
                     ? 'bg-navy text-white shadow-md ring-2 ring-navy/20'
                     : currentStep > s.num
                       ? 'bg-emerald-500 text-white'
@@ -432,7 +423,7 @@ export default function BookUs() {
               ))}
             </div>
 
-            <form onSubmit={handleSubmit} className="flex-1 flex flex-col bg-white p-6 sm:p-10 rounded-[36px] border border-navy/5 shadow-card">
+            <form onSubmit={handleSubmit} className="flex-1 flex flex-col bg-white p-4.5 sm:p-10 rounded-[28px] sm:rounded-[36px] border border-navy/5 shadow-card">
               <div className="flex-1 space-y-6">
 
                 {/* STEP 1: Location & Group Size */}
@@ -1126,7 +1117,7 @@ export default function BookUs() {
           </div>
 
           {/* Interactive Globe Map Column */}
-          <div className="lg:col-span-5 relative w-full aspect-[4/5] lg:aspect-auto min-h-[520px] h-full rounded-[36px] overflow-hidden bg-navy flex flex-col pt-8 shadow-card border border-navy/10">
+          <div className="lg:col-span-5 relative w-full aspect-[4/3] xs:aspect-[1/1] sm:aspect-[4/5] lg:aspect-auto min-h-[380px] sm:min-h-[520px] h-full rounded-[28px] sm:rounded-[36px] overflow-hidden bg-navy flex flex-col pt-6 sm:pt-8 shadow-card border border-navy/10">
             <div className="text-center px-4 z-10 mb-2 pointer-events-none">
               <span className="text-accent text-[10px] font-bold uppercase tracking-widest">Interactive 3D Globe</span>
               <h3 className="font-heading text-2xl font-bold text-white">Select Dive Location</h3>

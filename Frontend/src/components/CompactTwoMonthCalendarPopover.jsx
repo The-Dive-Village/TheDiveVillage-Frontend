@@ -181,7 +181,7 @@ export default function CompactTwoMonthCalendarPopover({
           transition={{ duration: 0.18, ease: 'easeOut' }}
           role="dialog"
           aria-label="Select preferred dive date"
-          className="absolute top-full left-0 mt-2 z-50 bg-white rounded-[28px] border border-navy/10 shadow-2xl p-4 sm:p-5 w-[92vw] sm:w-[580px] md:w-[620px] max-w-[620px] text-navy font-body select-none"
+          className="absolute top-full left-1/2 -translate-x-1/2 sm:left-0 sm:translate-x-0 mt-2 z-50 bg-white rounded-[28px] border border-navy/10 shadow-2xl p-3.5 sm:p-5 w-[calc(100vw-32px)] max-w-[340px] xs:max-w-[380px] sm:max-w-[620px] sm:w-[580px] md:w-[620px] text-navy font-body select-none"
           style={{ textShadow: 'none' }}
         >
           {/* Header Bar with Navigation Arrows */}

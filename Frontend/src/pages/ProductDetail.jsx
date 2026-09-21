@@ -58,7 +58,7 @@ export default function ProductDetail() {
   const [selectedSize, setSelectedSize] = useState(product.sizes ? product.sizes[0] : 'Standard')
   const [selectedColor, setSelectedColor] = useState(product.colors ? product.colors[0] : { name: 'Standard', hex: '#FFFFFF' })
   const [quantity, setQuantity] = useState(1)
-  const [activeTab, setActiveTab] = useState('features')
+  const [activeTab, setActiveTab] = useState('details')
   const [toastMessage, setToastMessage] = useState(null)
   const [isAdding, setIsAdding] = useState(false)
 
@@ -183,7 +183,7 @@ export default function ProductDetail() {
           <div className="lg:col-span-6 flex flex-col gap-6">
             <div className="flex gap-4 flex-col-reverse sm:flex-row items-start">
               {/* Thumbnail Selectors */}
-              <div className="flex sm:flex-col gap-3 overflow-x-auto sm:overflow-visible shrink-0">
+              <div className="flex sm:flex-col gap-3 overflow-x-auto sm:overflow-visible shrink-0 max-w-full pb-2 sm:pb-0 scrollbar-none">
                 {mediaItems.map((item, i) => (
                   <div key={item.id || i} className="flex flex-col items-center gap-1 shrink-0">
                     <button
@@ -435,7 +435,7 @@ export default function ProductDetail() {
         </div>
 
         {/* Tabbed Specifications and Details */}
-        <div ref={sizeChartRef} className="rounded-[40px] bg-white border border-navy/5 p-8 sm:p-14 shadow-card mb-20">
+        <div ref={sizeChartRef} className="rounded-[28px] sm:rounded-[40px] bg-white border border-navy/5 p-5 sm:p-14 shadow-card mb-20">
           <div className="flex border-b border-navy/10 mb-8 overflow-x-auto scrollbar-none gap-2">
             {[
               { key: 'details', label: 'Product Features' },
@@ -443,11 +443,12 @@ export default function ProductDetail() {
             ].map((tab) => (
               <button
                 key={tab.key}
+                type="button"
                 onClick={() => setActiveTab(tab.key)}
-                className={`pb-4 px-6 font-heading font-bold text-sm whitespace-nowrap transition border-b-2 ${
+                className={`pb-4 px-6 font-heading font-bold text-sm whitespace-nowrap transition-colors duration-200 border-b-2 bg-transparent cursor-pointer select-none outline-none focus:outline-none ${
                   activeTab === tab.key
                     ? 'border-navy text-navy font-bold'
-                    : 'border-transparent text-navy/50 hover:text-navy'
+                    : 'border-transparent text-navy/50 hover:text-navy hover:bg-transparent'
                 }`}
               >
                 {tab.label}

@@ -20,7 +20,6 @@ import imgGuidedSnorkeling from '../assets/Gallery/Snorkeling.png'
 import imgCertifiedCourses from '../assets/Gallery/Certified Courses.jpg'
 import imgFreeDiving from '../assets/Gallery/Free Diving.png'
 import imgFlexibleFunDives from '../assets/Gallery/Flexible Fun Dives.png'
-import michaelPfp from '../assets/Products/merch0.jpg'
 
 const ProgramsPreview = lazy(() => import('../components/ProgramsPreview'))
 
@@ -90,7 +89,7 @@ const TESTIMONIALS = [
     name: "Michael Antony",
     role: "Advanced Adventurer",
     text: "From the seamless booking process to the personalized dive charters, everything was flawless. A vibrant community that genuinely feels like a second home.",
-    image: michaelPfp
+    image: CAROUSEL_IMAGES[0]
   }
 ]
 
@@ -140,26 +139,26 @@ export default function Home() {
               transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
               className="pointer-events-auto"
             >
-              <h1 className="mt-5 font-heading text-[3.5rem] sm:text-[4.5rem] md:text-[5.5rem] lg:text-[7rem] font-bold uppercase tracking-normal text-white leading-[0.9] flex flex-col drop-shadow-2xl">
+              <h1 className="mt-5 font-heading text-[2.6rem] xs:text-[3.2rem] sm:text-[4.5rem] md:text-[5.5rem] lg:text-[7rem] font-bold uppercase tracking-normal text-white leading-[0.92] flex flex-col drop-shadow-2xl">
                 <span className="block text-[0.35em] tracking-[0.1em] mb-2 opacity-90">MORE THAN A DESTINATION</span>
                 <span className="block text-white mb-2">IT IS A</span>
                 <span className="block text-[#FFCD00]">COMMUNITY.</span>
               </h1>
               <div className="mt-6 h-1 w-20 bg-[#FFCD00]"></div>
-              <p className="mt-8 max-w-2xl text-lg sm:text-xl md:text-2xl font-medium text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] leading-relaxed text-justify">
+              <p className="mt-6 sm:mt-8 max-w-2xl text-base sm:text-xl md:text-2xl font-medium text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] leading-relaxed text-justify">
                 The life-changing magic of the ocean<br />Is a feeling that is meant to be shared.
               </p>
-              <div className="mt-10 flex flex-wrap items-center gap-6">
+              <div className="mt-8 sm:mt-10 flex flex-wrap items-center gap-4 sm:gap-6">
                 <Link
                   to="/book-us"
-                  className="rounded-full bg-white/15 backdrop-blur-xl border border-white/30 px-8 py-4 font-body text-xs sm:text-sm tracking-widest font-bold text-white uppercase shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] transition-all duration-300 hover:scale-105 hover:bg-[#FFCD00] hover:text-navy hover:border-[#FFCD00] hover:shadow-[0_12px_40px_rgba(255,205,0,0.6)] flex items-center gap-3 active:scale-95 group"
+                  className="rounded-full bg-white/15 backdrop-blur-xl border border-white/30 px-6 sm:px-8 py-3.5 sm:py-4 font-body text-xs sm:text-sm tracking-widest font-bold text-white uppercase shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] transition-all duration-300 hover:scale-105 hover:bg-[#FFCD00] hover:text-navy hover:border-[#FFCD00] hover:shadow-[0_12px_40px_rgba(255,205,0,0.6)] flex items-center justify-center gap-3 active:scale-95 group"
                 >
                   Book Your Dive
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-1"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
                 </Link>
                 <Link
                   to="/shop"
-                  className="rounded-full bg-white/10 backdrop-blur-xl border border-white/25 px-8 py-4 font-body text-xs sm:text-sm tracking-widest font-bold text-white uppercase shadow-[0_8px_32px_0_rgba(0,0,0,0.25)] transition-all duration-300 hover:scale-105 hover:bg-[#FFCD00] hover:text-navy hover:border-[#FFCD00] hover:shadow-[0_12px_40px_rgba(255,205,0,0.6)] active:scale-95"
+                  className="rounded-full bg-white/10 backdrop-blur-xl border border-white/25 px-6 sm:px-8 py-3.5 sm:py-4 font-body text-xs sm:text-sm tracking-widest font-bold text-white uppercase shadow-[0_8px_32px_0_rgba(0,0,0,0.25)] transition-all duration-300 hover:scale-105 hover:bg-[#FFCD00] hover:text-navy hover:border-[#FFCD00] hover:shadow-[0_12px_40px_rgba(255,205,0,0.6)] active:scale-95"
                 >
                   Shop Merch
                 </Link>
@@ -215,7 +214,7 @@ export default function Home() {
             </p>
           </SectionReveal>
 
-          <StaggerGrid className="grid gap-6 lg:gap-8 sm:grid-cols-2 lg:grid-cols-4 mt-24">
+          <StaggerGrid className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none pb-4 gap-4 sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-6 lg:gap-8 mt-24 sm:overflow-visible px-1">
             {[
               {
                 t: 'Enthusiastic Beginners',
@@ -242,7 +241,7 @@ export default function Home() {
                 desc: "For the bold, the curious and all the ocean lovers. Explore more. Dive deeper. Live the adventure."
               }
             ].map((item, i) => (
-              <StaggerItem key={i}>
+              <StaggerItem key={i} className="w-[270px] xs:w-[290px] shrink-0 sm:w-auto snap-center h-full">
                 <div
                   onClick={() => {
                     navigate('/gallery')
@@ -342,10 +341,10 @@ export default function Home() {
             </div>
           </SectionReveal>
 
-          <StaggerGrid className="grid md:grid-cols-3 gap-8 items-stretch">
+          <StaggerGrid className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none pb-4 gap-4 md:grid md:grid-cols-3 md:gap-8 items-stretch md:overflow-visible px-1">
             {approvedReviews.slice(0, 3).map((t, i) => (
-              <StaggerItem key={t.id || i} className="h-full">
-                <div className="h-full flex flex-col justify-between bg-white/10 backdrop-blur-2xl rounded-3xl p-8 border border-white/20 shadow-[0_8px_24px_rgba(0,0,0,0.25)] hover:bg-white/15 hover:border-white/40 hover:-translate-y-2 hover:shadow-[0_12px_32px_rgba(0,0,0,0.35)] transition-all duration-500">
+              <StaggerItem key={t.id || i} className="w-[290px] xs:w-[320px] shrink-0 md:w-auto snap-center h-full">
+                <div className="h-full flex flex-col justify-between bg-white/10 backdrop-blur-2xl rounded-3xl p-6 sm:p-8 border border-white/20 shadow-[0_8px_24px_rgba(0,0,0,0.25)] hover:bg-white/15 hover:border-white/40 hover:-translate-y-2 hover:shadow-[0_12px_32px_rgba(0,0,0,0.35)] transition-all duration-500">
                   <div>
                     <div className="flex gap-1 mb-6">
                       {[...Array(t.rating || 5)].map((_, j) => (
@@ -394,7 +393,7 @@ export default function Home() {
             </p>
           </SectionReveal>
 
-          <StaggerGrid className="grid gap-6 lg:gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          <StaggerGrid className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none pb-4 gap-4 sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-6 lg:gap-8 sm:overflow-visible px-1">
             {[
               {
                 num: '01',
@@ -442,7 +441,7 @@ export default function Home() {
                 )
               },
             ].map((item, i) => (
-              <StaggerItem key={i}>
+              <StaggerItem key={i} className="w-[280px] xs:w-[300px] shrink-0 sm:w-auto snap-center h-full">
                 <div
                   onClick={() => navigate('/contact')}
                   className="group relative h-full rounded-[28px] lg:rounded-[32px] bg-[#00172b]/40 backdrop-blur-2xl border border-white/20 p-5 lg:p-6 shadow-[0_8px_30px_rgba(0,0,0,0.3)] transition-all duration-500 hover:-translate-y-3 hover:bg-[#00172b]/60 hover:border-[#00AEC7] hover:shadow-[0_12px_40px_rgba(0,174,199,0.25)] flex flex-col justify-between cursor-pointer"
@@ -670,9 +669,9 @@ function InteractiveHighlights() {
   const itemsInSet = HIGHLIGHTS_DATA.length
   const cardGap = 16 // px gap between cards
 
-  // Responsively show 5 cards on desktop, 3 on tablet, 2 on mobile
-  const cardsToShow = containerWidth < 640 ? 2 : (containerWidth < 960 ? 3 : 5)
-  const cardWidth = Math.floor((containerWidth - (cardsToShow - 1) * cardGap) / cardsToShow)
+  // Responsively show 5 cards on desktop, 3 on tablet, 1.2 on narrow mobile, 2 on wide mobile
+  const cardsToShow = containerWidth < 460 ? 1.2 : (containerWidth < 768 ? 2 : (containerWidth < 1024 ? 3 : 5))
+  const cardWidth = Math.floor((containerWidth - (Math.ceil(cardsToShow) - 1) * cardGap) / cardsToShow)
   const singleSetWidth = itemsInSet * (cardWidth + cardGap)
 
   useEffect(() => {

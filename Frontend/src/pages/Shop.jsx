@@ -447,7 +447,7 @@ function FlippingProductTag() {
       {/* 3D Perspective Container matched to exact 447x864 image aspect ratio */}
       <div className="perspective-1000 h-[280px] sm:h-[340px] aspect-[447/864] relative">
         <motion.div
-          animate={{ rotateY: 360 }}
+          animate={{ rotateY: -360 }}
           transition={{
             duration: 18,
             ease: 'linear',
