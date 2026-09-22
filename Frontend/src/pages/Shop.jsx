@@ -370,7 +370,11 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
                   tone-mapping="commerce"
                   bounds="tight"
                   style={{ width: '100%', height: '100%' }}
-                />
+                >
+                  <div slot="poster" className="w-full h-full flex items-center justify-center p-4 bg-transparent">
+                    <img src={product.image} alt={product.title} className="max-h-full max-w-full object-contain" />
+                  </div>
+                </model-viewer>
               </div>
             )}
           </div>

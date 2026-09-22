@@ -28,13 +28,17 @@ import imgPop2 from '../assets/Products/pop2.jpeg'
 import imgCapFront from '../assets/Products/catf.png'
 import imgCapBack from '../assets/Products/capb.png'
 
+import imgWetSuitFront from '../assets/Products/Wet suit front.png'
+import imgWetSuitBack from '../assets/Products/Wet suit back.png'
+import imgWetSuitLookbook from '../assets/Products/Wet suit.jpg'
+
 import imgBagFront from '../assets/Products/bag front.png'
 import imgBagBack from '../assets/Products/bagback.png'
 import imgBagIn from '../assets/Products/bagin.png'
 import imgBagOpen1 from '../assets/Products/bagopen1.png'
 import imgBagOpen2 from '../assets/Products/bagopen2.png'
 
-import glbBag from '../assets/3d model/backpack 3d model.glb?url'
+import glbBag from '../assets/3d model/backpack 3d model (4).glb?url'
 import glbCap from '../assets/3d model/baseball cap 3d model.glb?url'
 import glbUnisexShorts from '../assets/3d model/black dive shorts 3d model.glb?url'
 import glbWomensPants from '../assets/3d model/black leggings 3d model.glb?url'
@@ -42,6 +46,7 @@ import glbUnisexShirt from '../assets/3d model/long sleeve shirt 3d model.glb?ur
 import glbFullSuit from '../assets/3d model/black wetsuit 3d model.glb?url'
 import glbWomensShirt from '../assets/3d model/black long sleeve shirt 3d model.glb?url'
 import glbWomensStrap from '../assets/3d model/wetsuit 3d model.glb?url'
+import glbWetSuit from '../assets/Products/diving wetsuit 3d model (1).glb?url'
 
 
 export const SHOP_PRODUCTS = [
@@ -268,5 +273,33 @@ export const SHOP_PRODUCTS = [
     stockStatus: 'In Stock',
     rating: 4.8,
     reviewCount: 19,
+  },
+  {
+    id: 'product-wet-suit',
+    title: 'Professional Diving Wet Suit',
+    name: 'Wet Suit',
+    price: 7999,
+    oldPrice: 9999,
+    image: imgWetSuitFront,
+    images: [imgWetSuitFront, imgWetSuitBack, imgWetSuitLookbook],
+    imageLabels: ['Front', 'Back', 'Lookbook'],
+    glb: glbWetSuit,
+    category: 'Skin Wear',
+    tag: 'New Arrival',
+    description: 'Premium neoprene wetsuit engineered for optimal thermal insulation, hydrodynamic flexibility, and full-body protection during ocean dives.',
+    features: [
+      'Thermal Neoprene Insulation: High-density micro-cell neoprene retains core body warmth during deep, cold ocean dives.',
+      'Anatomical 3D Cut: Pre-shaped contoured panels offer natural flexibility and comfortable unrestricted swimming motion.',
+      'Abrasion-Resistant Reinforced Panels: High-friction zones on knees and shoulders engineered to withstand scuba gear contact.',
+      'Heavy-Duty Back Zip with Extended Pull Leash: Saltwater-resistant zipper designed for smooth closure and easy self-donning.'
+    ],
+    sizes: ['Type A (XS to M)', 'Type B (L to XXL)'],
+    colors: [
+      { name: 'Black', hex: '#000000' }
+    ],
+    stock: 22,
+    stockStatus: 'In Stock',
+    rating: 5.0,
+    reviewCount: 38,
   }
 ]
