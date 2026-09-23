@@ -340,20 +340,20 @@ export default function Contact() {
               Ready to take the plunge? Plan your trip in minutes and enjoy every moment of your dive adventure with certified dive experts.
             </p>
 
-            <div className="flex flex-wrap items-center gap-4">
+            <div className="flex flex-wrap items-center gap-2.5 sm:gap-4">
               <Link
                 to="/book-us"
-                className="rounded-full bg-white/15 backdrop-blur-xl border border-white/30 text-white font-bold px-8 py-4 text-sm uppercase tracking-wider transition-all duration-300 hover:scale-105 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] flex items-center gap-2 cursor-pointer"
+                className="rounded-full bg-white/15 backdrop-blur-xl border border-white/30 text-white font-bold px-5 py-2.5 sm:px-8 sm:py-4 text-xs sm:text-sm uppercase tracking-wider transition-all duration-300 hover:scale-105 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] flex items-center gap-1.5 sm:gap-2 cursor-pointer"
               >
                 <span>Book Your Dive Now</span>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M5 12h14" />
                   <path d="m12 5 7 7-7 7" />
                 </svg>
               </Link>
               <Link
                 to="/services"
-                className="rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold px-6 py-4 text-sm uppercase tracking-wider transition-all duration-300 hover:scale-105 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] cursor-pointer"
+                className="rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold px-4 py-2.5 sm:px-6 sm:py-4 text-xs sm:text-sm uppercase tracking-wider transition-all duration-300 hover:scale-105 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] cursor-pointer"
               >
                 Explore Programs
               </Link>

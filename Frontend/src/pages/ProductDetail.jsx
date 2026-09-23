@@ -389,46 +389,47 @@ export default function ProductDetail() {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-3 mb-6 items-center">
-              <button
-                onClick={handleAddToCart}
-                disabled={isAdding}
-                className="flex-1 w-full bg-navy hover:bg-[#002b4e] text-white font-bold py-4 px-6 rounded-full transition shadow-md flex items-center justify-center gap-2 text-sm cursor-pointer"
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
-                  <line x1="3" y1="6" x2="21" y2="6" />
-                  <path d="M16 10a4 4 0 01-8 0" />
-                </svg>
-                {isAdding ? 'Adding to Cart...' : 'Add to Cart'}
-              </button>
+            <div className="flex flex-col gap-3 mb-6">
+              <div className="flex gap-2.5 sm:gap-3 items-center">
+                <button
+                  onClick={handleAddToCart}
+                  disabled={isAdding}
+                  className="flex-1 bg-navy hover:bg-[#002b4e] text-white font-bold py-3.5 sm:py-4 px-4 sm:px-6 rounded-full transition shadow-md flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
+                    <line x1="3" y1="6" x2="21" y2="6" />
+                    <path d="M16 10a4 4 0 01-8 0" />
+                  </svg>
+                  {isAdding ? 'Adding to Cart...' : 'Add to Cart'}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => toggleWishlist(product)}
+                  className="w-12 h-12 sm:w-14 sm:h-14 shrink-0 rounded-full bg-white border border-navy/15 transition duration-200 flex items-center justify-center shadow-sm hover:border-navy hover:scale-105 active:scale-95 cursor-pointer"
+                  title={isWishlisted(product.id) ? 'Remove from Wishlist' : 'Add to Wishlist'}
+                  aria-label="Wishlist"
+                >
+                  <svg
+                    className="w-5 h-5 sm:w-[22px] sm:h-[22px]"
+                    viewBox="0 0 24 24"
+                    fill={isWishlisted(product.id) ? '#FFCD00' : 'none'}
+                    stroke={isWishlisted(product.id) ? '#FFCD00' : '#003865'}
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                  </svg>
+                </button>
+              </div>
 
               <button
                 onClick={handleBuyNow}
-                className="flex-1 w-full bg-[#FFCD00] hover:bg-navy hover:text-white text-navy font-bold py-4 px-6 rounded-full transition shadow-md flex items-center justify-center gap-2 text-sm cursor-pointer"
+                className="w-full bg-[#FFCD00] hover:bg-navy hover:text-white text-navy font-bold py-3.5 sm:py-4 px-6 rounded-full transition shadow-md flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer"
               >
-                Buy Now
-              </button>
-
-              <button
-                type="button"
-                onClick={() => toggleWishlist(product)}
-                className="w-14 h-14 shrink-0 rounded-full bg-white border border-navy/15 transition duration-200 flex items-center justify-center shadow-sm hover:border-navy hover:scale-105 active:scale-95 cursor-pointer"
-                title={isWishlisted(product.id) ? 'Remove from Wishlist' : 'Add to Wishlist'}
-                aria-label="Wishlist"
-              >
-                <svg
-                  width="22"
-                  height="22"
-                  viewBox="0 0 24 24"
-                  fill={isWishlisted(product.id) ? '#FFCD00' : 'none'}
-                  stroke={isWishlisted(product.id) ? '#FFCD00' : '#003865'}
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                </svg>
+                Buy Now →
               </button>
             </div>
           </div>

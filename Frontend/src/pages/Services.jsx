@@ -114,7 +114,7 @@ export default function Services() {
                 {group.category.label}
               </h2>
             </div>
-            <div className="grid grid-cols-3 gap-2.5 sm:gap-8">
+            <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8">
               {group.services.map((service, i) => (
                 <motion.div
                   key={service.id}
@@ -133,7 +133,7 @@ export default function Services() {
                   }}
                   className="group rounded-2xl sm:rounded-[32px] bg-white border border-navy/5 shadow-sm hover:shadow-float transition duration-300 flex flex-col justify-between cursor-pointer overflow-hidden relative"
                 >
-                  <div className="relative h-28 xs:h-36 sm:h-56 w-full overflow-hidden bg-navy/10 shrink-0">
+                  <div className="relative h-40 xs:h-44 sm:h-56 w-full overflow-hidden bg-navy/10 shrink-0">
                     {service.video ? (
                       <video
                         src={service.video}
@@ -151,24 +151,23 @@ export default function Services() {
                         imgClassName="w-full h-full object-cover object-center"
                       />
                     )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-navy/85 via-navy/30 to-transparent pointer-events-none" />
-                    <div className="absolute bottom-2 left-2 sm:bottom-4 sm:left-5 right-2">
-                       <span className="text-[7px] xs:text-[8px] sm:text-[10px] font-bold uppercase tracking-wider text-accent mb-0.5 sm:mb-1 block truncate">
+                    <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/35 to-transparent pointer-events-none" />
+                    <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-5 right-3">
+                       <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-accent mb-0.5 sm:mb-1 block truncate">
                         {CATEGORIES.find(c => c.key === service.category)?.label}
                       </span>
-                      <h3 className="font-heading text-xs xs:text-sm sm:text-xl font-bold text-white leading-tight line-clamp-2">{service.title}</h3>
+                      <h3 className="font-heading text-sm xs:text-base sm:text-xl font-bold text-white leading-tight line-clamp-2">{service.title}</h3>
                     </div>
                   </div>
-                  <div className="p-2.5 xs:p-3 sm:p-6 flex-1 flex flex-col">
-                    <p className="text-[10px] xs:text-[11px] sm:text-sm text-navy/70 leading-snug sm:leading-relaxed font-medium line-clamp-2 sm:line-clamp-none">
+                  <div className="p-3.5 sm:p-6 flex-1 flex flex-col">
+                    <p className="text-xs sm:text-sm text-navy/70 leading-relaxed font-medium line-clamp-3 sm:line-clamp-none">
                       {service.short_desc}
                     </p>
                   </div>
-                  <div className="px-2.5 pb-2.5 xs:px-3 xs:pb-3 sm:px-6 sm:pb-6 pt-0 mt-1">
-                    <div className="text-[10px] xs:text-xs sm:text-sm font-bold text-navy flex items-center justify-between">
-                      <span className="hidden xs:inline">Details</span>
-                      <span className="xs:hidden">View</span>
-                      <span className="text-xs sm:text-xl group-hover:translate-x-1 transition-transform text-accent">→</span>
+                  <div className="px-3.5 pb-3.5 sm:px-6 sm:pb-6 pt-0 mt-1">
+                    <div className="text-xs sm:text-sm font-bold text-navy flex items-center justify-between">
+                      <span>View Service Details</span>
+                      <span className="text-sm sm:text-xl group-hover:translate-x-1 transition-transform text-accent">→</span>
                     </div>
                   </div>
                 </motion.div>
