@@ -59,38 +59,35 @@ export default function Navbar() {
   const isContactPage = location.pathname.startsWith('/contact')
   const isBlueToolbar = isShopPage || isServicesPage || isBookUsPage || isGalleryPage || isContactPage
   const isTranslucentPage = location.pathname === '/'
-  const isVideoBg = ['/', '/login', '/contact', '/book-us'].includes(location.pathname) || isBlueToolbar
-  const isDarkBackground = isVideoBg || isNightDive
+  const isDashboardPage = location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/admin') || location.pathname.startsWith('/profile')
+  const isVideoBg = ['/', '/login', '/contact', '/book-us', '/about'].includes(location.pathname) || isDashboardPage
+  const isDarkBackground = isVideoBg || isNightDive || isDashboardPage
+
+  const containerGlass = isDarkBackground
+    ? 'border border-white/25 bg-[#001e3d]/55 backdrop-blur-2xl text-white shadow-[0_8px_32px_0_rgba(0,0,0,0.35)]'
+    : 'border border-navy/15 bg-white/80 backdrop-blur-2xl text-navy shadow-[0_8px_32px_0_rgba(0,30,61,0.08)]'
 
   const textColor = isDarkBackground ? 'text-white' : 'text-navy'
-  const hoverText = isDarkBackground ? 'hover:text-white' : 'hover:text-navy'
-  const textMuted = isDarkBackground ? 'text-white/70' : 'text-navy/70'
   const borderColor = isDarkBackground ? 'border-white/20' : 'border-navy/20'
-  const hoverBg = isDarkBackground ? 'hover:bg-white/10' : 'hover:bg-navy/5'
-  const bgSoft = isDarkBackground ? 'bg-transparent' : 'bg-transparent'
+  const btnBg = isDarkBackground ? 'bg-white/10' : 'bg-navy/10'
+  const btnText = isDarkBackground ? 'text-white' : 'text-navy'
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-[9999] w-full px-2 sm:px-4 lg:px-6 pointer-events-none flex flex-col items-center">
-      <div className={`pointer-events-auto mx-auto grid grid-cols-[1fr_auto_1fr] h-[56px] sm:h-[64px] lg:h-[68px] w-full max-w-7xl 2xl:max-w-[1700px] items-center px-2.5 sm:px-8 lg:px-12 rounded-full border border-white/20 ${
-        isBlueToolbar
-          ? 'bg-[#003865] backdrop-blur-2xl shadow-[0_12px_40px_rgba(0,56,101,0.5)]'
-          : isTranslucentPage 
-          ? 'bg-[#001e3d]/30 backdrop-blur-2xl shadow-[0_12px_40px_rgba(0,18,32,0.35)]' 
-          : 'bg-[#001e3d]/45 backdrop-blur-2xl shadow-[0_12px_40px_rgba(0,18,32,0.5)]'
-      } transition-all duration-300`}>
+    <header className="fixed top-0 left-0 right-0 z-[9999] w-full px-3 xs:px-4 sm:px-6 pointer-events-none flex flex-col items-center pt-2.5 sm:pt-3">
+      <div className={`pointer-events-auto mx-auto flex justify-between sm:grid sm:grid-cols-[1fr_auto_1fr] h-[52px] sm:h-[64px] lg:h-[68px] w-full max-w-7xl 2xl:max-w-[1700px] items-center rounded-full ${containerGlass} px-3 xs:px-4 sm:px-8 lg:px-12 transition-all duration-300`}>
         
-        {/* Left Side: Home, Book Us, Contact Us */}
-        <div className="flex items-center justify-start gap-3 sm:gap-4 lg:gap-8 pl-0.5 sm:pl-2">
+        {/* Left Side: Home, Book Us, Contact Us (desktop) */}
+        <div className="flex items-center justify-start gap-4 sm:gap-4 lg:gap-8 pl-1 sm:pl-2">
           <NavLink
             to="/"
             end
             onMouseEnter={() => prefetchRoute('/')}
             onTouchStart={() => prefetchRoute('/')}
             className={({ isActive }) =>
-              `relative whitespace-nowrap font-body text-[13px] sm:text-[15px] font-bold tracking-wide transition-all duration-300 ${
+              `relative whitespace-nowrap font-body text-[15px] sm:text-[15px] font-bold tracking-wide transition-all duration-300 ${
                 isActive 
-                  ? 'text-accent after:content-[""] after:absolute after:-bottom-1 after:left-0 after:w-full after:h-[2px] after:bg-accent' 
-                  : 'text-white hover:text-accent after:content-[""] after:absolute after:-bottom-1 after:left-0 after:w-full after:h-[2px] after:bg-accent after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300'
+                  ? 'text-[#FFCD00] after:content-[""] after:absolute after:-bottom-1.5 after:left-0 after:w-full after:h-[2.5px] after:bg-[#FFCD00]' 
+                  : `${textColor} hover:text-[#FFCD00] after:content-[""] after:absolute after:-bottom-1.5 after:left-0 after:w-full after:h-[2.5px] after:bg-[#FFCD00] after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300`
               }`
             }
           >
@@ -101,17 +98,17 @@ export default function Navbar() {
             onMouseEnter={() => prefetchRoute('/book-us')}
             onTouchStart={() => prefetchRoute('/book-us')}
             className={({ isActive }) =>
-              `relative whitespace-nowrap font-body text-[13px] sm:text-[15px] font-bold tracking-wide transition-all duration-300 ${
+              `relative whitespace-nowrap font-body text-[15px] sm:text-[15px] font-bold tracking-wide transition-all duration-300 ${
                 isActive 
-                  ? 'text-accent after:content-[""] after:absolute after:-bottom-1 after:left-0 after:w-full after:h-[2px] after:bg-accent' 
-                  : 'text-white hover:text-accent after:content-[""] after:absolute after:-bottom-1 after:left-0 after:w-full after:h-[2px] after:bg-accent after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300'
+                  ? 'text-[#FFCD00] after:content-[""] after:absolute after:-bottom-1.5 after:left-0 after:w-full after:h-[2.5px] after:bg-[#FFCD00]' 
+                  : `${textColor} hover:text-[#FFCD00] after:content-[""] after:absolute after:-bottom-1.5 after:left-0 after:w-full after:h-[2.5px] after:bg-[#FFCD00] after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300`
               }`
             }
           >
             Book Us
             <span className="absolute -top-1 -right-2.5 flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FFCD00] opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#FFCD00]"></span>
             </span>
           </NavLink>
           <NavLink
@@ -121,8 +118,8 @@ export default function Navbar() {
             className={({ isActive }) =>
               `hidden lg:block relative whitespace-nowrap font-body text-[14px] sm:text-[15px] font-bold tracking-wide transition-all duration-300 ${
                 isActive 
-                  ? 'text-accent after:content-[""] after:absolute after:-bottom-1 after:left-0 after:w-full after:h-[2px] after:bg-accent' 
-                  : 'text-white hover:text-accent after:content-[""] after:absolute after:-bottom-1 after:left-0 after:w-full after:h-[2px] after:bg-accent after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300'
+                  ? 'text-[#FFCD00] after:content-[""] after:absolute after:-bottom-1.5 after:left-0 after:w-full after:h-[2.5px] after:bg-[#FFCD00]' 
+                  : `${textColor} hover:text-[#FFCD00] after:content-[""] after:absolute after:-bottom-1.5 after:left-0 after:w-full after:h-[2.5px] after:bg-[#FFCD00] after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300`
               }`
             }
           >
@@ -130,19 +127,20 @@ export default function Navbar() {
           </NavLink>
         </div>
 
-        {/* Middle: Logo (Absolute Center) */}
-        <div className="flex justify-center items-center px-1.5 sm:px-3 shrink-0">
+        {/* Middle: Logo (Desktop Only - hidden on mobile) */}
+        <div className="hidden sm:flex justify-center items-center px-1.5 sm:px-3 shrink-0">
           <Logo light={true} compact={true} className="[&>img]:h-8 xs:[&>img]:h-9 sm:[&>img]:h-11 lg:[&>img]:h-13" />
         </div>
 
-        {/* Right Side: Phone, Night toggle, profile, menu */}
-        <div className="flex items-center justify-end gap-1.5 sm:gap-3 pr-0.5 sm:pr-2">
+        {/* Right Side: Call, Night toggle (desktop), profile, menu */}
+        <div className="flex items-center justify-end gap-2 xs:gap-2.5 sm:gap-3 pr-1 sm:pr-2">
 
           <button
             type="button"
             onClick={() => setIsCallModalOpen(true)}
-            className="flex h-8.5 w-8.5 sm:h-10 sm:w-auto items-center justify-center gap-1.5 rounded-xl border border-white/20 bg-white/10 backdrop-blur-md px-2 sm:px-3 text-white transition duration-300 hover:bg-[#FFCD00] hover:text-[#001e3d] hover:border-[#FFCD00] cursor-pointer shadow-sm active:scale-95"
+            className={`flex h-9 w-9 sm:h-10 sm:w-auto items-center justify-center gap-1.5 rounded-full sm:rounded-xl border ${borderColor} ${btnBg} backdrop-blur-md px-0 sm:px-3 ${btnText} transition duration-300 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] cursor-pointer shadow-sm active:scale-95 shrink-0`}
             aria-label="Call & Contact Options"
+            title="Call"
           >
             <PhoneIcon />
             <span className="hidden xl:inline text-xs sm:text-sm font-bold tracking-wide whitespace-nowrap">Get In Touch</span>
@@ -151,7 +149,7 @@ export default function Navbar() {
           <button
             type="button"
             onClick={toggleNightDive}
-            className="flex h-8.5 w-8.5 sm:h-10 sm:w-auto items-center justify-center gap-1.5 rounded-xl border border-white/20 bg-white/10 backdrop-blur-md px-2 sm:px-3 text-white transition duration-300 hover:bg-[#FFCD00] hover:text-[#001e3d] hover:border-[#FFCD00] shrink-0 cursor-pointer shadow-sm active:scale-95"
+            className={`hidden sm:flex h-8.5 w-8.5 sm:h-10 sm:w-auto items-center justify-center gap-1.5 rounded-xl border ${borderColor} ${btnBg} backdrop-blur-md px-2 sm:px-3 ${btnText} transition duration-300 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] shrink-0 cursor-pointer shadow-sm active:scale-95`}
             aria-label="Toggle Night Dive mode"
           >
             <ThemeToggle isNightDive={isNightDive} />
@@ -162,9 +160,9 @@ export default function Navbar() {
 
           <Link
             to={isAuthenticated ? '/dashboard/profile' : '/login'}
-            className="flex h-8.5 w-8.5 sm:h-10 sm:w-10 items-center justify-center rounded-xl border border-white/20 bg-white/10 backdrop-blur-md text-white transition duration-300 hover:bg-[#FFCD00] hover:text-[#001e3d] hover:border-[#FFCD00] shrink-0 shadow-sm active:scale-95"
+            className={`flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full sm:rounded-xl border ${borderColor} ${btnBg} backdrop-blur-md ${btnText} transition duration-300 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] shrink-0 shadow-sm active:scale-95`}
             aria-label={isAuthenticated ? 'Account' : 'Login'}
-            title={user?.displayName || user?.email || 'Account'}
+            title={user?.displayName || user?.email || 'Profile'}
           >
             {user?.photoURL ? (
               <img
@@ -179,7 +177,7 @@ export default function Navbar() {
 
           <button
             type="button"
-            className="flex h-8.5 w-8.5 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full border border-white/20 bg-white/10 backdrop-blur-md text-white transition duration-300 hover:bg-[#FFCD00] hover:text-[#001e3d] hover:border-[#FFCD00] lg:hidden active:scale-95 cursor-pointer"
+            className={`flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full border ${borderColor} ${btnBg} backdrop-blur-md ${btnText} transition duration-300 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] lg:hidden active:scale-95 cursor-pointer`}
             aria-label="Toggle menu"
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
@@ -212,11 +210,9 @@ export default function Navbar() {
                     onClick={() => setOpen(false)}
                     className={({ isActive }) =>
                       `rounded-xl px-4 py-3 font-heading text-[15px] font-bold transition duration-hover ${
-                        item.highlight
-                          ? 'bg-accent/20 text-accent'
-                          : isActive
-                          ? (isDarkBackground ? 'bg-white/10 text-white' : 'bg-navy/5 text-navy')
-                          : `${textColor} ${hoverBg}`
+                        isActive
+                          ? 'bg-white/15 text-white'
+                          : 'text-white hover:bg-white/10 hover:text-white'
                       }`
                     }
                   >
@@ -228,7 +224,7 @@ export default function Navbar() {
                     setOpen(false)
                     setIsCallModalOpen(true)
                   }}
-                  className={`rounded-xl px-4 py-3 font-heading text-[15px] font-bold transition duration-hover text-left flex items-center gap-2 text-accent bg-accent/10`}
+                  className="rounded-xl px-4 py-3 font-heading text-[15px] font-bold transition duration-hover text-left flex items-center gap-2 text-white hover:bg-white/10 cursor-pointer"
                 >
                   <PhoneIcon />
                   Call / Connect Options
@@ -238,7 +234,7 @@ export default function Navbar() {
                     toggleNightDive()
                     setOpen(false)
                   }}
-                  className={`rounded-xl px-4 py-3 font-heading text-[15px] font-bold transition duration-hover text-left ${textColor} ${hoverBg}`}
+                  className="rounded-xl px-4 py-3 font-heading text-[15px] font-bold transition duration-hover text-left text-white hover:bg-white/10 cursor-pointer"
                 >
                   {isNightDive ? '☀️ Switch to Day Dive' : '🌙 Switch to Night Dive'}
                 </button>

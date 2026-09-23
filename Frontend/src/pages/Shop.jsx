@@ -221,10 +221,8 @@ export default function Shop() {
             </button>
           ))}
         </div>
-      </section>
-
-      {/* 3. PRODUCT LISTINGS */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+      </section>      {/* 3. PRODUCT LISTINGS */}
+      <section className="mx-auto max-w-7xl px-3.5 sm:px-6 lg:px-8 py-8">
         <div className="mb-6 flex justify-between items-center text-xs font-bold text-navy/60">
           <span>Showing {filteredProducts.length} product{filteredProducts.length !== 1 && 's'}</span>
           {selectedCategory !== 'all' && (
@@ -238,7 +236,7 @@ export default function Shop() {
             <Button onClick={() => { setSelectedCategory('all'); setSearchQuery('') }} className="bg-navy text-white">Reset Filters</Button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
             {filteredProducts.map((product) => (
               <ProductCardItem
                 key={product.id}
@@ -331,11 +329,11 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
       onClick={() => navigate(`/shop/${product.id}`)}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="group rounded-[32px] bg-white border border-navy/5 p-6 shadow-card hover:shadow-float transition duration-300 flex flex-col justify-between cursor-pointer"
+      className="group rounded-2xl sm:rounded-[32px] bg-white border border-navy/5 p-3 sm:p-6 shadow-card hover:shadow-float transition duration-300 flex flex-col justify-between cursor-pointer"
     >
       <div>
-        <div className="relative mb-5">
-          <div className="aspect-[4/5] w-full rounded-2xl overflow-hidden bg-[#F0F2F5] flex items-center justify-center p-4 relative">
+        <div className="relative mb-3 sm:mb-5">
+          <div className="aspect-[4/5] w-full rounded-xl sm:rounded-2xl overflow-hidden bg-[#F0F2F5] flex items-center justify-center p-2.5 sm:p-4 relative">
             <img
               src={product.image}
               alt={product.title}
@@ -379,43 +377,42 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
             )}
           </div>
           {product.tag && (
-            <span className="absolute top-3 left-3 bg-white/95 backdrop-blur-md px-3 py-1 text-[11px] font-bold text-navy rounded-full shadow-sm z-10">
+            <span className="absolute top-2 left-2 sm:top-3 sm:left-3 bg-white/95 backdrop-blur-md px-2 py-0.5 sm:px-3 sm:py-1 text-[9px] sm:text-[11px] font-bold text-navy rounded-full shadow-sm z-10">
               {product.tag}
             </span>
           )}
         </div>
 
-        <div className="mb-4">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-accent block mb-1">{product.category}</span>
-          <h3 className="font-heading text-xl font-bold text-navy leading-snug group-hover:text-accent transition">{product.title}</h3>
-          <p className="text-xs text-navy/70 line-clamp-2 mt-2 leading-relaxed">{product.description}</p>
-          <div className="mt-4 pt-3 border-t border-navy/5 flex items-center justify-between text-xs">
-            <div className="flex items-center gap-1.5">
-              <span className="text-navy/50 text-[10px] uppercase font-bold mr-1">Colors:</span>
-              {product.colors?.slice(0, 4).map((c, idx) => (
-                <span key={idx} className="w-3.5 h-3.5 rounded-full border border-white shadow-sm" style={{ backgroundColor: c.hex }} />
+        <div className="mb-2 sm:mb-4">
+          <span className="text-[9px] sm:text-[11px] font-bold uppercase tracking-wider text-accent block mb-0.5 sm:mb-1">{product.category}</span>
+          <h3 className="font-heading text-xs xs:text-sm sm:text-xl font-bold text-navy leading-tight sm:leading-snug group-hover:text-accent transition line-clamp-2 sm:line-clamp-none">{product.title}</h3>
+          <p className="text-[10px] sm:text-xs text-navy/70 line-clamp-1 sm:line-clamp-2 mt-1 sm:mt-2 leading-relaxed hidden xs:block">{product.description}</p>
+          <div className="mt-2 sm:mt-4 pt-2 sm:pt-3 border-t border-navy/5 flex flex-wrap items-center justify-between text-[9px] sm:text-xs gap-1">
+            <div className="flex items-center gap-1">
+              <span className="text-navy/50 text-[9px] sm:text-[10px] uppercase font-bold mr-0.5">Colors:</span>
+              {product.colors?.slice(0, 3).map((c, idx) => (
+                <span key={idx} className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 rounded-full border border-white shadow-sm" style={{ backgroundColor: c.hex }} />
               ))}
             </div>
-            <div className="text-navy/60 font-semibold text-[11px]">
-              Size: {product.sizes?.[0] || 'One Size'}
+            <div className="text-navy/60 font-semibold text-[9px] sm:text-[11px]">
+              {product.sizes?.[0] || 'One Size'}
             </div>
           </div>
         </div>
       </div>
 
-      <div className="pt-4 border-t border-navy/10 flex items-center justify-between gap-3">
-        <span className="text-[10px] text-emerald-600 font-bold">Inquire within</span>
-        <div className="flex items-center gap-2">
+      <div className="pt-2 sm:pt-4 border-t border-navy/10 flex items-center justify-between gap-1.5 sm:gap-3">
+        <span className="text-[9px] sm:text-[10px] text-emerald-600 font-bold hidden sm:inline">Inquire within</span>
+        <div className="flex items-center gap-1.5 sm:gap-2 ml-auto sm:ml-0">
           <button
             type="button"
             onClick={onToggleWishlist}
-            className="w-9 h-9 rounded-full bg-navy/10 hover:bg-navy border border-navy/20 text-navy hover:text-white flex items-center justify-center shadow-sm transition duration-200 hover:scale-110 active:scale-95 cursor-pointer shrink-0"
+            className="w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-navy/10 hover:bg-navy border border-navy/20 text-navy hover:text-white flex items-center justify-center shadow-sm transition duration-200 hover:scale-110 active:scale-95 cursor-pointer shrink-0"
             aria-label="Wishlist"
             title={isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}
           >
             <svg
-              width="18"
-              height="18"
+              className="w-3.5 h-3.5 sm:w-[18px] sm:h-[18px]"
               viewBox="0 0 24 24"
               fill={isWishlisted ? '#FFCD00' : 'none'}
               stroke={isWishlisted ? '#FFCD00' : 'currentColor'}
@@ -426,8 +423,8 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
               <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
             </svg>
           </button>
-          <button onClick={(e) => onQuickAdd(product, e)} className="rounded-full bg-navy text-white px-5 py-2.5 text-xs font-bold hover:bg-accent hover:text-navy transition shadow-sm flex items-center gap-1.5 cursor-pointer">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" /><line x1="3" y1="6" x2="21" y2="6" /><path d="M16 10a4 4 0 01-8 0" /></svg>
+          <button onClick={(e) => onQuickAdd(product, e)} className="rounded-full bg-navy text-white px-3 py-1.5 sm:px-5 sm:py-2.5 text-[10px] sm:text-xs font-bold hover:bg-accent hover:text-navy transition shadow-sm flex items-center gap-1 cursor-pointer whitespace-nowrap">
+            <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" /><line x1="3" y1="6" x2="21" y2="6" /><path d="M16 10a4 4 0 0 1-8 0" /></svg>
             Add
           </button>
         </div>

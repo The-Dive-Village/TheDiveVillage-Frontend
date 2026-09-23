@@ -123,10 +123,10 @@ export default function GalleryPreview() {
         <button
           type="button"
           onClick={handlePrev}
-          className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-navy/80 border border-white/30 text-white flex items-center justify-center shadow-2xl backdrop-blur-md hover:bg-accent hover:text-navy transition-all duration-300 cursor-pointer"
+          className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 z-30 w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-navy/80 border border-white/30 text-white flex items-center justify-center shadow-2xl backdrop-blur-md hover:bg-accent hover:text-navy transition-all duration-300 cursor-pointer"
           aria-label="Previous Gallery Image"
         >
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="sm:w-[22px] sm:h-[22px]">
             <path d="M15 18l-6-6 6-6" />
           </svg>
         </button>
@@ -134,18 +134,18 @@ export default function GalleryPreview() {
         <button
           type="button"
           onClick={handleNext}
-          className="absolute right-3 sm:left-auto sm:right-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-navy/80 border border-white/30 text-white flex items-center justify-center shadow-2xl backdrop-blur-md hover:bg-accent hover:text-navy transition-all duration-300 cursor-pointer"
+          className="absolute right-2 sm:left-auto sm:right-6 top-1/2 -translate-y-1/2 z-30 w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-navy/80 border border-white/30 text-white flex items-center justify-center shadow-2xl backdrop-blur-md hover:bg-accent hover:text-navy transition-all duration-300 cursor-pointer"
           aria-label="Next Gallery Image"
         >
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="sm:w-[22px] sm:h-[22px]">
             <path d="M9 18l6-6-6-6" />
           </svg>
         </button>
 
         {/* Fade edges */}
-        <div className="absolute left-0 top-0 bottom-0 w-24 z-10 pointer-events-none"
+        <div className="absolute left-0 top-0 bottom-0 w-12 sm:w-24 z-10 pointer-events-none"
           style={{ background: 'linear-gradient(to right, rgba(0,15,40,0.8), transparent)' }} />
-        <div className="absolute right-0 top-0 bottom-0 w-24 z-10 pointer-events-none"
+        <div className="absolute right-0 top-0 bottom-0 w-12 sm:w-24 z-10 pointer-events-none"
           style={{ background: 'linear-gradient(to left, rgba(0,15,40,0.8), transparent)' }} />
 
         <div 
@@ -154,14 +154,14 @@ export default function GalleryPreview() {
           onMouseLeave={handlePointerLeave}
           onMouseUp={handlePointerUp}
           onMouseMove={handlePointerMove}
-          className="flex gap-4 overflow-x-auto scrollbar-none no-scrollbar cursor-grab active:cursor-grabbing select-none py-2 px-6"
+          className="flex gap-2.5 sm:gap-4 overflow-x-auto scrollbar-none no-scrollbar cursor-grab active:cursor-grabbing select-none py-2 px-3 sm:px-6"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           {[...previewItems, ...previewItems, ...previewItems].map((item, i) => (
             <div
               key={`${item.id}-${i}`}
               onClick={goToGallery}
-              className="relative flex-shrink-0 w-[280px] h-[380px] rounded-2xl overflow-hidden border border-white/20 shadow-2xl group cursor-pointer bg-navy/20"
+              className="relative flex-shrink-0 w-[44vw] min-w-[155px] max-w-[210px] aspect-square sm:aspect-auto sm:w-[230px] sm:h-[310px] lg:w-[260px] lg:h-[350px] rounded-2xl overflow-hidden border border-white/20 shadow-2xl group cursor-pointer bg-navy/20"
             >
               {item.type === 'video' ? (
                 <video
@@ -181,12 +181,12 @@ export default function GalleryPreview() {
                 />
               )}
               {/* Overlay with Title and Serial Number */}
-              <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/30 to-transparent flex flex-col justify-end p-4">
-                <div className="flex items-center gap-2">
-                  <span className="text-[11px] font-bold font-mono text-accent bg-black/40 px-2 py-0.5 rounded border border-white/10 shrink-0">
+              <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/30 to-transparent flex flex-col justify-end p-2.5 sm:p-4">
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  <span className="text-[9px] sm:text-[11px] font-bold font-mono text-accent bg-black/40 px-1.5 py-0.5 rounded border border-white/10 shrink-0">
                     #{String((i % previewItems.length) + 1).padStart(2, '0')}
                   </span>
-                  <h4 className="text-white font-heading font-bold text-base leading-tight drop-shadow-md truncate">
+                  <h4 className="text-white font-heading font-bold text-xs sm:text-base leading-tight drop-shadow-md truncate">
                     {item.title}
                   </h4>
                 </div>

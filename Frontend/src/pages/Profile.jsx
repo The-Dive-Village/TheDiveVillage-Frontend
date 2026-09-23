@@ -36,32 +36,32 @@ export default function Profile() {
 
   return (
     <div className="max-w-3xl text-white">
-      <div className="space-y-10">
+      <div className="space-y-6 sm:space-y-10">
         
         {/* Main User Header */}
-        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-8 pb-10 border-b border-white/10">
+        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-8 pb-6 sm:pb-10 border-b border-white/10">
           {user.photoURL ? (
             <img
               src={user.photoURL}
               alt={user.displayName || 'User Profile'}
-              className="h-28 w-28 rounded-full border-2 border-accent/40 object-cover shadow-md"
+              className="h-20 w-20 sm:h-28 sm:w-28 rounded-full border-2 border-accent/40 object-cover shadow-md shrink-0"
             />
           ) : (
-            <div className="flex h-28 w-28 shrink-0 items-center justify-center rounded-full bg-[#00223D] font-heading text-4xl font-bold text-accent border-2 border-accent/30 shadow-md">
+            <div className="flex h-20 w-20 sm:h-28 sm:w-28 shrink-0 items-center justify-center rounded-full bg-[#00223D] font-heading text-3xl sm:text-4xl font-bold text-accent border-2 border-accent/30 shadow-md">
               {(user.displayName || user.email || 'D')[0].toUpperCase()}
             </div>
           )}
 
-          <div className="flex-1 text-center sm:text-left pt-2">
-            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 mb-2">
-              <h1 className="font-heading text-3xl sm:text-4xl font-bold text-white">
+          <div className="flex-1 text-center sm:text-left pt-1 sm:pt-2 min-w-0 w-full">
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 sm:gap-3 mb-2">
+              <h1 className="font-heading text-2xl sm:text-4xl font-bold text-white break-words">
                 {user.displayName || 'Diver'}
               </h1>
-              <span className="rounded-full bg-accent text-[#001e3d] px-3.5 py-1 text-[11px] font-extrabold uppercase tracking-wider shadow-sm">
+              <span className="rounded-full bg-accent text-[#001e3d] px-3 py-0.5 sm:px-3.5 sm:py-1 text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider shadow-sm">
                 {role || 'Customer'}
               </span>
               {user.emailVerified && (
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/20 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-300 border border-emerald-400/30">
+                <span className="inline-flex items-center gap-1 sm:gap-1.5 rounded-full bg-emerald-500/20 px-2.5 py-0.5 sm:px-3 sm:py-1 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-emerald-300 border border-emerald-400/30">
                   <svg className="h-3 w-3 fill-emerald-400" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
@@ -69,45 +69,45 @@ export default function Profile() {
                 </span>
               )}
             </div>
-            <p className="text-sm font-semibold text-white/80 mb-2">{user.email}</p>
-            <p className="text-xs text-cyan-400/80 font-mono tracking-wider uppercase">ID: {user.uid}</p>
+            <p className="text-xs sm:text-sm font-semibold text-white/80 mb-1 sm:mb-2 break-all">{user.email}</p>
+            <p className="text-[10px] sm:text-xs text-cyan-400/80 font-mono tracking-wider uppercase break-all">ID: {user.uid}</p>
           </div>
         </div>
 
         {/* Detailed Metadata Cards */}
         <div>
-          <h2 className="font-heading text-xl font-bold text-white mb-5 flex items-center gap-2">
+          <h2 className="font-heading text-lg sm:text-xl font-bold text-white mb-3 sm:mb-5 flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-accent" />
             Account Details
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="rounded-2xl bg-[#00223D]/80 p-5 border border-white/10 hover:border-cyan-400/30 transition-all shadow-inner">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+            <div className="rounded-xl sm:rounded-2xl bg-[#00223D]/80 p-4 sm:p-5 border border-white/10 hover:border-cyan-400/30 transition-all shadow-inner">
               <span className="block text-[10px] font-extrabold uppercase tracking-widest text-cyan-400/90">Auth Provider</span>
-              <span className="mt-1.5 block font-heading text-base font-bold text-white capitalize">
+              <span className="mt-1 block font-heading text-sm sm:text-base font-bold text-white capitalize break-words">
                 {user.providerId === 'google.com' ? 'Google Account' : user.providerId || 'Password'}
               </span>
             </div>
 
-            <div className="rounded-2xl bg-[#00223D]/80 p-5 border border-white/10 hover:border-cyan-400/30 transition-all shadow-inner">
+            <div className="rounded-xl sm:rounded-2xl bg-[#00223D]/80 p-4 sm:p-5 border border-white/10 hover:border-cyan-400/30 transition-all shadow-inner">
               <span className="block text-[10px] font-extrabold uppercase tracking-widest text-cyan-400/90">Email Status</span>
-              <span className={`mt-1.5 block font-heading text-base font-bold ${user.emailVerified ? 'text-emerald-400' : 'text-amber-400'}`}>
+              <span className={`mt-1 block font-heading text-sm sm:text-base font-bold ${user.emailVerified ? 'text-emerald-400' : 'text-amber-400'}`}>
                 {user.emailVerified ? 'Verified Account' : 'Unverified'}
               </span>
             </div>
 
             {user.creationTime && (
-              <div className="rounded-2xl bg-[#00223D]/80 p-5 border border-white/10 hover:border-cyan-400/30 transition-all shadow-inner">
+              <div className="rounded-xl sm:rounded-2xl bg-[#00223D]/80 p-4 sm:p-5 border border-white/10 hover:border-cyan-400/30 transition-all shadow-inner">
                 <span className="block text-[10px] font-extrabold uppercase tracking-widest text-cyan-400/90">Member Since</span>
-                <span className="mt-1.5 block font-heading text-base font-bold text-white">
+                <span className="mt-1 block font-heading text-sm sm:text-base font-bold text-white">
                   {new Date(user.creationTime).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
                 </span>
               </div>
             )}
 
             {user.lastSignInTime && (
-              <div className="rounded-2xl bg-[#00223D]/80 p-5 border border-white/10 hover:border-cyan-400/30 transition-all shadow-inner">
+              <div className="rounded-xl sm:rounded-2xl bg-[#00223D]/80 p-4 sm:p-5 border border-white/10 hover:border-cyan-400/30 transition-all shadow-inner">
                 <span className="block text-[10px] font-extrabold uppercase tracking-widest text-cyan-400/90">Last Active</span>
-                <span className="mt-1.5 block font-heading text-base font-bold text-white">
+                <span className="mt-1 block font-heading text-sm sm:text-base font-bold text-white">
                   {new Date(user.lastSignInTime).toLocaleString(undefined, { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                 </span>
               </div>
@@ -116,10 +116,10 @@ export default function Profile() {
         </div>
 
         {/* Action Footer */}
-        <div className="pt-6 border-t border-white/10 flex justify-end">
+        <div className="pt-4 sm:pt-6 border-t border-white/10 flex justify-center sm:justify-end">
           <button
             onClick={handleLogout}
-            className="rounded-full bg-white/10 border border-white/20 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] px-8 py-3.5 text-sm font-bold text-white transition-all duration-200 shadow-md cursor-pointer"
+            className="w-full sm:w-auto rounded-full bg-white/10 border border-white/20 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] px-6 sm:px-8 py-3 sm:py-3.5 text-xs sm:text-sm font-bold text-white transition-all duration-200 shadow-md cursor-pointer text-center"
           >
             Sign Out
           </button>

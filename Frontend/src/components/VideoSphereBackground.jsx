@@ -23,7 +23,7 @@ function getOrCreateDomVideoContainer() {
   return container
 }
 
-function useDirectVideoTexture(src, playbackRate = 0.7, priority = false) {
+function useDirectVideoTexture(src, playbackRate = 0.5, priority = false) {
   const [texture, setTexture] = useState(null)
   const hasNewFrameRef = useRef(false)
   const lastTimeRef = useRef(-1)
@@ -196,21 +196,34 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
   const meshRef = useRef()
   const meshRef2 = useRef()
   const meshRef3 = useRef()
-  const targetRotation = useRef({ x: 0, y: 0 })
+  const location = useLocation()
+  const isHome = location.pathname === '/'
+  const isAbout = location.pathname === '/about'
+  const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth < 640)
+
+  const INITIAL_YAW = Math.PI / 2.65 - (Math.PI * 1.1)
+  const INITIAL_PITCH = isAbout ? -(Math.PI / 6) : (Math.PI / 17.1)
+
+  const targetRotation = useRef({ x: INITIAL_PITCH, y: INITIAL_YAW })
   const targetOpacity2 = useRef(0)
   const targetOpacity3 = useRef(0)
   const vid2PlayingRef = useRef(false)
   const vid3PlayingRef = useRef(false)
   const [loadSecondary, setLoadSecondary] = useState(false)
-  const location = useLocation()
-  const isHome = location.pathname === '/'
-  const isAbout = location.pathname === '/about'
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640)
+    }
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   // Primary video is prioritized with 'auto' preload and high priority (calm slowed playback)
-  const { texture, hasNewFrameRef: hasNewFrame1, lastTimeRef: lastTime1 } = useDirectVideoTexture(videoSrc, 0.7, true)
-  // Secondary videos are strictly lazy-loaded only when user scrolls or needs them
-  const { texture: texture2, hasNewFrameRef: hasNewFrame2, lastTimeRef: lastTime2 } = useDirectVideoTexture(isHome && !isNightDive && loadSecondary ? bookFile : null, 0.7, false)
-  const { texture: texture3, hasNewFrameRef: hasNewFrame3, lastTimeRef: lastTime3 } = useDirectVideoTexture(isHome && !isNightDive && loadSecondary ? turtleVideo : null, 0.7, false)
+  const { texture, hasNewFrameRef: hasNewFrame1, lastTimeRef: lastTime1 } = useDirectVideoTexture(videoSrc, 0.5, true)
+  // Secondary videos are strictly lazy-loaded only when user scrolls or needs them ON DESKTOP
+  const { texture: texture2, hasNewFrameRef: hasNewFrame2, lastTimeRef: lastTime2 } = useDirectVideoTexture(!isMobile && isHome && !isNightDive && loadSecondary ? bookFile : null, 0.5, false)
+  const { texture: texture3, hasNewFrameRef: hasNewFrame3, lastTimeRef: lastTime3 } = useDirectVideoTexture(!isMobile && isHome && !isNightDive && loadSecondary ? turtleVideo : null, 0.5, false)
 
   // Flip turtle video texture horizontally so it displays correctly on the sphere
   useEffect(() => {
@@ -224,9 +237,17 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
 
   useEffect(() => {
     const handleScroll = () => {
+      const isMobileScreen = typeof window !== 'undefined' && window.innerWidth < 640
+      if (isMobileScreen) {
+        // Keep 360 video background completely static on mobile during scroll
+        targetRotation.current.y = INITIAL_YAW
+        targetRotation.current.x = INITIAL_PITCH
+        targetOpacity2.current = 0
+        targetOpacity3.current = 0
+        return
+      }
+
       const scrollY = window.scrollY
-      const INITIAL_YAW = Math.PI / 2.65 - (Math.PI * 1.1)
-      const INITIAL_PITCH = isAbout ? -(Math.PI / 6) : (Math.PI / 17.1)
 
       const aboutEl = document.getElementById('about-section')
       const programsEl = document.getElementById('programs-section')
@@ -300,7 +321,7 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
     handleScroll()
 
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [isAbout, isHome, loadSecondary])
+  }, [isAbout, isHome, loadSecondary, INITIAL_PITCH, INITIAL_YAW])
 
   // --- DRAG LOGIC ---
   const isDragging = useRef(false)
@@ -309,6 +330,8 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
 
   useEffect(() => {
     const onPointerDown = (e) => {
+      // Disable body pointer dragging on mobile so scrolling gestures don't rotate the 360 sphere
+      if (window.innerWidth < 640) return
       if (e.target.closest('button, a, input, textarea, select, [role="button"], .joystick-container')) {
         return
       }
@@ -354,8 +377,8 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
         }
       }
 
-      // 2. Secondary texture 2 update with state-transition play/pause
-      if (texture2 && texture2.image) {
+      // 2. Secondary texture 2 update with state-transition play/pause (desktop only)
+      if (!isMobile && texture2 && texture2.image) {
         const vid2 = texture2.image
         if (targetOpacity2.current > 0.01) {
           if (vid2.paused) vid2.play().catch(() => { })
@@ -374,8 +397,8 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
         }
       }
 
-      // 3. Secondary texture 3 update with state-transition play/pause
-      if (texture3 && texture3.image) {
+      // 3. Secondary texture 3 update with state-transition play/pause (desktop only)
+      if (!isMobile && texture3 && texture3.image) {
         const vid3 = texture3.image
         if (targetOpacity3.current > 0.01) {
           if (vid3.paused) vid3.play().catch(() => { })
@@ -405,13 +428,13 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
       meshRef.current.rotation.y += (finalTargetY - meshRef.current.rotation.y) * delta * 5
       meshRef.current.rotation.x += (finalTargetX - meshRef.current.rotation.x) * delta * 5
 
-      if (meshRef2.current && isHome) {
+      if (!isMobile && meshRef2.current && isHome) {
         meshRef2.current.rotation.y = meshRef.current.rotation.y - (Math.PI / 2.5)
         meshRef2.current.rotation.x = meshRef.current.rotation.x - (Math.PI / 1.68)
         meshRef2.current.material.opacity += (targetOpacity2.current - meshRef2.current.material.opacity) * delta * 2.5
       }
 
-      if (meshRef3.current && isHome) {
+      if (!isMobile && meshRef3.current && isHome) {
         meshRef3.current.rotation.y = meshRef.current.rotation.y + (Math.PI * 1.45)
         meshRef3.current.rotation.x = meshRef.current.rotation.x - (Math.PI * 1.1)
         meshRef3.current.material.opacity += (targetOpacity3.current - meshRef3.current.material.opacity) * delta * 2.5
@@ -425,7 +448,7 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
         <sphereGeometry args={[500, 60, 40]} />
         <meshBasicMaterial map={texture} side={THREE.BackSide} transparent={false} opacity={1} depthWrite={false} color="#ffffff" />
       </mesh>
-      {isHome && !isNightDive && (
+      {!isMobile && isHome && !isNightDive && (
         <>
           <mesh ref={meshRef2} scale={[-0.99, 0.99, 0.99]} visible={Boolean(texture2)}>
             <sphereGeometry args={[500, 60, 40]} />
@@ -444,14 +467,17 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
 export default function VideoSphereBackground() {
   const [mounted, setMounted] = useState(false)
   // Audio state: Unmuted by default unless the user has explicitly muted it
-  const [isMuted, setIsMuted] = useState(() => {
-    return localStorage.getItem('dive_village_user_muted') === 'true'
-  })
+  const [isMuted, setIsMuted] = useState(false)
   const [isNightDive, setIsNightDive] = useState(false)
   const location = useLocation()
   const joystickVelocity = useRef({ x: 0, y: 0 })
   const audioRef = useRef(null)
+  const isMutedRef = useRef(isMuted)
   const nightVideoRef = useRef(null)
+
+  useEffect(() => {
+    isMutedRef.current = isMuted
+  }, [isMuted])
 
   useEffect(() => {
     setMounted(true)
@@ -472,17 +498,17 @@ export default function VideoSphereBackground() {
     if (video) {
       video.muted = true
       video.defaultMuted = true
-      video.playbackRate = 0.7
+      video.playbackRate = 0.5
       if (isNightDive) {
         const playPromise = video.play()
         if (playPromise !== undefined) {
           playPromise.then(() => {
-            if (video) video.playbackRate = 0.7
+            if (video) video.playbackRate = 0.5
           }).catch((err) => {
             console.warn('Night dive video play notice:', err)
             const handleInteract = () => {
               if (video) {
-                video.playbackRate = 0.7
+                video.playbackRate = 0.5
                 video.play().catch(() => { })
               }
               window.removeEventListener('pointerdown', handleInteract)
@@ -498,58 +524,79 @@ export default function VideoSphereBackground() {
     }
   }, [isNightDive])
 
-  // Automatic ambient audio playback unless explicitly muted
+  // Automatic ambient audio playback with robust browser autoplay policy handling
   useEffect(() => {
     const audio = audioRef.current
     if (!audio) return
 
-    audio.muted = isMuted
-    audio.volume = isMuted ? 0 : 0.5
+    let isCleanedUp = false
+    const validUnlockEvents = ['click', 'pointerdown', 'mousedown', 'touchstart', 'touchend', 'keydown']
 
-    if (!isMuted) {
-      const playPromise = audio.play()
-      if (playPromise !== undefined) {
-        playPromise.catch((err) => {
-          // Autoplay policy prevented immediate playback without user gesture
-          console.log('Autoplay waiting for initial user interaction:', err)
-          const unlockAudio = () => {
-            if (audioRef.current && localStorage.getItem('dive_village_user_muted') !== 'true') {
-              audioRef.current.muted = false
-              audioRef.current.volume = 0.5
-              audioRef.current.play().catch(() => { })
-            }
-            window.removeEventListener('pointerdown', unlockAudio)
-            window.removeEventListener('click', unlockAudio)
-            window.removeEventListener('touchstart', unlockAudio)
-            window.removeEventListener('keydown', unlockAudio)
-            window.removeEventListener('scroll', unlockAudio)
-          }
+    const removeUnlockListeners = () => {
+      validUnlockEvents.forEach((evt) => {
+        window.removeEventListener(evt, handleFirstInteraction, true)
+        document.removeEventListener(evt, handleFirstInteraction, true)
+      })
+    }
 
-          window.addEventListener('pointerdown', unlockAudio, { once: true })
-          window.addEventListener('click', unlockAudio, { once: true })
-          window.addEventListener('touchstart', unlockAudio, { once: true })
-          window.addEventListener('keydown', unlockAudio, { once: true })
-          window.addEventListener('scroll', unlockAudio, { once: true })
+    const handleFirstInteraction = () => {
+      if (isCleanedUp || isMutedRef.current) return
+      const el = audioRef.current
+      if (!el) return
+
+      el.muted = false
+      el.volume = 0.5
+      const p = el.play()
+      if (p !== undefined) {
+        p.then(() => {
+          removeUnlockListeners()
+        }).catch((err) => {
+          console.debug('Autoplay unlock retry on next interaction:', err)
         })
       }
+    }
+
+    if (!isMuted) {
+      audio.muted = false
+      audio.volume = 0.5
+      const playPromise = audio.play()
+
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            // Started unmuted successfully
+          })
+          .catch(() => {
+            // Autoplay blocked by browser policy: listen for genuine user interaction to unlock
+            validUnlockEvents.forEach((evt) => {
+              window.addEventListener(evt, handleFirstInteraction, { passive: true, capture: true })
+              document.addEventListener(evt, handleFirstInteraction, { passive: true, capture: true })
+            })
+          })
+      }
     } else {
+      removeUnlockListeners()
       audio.pause()
       audio.currentTime = 0
+    }
+
+    return () => {
+      isCleanedUp = true
+      removeUnlockListeners()
     }
   }, [isMuted])
 
   const handleToggleAudio = () => {
     setIsMuted((prev) => {
       const next = !prev
+      isMutedRef.current = next
       if (next) {
-        localStorage.setItem('dive_village_user_muted', 'true')
         if (audioRef.current) {
           audioRef.current.muted = true
           audioRef.current.volume = 0
           audioRef.current.pause()
         }
       } else {
-        localStorage.removeItem('dive_village_user_muted')
         if (audioRef.current) {
           audioRef.current.muted = false
           audioRef.current.volume = 0.5
@@ -584,7 +631,7 @@ export default function VideoSphereBackground() {
 
   return (
     <>
-      <audio ref={audioRef} src={underwaterAudio} loop playsInline />
+      <audio ref={audioRef} src={underwaterAudio} loop preload="auto" playsInline />
       <div className="fixed inset-0 -z-10 pointer-events-none">
         <div
           className="h-full w-full overflow-hidden"

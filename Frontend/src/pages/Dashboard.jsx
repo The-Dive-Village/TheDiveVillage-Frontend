@@ -66,15 +66,15 @@ export default function Dashboard() {
   ]
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-6 sm:space-y-10">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-8 border-b border-white/10 gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 sm:pb-8 border-b border-white/10 gap-3 sm:gap-4">
         <div>
-          <span className="text-xs font-bold uppercase tracking-widest text-accent mb-1 block">Diver Dashboard</span>
-          <h1 className="font-heading text-3xl sm:text-4xl font-bold text-white">
+          <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-accent mb-0.5 sm:mb-1 block">Diver Dashboard</span>
+          <h1 className="font-heading text-2xl sm:text-4xl font-bold text-white">
             Hello, {user?.displayName || 'Diver'}
           </h1>
-          <p className="mt-1 text-sm text-white/70 font-medium">
+          <p className="mt-1 text-xs sm:text-sm text-white/70 font-medium">
             Welcome to your dive dashboard overview. Track your gear, wishlist, orders, and training.
           </p>
         </div>
@@ -82,7 +82,7 @@ export default function Dashboard() {
         <div className="flex items-center gap-3">
           <Link
             to="/shop"
-            className="rounded-full bg-accent hover:bg-white text-navy px-5 py-2.5 text-xs font-extrabold transition shadow-md whitespace-nowrap"
+            className="w-full sm:w-auto text-center rounded-full bg-accent hover:bg-white text-navy px-4 sm:px-5 py-2 sm:py-2.5 text-xs font-extrabold transition shadow-md whitespace-nowrap"
           >
             Explore Shop →
           </Link>
@@ -90,27 +90,27 @@ export default function Dashboard() {
       </div>
 
       {/* Metrics Cards Grid */}
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
         {stats.map((stat) => (
           <Link
             key={stat.label}
             to={stat.to}
-            className="group rounded-3xl bg-[#00223D]/80 hover:bg-[#002847] p-6 border border-white/10 hover:border-accent/40 transition-all duration-200 shadow-md flex flex-col justify-between cursor-pointer"
+            className="group rounded-2xl sm:rounded-3xl bg-[#00223D]/80 hover:bg-[#002847] p-3.5 sm:p-6 border border-white/10 hover:border-accent/40 transition-all duration-200 shadow-md flex flex-col justify-between cursor-pointer"
           >
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-xs font-extrabold text-cyan-400/90 uppercase tracking-wider">{stat.label}</span>
-              <div className="w-10 h-10 rounded-2xl bg-white/10 group-hover:bg-accent/20 flex items-center justify-center border border-white/10 transition">
+            <div className="flex items-center justify-between mb-2.5 sm:mb-4">
+              <span className="text-[10px] sm:text-xs font-extrabold text-cyan-400/90 uppercase tracking-wider">{stat.label}</span>
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-white/10 group-hover:bg-accent/20 flex items-center justify-center border border-white/10 transition shrink-0">
                 {stat.icon}
               </div>
             </div>
 
             <div>
-              <p className="font-heading text-3xl font-bold text-white group-hover:text-accent transition">
+              <p className="font-heading text-2xl sm:text-3xl font-bold text-white group-hover:text-accent transition">
                 {stat.value}
               </p>
-              <p className="mt-1 text-xs font-semibold text-white/60 flex items-center justify-between">
-                <span>{stat.subtext}</span>
-                <span className="group-hover:translate-x-1 text-accent transition-transform">→</span>
+              <p className="mt-1 text-[10px] sm:text-xs font-semibold text-white/60 flex items-center justify-between">
+                <span className="truncate">{stat.subtext}</span>
+                <span className="group-hover:translate-x-1 text-accent transition-transform ml-1">→</span>
               </p>
             </div>
           </Link>
@@ -118,7 +118,7 @@ export default function Dashboard() {
       </div>
 
       {/* Dynamic Sections */}
-      <div className="grid lg:grid-cols-12 gap-8">
+      <div className="grid lg:grid-cols-12 gap-6 sm:gap-8">
         
         {/* Left Column: Recent Wishlist or Suggestions */}
         <div className="lg:col-span-7 space-y-6">

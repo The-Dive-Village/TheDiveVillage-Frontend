@@ -46,14 +46,14 @@ export default function AllCourses() {
         </p>
       </div>
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-24 grid md:grid-cols-3 gap-8">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-16 sm:mb-24 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
         {CATEGORIES.map((cat, i) => (
           <motion.div 
             key={i}
             initial={reduce ? false : { opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
-            className="group block relative rounded-[40px] overflow-hidden aspect-[3/4] shadow-xl bg-navy"
+            className="group block relative rounded-3xl sm:rounded-[40px] overflow-hidden aspect-[4/3] xs:aspect-[16/11] sm:aspect-[3/4] shadow-xl bg-navy"
           >
             {cat.video ? (
               <video
@@ -68,12 +68,12 @@ export default function AllCourses() {
             ) : (
               <img src={cat.img} alt={cat.title} className="w-full h-full object-cover transition duration-700 group-hover:scale-110" />
             )}
-            <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/30 to-transparent pointer-events-none"></div>
-            <div className="absolute inset-0 p-8 flex flex-col justify-end">
-              <h2 className="font-serif text-4xl text-white mb-2">{cat.title}</h2>
-              <p className="text-white/80 mb-6">{cat.desc}</p>
-              <Button as={Link} to={cat.link} variant="glass">
-                Explore {cat.title}
+            <div className="absolute inset-0 bg-gradient-to-t from-navy/95 via-navy/40 to-transparent pointer-events-none"></div>
+            <div className="absolute inset-0 p-5 sm:p-8 flex flex-col justify-end">
+              <h2 className="font-serif text-2xl xs:text-3xl sm:text-4xl text-white mb-1.5 sm:mb-2 leading-tight">{cat.title}</h2>
+              <p className="text-white/85 text-xs sm:text-sm mb-4 sm:mb-6 line-clamp-2 sm:line-clamp-none leading-relaxed">{cat.desc}</p>
+              <Button as={Link} to={cat.link} variant="glass" className="self-start !text-xs sm:!text-sm !py-2.5 sm:!py-3 !px-5 sm:!px-6 !rounded-full text-center">
+                Explore {cat.title} →
               </Button>
             </div>
           </motion.div>

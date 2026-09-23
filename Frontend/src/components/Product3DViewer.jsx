@@ -175,27 +175,27 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
         </div>
       </model-viewer>
 
-      {/* Floating Badge */}
-      <div className="absolute top-4 right-4 bg-navy/90 backdrop-blur-md px-3.5 py-1.5 text-xs font-bold text-[#FFCD00] rounded-full shadow-lg z-10 border border-[#FFCD00]/40 flex items-center gap-2 pointer-events-none">
+      {/* Floating Badge (hidden on mobile) */}
+      <div className="hidden sm:flex absolute top-4 right-4 bg-navy/90 backdrop-blur-md px-3.5 py-1.5 text-xs font-bold text-[#FFCD00] rounded-full shadow-lg z-10 border border-[#FFCD00]/40 items-center gap-2 pointer-events-none">
         <span className="w-2 h-2 rounded-full bg-[#FFCD00] animate-pulse" />
         <span>3D Interactive Model</span>
       </div>
 
-      {/* Control Hint */}
-      <div className="absolute bottom-4 left-4 bg-navy/85 backdrop-blur-md px-3 py-1.5 rounded-full text-[10px] sm:text-[11px] font-bold text-white/90 shadow-md z-10 pointer-events-none flex items-center gap-1.5">
+      {/* Control Hint (hidden on mobile) */}
+      <div className="hidden sm:flex absolute bottom-4 left-4 bg-navy/85 backdrop-blur-md px-3 py-1.5 rounded-full text-[10px] sm:text-[11px] font-bold text-white/90 shadow-md z-10 pointer-events-none items-center gap-1.5">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#FFCD00" strokeWidth="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 11-.57-8.38l5.67-5.67" /></svg>
         <span>Drag sideways to rotate 360°</span>
       </div>
 
       {/* Bottom Right 360° Toggle Circle Controller */}
-      <div className="absolute bottom-4 right-4 z-20 flex flex-col items-center gap-1.5 pointer-events-auto select-none">
-        <span className="text-[10px] font-bold text-white/90 uppercase tracking-widest bg-navy/80 px-2.5 py-0.5 rounded-md backdrop-blur-md border border-white/20 shadow-md">
+      <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 z-20 flex flex-col items-center gap-1.5 pointer-events-auto select-none">
+        <span className="hidden sm:block text-[10px] font-bold text-white/90 uppercase tracking-widest bg-navy/80 px-2.5 py-0.5 rounded-md backdrop-blur-md border border-white/20 shadow-md">
           360° Toggle
         </span>
         <button
           type="button"
           onClick={() => setAutoRotate((prev) => !prev)}
-          className={`relative w-14 h-14 rounded-full border-2 transition-all duration-300 backdrop-blur-md flex items-center justify-center shadow-xl hover:scale-110 active:scale-95 cursor-pointer ${
+          className={`relative w-11 h-11 sm:w-14 sm:h-14 rounded-full border-2 transition-all duration-300 backdrop-blur-md flex items-center justify-center shadow-xl hover:scale-110 active:scale-95 cursor-pointer ${
             autoRotate
               ? 'border-[#FFCD00] bg-navy/85 shadow-[#FFCD00]/30'
               : 'border-white/40 bg-navy/60'
@@ -203,7 +203,7 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
           title={autoRotate ? 'Pause 360° Auto-Spin' : 'Enable 360° Auto-Spin'}
         >
           <div
-            className={`w-7 h-7 rounded-full shadow-md border transition-all duration-300 flex items-center justify-center font-extrabold text-[9px] ${
+            className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full shadow-md border transition-all duration-300 flex items-center justify-center font-extrabold text-[8px] sm:text-[9px] ${
               autoRotate
                 ? 'bg-[#FFCD00] border-white text-navy scale-110 animate-pulse'
                 : 'bg-white/80 border-white/50 text-navy/70'

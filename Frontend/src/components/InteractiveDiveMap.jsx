@@ -157,6 +157,21 @@ export default function InteractiveDiveMap({
     }
   }, [])
 
+  // Reset globe view and clear selection
+  const handleResetGlobe = useCallback((e) => {
+    e?.preventDefault?.()
+    e?.stopPropagation?.()
+    lastFramedCountryKeyRef.current = null
+    setIsPopupOpen(false)
+    setPopupSite(null)
+    if (popupRef.current) {
+      popupRef.current.style.display = 'none'
+    }
+    onLocationSelectRef.current?.(null)
+    onCountrySelectRef.current?.('')
+    flyToGlobalOverview()
+  }, [flyToGlobalOverview])
+
   // Dateline-safe longitude and bounds calculator for country camera framing
   const getCountryCameraTarget = useCallback((countryName, locs) => {
     const cKey = normalizeCountryKey(countryName)
@@ -428,16 +443,29 @@ export default function InteractiveDiveMap({
         viewer.scene.screenSpaceCameraController.minimumZoomDistance = 15000
         viewer.scene.screenSpaceCameraController.maximumZoomDistance = 25000000
         viewer.scene.screenSpaceCameraController.enableCollisionDetection = true
+        viewer.scene.screenSpaceCameraController.enableZoom = true
+        viewer.scene.screenSpaceCameraController.enableRotate = true
+        viewer.scene.screenSpaceCameraController.enableTilt = true
+        viewer.scene.screenSpaceCameraController.enableTranslate = true
         viewer.scene.screenSpaceCameraController.inertiaSpin = 0.85
         viewer.scene.screenSpaceCameraController.inertiaTranslate = 0.85
         viewer.scene.screenSpaceCameraController.inertiaZoom = 0.8
 
-        // Disable Cesium's default PINCH/WHEEL zoom so 2-finger slide strictly rotates the globe
+        // Full camera events: enable Pinch, Wheel, and Drag for unrestricted zooming and rotation
         viewer.scene.screenSpaceCameraController.zoomEventTypes = [
-          Cesium.CameraEventType.RIGHT_DRAG
+          Cesium.CameraEventType.RIGHT_DRAG,
+          Cesium.CameraEventType.WHEEL,
+          Cesium.CameraEventType.PINCH
+        ]
+        viewer.scene.screenSpaceCameraController.rotateEventTypes = [
+          Cesium.CameraEventType.LEFT_DRAG
         ]
         viewer.scene.screenSpaceCameraController.tiltEventTypes = [
-          Cesium.CameraEventType.MIDDLE_DRAG
+          Cesium.CameraEventType.MIDDLE_DRAG,
+          {
+            eventType: Cesium.CameraEventType.LEFT_DRAG,
+            modifier: Cesium.KeyboardEventModifier.CTRL
+          }
         ]
 
         // Adaptive SSE for 60fps interaction
@@ -736,89 +764,99 @@ export default function InteractiveDiveMap({
           prevLocationIdRef.current = null
           onLocationSelectRef.current?.(null)
         }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
-        // Trackpad & Touch Two-Finger Rotation Gesture Controller (Rotates Globe Up/Down/Left/Right - NO ZOOM)
+        // Multi-touch Gesture & Wheel Controller (Supports Pinch-In, Pinch-Out, Pan, and Wheel Zoom)
         const containerEl = containerRef.current
         let safariInitialScale = 1.0
         let touchStartX = null
         let touchStartY = null
-        let isTwoFingerSlide = false
+        let initialPinchDistance = null
+
+        const getTouchDistance = (t1, t2) => {
+          const dx = t1.clientX - t2.clientX
+          const dy = t1.clientY - t2.clientY
+          return Math.sqrt(dx * dx + dy * dy)
+        }
 
         const handleWheel = (e) => {
           if (!containerEl) return
 
           // Prevent page scroll when interacting over the globe container
-          e.preventDefault()
+          if (e.cancelable) e.preventDefault()
           e.stopPropagation()
 
           const currentViewer = viewerRef.current
           if (!currentViewer || currentViewer.isDestroyed() || !window.Cesium) return
 
           const camera = currentViewer.camera
-          const isExplicitPinch = e.ctrlKey || e.metaKey
-
           const height = camera.positionCartographic ? camera.positionCartographic.height : 10000000
           const minDist = currentViewer.scene.screenSpaceCameraController.minimumZoomDistance || 15000
           const maxDist = currentViewer.scene.screenSpaceCameraController.maximumZoomDistance || 25000000
 
-          if (isExplicitPinch) {
-            // Explicit pinch with Ctrl/Cmd key -> zoom
-            const zoomFactor = Math.min(Math.max(height * 0.0025, 500), 500000)
-            const zoomAmount = e.deltaY * zoomFactor
+          // Smooth exponential zoom factor based on altitude
+          const zoomFactor = Math.min(Math.max(height * 0.002, 500), 500000)
+          const zoomAmount = e.deltaY * zoomFactor
 
-            if (zoomAmount < 0) {
-              const maxAllowedZoomIn = Math.max(0, height - minDist)
-              const actualZoom = Math.min(Math.abs(zoomAmount), maxAllowedZoomIn)
-              if (actualZoom > 0) camera.zoomIn(actualZoom)
-            } else if (zoomAmount > 0) {
-              const maxAllowedZoomOut = Math.max(0, maxDist - height)
-              const actualZoom = Math.min(zoomAmount, maxAllowedZoomOut)
-              if (actualZoom > 0) camera.zoomOut(actualZoom)
-            }
-          } else {
-            // ----------------------------------------------------
-            // 2-FINGER SLIDE: ROTATES GLOBE UP/DOWN & LEFT/RIGHT (NO ZOOM)
-            // ----------------------------------------------------
-            const rotateFactor = Math.min(Math.max(height / 7000000000, 0.0003), 0.002)
-            const verticalRotateFactor = rotateFactor * 0.25
-
-            const moveX = e.deltaX
-            const moveY = e.deltaY
-
-            if (Math.abs(moveX) > 0) {
-              camera.rotateLeft(-moveX * rotateFactor)
-            }
-
-            if (Math.abs(moveY) > 0) {
-              // Sliding 2 fingers Up (deltaY < 0) -> rotates globe Upwards (75% reduced sensitivity)
-              // Sliding 2 fingers Down (deltaY > 0) -> rotates globe Downwards (75% reduced sensitivity)
-              camera.rotate(camera.right, moveY * verticalRotateFactor)
-            }
+          if (zoomAmount < 0) {
+            const maxAllowedZoomIn = Math.max(0, height - minDist)
+            const actualZoom = Math.min(Math.abs(zoomAmount), maxAllowedZoomIn)
+            if (actualZoom > 0) camera.zoomIn(actualZoom)
+          } else if (zoomAmount > 0) {
+            const maxAllowedZoomOut = Math.max(0, maxDist - height)
+            const actualZoom = Math.min(zoomAmount, maxAllowedZoomOut)
+            if (actualZoom > 0) camera.zoomOut(actualZoom)
           }
 
           lastInteractionTimeRef.current = Date.now()
         }
 
-        // Two-Finger Touch Screen Swipe (Mobile / Tablet / Touch laptops)
+        // Two-Finger Touch Pinch-To-Zoom & Pan (Mobile / Tablet)
         const handleTouchStart = (e) => {
           if (e.touches.length === 2) {
-            isTwoFingerSlide = true
+            initialPinchDistance = getTouchDistance(e.touches[0], e.touches[1])
             touchStartX = (e.touches[0].clientX + e.touches[1].clientX) / 2
             touchStartY = (e.touches[0].clientY + e.touches[1].clientY) / 2
           } else {
-            isTwoFingerSlide = false
+            initialPinchDistance = null
+            touchStartX = null
+            touchStartY = null
           }
         }
 
         const handleTouchMove = (e) => {
-          if (e.touches.length === 2 && isTwoFingerSlide) {
-            e.preventDefault()
+          if (e.touches.length === 2 && initialPinchDistance !== null) {
+            if (e.cancelable) e.preventDefault()
             e.stopPropagation()
 
             const currentViewer = viewerRef.current
             if (!currentViewer || currentViewer.isDestroyed() || !window.Cesium) return
             const camera = currentViewer.camera
             const height = camera.positionCartographic ? camera.positionCartographic.height : 10000000
+            const minDist = currentViewer.scene.screenSpaceCameraController.minimumZoomDistance || 15000
+            const maxDist = currentViewer.scene.screenSpaceCameraController.maximumZoomDistance || 25000000
 
+            const currentDistance = getTouchDistance(e.touches[0], e.touches[1])
+            const distanceDelta = currentDistance - initialPinchDistance
+
+            // Pinch-to-zoom calculation
+            if (Math.abs(distanceDelta) > 1.0) {
+              const zoomFactor = Math.min(Math.max(height * 0.006, 1000), 250000)
+              const zoomDelta = -distanceDelta * zoomFactor
+
+              if (zoomDelta < 0) {
+                // Fingers moving apart (pinch out) -> Zoom In
+                const maxAllowedZoomIn = Math.max(0, height - minDist)
+                const actualZoom = Math.min(Math.abs(zoomDelta), maxAllowedZoomIn)
+                if (actualZoom > 0) camera.zoomIn(actualZoom)
+              } else if (zoomDelta > 0) {
+                // Fingers moving together (pinch in) -> Zoom Out
+                const maxAllowedZoomOut = Math.max(0, maxDist - height)
+                const actualZoom = Math.min(zoomDelta, maxAllowedZoomOut)
+                if (actualZoom > 0) camera.zoomOut(actualZoom)
+              }
+              initialPinchDistance = currentDistance
+            }
+
+            // Two-finger Pan / Rotation
             const currentX = (e.touches[0].clientX + e.touches[1].clientX) / 2
             const currentY = (e.touches[0].clientY + e.touches[1].clientY) / 2
 
@@ -826,15 +864,13 @@ export default function InteractiveDiveMap({
               const deltaX = currentX - touchStartX
               const deltaY = currentY - touchStartY
 
-              const rotateFactor = Math.min(Math.max(height / 3500000000, 0.0006), 0.004)
+              const rotateFactor = Math.min(Math.max(height / 4500000000, 0.0004), 0.003)
               const verticalRotateFactor = rotateFactor * 0.25
 
-              if (Math.abs(deltaX) > 0.1) {
+              if (Math.abs(deltaX) > 1.0) {
                 camera.rotateLeft(-deltaX * rotateFactor)
               }
-              if (Math.abs(deltaY) > 0.1) {
-                // Dragging 2 fingers Up (deltaY < 0) -> rotates globe Upwards (75% reduced sensitivity)
-                // Dragging 2 fingers Down (deltaY > 0) -> rotates globe Downwards (75% reduced sensitivity)
+              if (Math.abs(deltaY) > 1.0) {
                 camera.rotate(camera.right, deltaY * verticalRotateFactor)
               }
             }
@@ -847,19 +883,19 @@ export default function InteractiveDiveMap({
 
         const handleTouchEnd = (e) => {
           if (e.touches.length < 2) {
-            isTwoFingerSlide = false
+            initialPinchDistance = null
             touchStartX = null
             touchStartY = null
           }
         }
 
         const handleGestureStart = (e) => {
-          e.preventDefault()
+          if (e.cancelable) e.preventDefault()
           safariInitialScale = 1.0
         }
 
         const handleGestureChange = (e) => {
-          e.preventDefault()
+          if (e.cancelable) e.preventDefault()
           const currentViewer = viewerRef.current
           if (!currentViewer || currentViewer.isDestroyed() || !window.Cesium) return
 
@@ -1152,14 +1188,29 @@ export default function InteractiveDiveMap({
         </div>
       )}
 
-      {/* Instruction Overlay */}
-      <div className="absolute top-6 right-6 pointer-events-none z-10">
-        <span className="inline-flex items-center gap-2 rounded-full bg-black/60 backdrop-blur-md px-4 py-2 text-xs font-bold text-white border border-white/10 shadow-lg">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      {/* Reset Globe / Instruction Button */}
+      <div className="absolute top-4 sm:top-6 right-4 sm:right-6 pointer-events-auto z-10">
+        <button
+          type="button"
+          onClick={handleResetGlobe}
+          title="Reset to full globe view"
+          className="inline-flex items-center gap-2 rounded-full bg-black/70 hover:bg-[#FFCD00] text-white hover:text-[#001e3d] backdrop-blur-md px-3.5 sm:px-4 py-2 text-xs font-bold border border-white/20 hover:border-[#FFCD00] shadow-lg transition-all duration-200 active:scale-95 cursor-pointer select-none group"
+        >
+          <svg
+            width="15"
+            height="15"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="transition-transform duration-300 group-hover:rotate-180 group-active:-rotate-90 text-cyan-400 group-hover:text-[#001e3d]"
+          >
             <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 11-.32-9.26l-5.37 5.37" />
           </svg>
-          Drag to explore in 3D
-        </span>
+          <span>Drag to explore in 3D</span>
+        </button>
       </div>
 
       {/* Floating Dive Site Image Popup Card */}

@@ -52,9 +52,9 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* 3 Columns on the same row: Quick Links, Legal, Contact */}
-        <div className="grid grid-cols-3 gap-2.5 xs:gap-4 sm:gap-8 lg:col-span-9 lg:grid-cols-3">
-          <div className="flex flex-col">
+        {/* Desktop: 3 Columns on same row (Quick Links, Legal, Contact). Mobile: Quick Links & Legal on top row, Contact below Quick Links */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 sm:gap-8 lg:col-span-9 lg:grid-cols-3">
+          <div className="flex flex-col col-start-1 sm:col-auto">
             <h3 className="font-heading text-xs sm:text-sm font-bold uppercase tracking-wider sm:tracking-widest text-accent">
               Quick Links
             </h3>
@@ -72,7 +72,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          <div className="flex flex-col">
+          <div className="flex flex-col col-start-2 sm:col-auto">
             <h3 className="font-heading text-xs sm:text-sm font-bold uppercase tracking-wider sm:tracking-widest text-accent">
               Legal
             </h3>
@@ -90,7 +90,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          <div className="flex flex-col">
+          <div className="flex flex-col col-start-1 col-span-2 sm:col-span-1 sm:col-start-auto mt-2 sm:mt-0">
             <h3 className="font-heading text-xs sm:text-sm font-bold uppercase tracking-wider sm:tracking-widest text-accent">
               Contact
             </h3>
@@ -103,7 +103,7 @@ export default function Footer() {
               <li className="break-all sm:break-normal">
                 <a
                   href="mailto:sanjeev.bajaj@thedivevillage.co"
-                  className="transition duration-hover hover:text-accent text-[10px] xs:text-[11px] sm:text-sm leading-tight block"
+                  className="transition duration-hover hover:text-accent text-xs sm:text-sm leading-tight block"
                 >
                   sanjeev.bajaj@thedivevillage.co
                 </a>
@@ -111,14 +111,14 @@ export default function Footer() {
             </ul>
 
             {/* Social Media Icons under Contact Column */}
-            <div className="mt-3 sm:mt-6 flex flex-wrap items-center gap-1.5 sm:gap-2.5">
+            <div className="mt-4 sm:mt-6 flex flex-wrap items-center gap-2 sm:gap-2.5">
               {SOCIALS.map((s) => (
                 <a
                   key={s.label}
                   href={s.to}
                   target={s.to.startsWith('http') ? '_blank' : '_self'}
                   rel={s.to.startsWith('http') ? 'noopener noreferrer' : undefined}
-                  className="w-6.5 h-6.5 xs:w-8 xs:h-8 sm:w-9 sm:h-9 rounded-full bg-white/10 hover:!bg-[#FFCD00] text-white/80 hover:!text-[#001e3d] flex items-center justify-center transition-all duration-200 border border-white/15 hover:!border-[#FFCD00] shadow-sm [&>svg]:w-3 [&>svg]:h-3 xs:[&>svg]:w-3.5 xs:[&>svg]:h-3.5 sm:[&>svg]:w-5 sm:[&>svg]:h-5"
+                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/10 hover:!bg-[#FFCD00] text-white/80 hover:!text-[#001e3d] flex items-center justify-center transition-all duration-200 border border-white/15 hover:!border-[#FFCD00] shadow-sm [&>svg]:w-3.5 [&>svg]:h-3.5 sm:[&>svg]:w-5 sm:[&>svg]:h-5"
                   aria-label={s.label}
                 >
                   {s.icon}

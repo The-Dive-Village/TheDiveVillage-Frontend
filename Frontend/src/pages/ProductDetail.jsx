@@ -234,7 +234,7 @@ export default function ProductDetail() {
                       playsInline
                       className="w-full h-full object-cover rounded-[28px]"
                     />
-                    <div className="absolute top-4 right-4 bg-navy/90 backdrop-blur-md px-3.5 py-1.5 text-xs font-bold text-[#FFCD00] rounded-full shadow-lg z-10 border border-[#FFCD00]/40 flex items-center gap-2 pointer-events-none">
+                    <div className="hidden sm:flex absolute top-4 right-4 bg-navy/90 backdrop-blur-md px-3.5 py-1.5 text-xs font-bold text-[#FFCD00] rounded-full shadow-lg z-10 border border-[#FFCD00]/40 items-center gap-2 pointer-events-none">
                       <span className="w-2.5 h-2.5 rounded-full bg-[#FFCD00] animate-ping" />
                       <span>360 view of the Product</span>
                     </div>
@@ -246,7 +246,7 @@ export default function ProductDetail() {
                   />
                 )}
                 {product.tag && (
-                  <span className="absolute top-4 left-4 bg-white/95 backdrop-blur-md px-3 py-1 text-xs font-bold text-navy rounded-full shadow-sm z-10 pointer-events-none">
+                  <span className="hidden sm:inline-block absolute top-4 left-4 bg-white/95 backdrop-blur-md px-3 py-1 text-xs font-bold text-navy rounded-full shadow-sm z-10 pointer-events-none">
                     {product.tag}
                   </span>
                 )}
@@ -509,49 +509,49 @@ export default function ProductDetail() {
 
         {/* You May Also Like / Recommendations */}
         <div>
-          <div className="flex justify-between items-center mb-8">
+          <div className="flex justify-between items-center mb-6 sm:mb-8">
             <div>
-              <span className="text-xs font-bold uppercase tracking-widest text-accent block">Explore More</span>
-              <h2 className="font-heading text-3xl font-bold text-navy">You May Also Like</h2>
+              <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-accent block">Explore More</span>
+              <h2 className="font-heading text-2xl sm:text-3xl font-bold text-navy">You May Also Like</h2>
             </div>
-            <Link to="/shop" className="text-sm font-bold text-navy hover:text-accent transition flex items-center gap-1">
-              View Entire Store →
+            <Link to="/shop" className="text-xs sm:text-sm font-bold text-navy hover:text-accent transition flex items-center gap-1">
+              View All →
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
             {relatedProducts.map((p) => (
               <Link
                 key={p.id}
                 to={`/shop/${p.id}`}
-                className="group rounded-3xl bg-white border border-navy/5 p-5 shadow-card hover:shadow-float transition duration-300 flex flex-col justify-between"
+                className="group rounded-2xl sm:rounded-3xl bg-white border border-navy/5 p-3 sm:p-5 shadow-card hover:shadow-float transition duration-300 flex flex-col justify-between"
               >
                 <div>
-                  <div className="aspect-[4/5] w-full overflow-hidden rounded-2xl bg-[#F0F2F5] mb-4 flex items-center justify-center p-3 relative">
+                  <div className="aspect-[4/5] w-full overflow-hidden rounded-xl sm:rounded-2xl bg-[#F0F2F5] mb-2.5 sm:mb-4 flex items-center justify-center p-2 sm:p-3 relative">
                     <img
                       src={p.image}
                       alt={p.title}
                       className="max-h-full max-w-full object-contain transition duration-500 group-hover:scale-105"
                     />
                     {p.tag && (
-                      <span className="absolute top-3 left-3 bg-white/90 px-2.5 py-0.5 text-[10px] font-bold rounded-full text-navy shadow-sm">
+                      <span className="hidden sm:inline-block absolute top-3 left-3 bg-white/90 px-2.5 py-0.5 text-[10px] font-bold rounded-full text-navy shadow-sm">
                         {p.tag}
                       </span>
                     )}
                   </div>
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-accent block mb-1">
+                  <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-accent block mb-0.5 sm:mb-1">
                     {p.category}
                   </span>
-                  <h3 className="font-heading font-bold text-sm text-navy group-hover:text-accent transition line-clamp-2">
+                  <h3 className="font-heading font-bold text-xs sm:text-sm text-navy group-hover:text-accent transition line-clamp-2 leading-snug">
                     {p.title}
                   </h3>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-navy/5 flex justify-between items-baseline">
-                  <span className="font-heading font-bold text-navy text-base">
+                <div className="mt-3 sm:mt-4 pt-2 sm:pt-3 border-t border-navy/5 flex justify-between items-baseline">
+                  <span className="font-heading font-bold text-navy text-xs sm:text-base">
                     
                   </span>
-                  <span className="text-xs font-bold text-accent group-hover:underline">
+                  <span className="text-[10px] sm:text-xs font-bold text-accent group-hover:underline">
                     View Gear →
                   </span>
                 </div>

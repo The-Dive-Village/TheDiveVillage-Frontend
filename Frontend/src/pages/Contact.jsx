@@ -7,7 +7,6 @@ import { IMAGES, CAROUSEL_IMAGES, PANEL_IMAGES } from '../utils/images'
 import bookVideo from '../assets/Book(2).mp4'
 import compiledNightDiveVideo from '../assets/Compiled Night Dive Video(2).mp4'
 import useNightDive from '../hooks/useNightDive'
-import deepDiverVideo from '../assets/Gallery/Deepdiver.mp4'
 import SEOHead from '../components/SEOHead'
 import api from '../services/api'
 
@@ -143,76 +142,75 @@ export default function Contact() {
         </div>
       </section>
 
-      {/* 2. MAIN FORM & INTERACTIVE SPHERE SECTION */}
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-16 sm:pb-24">
+      {/* 2. MAIN FORM SECTION */}
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-16 sm:pb-24 w-full min-w-0">
 
-        {/* Main Split Section */}
-        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-stretch">
-          {/* Form */}
-          <div className="w-full bg-white rounded-[28px] sm:rounded-[36px] p-5 sm:p-10 border border-navy/5 shadow-card">
-            <div className="mb-8">
-              <span className="text-accent font-bold tracking-widest uppercase text-xs mb-2 block">Direct Inquiry</span>
-              <h2 className="font-heading text-3xl sm:text-4xl font-bold text-navy">Send Us a Message</h2>
-              <p className="text-xs sm:text-sm text-navy/70 mt-1">Fill out the details below and our team will get back to you promptly.</p>
+        {/* Form Container - Centered, Compact Width & Optimized Internal Spacing */}
+        <div className="max-w-xl mx-auto w-full bg-white rounded-2xl sm:rounded-[36px] p-4 xs:p-6 sm:p-10 border border-navy/5 shadow-card">
+          <div className="mb-4 sm:mb-6 text-left">
+            <span className="text-accent font-bold tracking-widest uppercase text-[9px] sm:text-xs mb-1 block">Direct Inquiry</span>
+            <h2 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-bold text-navy">Send Us a Message</h2>
+            <p className="text-xs sm:text-sm text-navy/70 mt-1">Fill out the details below and our team will get back to you promptly.</p>
+          </div>
+
+          {success && (
+            <div className="mb-4 sm:mb-6 rounded-xl sm:rounded-2xl bg-emerald-50 p-3 sm:p-4 text-xs sm:text-sm font-semibold text-emerald-700 border border-emerald-100">
+              ✅ Your message has been sent to our team! We will get back to you shortly.
+            </div>
+          )}
+          {error && (
+            <div className="mb-4 sm:mb-6 rounded-xl sm:rounded-2xl bg-red-50 p-3 sm:p-4 text-xs sm:text-sm font-semibold text-red-700 border border-red-100">
+              ❌ {error}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-3.5 sm:space-y-5 w-full">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+              <div>
+                <label className="mb-1 sm:mb-1.5 block text-[9px] sm:text-xs font-bold text-navy/70 uppercase tracking-wider">Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Your full name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                  className="w-full rounded-xl bg-[#F0F2F5] px-3.5 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm font-semibold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition placeholder:text-navy/30"
+                />
+              </div>
+              <div>
+                <label className="mb-1 sm:mb-1.5 block text-[9px] sm:text-xs font-bold text-navy/70 uppercase tracking-wider">Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="you@example.com"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                  className="w-full rounded-xl bg-[#F0F2F5] px-3.5 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm font-semibold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition placeholder:text-navy/30"
+                />
+              </div>
             </div>
 
-            {success && (
-              <div className="mb-8 rounded-2xl bg-emerald-50 p-4 text-sm font-semibold text-emerald-700 border border-emerald-100">
-                ✅ Your message has been sent to our team! We will get back to you shortly.
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+              <div>
+                <label className="mb-1 sm:mb-1.5 block text-[9px] sm:text-xs font-bold text-navy/70 uppercase tracking-wider">Phone Number</label>
+                <PhoneInput
+                  defaultCountry="IN"
+                  placeholder="Phone number"
+                  value={formData.phone}
+                  onChange={(val) => setFormData((prev) => ({ ...prev, phone: val }))}
+                  className="w-full rounded-xl bg-[#F0F2F5] px-3.5 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm font-semibold text-navy outline-none focus-within:ring-2 focus-within:ring-accent/50 transition [&_.PhoneInputCountryIcon]:rounded-sm [&_.PhoneInputInput]:bg-transparent [&_.PhoneInputInput]:outline-none [&_.PhoneInputInput]:border-none [&_.PhoneInputCountrySelect]:outline-none [&_.PhoneInputCountryIcon--border]:border-none [&_.PhoneInputInput]:ml-2"
+                />
               </div>
-            )}
-            {error && (
-              <div className="mb-8 rounded-2xl bg-red-50 p-4 text-sm font-semibold text-red-700 border border-red-100">
-                ❌ {error}
-              </div>
-            )}
-
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid sm:grid-cols-2 gap-6">
-                <div>
-                  <label className="mb-3 block text-xs font-bold text-navy/70">Name</label>
-                  <input
-                    type="text"
-                    name="name"
-                    placeholder="Your full name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                    className="w-full rounded-2xl bg-[#F0F2F5] px-5 py-4 text-sm text-navy outline-none focus:ring-2 focus:ring-accent/50 transition placeholder:text-navy/30"
-                  />
-                </div>
-                <div>
-                  <label className="mb-3 block text-xs font-bold text-navy/70">Email</label>
-                  <input
-                    type="email"
-                    name="email"
-                    placeholder="you@example.com"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    className="w-full rounded-2xl bg-[#F0F2F5] px-5 py-4 text-sm text-navy outline-none focus:ring-2 focus:ring-accent/50 transition placeholder:text-navy/30"
-                  />
-                </div>
-              </div>
-
-              <div className="grid sm:grid-cols-2 gap-6">
-                <div>
-                  <label className="mb-3 block text-xs font-bold text-navy/70">Phone Number</label>
-                  <PhoneInput
-                    defaultCountry="IN"
-                    placeholder="Phone number"
-                    value={formData.phone}
-                    onChange={(val) => setFormData((prev) => ({ ...prev, phone: val }))}
-                    className="w-full rounded-2xl bg-[#F0F2F5] px-5 py-4 text-sm font-bold text-navy outline-none focus-within:ring-2 focus-within:ring-accent/50 transition [&_.PhoneInputCountryIcon]:rounded-sm [&_.PhoneInputInput]:bg-transparent [&_.PhoneInputInput]:outline-none [&_.PhoneInputInput]:border-none [&_.PhoneInputCountrySelect]:outline-none [&_.PhoneInputCountryIcon--border]:border-none [&_.PhoneInputInput]:ml-3"
-                  />
-                </div>
-                <div>
-                  <label className="mb-3 block text-xs font-bold text-navy/70">Select Your Subject</label>
+              <div>
+                <label className="mb-1 sm:mb-1.5 block text-[9px] sm:text-xs font-bold text-navy/70 uppercase tracking-wider">Select Your Subject</label>
+                <div className="relative">
                   <select
                     name="subject"
                     value={formData.subject}
                     onChange={handleChange}
-                    className="w-full rounded-2xl bg-[#F0F2F5] px-5 py-4 text-sm text-navy outline-none focus:ring-2 focus:ring-accent/50 transition appearance-none cursor-pointer"
+                    className="w-full rounded-xl bg-[#F0F2F5] px-3.5 py-2.5 sm:px-4 sm:py-3 pr-8 text-xs sm:text-sm font-semibold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition appearance-none cursor-pointer"
                   >
                     <option value="General Enquiry">General Enquiry</option>
                     <option value="Post Update">Post Update</option>
@@ -221,86 +219,80 @@ export default function Contact() {
                     <option value="Support">Support</option>
                     <option value="Other">Other</option>
                   </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-navy/60">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="sm:w-4 sm:h-4">
+                      <polyline points="6 9 12 15 18 9" />
+                    </svg>
+                  </div>
                 </div>
               </div>
-
-              <div>
-                <label className="mb-3 block text-xs font-bold text-navy/70">Message / Special Requests</label>
-                <textarea
-                  name="message"
-                  placeholder="Anything else we should know?"
-                  rows="5"
-                  value={formData.message}
-                  onChange={handleChange}
-                  required
-                  className="w-full rounded-3xl bg-[#F0F2F5] p-5 text-sm text-navy outline-none focus:ring-2 focus:ring-accent/50 transition placeholder:text-navy/30 resize-none"
-                ></textarea>
-              </div>
-
-              <div className="pt-2">
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full sm:w-auto rounded-full bg-navy text-white hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] px-8 py-4 text-sm font-bold transition-all duration-300 shadow-md cursor-pointer disabled:opacity-50"
-                >
-                  {loading ? 'Sending...' : 'Reserve Your Spot'}
-                </button>
-              </div>
-            </form>
-          </div>
-
-          {/* Right Video - Deepdiver */}
-          <div className="relative w-full aspect-[3/4] lg:aspect-auto min-h-[480px] rounded-[36px] overflow-hidden shadow-card border border-navy/5 group bg-[#001e3d]">
-            <video
-              src={deepDiverVideo}
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-            />
-            {/* Subtle Gradient & Floating Info Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#001428]/85 via-transparent to-black/20 pointer-events-none" />
-            <div className="absolute bottom-8 left-8 right-8 z-10 text-white pointer-events-none">
-              <span className="inline-block bg-[#FFCD00] text-[#001e3d] font-heading font-bold text-xs uppercase tracking-wider px-3.5 py-1 rounded-full mb-3 shadow-md">
-                The Dive Experience
-              </span>
-              <h3 className="font-heading text-2xl sm:text-3xl font-bold text-white drop-shadow-md">
-                Discover The Deep
-              </h3>
-              <p className="text-xs sm:text-sm text-white/90 font-medium drop-shadow-sm mt-1.5 max-w-md leading-relaxed">
-                Experience the wonders beneath the surface with certified dive guides and tailored itineraries.
-              </p>
             </div>
-          </div>
+
+            <div>
+              <label className="mb-1 sm:mb-1.5 block text-[9px] sm:text-xs font-bold text-navy/70 uppercase tracking-wider">Message / Special Requests</label>
+              <textarea
+                name="message"
+                placeholder="Anything else we should know?"
+                rows="3"
+                value={formData.message}
+                onChange={handleChange}
+                required
+                className="w-full rounded-xl sm:rounded-2xl bg-[#F0F2F5] p-3 sm:p-4 text-xs sm:text-sm font-semibold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition placeholder:text-navy/30 resize-none"
+              ></textarea>
+            </div>
+
+            <div className="pt-2">
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full rounded-full bg-navy text-white hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] px-6 py-3 sm:py-3.5 text-xs sm:text-sm font-bold transition-all duration-300 shadow-md cursor-pointer disabled:opacity-50"
+              >
+                {loading ? 'Sending...' : 'Send Message'}
+              </button>
+            </div>
+          </form>
         </div>
 
-        {/* Info Blocks */}
-        <div className="mt-24 sm:mt-32 grid grid-cols-1 md:grid-cols-3 gap-8 text-center max-w-5xl mx-auto">
-          <div className="flex flex-col items-center bg-white p-8 rounded-3xl border border-navy/5 shadow-card hover:shadow-float transition">
-            <div className="w-12 h-12 rounded-full bg-navy/5 text-navy flex items-center justify-center mb-5">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" /></svg>
+        {/* Info Blocks - 3 buttons in a single line, whole box acts as clickable redirect button */}
+        <div className="mt-10 sm:mt-16 lg:mt-20 grid grid-cols-3 gap-2 xs:gap-3 sm:gap-6 text-center max-w-4xl mx-auto w-full min-w-0">
+          
+          {/* Box 1: Call & WhatsApp */}
+          <a
+            href="tel:+918971001010"
+            className="flex flex-col items-center justify-center bg-white p-2.5 xs:p-3.5 sm:p-6 rounded-xl xs:rounded-2xl sm:rounded-3xl border border-navy/5 shadow-card hover:shadow-float hover:border-[#FFCD00]/50 hover:-translate-y-1 transition-all duration-300 group cursor-pointer active:scale-95 text-center min-w-0"
+          >
+            <div className="w-8 h-8 xs:w-10 xs:h-10 sm:w-12 sm:h-12 rounded-full bg-navy/5 text-navy group-hover:bg-[#FFCD00] group-hover:text-navy flex items-center justify-center mb-1.5 sm:mb-3 transition-colors shrink-0">
+              <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" /></svg>
             </div>
-            <h4 className="font-bold text-navy mb-2">Call & WhatsApp</h4>
-            <a href="tel:+918971001010" className="text-xs text-navy/70 hover:text-accent font-semibold transition">+91 89710 01010</a>
-          </div>
+            <h4 className="font-bold text-navy mb-0.5 sm:mb-1.5 text-[11px] xs:text-xs sm:text-base group-hover:text-navy truncate max-w-full">Call Us</h4>
+            <span className="text-[9px] xs:text-[10px] sm:text-sm text-navy/70 group-hover:text-[#FFCD00] font-bold transition-colors truncate max-w-full block">+91 89710 01010</span>
+          </a>
 
-          <div className="flex flex-col items-center bg-white p-8 rounded-3xl border border-navy/5 shadow-card hover:shadow-float transition">
-            <div className="w-12 h-12 rounded-full bg-navy/5 text-navy flex items-center justify-center mb-5">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><path d="M22 6l-10 7L2 6" /></svg>
+          {/* Box 2: Write to Us */}
+          <a
+            href="mailto:sanjeev.bajaj@thedivevillage.co"
+            className="flex flex-col items-center justify-center bg-white p-2.5 xs:p-3.5 sm:p-6 rounded-xl xs:rounded-2xl sm:rounded-3xl border border-navy/5 shadow-card hover:shadow-float hover:border-[#FFCD00]/50 hover:-translate-y-1 transition-all duration-300 group cursor-pointer active:scale-95 text-center min-w-0"
+          >
+            <div className="w-8 h-8 xs:w-10 xs:h-10 sm:w-12 sm:h-12 rounded-full bg-navy/5 text-navy group-hover:bg-[#FFCD00] group-hover:text-navy flex items-center justify-center mb-1.5 sm:mb-3 transition-colors shrink-0">
+              <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><path d="M22 6l-10 7L2 6" /></svg>
             </div>
-            <h4 className="font-bold text-navy mb-2">Write to Us</h4>
-            <a href="mailto:sanjeev.bajaj@thedivevillage.co" className="text-xs text-navy/70 hover:text-accent font-semibold transition truncate max-w-full">sanjeev.bajaj@thedivevillage.co</a>
-          </div>
+            <h4 className="font-bold text-navy mb-0.5 sm:mb-1.5 text-[11px] xs:text-xs sm:text-base group-hover:text-navy truncate max-w-full">Mail Us</h4>
+            <span className="text-[9px] xs:text-[10px] sm:text-sm text-navy/70 group-hover:text-[#FFCD00] font-bold transition-colors truncate max-w-full block">sanjeev.bajaj@thedivevillage.co</span>
+          </a>
 
-          <div className="flex flex-col items-center bg-white p-8 rounded-3xl border border-navy/5 shadow-card hover:shadow-float transition">
-            <div className="w-12 h-12 rounded-full bg-navy/5 text-navy flex items-center justify-center mb-5">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg>
+          {/* Box 3: Availability */}
+          <a
+            href="https://wa.me/918971001010"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex flex-col items-center justify-center bg-white p-2.5 xs:p-3.5 sm:p-6 rounded-xl xs:rounded-2xl sm:rounded-3xl border border-navy/5 shadow-card hover:shadow-float hover:border-[#FFCD00]/50 hover:-translate-y-1 transition-all duration-300 group cursor-pointer active:scale-95 text-center min-w-0"
+          >
+            <div className="w-8 h-8 xs:w-10 xs:h-10 sm:w-12 sm:h-12 rounded-full bg-navy/5 text-navy group-hover:bg-[#FFCD00] group-hover:text-navy flex items-center justify-center mb-1.5 sm:mb-3 transition-colors shrink-0">
+              <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg>
             </div>
-            <h4 className="font-bold text-navy mb-2">Availability</h4>
-            <span className="text-xs text-navy/80 font-bold">Always open to guide your dive</span>
-            <span className="text-xs text-navy/60">Reach out anytime</span>
-          </div>
+            <h4 className="font-bold text-navy mb-0.5 sm:mb-1.5 text-[11px] xs:text-xs sm:text-base group-hover:text-navy truncate max-w-full">Availability</h4>
+            <span className="text-[9px] xs:text-[10px] sm:text-sm text-navy/70 group-hover:text-[#FFCD00] font-bold transition-colors truncate max-w-full block">Open 24/7 • Chat</span>
+          </a>
         </div>
 
         {/* Social Links */}

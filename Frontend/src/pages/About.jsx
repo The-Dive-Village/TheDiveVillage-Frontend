@@ -5,6 +5,7 @@ import SafeImage from '../components/SafeImage'
 import SectionReveal, { StaggerGrid, StaggerItem } from '../components/SectionReveal'
 import SEOHead from '../components/SEOHead'
 import { CAROUSEL_IMAGES } from '../utils/images'
+import { useReviews } from '../contexts/ReviewsContext'
 import divingVid from '../assets/Diving(1).mp4'
 import aboutVid from '../assets/about.mp4'
 import jellyfishVideo from '../assets/jelly fish.mp4'
@@ -45,21 +46,24 @@ const SAFETY_PROMISES = [
 
 const TESTIMONIALS = [
   {
-    name: "Alex Johnson",
+    id: 'rev-1',
+    name: "Sofia Stalance",
     role: "Open Water Diver",
-    text: "The Dive Village completely changed my perspective on the ocean. The instructors were incredibly patient, and the focus on safety made my first dive an unforgettable and peaceful experience.",
+    text: "The Dive Village completely changed my perspective on the ocean. The instructors were incredibly patient, and the focus on safety made my first dive unforgettable.",
     image: CAROUSEL_IMAGES[1]
   },
   {
-    name: "Maria Garcia",
+    id: 'rev-2',
+    name: "Krishawn Rahul",
     role: "Marine Biologist",
     text: "I've dived all over the world, but the dedication to eco-stewardship here is unmatched. It's inspiring to see a dive center that truly cares about coral restoration and leaving no trace.",
     image: CAROUSEL_IMAGES[2]
   },
   {
-    name: "David Chen",
+    id: 'rev-3',
+    name: "Michael Antony",
     role: "Advanced Adventurer",
-    text: "From the seamless booking process to the personalized dive charters, everything was flawless. A vibrant community that genuinely feels like a second home beneath the waves.",
+    text: "From the seamless booking process to the personalized dive charters, everything was flawless. A vibrant community that genuinely feels like a second home.",
     image: CAROUSEL_IMAGES[0]
   }
 ]
@@ -94,6 +98,8 @@ const wordVariants = {
 export default function About() {
   const reduce = useReducedMotion()
   const isNightDive = useNightDive()
+  const { approvedReviews } = useReviews()
+  const reviewsToDisplay = approvedReviews && approvedReviews.length > 0 ? approvedReviews.slice(0, 3) : TESTIMONIALS
 
   return (
     <div className="min-h-screen font-body overflow-x-hidden pointer-events-none relative bg-[#001e3d] text-white">
@@ -159,34 +165,34 @@ export default function About() {
       <div className="relative z-10 pointer-events-auto pt-6 sm:pt-10 pb-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
-        {/* 2.1 VISION & MISSION — TRANSLUCENT GLASS BOXES */}
-        <div className="grid md:grid-cols-2 gap-8 mb-28">
+        {/* 2.1 VISION & MISSION — STACKED ON MOBILE, SIDE-BY-SIDE ON DESKTOP */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-6 lg:gap-8 mb-16 sm:mb-28">
           
           {/* Vision Box */}
           <motion.div
-            initial={{ opacity: 0, x: -60 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="h-full rounded-[32px] bg-white/10 backdrop-blur-2xl text-white p-8 sm:p-10 shadow-2xl transition-all duration-500 border border-white/20 hover:border-[#FFCD00]/60 hover:bg-white/15 hover:shadow-[0_20px_50px_rgba(255,205,0,0.2)] flex flex-col justify-between"
+            className="h-full rounded-2xl sm:rounded-[32px] bg-white/10 backdrop-blur-2xl text-white p-6 sm:p-10 shadow-2xl transition-all duration-500 border border-white/20 hover:border-[#FFCD00]/60 hover:bg-white/15 hover:shadow-[0_20px_50px_rgba(255,205,0,0.2)] flex flex-col justify-between"
           >
             <div>
-              <div className="flex items-center justify-between mb-6">
-                <div className="w-12 h-12 rounded-2xl bg-[#FFCD00]/15 border border-[#FFCD00]/40 flex items-center justify-center shadow-inner text-[#FFCD00]">
-                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <div className="flex items-center justify-between mb-4 sm:mb-6">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-[#FFCD00]/15 border border-[#FFCD00]/40 flex items-center justify-center shadow-inner text-[#FFCD00]">
+                  <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
                   </svg>
                 </div>
-                <span className="font-heading font-bold text-xl text-[#FFCD00] tracking-wider">
+                <span className="font-heading font-bold text-base sm:text-xl text-[#FFCD00] tracking-wider">
                   01
                 </span>
               </div>
 
-              <h3 className="font-heading text-2xl sm:text-3xl font-bold text-white uppercase tracking-wide leading-tight mb-4">
+              <h3 className="font-heading text-xl sm:text-3xl font-bold text-white uppercase tracking-wide leading-tight mb-3 sm:mb-4">
                 OUR VISION
               </h3>
 
-              <blockquote className="text-white/95 text-lg sm:text-xl leading-relaxed font-body border-l-4 border-[#FFCD00] pl-4">
+              <blockquote className="text-white/95 text-sm sm:text-xl leading-relaxed font-body border-l-3 sm:border-l-4 border-[#FFCD00] pl-3.5 sm:pl-4">
                 “To unite the world's ocean lovers into a global community—driven by passion, connected by purpose, and committed to protection.”
               </blockquote>
             </div>
@@ -194,29 +200,29 @@ export default function About() {
 
           {/* Mission Box */}
           <motion.div
-            initial={{ opacity: 0, x: 60 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.8, ease: "easeOut", delay: 0.15 }}
-            className="h-full rounded-[32px] bg-white/10 backdrop-blur-2xl text-white p-8 sm:p-10 shadow-2xl transition-all duration-500 border border-white/20 hover:border-[#FFCD00]/60 hover:bg-white/15 hover:shadow-[0_20px_50px_rgba(255,205,0,0.2)] flex flex-col justify-between"
+            className="h-full rounded-2xl sm:rounded-[32px] bg-white/10 backdrop-blur-2xl text-white p-6 sm:p-10 shadow-2xl transition-all duration-500 border border-white/20 hover:border-[#FFCD00]/60 hover:bg-white/15 hover:shadow-[0_20px_50px_rgba(255,205,0,0.2)] flex flex-col justify-between"
           >
             <div>
-              <div className="flex items-center justify-between mb-6">
-                <div className="w-12 h-12 rounded-2xl bg-[#FFCD00]/15 border border-[#FFCD00]/40 flex items-center justify-center shadow-inner text-[#FFCD00]">
-                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <div className="flex items-center justify-between mb-4 sm:mb-6">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-[#FFCD00]/15 border border-[#FFCD00]/40 flex items-center justify-center shadow-inner text-[#FFCD00]">
+                  <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5.5-2.5l7.5-3.5-3.5-7.5-4 11z"/>
                   </svg>
                 </div>
-                <span className="font-heading font-bold text-xl text-[#FFCD00] tracking-wider">
+                <span className="font-heading font-bold text-base sm:text-xl text-[#FFCD00] tracking-wider">
                   02
                 </span>
               </div>
 
-              <h3 className="font-heading text-2xl sm:text-3xl font-bold text-white uppercase tracking-wide leading-tight mb-4">
+              <h3 className="font-heading text-xl sm:text-3xl font-bold text-white uppercase tracking-wide leading-tight mb-3 sm:mb-4">
                 OUR MISSION
               </h3>
 
-              <blockquote className="text-white/95 text-base sm:text-lg leading-relaxed font-body border-l-4 border-[#FFCD00] pl-4">
+              <blockquote className="text-white/95 text-sm sm:text-lg leading-relaxed font-body border-l-3 sm:border-l-4 border-[#FFCD00] pl-3.5 sm:pl-4">
                 “At The Dive Village, our mission is to inspire adventure and foster respect for the ocean by providing safe, sustainable, and unforgettable scuba diving experiences. We are committed to building a platform and educating Divers of all levels, protecting marine ecosystems, and building a community that shares a passion for exploring the ocean world.”
               </blockquote>
             </div>
@@ -321,19 +327,21 @@ export default function About() {
             </h2>
           </SectionReveal>
           
-          <div className="grid md:grid-cols-3 gap-8">
-            {TESTIMONIALS.map((t, i) => (
-              <div key={i} className="bg-white/10 backdrop-blur-2xl rounded-3xl p-8 border border-white/20 shadow-2xl hover:bg-white/15 hover:border-white/30 hover:-translate-y-2 transition duration-500">
-                <div className="flex gap-1 mb-6">
-                  {[...Array(5)].map((_, j) => (
-                    <svg key={j} className="w-5 h-5 text-[#FFCD00]" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  ))}
+          <div className="grid md:grid-cols-3 gap-8 items-stretch">
+            {reviewsToDisplay.map((t, i) => (
+              <div key={t.id || i} className="bg-white/10 backdrop-blur-2xl rounded-3xl p-8 border border-white/20 shadow-2xl hover:bg-white/15 hover:border-white/30 hover:-translate-y-2 transition duration-500 flex flex-col justify-between h-full">
+                <div>
+                  <div className="flex gap-1 mb-6">
+                    {[...Array(t.rating || 5)].map((_, j) => (
+                      <svg key={j} className="w-5 h-5 text-[#FFCD00]" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                    ))}
+                  </div>
+                  <p className="text-white/95 mb-8 leading-relaxed font-body font-medium text-justify">"{t.text}"</p>
                 </div>
-                <p className="text-white/90 mb-8 leading-relaxed font-body font-medium">"{t.text}"</p>
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white/30 shrink-0">
+                <div className="flex items-center gap-4 mt-auto">
+                  <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white/30 shrink-0 shadow-md">
                     <SafeImage src={t.image} alt={t.name} className="w-full h-full object-cover" />
                   </div>
                   <div>
@@ -370,20 +378,20 @@ export default function About() {
             <p className="text-base sm:text-lg font-medium text-white/90 leading-relaxed max-w-xl mb-8 drop-shadow-sm">
               Whether it's your very first breath underwater or your next technical certification, we are ready to guide you every step of the way.
             </p>
-            <div className="flex flex-wrap gap-4 items-center">
+            <div className="flex flex-wrap gap-3 sm:gap-4 items-center">
               <Link
                 to="/book-us"
-                className="rounded-full bg-white/15 backdrop-blur-xl border border-white/30 text-white font-bold px-8 py-4 text-sm uppercase tracking-wider transition-all duration-300 hover:scale-105 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] flex items-center gap-2 cursor-pointer"
+                className="rounded-full bg-white/15 backdrop-blur-xl border border-white/30 text-white font-bold px-5 py-2.5 sm:px-8 sm:py-4 text-xs sm:text-sm uppercase tracking-wider transition-all duration-300 hover:scale-105 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] flex items-center gap-1.5 sm:gap-2 cursor-pointer"
               >
                 <span>Book Your Dive Now</span>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M5 12h14" />
                   <path d="m12 5 7 7-7 7" />
                 </svg>
               </Link>
               <Link
                 to="/contact"
-                className="rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold px-6 py-4 text-sm uppercase tracking-wider transition-all duration-300 hover:scale-105 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] cursor-pointer"
+                className="rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold px-4 py-2.5 sm:px-6 sm:py-4 text-xs sm:text-sm uppercase tracking-wider transition-all duration-300 hover:scale-105 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] cursor-pointer"
               >
                 Contact Our Team
               </Link>
