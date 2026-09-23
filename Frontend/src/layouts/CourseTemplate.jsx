@@ -173,11 +173,11 @@ export default function CourseTemplate({
                 Book Now
               </Button>
 
-              <div className="grid grid-cols-3 gap-6 pt-10 border-t border-navy/10">
+              <div className="grid grid-cols-3 gap-3 sm:gap-6 pt-6 sm:pt-10 border-t border-navy/10">
                 {stats.map((stat, i) => (
                   <div key={i}>
-                    <div className="font-serif text-4xl text-accent mb-2">{stat.value}</div>
-                    <div className="text-xs font-bold text-navy/60 uppercase tracking-wide">{stat.label}</div>
+                    <div className="font-serif text-2xl xs:text-3xl sm:text-4xl text-accent mb-1 sm:mb-2">{stat.value}</div>
+                    <div className="text-[10px] sm:text-xs font-bold text-navy/60 uppercase tracking-wide leading-tight">{stat.label}</div>
                   </div>
                 ))}
               </div>

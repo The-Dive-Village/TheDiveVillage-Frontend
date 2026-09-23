@@ -753,11 +753,17 @@ export default function Home() {
 
 function InteractiveHighlights() {
   const navigate = useNavigate()
-  const [scrollPos, setScrollPos] = useState(0)
-  const isDragging = useRef(false)
-  const dragStartX = useRef(0)
-  const scrollAtStart = useRef(0)
-  const isHovered = useRef(false)
+  const isDraggingRef = useRef(false)
+  const dragStartXRef = useRef(0)
+  const dragStartYRef = useRef(0)
+  const lastXRef = useRef(0)
+  const lastTimeRef = useRef(0)
+  const velocityRef = useRef(0)
+  const isHoveredRef = useRef(false)
+  const hasMovedRef = useRef(false)
+  const isSwipingHorizontalRef = useRef(null)
+  const scrollPosRef = useRef(0)
+  const trackRef = useRef(null)
   const containerRef = useRef(null)
   const [containerWidth, setContainerWidth] = useState(1400)
 
@@ -793,50 +799,95 @@ function InteractiveHighlights() {
   const cardWidth = Math.floor((containerWidth - (Math.ceil(cardsToShow) - 1) * cardGap) / cardsToShow)
   const singleSetWidth = itemsInSet * (cardWidth + cardGap)
 
+  // Smooth 60/120fps Animation Loop with Momentum & Auto-scroll (Zero React Re-render Overhead)
   useEffect(() => {
     let animationFrameId
+    const autoSpeed = 1.35 // pixels per frame
+
     const step = () => {
-      if (!isDragging.current && !isHovered.current) {
-        setScrollPos((prev) => prev - 1.35) // Increased left-to-right auto-scroll speed
+      if (!isDraggingRef.current) {
+        if (Math.abs(velocityRef.current) > 0.08) {
+          scrollPosRef.current -= velocityRef.current
+          velocityRef.current *= 0.94 // Natural friction deceleration
+        } else {
+          velocityRef.current = 0
+          if (!isHoveredRef.current) {
+            scrollPosRef.current -= autoSpeed
+          }
+        }
       }
+
+      if (trackRef.current && singleSetWidth > 0) {
+        let normalized = scrollPosRef.current % singleSetWidth
+        if (normalized < 0) normalized += singleSetWidth
+        trackRef.current.style.transform = `translate3d(-${normalized}px, 0, 0)`
+      }
+
       animationFrameId = requestAnimationFrame(step)
     }
+
     animationFrameId = requestAnimationFrame(step)
     return () => cancelAnimationFrame(animationFrameId)
-  }, [])
-
-  const hasMoved = useRef(false)
+  }, [singleSetWidth])
 
   const handlePointerDown = (e) => {
-    isDragging.current = true
-    hasMoved.current = false
-    dragStartX.current = e.clientX
-    scrollAtStart.current = scrollPos
+    isDraggingRef.current = true
+    hasMovedRef.current = false
+    isSwipingHorizontalRef.current = null
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY
+    dragStartXRef.current = clientX
+    dragStartYRef.current = clientY
+    lastXRef.current = clientX
+    lastTimeRef.current = performance.now()
+    velocityRef.current = 0
   }
 
   const handlePointerMove = (e) => {
-    if (!isDragging.current) return
-    const deltaX = e.clientX - dragStartX.current
-    if (Math.abs(deltaX) > 8) {
-      hasMoved.current = true
-      try {
-        if (!e.currentTarget.hasPointerCapture(e.pointerId)) {
-          e.currentTarget.setPointerCapture(e.pointerId)
+    if (!isDraggingRef.current) return
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY
+    const totalDeltaX = clientX - dragStartXRef.current
+    const totalDeltaY = clientY - dragStartYRef.current
+
+    // Detect gesture orientation early to avoid locking native vertical scroll
+    if (isSwipingHorizontalRef.current === null) {
+      if (Math.abs(totalDeltaX) > 6 || Math.abs(totalDeltaY) > 6) {
+        if (Math.abs(totalDeltaX) >= Math.abs(totalDeltaY)) {
+          isSwipingHorizontalRef.current = true
+        } else {
+          isSwipingHorizontalRef.current = false
+          isDraggingRef.current = false
+          return
         }
-      } catch { }
+      }
     }
-    setScrollPos(scrollAtStart.current - deltaX)
+
+    if (isSwipingHorizontalRef.current === false) return
+
+    if (Math.abs(totalDeltaX) > 6) {
+      hasMovedRef.current = true
+    }
+
+    const deltaX = clientX - lastXRef.current
+    scrollPosRef.current -= deltaX
+
+    const now = performance.now()
+    const dt = now - lastTimeRef.current
+    if (dt > 0) {
+      velocityRef.current = (deltaX / dt) * 16.67
+    }
+    lastXRef.current = clientX
+    lastTimeRef.current = now
   }
 
-  const handlePointerUp = (e) => {
-    if (isDragging.current) {
-      isDragging.current = false
-      try {
-        if (e.currentTarget.hasPointerCapture(e.pointerId)) {
-          e.currentTarget.releasePointerCapture(e.pointerId)
-        }
-      } catch { }
+  const handlePointerUp = () => {
+    if (isDraggingRef.current) {
+      isDraggingRef.current = false
+      if (velocityRef.current > 35) velocityRef.current = 35
+      if (velocityRef.current < -35) velocityRef.current = -35
     }
+    isSwipingHorizontalRef.current = null
   }
 
   const handlePrev = (e) => {
@@ -844,7 +895,7 @@ function InteractiveHighlights() {
       e.preventDefault()
       e.stopPropagation()
     }
-    setScrollPos((prev) => prev - (cardWidth + cardGap))
+    velocityRef.current = -((cardWidth + cardGap) / 5)
   }
 
   const handleNext = (e) => {
@@ -852,7 +903,7 @@ function InteractiveHighlights() {
       e.preventDefault()
       e.stopPropagation()
     }
-    setScrollPos((prev) => prev + (cardWidth + cardGap))
+    velocityRef.current = (cardWidth + cardGap) / 5
   }
 
   const handleNavigate = (e, targetLink) => {
@@ -860,7 +911,7 @@ function InteractiveHighlights() {
       e.preventDefault()
       e.stopPropagation()
     }
-    if (hasMoved.current) {
+    if (hasMovedRef.current) {
       return
     }
     const destination = targetLink || '/services'
@@ -868,24 +919,19 @@ function InteractiveHighlights() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  // Calculate seamless looping modulo offset
-  let normalizedScroll = scrollPos % singleSetWidth
-  if (normalizedScroll < 0) {
-    normalizedScroll += singleSetWidth
-  }
-
   return (
     <div
-      onMouseEnter={() => { isHovered.current = true }}
-      onMouseLeave={() => { isHovered.current = false }}
+      onMouseEnter={() => { isHoveredRef.current = true }}
+      onMouseLeave={() => { isHoveredRef.current = false }}
       className="relative w-full max-w-[1800px] mx-auto my-4 pointer-events-auto px-1 sm:px-2"
+      data-lenis-prevent="true"
     >
       {/* Sleek Floating Arrow Buttons outside cards */}
       <button
         type="button"
         onClick={handlePrev}
-        onMouseEnter={(e) => { e.stopPropagation(); isHovered.current = true }}
-        onMouseLeave={(e) => { e.stopPropagation(); isHovered.current = true }}
+        onMouseEnter={(e) => { e.stopPropagation(); isHoveredRef.current = true }}
+        onMouseLeave={(e) => { e.stopPropagation(); isHoveredRef.current = false }}
         className="carousel-arrow-btn absolute -left-1 sm:left-2 lg:left-3 top-1/2 -translate-y-1/2 z-40 w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-white/15 border border-white/30 text-white hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] shadow-[0_8px_32px_rgba(0,0,0,0.37)] backdrop-blur-2xl flex items-center justify-center cursor-pointer select-none transition-all duration-300 hover:scale-110 active:scale-95"
         aria-label="Previous Slide"
       >
@@ -897,8 +943,8 @@ function InteractiveHighlights() {
       <button
         type="button"
         onClick={handleNext}
-        onMouseEnter={(e) => { e.stopPropagation(); isHovered.current = true }}
-        onMouseLeave={(e) => { e.stopPropagation(); isHovered.current = true }}
+        onMouseEnter={(e) => { e.stopPropagation(); isHoveredRef.current = true }}
+        onMouseLeave={(e) => { e.stopPropagation(); isHoveredRef.current = false }}
         className="carousel-arrow-btn absolute -right-1 sm:right-2 lg:right-3 top-1/2 -translate-y-1/2 z-40 w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-white/15 border border-white/30 text-white hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] shadow-[0_8px_32px_rgba(0,0,0,0.37)] backdrop-blur-2xl flex items-center justify-center cursor-pointer select-none transition-all duration-300 hover:scale-110 active:scale-95"
         aria-label="Next Slide"
       >
@@ -914,13 +960,19 @@ function InteractiveHighlights() {
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerUp}
+        onTouchStart={handlePointerDown}
+        onTouchMove={handlePointerMove}
+        onTouchEnd={handlePointerUp}
+        onTouchCancel={handlePointerUp}
         className="w-full py-4 overflow-hidden cursor-grab active:cursor-grabbing select-none"
+        style={{ touchAction: 'pan-y' }}
+        data-lenis-prevent="true"
       >
         <div
-          className="flex"
+          ref={trackRef}
+          className="flex will-change-transform"
           style={{
             gap: `${cardGap}px`,
-            transform: `translateX(-${normalizedScroll}px)`,
             width: `${repeatedData.length * (cardWidth + cardGap)}px`
           }}
         >

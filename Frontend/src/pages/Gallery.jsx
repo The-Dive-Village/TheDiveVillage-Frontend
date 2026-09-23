@@ -123,18 +123,18 @@ export default function Gallery() {
         </div>
 
         {/* 3. GALLERY MASONRY / GRID */}
-        <div className="grid grid-cols-3 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-6 lg:gap-8 mb-16 sm:mb-24">
+        <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-6 lg:gap-8 mb-16 sm:mb-24">
           {filteredItems.map((item, idx) => (
             <motion.div
               key={item.id}
               initial={reduce ? false : { opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: Math.min(idx * 0.02, 0.25) }}
-              className="group flex flex-col rounded-xl sm:rounded-[24px] overflow-hidden bg-white border border-navy/10 shadow-sm hover:shadow-xl hover:border-cyan-500/30 transition-all duration-300 cursor-pointer"
+              className="group flex flex-col rounded-2xl sm:rounded-[24px] overflow-hidden bg-white border border-navy/10 shadow-sm hover:shadow-xl hover:border-cyan-500/30 transition-all duration-300 cursor-pointer"
               onClick={() => openLightbox(idx)}
             >
               {/* Media Container */}
-              <div className="relative aspect-square sm:aspect-[16/11] w-full overflow-hidden bg-navy/10">
+              <div className="relative aspect-[4/3] xs:aspect-square sm:aspect-[16/11] w-full overflow-hidden bg-navy/10">
                 {item.type === 'video' ? (
                   <LazyVideo
                     src={item.src}
@@ -153,7 +153,7 @@ export default function Gallery() {
                 )}
 
                 {/* Serial Number Badge */}
-                <div className="absolute top-1.5 left-1.5 sm:top-3.5 sm:left-3.5 z-10 px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-navy/85 backdrop-blur-md border border-white/20 text-accent font-heading font-bold text-[8px] sm:text-xs shadow-md tracking-wider">
+                <div className="absolute top-2.5 left-2.5 sm:top-3.5 sm:left-3.5 z-10 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-navy/85 backdrop-blur-md border border-white/20 text-accent font-heading font-bold text-[9px] sm:text-xs shadow-md tracking-wider">
                   #{String(idx + 1).padStart(2, '0')}
                 </div>
 
@@ -161,7 +161,7 @@ export default function Gallery() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-300" />
                 
                 {/* Expand Icon on Hover */}
-                <div className="absolute top-1.5 right-1.5 sm:top-3.5 sm:right-3.5 h-6 w-6 sm:h-9 sm:w-9 rounded-full bg-white/25 backdrop-blur-md flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition duration-300 hover:scale-110 shadow-md [&>svg]:w-2.5 [&>svg]:h-2.5 sm:[&>svg]:w-4 sm:[&>svg]:h-4">
+                <div className="absolute top-2.5 right-2.5 sm:top-3.5 sm:right-3.5 h-7 w-7 sm:h-9 sm:w-9 rounded-full bg-white/25 backdrop-blur-md flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition duration-300 hover:scale-110 shadow-md [&>svg]:w-3 [&>svg]:h-3 sm:[&>svg]:w-4 sm:[&>svg]:h-4">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                     <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
                   </svg>
@@ -169,11 +169,11 @@ export default function Gallery() {
               </div>
 
               {/* Information Panel Below Media - Title and Serial Number */}
-              <div className="p-1.5 sm:p-5 flex items-center justify-between gap-1 sm:gap-3 bg-white">
-                <h3 className="font-heading text-[10px] xs:text-xs sm:text-lg font-bold text-navy group-hover:text-accent transition duration-200 line-clamp-1 flex-1 leading-tight">
+              <div className="p-3 sm:p-5 flex items-center justify-between gap-2 sm:gap-3 bg-white">
+                <h3 className="font-heading text-xs xs:text-sm sm:text-lg font-bold text-navy group-hover:text-accent transition duration-200 line-clamp-1 flex-1 leading-tight">
                   {item.title}
                 </h3>
-                <span className="text-[8px] sm:text-xs font-bold font-mono text-navy/50 bg-[#F0F2F5] px-1 sm:px-2 py-0.5 rounded-full shrink-0 hidden xs:inline sm:inline">
+                <span className="text-[9px] sm:text-xs font-bold font-mono text-navy/50 bg-[#F0F2F5] px-1.5 sm:px-2 py-0.5 rounded-full shrink-0">
                   #{String(idx + 1).padStart(2, '0')}
                 </span>
               </div>

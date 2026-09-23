@@ -530,15 +530,54 @@ export default function InteractiveDiveMap({
                       popupEl.style.display = 'none'
                     } else {
                       const canvas = viewer.scene.canvas
+                      const canvasWidth = canvas.clientWidth
+                      const canvasHeight = canvas.clientHeight
                       const x = windowPosition.x
                       const y = windowPosition.y
 
-                      if (x < -120 || x > canvas.clientWidth + 120 || y < -120 || y > canvas.clientHeight + 120) {
+                      if (x < -80 || x > canvasWidth + 80 || y < -80 || y > canvasHeight + 80) {
                         popupEl.style.display = 'none'
                       } else {
                         popupEl.style.display = 'block'
-                        popupEl.style.left = `${Math.round(x)}px`
-                        popupEl.style.top = `${Math.round(y - 48)}px`
+                        const isMobile = canvasWidth < 640
+                        const popupWidth = isMobile ? 210 : 250
+                        const popupHeight = isMobile ? 190 : 240
+                        const halfWidth = popupWidth / 2
+                        const margin = 10
+
+                        // Clamp horizontal coordinate so it never clips off left or right screen
+                        const clampedX = Math.max(halfWidth + margin, Math.min(canvasWidth - halfWidth - margin, x))
+
+                        // Flip below pin if placed too close to top edge
+                        const minTopSpaceNeeded = popupHeight + margin + 45
+                        let topPos = y - 36
+                        let isFlipped = false
+
+                        if (y < minTopSpaceNeeded) {
+                          topPos = y + 16
+                          isFlipped = true
+                        }
+
+                        // Ensure topPos stays strictly within visible canvas boundaries
+                        if (!isFlipped) {
+                          topPos = Math.max(popupHeight + margin, Math.min(canvasHeight - margin, topPos))
+                          popupEl.style.transform = 'translate(-50%, -100%)'
+                        } else {
+                          topPos = Math.max(margin + 40, Math.min(canvasHeight - popupHeight - margin, topPos))
+                          popupEl.style.transform = 'translate(-50%, 0)'
+                        }
+
+                        popupEl.style.left = `${Math.round(clampedX)}px`
+                        popupEl.style.top = `${Math.round(topPos)}px`
+
+                        const needleEl = popupEl.querySelector('.popup-needle')
+                        if (needleEl) {
+                          if (isFlipped) {
+                            needleEl.className = 'popup-needle absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-[#00192e] rotate-45 border-l border-t border-cyan-400/35 pointer-events-none'
+                          } else {
+                            needleEl.className = 'popup-needle absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-[#00192e] rotate-45 border-r border-b border-cyan-400/35 pointer-events-none'
+                          }
+                        }
                       }
                     }
                   }
@@ -1217,21 +1256,21 @@ export default function InteractiveDiveMap({
       <div
         ref={popupRef}
         style={{ display: 'none' }}
-        className="absolute z-30 pointer-events-auto transform -translate-x-1/2 -translate-y-full w-64 bg-[#00192e]/95 backdrop-blur-xl rounded-2xl shadow-[0_16px_48px_rgba(0,0,0,0.7)] overflow-hidden border border-cyan-400/35 transition-all duration-150"
+        className="absolute z-30 pointer-events-auto transform -translate-x-1/2 -translate-y-full w-[195px] xs:w-[215px] sm:w-60 bg-[#00192e]/95 backdrop-blur-xl rounded-xl sm:rounded-2xl shadow-[0_12px_36px_rgba(0,0,0,0.75)] overflow-hidden border border-cyan-400/40 transition-all duration-150"
       >
         {popupSite && (() => {
           const creature = getDiveSiteCreatureInfo(popupSite.id, popupSite)
           return (
             <div className="relative">
               {/* 1. Header: Title & Close Button */}
-              <div className="px-3.5 pt-3 pb-2 flex items-center justify-between gap-2 border-b border-white/10 bg-white/[0.03]">
+              <div className="px-2.5 sm:px-3 pt-2 sm:pt-2.5 pb-1.5 flex items-center justify-between gap-1.5 border-b border-white/10 bg-white/[0.03]">
                 <div className="min-w-0 flex-1">
-                  <h3 className="font-heading font-bold text-sm text-white leading-tight truncate">
+                  <h3 className="font-heading font-bold text-xs sm:text-sm text-white leading-tight truncate">
                     {popupSite.title || popupSite.name || 'Dive Site'}
                   </h3>
                   {popupSite.country && (
-                    <p className="text-[10px] font-medium text-cyan-400 flex items-center gap-1 mt-0.5 truncate">
-                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="shrink-0">
+                    <p className="text-[8.5px] sm:text-[9.5px] font-medium text-cyan-400 flex items-center gap-1 mt-0.5 truncate">
+                      <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="shrink-0">
                         <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
                         <circle cx="12" cy="9" r="2.5" />
                       </svg>
@@ -1249,7 +1288,7 @@ export default function InteractiveDiveMap({
                     prevLocationIdRef.current = null
                     onLocationSelectRef.current?.(null)
                   }}
-                  className="text-white/60 hover:text-white w-6 h-6 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition cursor-pointer text-xs font-bold shrink-0"
+                  className="text-white/60 hover:text-white w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition cursor-pointer text-[10px] sm:text-xs font-bold shrink-0"
                   aria-label="Close"
                 >
                   ✕
@@ -1257,7 +1296,7 @@ export default function InteractiveDiveMap({
               </div>
 
               {/* 2. Resident Creature & Dive Photo with Dynamic Badge */}
-              <div className="w-full h-36 bg-[#021426] overflow-hidden relative group">
+              <div className="w-full h-20 xs:h-24 sm:h-28 bg-[#021426] overflow-hidden relative group">
                 <img
                   key={popupSite.id}
                   src={creature?.image || getDiveSiteImage(popupSite.id, popupSite)}
@@ -1269,8 +1308,8 @@ export default function InteractiveDiveMap({
 
                 {/* Creature Badge */}
                 {creature?.creatureName && (
-                  <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between gap-1 pointer-events-none">
-                    <span className="inline-flex items-center gap-1.5 bg-[#00192e]/90 backdrop-blur-md px-2.5 py-1 rounded-full text-[10px] font-bold text-accent border border-accent/40 shadow-sm max-w-[90%] truncate">
+                  <div className="absolute bottom-1.5 left-1.5 right-1.5 flex items-center justify-between gap-1 pointer-events-none">
+                    <span className="inline-flex items-center gap-1 bg-[#00192e]/90 backdrop-blur-md px-2 py-0.5 rounded-full text-[8.5px] sm:text-[9.5px] font-bold text-accent border border-accent/40 shadow-sm max-w-[90%] truncate">
                       <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse shrink-0" />
                       <span className="truncate">{creature.creatureName}</span>
                     </span>
@@ -1279,38 +1318,36 @@ export default function InteractiveDiveMap({
               </div>
 
               {/* 3. Marine Life & Ecological Info */}
-              <div className="px-3.5 py-2.5 space-y-1.5 bg-[#00192e]/60 border-t border-white/5 text-left">
+              <div className="px-2.5 sm:px-3 py-2 space-y-1 bg-[#00192e]/60 border-t border-white/5 text-left">
                 {creature?.species && (
                   <div>
-                    <span className="block text-[8.5px] font-extrabold uppercase tracking-widest text-cyan-400/80">
+                    <span className="block text-[7.5px] sm:text-[8px] font-extrabold uppercase tracking-widest text-cyan-400/80">
                       SPECIES / HABITAT
                     </span>
-                    <p className="text-[11px] font-medium text-white truncate">
+                    <p className="text-[9.5px] sm:text-[10.5px] font-medium text-white truncate">
                       {creature.species}
                     </p>
                   </div>
                 )}
 
-                <div className="flex items-center justify-between gap-2 pt-0.5 border-t border-white/5">
-                  <span className="text-[9px] font-extrabold uppercase tracking-widest text-white/50">
+                <div className="flex items-center justify-between gap-1.5 pt-0.5 border-t border-white/5">
+                  <span className="text-[8px] sm:text-[8.5px] font-extrabold uppercase tracking-widest text-white/50">
                     DIVE TYPE
                   </span>
-                  <span className="text-[11px] font-semibold text-slate-200 truncate max-w-[130px] text-right">
+                  <span className="text-[9.5px] sm:text-[10.5px] font-semibold text-slate-200 truncate max-w-[120px] text-right">
                     {popupSite.types || 'Reef, Ocean'}
                   </span>
                 </div>
 
                 {creature?.description && (
-                  <p className="text-[10px] text-slate-300/80 line-clamp-2 leading-tight pt-0.5">
+                  <p className="text-[8.5px] sm:text-[9.5px] text-slate-300/80 line-clamp-2 leading-tight pt-0.5">
                     {creature.description}
                   </p>
                 )}
               </div>
 
-
-
-              {/* Bottom Marker Pointer Needle */}
-              <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-[#00192e] rotate-45 border-r border-b border-cyan-400/35 pointer-events-none" />
+              {/* Marker Pointer Needle */}
+              <div className="popup-needle absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-[#00192e] rotate-45 border-r border-b border-cyan-400/35 pointer-events-none" />
             </div>
           )
         })()}
