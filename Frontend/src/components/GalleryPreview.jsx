@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router'
 import SectionReveal from './SectionReveal'
 import Button from './Button'
 import { GALLERY_ITEMS } from '../utils/galleryData'
+import { contentService } from '../services/contentService'
 
 export default function GalleryPreview() {
   const navigate = useNavigate()
@@ -11,8 +12,32 @@ export default function GalleryPreview() {
   const startX = useRef(0)
   const scrollLeft = useRef(0)
   const [isHovered, setIsHovered] = useState(false)
+  const [itemsList, setItemsList] = useState(GALLERY_ITEMS)
 
-  const previewItems = GALLERY_ITEMS.slice(0, 16)
+  useEffect(() => {
+    async function loadGalleryPreview() {
+      try {
+        const res = await contentService.getGallery()
+        const rawItems = res.data?.data?.items || (Array.isArray(res.data?.data) ? res.data.data : [])
+        if (Array.isArray(rawItems) && rawItems.length > 0) {
+          const dbMapped = rawItems.map((item) => ({
+            id: item.id,
+            title: item.title || 'Underwater Moment',
+            category: item.category ? item.category.toLowerCase() : 'photos',
+            type: (item.type || item.mediaType || 'image').toLowerCase(),
+            src: item.src,
+          }))
+          const localVideos = GALLERY_ITEMS.filter((g) => g.type === 'video')
+          setItemsList([...dbMapped, ...localVideos])
+        }
+      } catch (err) {
+        console.warn('Could not load live gallery preview from DB:', err)
+      }
+    }
+    loadGalleryPreview()
+  }, [])
+
+  const previewItems = itemsList.slice(0, 16)
 
   const goToGallery = () => navigate('/gallery')
 

@@ -19,19 +19,23 @@ export default function Gallery() {
     async function loadGallery() {
       try {
         const res = await contentService.getGallery()
-        if (res.data?.data && Array.isArray(res.data.data) && res.data.data.length > 0) {
-          const mapped = res.data.data.map((item) => ({
+        const rawItems = res.data?.data?.items || (Array.isArray(res.data?.data) ? res.data.data : [])
+        if (Array.isArray(rawItems) && rawItems.length > 0) {
+          const mappedDbItems = rawItems.map((item) => ({
             id: item.id,
             title: item.title || 'Underwater Moment',
             species: item.species || item.subtitle || undefined,
-            category: item.category ? item.category.toLowerCase() : 'underwater',
+            category: item.category ? item.category.toLowerCase() : 'photos',
             location: item.location || 'The Dive Village',
-            type: (item.mediaType || 'IMAGE').toLowerCase(),
+            type: (item.type || item.mediaType || 'image').toLowerCase(),
             src: item.src,
             poster: item.thumbnail || undefined,
             thumbnail: item.thumbnail || item.src,
           }))
-          setItemsList(mapped)
+
+          // Combine Cloudinary-hosted DB photo items with local video items
+          const localVideos = GALLERY_ITEMS.filter((g) => g.type === 'video')
+          setItemsList([...mappedDbItems, ...localVideos])
         }
       } catch (err) {
         console.warn('Could not load live gallery from DB, using fallback:', err)
