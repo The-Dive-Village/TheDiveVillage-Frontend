@@ -1,4 +1,5 @@
 import { lazy, Suspense, useState, useEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import { Link, useNavigate } from 'react-router'
 import { motion, useReducedMotion, AnimatePresence } from 'framer-motion'
 import Button from '../components/Button'
@@ -103,10 +104,24 @@ export default function Home() {
   const [revText, setRevText] = useState('')
   const [revRating, setRevRating] = useState(5)
 
+  // Prevent background scrolling when review modal is active
+  useEffect(() => {
+    if (showReviewModal) {
+      const originalBodyOverflow = document.body.style.overflow
+      const originalHtmlOverflow = document.documentElement.style.overflow
+      document.body.style.overflow = 'hidden'
+      document.documentElement.style.overflow = 'hidden'
+      return () => {
+        document.body.style.overflow = originalBodyOverflow
+        document.documentElement.style.overflow = originalHtmlOverflow
+      }
+    }
+  }, [showReviewModal])
+
   const handleReviewSubmit = (e) => {
     e.preventDefault()
     if (!revName.trim() || !revText.trim()) return
-    addReview({ name: revName, role: revRole, text: revText, rating: revRating })
+    addReview({ name: revName.trim(), role: revRole.trim() || 'Ocean Diver', text: revText.trim(), rating: revRating || 5 })
     setReviewSubmitted(true)
     setTimeout(() => {
       setReviewSubmitted(false)
@@ -115,7 +130,7 @@ export default function Home() {
       setRevRole('')
       setRevText('')
       setRevRating(5)
-    }, 2800)
+    }, 2400)
   }
 
   return (
@@ -128,7 +143,7 @@ export default function Home() {
       />
 
       {/* 1. HERO */}
-      <section className="relative -mt-16 flex min-h-screen sm:min-h-screen items-start sm:items-end justify-start pb-16 pt-44 xs:pt-52 sm:-mt-[72px] sm:pb-16 sm:pt-[120px] pointer-events-none">
+      <section className="relative flex min-h-[100dvh] sm:min-h-screen items-start sm:items-end justify-start pb-12 sm:pb-16 pt-24 xs:pt-28 sm:pt-[120px] pointer-events-none">
 
         <div className="relative z-10 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 pointer-events-none">
           <div className="max-w-3xl">
@@ -525,102 +540,135 @@ export default function Home() {
       <GalleryPreview />
 
       {/* REVIEW MODAL */}
-      <AnimatePresence>
-        {showReviewModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-[#00172b] border border-white/30 rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl relative"
+      {typeof document !== 'undefined' && createPortal(
+        <AnimatePresence>
+          {showReviewModal && (
+            <div
+              data-lenis-prevent="true"
+              onClick={() => setShowReviewModal(false)}
+              className="fixed inset-0 z-[99999] flex items-center justify-center p-3.5 sm:p-4 bg-black/60 backdrop-blur-sm pointer-events-auto select-auto"
             >
-              <button
-                type="button"
-                onClick={() => setShowReviewModal(false)}
-                className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition cursor-pointer"
+              <motion.div
+                initial={{ scale: 0.92, opacity: 0, y: 10 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.92, opacity: 0, y: 10 }}
+                transition={{ duration: 0.22, ease: 'easeOut' }}
+                onClick={(e) => e.stopPropagation()}
+                onTouchStart={(e) => e.stopPropagation()}
+                className="bg-[#00172b]/80 backdrop-blur-2xl border border-white/25 rounded-2xl sm:rounded-3xl p-5 sm:p-6 max-w-sm sm:max-w-md w-full shadow-[0_20px_50px_rgba(0,0,0,0.85)] relative text-left select-auto pointer-events-auto"
               >
-                ✕
-              </button>
+                <button
+                  type="button"
+                  onClick={() => setShowReviewModal(false)}
+                  className="absolute top-3.5 right-3.5 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition cursor-pointer text-sm"
+                  aria-label="Close review dialog"
+                >
+                  ✕
+                </button>
 
-              <h3 className="font-heading text-2xl font-bold text-white mb-2">Write a Review</h3>
-              <p className="text-white/80 text-sm mb-6">Share your diving experience with our community.</p>
+                <h3 className="font-heading text-xl sm:text-2xl font-bold text-white mb-1">Write a Review</h3>
+                <p className="text-white/75 text-xs sm:text-sm mb-4">Share your diving experience with our community.</p>
 
-              {reviewSubmitted ? (
-                <div className="text-center py-8">
-                  <div className="w-16 h-16 bg-[#00AEC7]/20 border border-[#00AEC7] rounded-full flex items-center justify-center mx-auto mb-4 text-[#00AEC7]">
-                    ✓
-                  </div>
-                  <h4 className="text-white font-bold text-lg mb-2">Thank you!</h4>
-                  <p className="text-white/80 text-sm">Your review has been submitted and is pending moderation.</p>
-                </div>
-              ) : (
-                <form onSubmit={handleReviewSubmit} className="space-y-4">
-                  <div>
-                    <label className="block text-white/90 text-xs font-bold uppercase tracking-wider mb-1">Your Name</label>
-                    <input
-                      type="text"
-                      required
-                      value={revName}
-                      onChange={(e) => setRevName(e.target.value)}
-                      placeholder="e.g. Sarah Jenkins"
-                      className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 text-white placeholder-white/40 focus:outline-none focus:border-[#FFCD00]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-white/90 text-xs font-bold uppercase tracking-wider mb-1">Diver Role / Level</label>
-                    <input
-                      type="text"
-                      required
-                      value={revRole}
-                      onChange={(e) => setRevRole(e.target.value)}
-                      placeholder="e.g. Advanced Adventurer"
-                      className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 text-white placeholder-white/40 focus:outline-none focus:border-[#FFCD00]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-white/90 text-xs font-bold uppercase tracking-wider mb-1">Rating</label>
-                    <div className="flex gap-2">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <button
-                          key={star}
-                          type="button"
-                          onClick={() => setRevRating(star)}
-                          className={`w-8 h-8 rounded-lg flex items-center justify-center transition cursor-pointer ${
-                            revRating >= star ? 'bg-[#FFCD00] text-[#001e3d]' : 'bg-white/10 text-white/50'
-                          }`}
-                        >
-                          ★
-                        </button>
-                      ))}
+                {reviewSubmitted ? (
+                  <div className="text-center py-6">
+                    <div className="w-12 h-12 bg-[#00AEC7]/20 border border-[#00AEC7] rounded-full flex items-center justify-center mx-auto mb-3 text-[#00AEC7] text-lg font-bold">
+                      ✓
                     </div>
+                    <h4 className="text-white font-bold text-base mb-1">Thank you!</h4>
+                    <p className="text-white/80 text-xs sm:text-sm">Your review has been submitted and is pending moderation.</p>
                   </div>
+                ) : (
+                  <form onSubmit={handleReviewSubmit} className="space-y-3 sm:space-y-3.5 pointer-events-auto select-auto">
+                    <div>
+                      <label className="block text-white/90 text-[11px] sm:text-xs font-bold uppercase tracking-wider mb-1">Your Name</label>
+                      <input
+                        type="text"
+                        required
+                        value={revName}
+                        onChange={(e) => setRevName(e.target.value)}
+                        placeholder="e.g. Sarah Jenkins"
+                        className="w-full bg-white/10 hover:bg-white/15 border border-white/20 rounded-xl px-3.5 py-2 sm:py-2.5 text-sm text-white placeholder-white/40 focus:outline-none focus:border-[#FFCD00] focus:ring-1 focus:ring-[#FFCD00] transition-colors pointer-events-auto select-text touch-manipulation"
+                      />
+                    </div>
 
-                  <div>
-                    <label className="block text-white/90 text-xs font-bold uppercase tracking-wider mb-1">Your Experience</label>
-                    <textarea
-                      required
-                      rows={4}
-                      value={revText}
-                      onChange={(e) => setRevText(e.target.value)}
-                      placeholder="Tell us about the reefs, instructors, or your holiday..."
-                      className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 text-white placeholder-white/40 focus:outline-none focus:border-[#FFCD00] resize-none"
-                    />
-                  </div>
+                    <div>
+                      <label className="block text-white/90 text-[11px] sm:text-xs font-bold uppercase tracking-wider mb-1">Diver Role / Level</label>
+                      <input
+                        type="text"
+                        required
+                        value={revRole}
+                        onChange={(e) => setRevRole(e.target.value)}
+                        placeholder="e.g. Advanced Adventurer"
+                        className="w-full bg-white/10 hover:bg-white/15 border border-white/20 rounded-xl px-3.5 py-2 sm:py-2.5 text-sm text-white placeholder-white/40 focus:outline-none focus:border-[#FFCD00] focus:ring-1 focus:ring-[#FFCD00] transition-colors pointer-events-auto select-text touch-manipulation"
+                      />
+                    </div>
 
-                  <button
-                    type="submit"
-                    className="w-full py-3 rounded-full bg-[#FFCD00] text-[#001e3d] font-bold text-sm uppercase tracking-wider transition hover:brightness-110 shadow-lg cursor-pointer mt-2"
-                  >
-                    Submit Review
-                  </button>
-                </form>
-              )}
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+                    <div>
+                      <label className="block text-white/90 text-[11px] sm:text-xs font-bold uppercase tracking-wider mb-1.5">Rating</label>
+                      <div className="flex items-center gap-2">
+                        {[1, 2, 3, 4, 5].map((star) => {
+                          const isSelected = star <= revRating
+                          return (
+                            <button
+                              key={star}
+                              type="button"
+                              onClick={() => setRevRating(star)}
+                              className="p-1 -m-1 transition-transform hover:scale-125 cursor-pointer focus:outline-none group"
+                              aria-label={`${star} star rating`}
+                            >
+                              <svg
+                                className={`w-5 h-5 sm:w-6 sm:h-6 transition-all duration-200 ${
+                                  isSelected
+                                    ? 'text-white fill-white drop-shadow-[0_0_6px_rgba(255,255,255,0.7)]'
+                                    : 'text-transparent fill-none stroke-white/60 group-hover:stroke-white'
+                                }`}
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                strokeWidth="1.6"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
+                                />
+                              </svg>
+                            </button>
+                          )
+                        })}
+                        <span className="text-white/60 text-xs font-medium ml-1">
+                          {revRating} / 5
+                        </span>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-white/90 text-[11px] sm:text-xs font-bold uppercase tracking-wider mb-1">Your Experience</label>
+                      <textarea
+                        required
+                        rows={3}
+                        value={revText}
+                        onChange={(e) => setRevText(e.target.value)}
+                        placeholder="Tell us about the reefs, instructors, or your holiday..."
+                        className="w-full bg-white/10 hover:bg-white/15 border border-white/20 rounded-xl px-3.5 py-2 sm:py-2.5 text-sm text-white placeholder-white/40 focus:outline-none focus:border-[#FFCD00] focus:ring-1 focus:ring-[#FFCD00] transition-colors resize-none pointer-events-auto select-text touch-manipulation"
+                      />
+                    </div>
+
+                    <div className="pt-2 flex justify-center w-full">
+                      <button
+                        type="submit"
+                        className="w-auto min-w-[160px] xs:min-w-[180px] px-6 sm:px-8 py-2.5 sm:py-3 rounded-full bg-[#FFCD00] text-[#001e3d] font-bold text-xs sm:text-sm uppercase tracking-wider transition hover:brightness-110 hover:scale-105 shadow-lg cursor-pointer"
+                      >
+                        Submit Review
+                      </button>
+                    </div>
+                  </form>
+                )}
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
 
       {/* CLOSING CTA WITH CAROUSEL */}
       <section className="py-16 sm:py-24 bg-transparent pointer-events-auto">
