@@ -9,6 +9,8 @@ import { formatCurrency } from '../utils/formatCurrency'
 import Button from '../components/Button'
 import Product3DViewer from '../components/Product3DViewer'
 import SEOHead from '../components/SEOHead'
+import { triggerHaptic, triggerSuccessHaptic } from '../utils/haptics'
+import { shareContent } from '../utils/share'
 
 export default function ProductDetail() {
   const { id } = useParams()
@@ -62,6 +64,29 @@ export default function ProductDetail() {
   const [toastMessage, setToastMessage] = useState(null)
   const [isAdding, setIsAdding] = useState(false)
 
+  const swipeTouchStartX = useRef(0)
+  const swipeTouchStartY = useRef(0)
+
+  const handleMediaTouchStart = (e) => {
+    swipeTouchStartX.current = e.touches[0].clientX
+    swipeTouchStartY.current = e.touches[0].clientY
+  }
+
+  const handleMediaTouchEnd = (e) => {
+    const deltaX = e.changedTouches[0].clientX - swipeTouchStartX.current
+    const deltaY = e.changedTouches[0].clientY - swipeTouchStartY.current
+    if (Math.abs(deltaX) > 45 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5) {
+      const currentIndex = mediaItems.findIndex((m) => m.id === activeMedia?.id || m.src === activeMedia?.src)
+      if (currentIndex !== -1) {
+        if (deltaX < 0 && currentIndex < mediaItems.length - 1) {
+          setActiveMedia(mediaItems[currentIndex + 1])
+        } else if (deltaX > 0 && currentIndex > 0) {
+          setActiveMedia(mediaItems[currentIndex - 1])
+        }
+      }
+    }
+  }
+
   useEffect(() => {
     const p = SHOP_PRODUCTS.find((item) => item.id === id) || SHOP_PRODUCTS[0]
     const items = buildMediaItems(p)
@@ -76,6 +101,7 @@ export default function ProductDetail() {
   }, [id])
 
   const handleAddToCart = () => {
+    triggerSuccessHaptic()
     if (!user?.uid) {
       navigate('/login')
       return
@@ -102,6 +128,7 @@ export default function ProductDetail() {
   }
 
   const handleBuyNow = () => {
+    triggerSuccessHaptic()
     if (!user?.uid) {
       navigate('/login')
       return
@@ -121,6 +148,37 @@ export default function ProductDetail() {
     navigate('/checkout')
   }
 
+  const handleShare = async () => {
+    triggerHaptic(15)
+    await shareContent({
+      title: `${product.title || product.name} | The Dive Village`,
+      text: product.description || 'Check out this ocean gear from The Dive Village!',
+      url: window.location.href,
+    })
+  }
+
+  // Keyboard arrow navigation for desktop media gallery
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target?.tagName)) return
+      if (e.key === 'ArrowRight') {
+        const currIdx = mediaItems.findIndex((m) => m.id === activeMedia?.id || m.src === activeMedia?.src)
+        if (currIdx !== -1 && currIdx < mediaItems.length - 1) {
+          triggerHaptic(8)
+          setActiveMedia(mediaItems[currIdx + 1])
+        }
+      } else if (e.key === 'ArrowLeft') {
+        const currIdx = mediaItems.findIndex((m) => m.id === activeMedia?.id || m.src === activeMedia?.src)
+        if (currIdx > 0) {
+          triggerHaptic(8)
+          setActiveMedia(mediaItems[currIdx - 1])
+        }
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [activeMedia, mediaItems])
+
   if (!product) {
     return (
       <div className="min-h-screen bg-[#FAFAFA] pt-32 pb-24 text-center">
@@ -133,7 +191,7 @@ export default function ProductDetail() {
   }
 
   return (
-    <div className="bg-[#FAFAFA] min-h-screen text-navy font-body pt-24 sm:pt-32 pb-24 overflow-x-hidden">
+    <div className="bg-[#FAFAFA] min-h-screen text-navy font-body pt-24 sm:pt-32 pb-32 sm:pb-24 overflow-x-hidden">
       <SEOHead
         title={`${product.title || product.name} | Ocean Apparel | The Dive Village`}
         description={`${product.description}. Premium quality dive gear and eco-friendly apparel crafted by The Dive Village.`}
@@ -187,7 +245,10 @@ export default function ProductDetail() {
                 {mediaItems.map((item, i) => (
                   <div key={item.id || i} className="flex flex-col items-center gap-1 shrink-0">
                     <button
-                      onClick={() => setActiveMedia(item)}
+                      onClick={() => {
+                        triggerHaptic(8)
+                        setActiveMedia(item)
+                      }}
                       className={`flex-shrink-0 w-16 h-20 sm:w-18 sm:h-22 rounded-2xl overflow-hidden border-2 transition relative cursor-pointer ${
                         activeMedia?.id === item.id || activeMedia?.src === item.src
                           ? 'border-navy shadow-md ring-2 ring-navy/20'
@@ -219,57 +280,96 @@ export default function ProductDetail() {
                 ))}
               </div>
 
-              {/* Main Product Card Media Display */}
-              <div className="flex-1 w-full rounded-[28px] overflow-hidden bg-white border border-navy/10 aspect-square sm:aspect-[4/4] max-h-[460px] relative shadow-card group">
-                {activeMedia?.type === 'glb' ? (
-                  <Product3DViewer src={activeMedia.src} alt={product.title} productId={product.id} />
-                ) : activeMedia?.type === 'video' ? (
-                  <>
-                    <video
-                      src={activeMedia.src}
-                      controls
-                      autoPlay
-                      muted
-                      loop
-                      playsInline
-                      className="w-full h-full object-cover rounded-[28px]"
+              {/* Main Product Card Media Display with Touch Swipe & Zoom Support */}
+              <div className="flex-1 w-full flex flex-col">
+                <div 
+                  onTouchStart={activeMedia?.type !== 'glb' ? handleMediaTouchStart : undefined}
+                  onTouchEnd={activeMedia?.type !== 'glb' ? handleMediaTouchEnd : undefined}
+                  className="w-full rounded-[28px] overflow-hidden bg-white border border-navy/10 aspect-square sm:aspect-[4/4] max-h-[460px] relative shadow-card group"
+                >
+                  {activeMedia?.type === 'glb' ? (
+                    <Product3DViewer src={activeMedia.src} alt={product.title} productId={product.id} />
+                  ) : activeMedia?.type === 'video' ? (
+                    <>
+                      <video
+                        src={activeMedia.src}
+                        controls
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        className="w-full h-full object-cover rounded-[28px]"
+                      />
+                      <div className="hidden sm:flex absolute top-4 right-4 bg-navy/90 backdrop-blur-md px-3.5 py-1.5 text-xs font-bold text-[#FFCD00] rounded-full shadow-lg z-10 border border-[#FFCD00]/40 items-center gap-2 pointer-events-none">
+                        <span className="w-2.5 h-2.5 rounded-full bg-[#FFCD00] animate-ping" />
+                        <span>360 view of the Product</span>
+                      </div>
+                    </>
+                  ) : (
+                    <InteractiveProductImage
+                      src={activeMedia?.src || product.image}
+                      alt={product.title}
                     />
-                    <div className="hidden sm:flex absolute top-4 right-4 bg-navy/90 backdrop-blur-md px-3.5 py-1.5 text-xs font-bold text-[#FFCD00] rounded-full shadow-lg z-10 border border-[#FFCD00]/40 items-center gap-2 pointer-events-none">
-                      <span className="w-2.5 h-2.5 rounded-full bg-[#FFCD00] animate-ping" />
-                      <span>360 view of the Product</span>
-                    </div>
-                  </>
-                ) : (
-                  <InteractiveProductImage
-                    src={activeMedia?.src || product.image}
-                    alt={product.title}
-                  />
-                )}
-                {product.tag && (
-                  <span className="hidden sm:inline-block absolute top-4 left-4 bg-white/95 backdrop-blur-md px-3 py-1 text-xs font-bold text-navy rounded-full shadow-sm z-10 pointer-events-none">
-                    {product.tag}
-                  </span>
+                  )}
+                  {product.tag && (
+                    <span className="hidden sm:inline-block absolute top-4 left-4 bg-white/95 backdrop-blur-md px-3 py-1 text-xs font-bold text-navy rounded-full shadow-sm z-10 pointer-events-none">
+                      {product.tag}
+                    </span>
+                  )}
+                </div>
+
+                {/* Mobile Media Swipe Indicator Dots */}
+                {mediaItems.length > 1 && (
+                  <div className="flex sm:hidden justify-center items-center gap-1.5 mt-2.5">
+                    {mediaItems.map((m, idx) => {
+                      const isSelected = (activeMedia?.id === m.id || activeMedia?.src === m.src)
+                      return (
+                        <button
+                          key={m.id || idx}
+                          type="button"
+                          onClick={() => {
+                            triggerHaptic(8)
+                            setActiveMedia(m)
+                          }}
+                          aria-label={`View ${m.label}`}
+                          className={`h-1.5 rounded-full transition-all duration-300 ${
+                            isSelected ? 'w-5 bg-navy' : 'w-1.5 bg-navy/20'
+                          }`}
+                        />
+                      )
+                    })}
+                  </div>
                 )}
               </div>
             </div>
           </div>
 
-          {/* Right Column: Product Specifications & Actions */}
-          <div className="lg:col-span-6 flex flex-col justify-start">
+          {/* Right Column: Sticky Desktop Product Specifications & Actions */}
+          <div className="lg:col-span-6 flex flex-col justify-start lg:sticky lg:top-28 lg:self-start">
             
-            {/* Category & Stock Header */}
-            <div className="flex items-center gap-3 mb-3">
-              <span className="text-xs font-semibold uppercase tracking-widest text-navy/50">
-                {product.category}
-              </span>
-              <span className="h-1 w-1 rounded-full bg-navy/20" />
-              <span className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-700">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            {/* Category & Native Share Header */}
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-3">
+                <span className="text-xs font-semibold uppercase tracking-widest text-navy/50">
+                  {product.category}
                 </span>
-                {product.stockStatus || 'In Stock'}
-              </span>
+              </div>
+
+              {/* Native Share Button */}
+              <button
+                type="button"
+                onClick={handleShare}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-navy/15 text-navy text-xs font-bold hover:bg-navy hover:text-white transition shadow-sm active:scale-95 cursor-pointer"
+                title="Share this product"
+                aria-label="Share product"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+                  <polyline points="16 6 12 2 8 6" />
+                  <line x1="12" y1="2" x2="12" y2="15" />
+                </svg>
+                <span>Share</span>
+              </button>
             </div>
 
             {/* Product Title */}
@@ -294,7 +394,10 @@ export default function ProductDetail() {
                   {product.colors.map((color, idx) => (
                     <button
                       key={idx}
-                      onClick={() => setSelectedColor(color)}
+                      onClick={() => {
+                        triggerHaptic(10)
+                        setSelectedColor(color)
+                      }}
                       title={color.name}
                       className={`w-9 h-9 rounded-full transition relative flex items-center justify-center cursor-pointer ${
                         selectedColor.name === color.name
@@ -324,6 +427,7 @@ export default function ProductDetail() {
                   type="button"
                   onClick={(e) => {
                     e.preventDefault()
+                    triggerHaptic(8)
                     setActiveTab('sizeGuide')
                     setTimeout(() => {
                       sizeChartRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -342,8 +446,11 @@ export default function ProductDetail() {
                     <button
                       key={sz}
                       type="button"
-                      onClick={() => setSelectedSize(sz)}
-                      className={`px-4 py-3 rounded-2xl text-xs font-bold transition border cursor-pointer ${
+                      onClick={() => {
+                        triggerHaptic(10)
+                        setSelectedSize(sz)
+                      }}
+                      className={`px-4 py-3 rounded-2xl text-xs font-bold transition border cursor-pointer active:scale-95 ${
                         selectedSize === sz
                           ? 'bg-navy text-white border-navy shadow-md ring-2 ring-navy/20'
                           : 'bg-white text-navy border-navy/20 hover:border-navy'
@@ -371,16 +478,22 @@ export default function ProductDetail() {
               <p className="text-xs font-bold uppercase tracking-wider text-navy/70 mb-3">Quantity</p>
               <div className="inline-flex items-center rounded-2xl border border-navy/15 bg-white p-1 shadow-sm">
                 <button
-                  onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                  className="w-10 h-10 flex items-center justify-center rounded-xl text-navy hover:bg-[#F0F2F5] transition text-base font-bold cursor-pointer"
+                  onClick={() => {
+                    triggerHaptic(10)
+                    setQuantity((q) => Math.max(1, q - 1))
+                  }}
+                  className="w-10 h-10 flex items-center justify-center rounded-xl text-navy hover:bg-[#F0F2F5] active:scale-90 transition text-base font-bold cursor-pointer"
                   aria-label="Decrease quantity"
                 >
                   −
                 </button>
                 <span className="w-12 text-center font-bold text-sm text-navy">{quantity}</span>
                 <button
-                  onClick={() => setQuantity((q) => q + 1)}
-                  className="w-10 h-10 flex items-center justify-center rounded-xl text-navy hover:bg-[#F0F2F5] transition text-base font-bold cursor-pointer"
+                  onClick={() => {
+                    triggerHaptic(10)
+                    setQuantity((q) => q + 1)
+                  }}
+                  className="w-10 h-10 flex items-center justify-center rounded-xl text-navy hover:bg-[#F0F2F5] active:scale-90 transition text-base font-bold cursor-pointer"
                   aria-label="Increase quantity"
                 >
                   +
@@ -390,11 +503,11 @@ export default function ProductDetail() {
 
             {/* Action Buttons */}
             <div className="flex flex-col gap-3 mb-6">
-              <div className="flex gap-2.5 sm:gap-3 items-center">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3">
                 <button
                   onClick={handleAddToCart}
                   disabled={isAdding}
-                  className="flex-1 bg-navy hover:bg-[#002b4e] text-white font-bold py-3.5 sm:py-4 px-4 sm:px-6 rounded-full transition shadow-md flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer"
+                  className="w-full sm:w-44 lg:w-48 bg-navy hover:bg-[#002b4e] active:scale-[0.98] text-white font-bold py-3.5 sm:py-4 px-4 sm:px-5 rounded-full transition shadow-md flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer shrink-0"
                 >
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                     <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
@@ -405,32 +518,53 @@ export default function ProductDetail() {
                 </button>
 
                 <button
-                  type="button"
-                  onClick={() => toggleWishlist(product)}
-                  className="w-12 h-12 sm:w-14 sm:h-14 shrink-0 rounded-full bg-white border border-navy/15 transition duration-200 flex items-center justify-center shadow-sm hover:border-navy hover:scale-105 active:scale-95 cursor-pointer"
-                  title={isWishlisted(product.id) ? 'Remove from Wishlist' : 'Add to Wishlist'}
-                  aria-label="Wishlist"
+                  onClick={handleBuyNow}
+                  className="w-full sm:w-44 lg:w-48 bg-[#FFCD00] hover:bg-navy hover:text-white active:scale-[0.98] text-navy font-bold py-3.5 sm:py-4 px-5 rounded-full transition shadow-md flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer shrink-0"
                 >
-                  <svg
-                    className="w-5 h-5 sm:w-[22px] sm:h-[22px]"
-                    viewBox="0 0 24 24"
-                    fill={isWishlisted(product.id) ? '#FFCD00' : 'none'}
-                    stroke={isWishlisted(product.id) ? '#FFCD00' : '#003865'}
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                  </svg>
+                  Buy Now →
                 </button>
-              </div>
 
-              <button
-                onClick={handleBuyNow}
-                className="w-full bg-[#FFCD00] hover:bg-navy hover:text-white text-navy font-bold py-3.5 sm:py-4 px-6 rounded-full transition shadow-md flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer"
-              >
-                Buy Now →
-              </button>
+                <div className="flex items-center justify-center sm:justify-start gap-2.5 sm:gap-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      triggerHaptic(15)
+                      toggleWishlist(product)
+                    }}
+                    className="w-12 h-12 sm:w-14 sm:h-14 shrink-0 rounded-full bg-white border border-navy/15 transition duration-200 flex items-center justify-center shadow-sm hover:border-navy hover:scale-105 active:scale-90 cursor-pointer"
+                    title={isWishlisted(product.id) ? 'Remove from Wishlist' : 'Add to Wishlist'}
+                    aria-label="Wishlist"
+                  >
+                    <svg
+                      className="w-5 h-5 sm:w-[22px] sm:h-[22px]"
+                      viewBox="0 0 24 24"
+                      fill={isWishlisted(product.id) ? '#FFCD00' : 'none'}
+                      stroke={isWishlisted(product.id) ? '#FFCD00' : '#003865'}
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                    </svg>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleShare}
+                    className="w-12 h-12 sm:w-14 sm:h-14 shrink-0 rounded-full bg-white border border-navy/15 transition duration-200 flex items-center justify-center shadow-sm hover:border-navy hover:scale-105 active:scale-90 cursor-pointer"
+                    title="Share this product"
+                    aria-label="Share"
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-navy">
+                      <circle cx="18" cy="5" r="3" />
+                      <circle cx="6" cy="12" r="3" />
+                      <circle cx="18" cy="19" r="3" />
+                      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                      <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -445,7 +579,10 @@ export default function ProductDetail() {
               <button
                 key={tab.key}
                 type="button"
-                onClick={() => setActiveTab(tab.key)}
+                onClick={() => {
+                  triggerHaptic(8)
+                  setActiveTab(tab.key)
+                }}
                 className={`pb-4 px-6 font-heading font-bold text-sm whitespace-nowrap transition-colors duration-200 border-b-2 bg-transparent cursor-pointer select-none outline-none focus:outline-none ${
                   activeTab === tab.key
                     ? 'border-navy text-navy font-bold'
@@ -562,6 +699,68 @@ export default function ProductDetail() {
         </div>
 
       </div>
+
+      {/* Sticky Mobile Add to Cart Bar */}
+      <div className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-xl border-t border-navy/10 px-4 py-3 shadow-[0_-8px_30px_rgba(0,0,0,0.1)] pb-[max(0.75rem,env(safe-area-inset-bottom))] flex items-center justify-between gap-2.5 animate-fade-in">
+        <div className="flex flex-col min-w-0">
+          <span className="text-[10px] font-bold text-navy/60 uppercase tracking-wider truncate max-w-[120px]">
+            {product.title}
+          </span>
+          <span className="font-heading text-lg font-bold text-navy leading-none">
+            {product.price ? formatCurrency(product.price) : 'Enquire'}
+          </span>
+        </div>
+
+        <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={handleShare}
+            className="w-10 h-10 rounded-full bg-navy/5 border border-navy/15 flex items-center justify-center text-navy active:scale-90 transition shrink-0"
+            aria-label="Share"
+            title="Share"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+              <polyline points="16 6 12 2 8 6" />
+              <line x1="12" y1="2" x2="12" y2="15" />
+            </svg>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              triggerHaptic(15)
+              toggleWishlist(product)
+            }}
+            className="w-10 h-10 rounded-full bg-navy/5 border border-navy/15 flex items-center justify-center text-navy active:scale-90 transition shrink-0"
+            aria-label="Wishlist"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill={isWishlisted(product.id) ? '#FFCD00' : 'none'}
+              stroke={isWishlisted(product.id) ? '#FFCD00' : 'currentColor'}
+              strokeWidth="2"
+            >
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+            </svg>
+          </button>
+
+          <button
+            onClick={handleAddToCart}
+            disabled={isAdding}
+            className="bg-navy active:scale-95 hover:bg-[#002b4e] text-white font-bold py-2.5 px-4 sm:px-5 rounded-full transition shadow-md flex items-center gap-1.5 text-xs cursor-pointer disabled:opacity-50"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <path d="M16 10a4 4 0 0 1-8 0" />
+            </svg>
+            <span>{isAdding ? 'Adding...' : 'Add to Cart'}</span>
+          </button>
+        </div>
+      </div>
     </div>
   )
 }
@@ -569,6 +768,8 @@ export default function ProductDetail() {
 function InteractiveProductImage({ src, alt }) {
   const [scale, setScale] = useState(1)
   const [position, setPosition] = useState({ x: 0, y: 0 })
+  const containerRef = useRef(null)
+
   const startDist = useRef(0)
   const startScale = useRef(1)
   const startPos = useRef({ x: 0, y: 0 })
@@ -620,6 +821,7 @@ function InteractiveProductImage({ src, alt }) {
 
   return (
     <div
+      ref={containerRef}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
@@ -628,12 +830,13 @@ function InteractiveProductImage({ src, alt }) {
       <img
         src={src}
         alt={alt}
-        className="w-full h-full object-contain p-6 transition-transform duration-75 will-change-transform pointer-events-none select-none"
+        className="w-full h-full object-contain p-6 pointer-events-none select-none"
         style={{
           transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
         }}
         draggable={false}
       />
+
       {scale > 1 && (
         <button
           type="button"

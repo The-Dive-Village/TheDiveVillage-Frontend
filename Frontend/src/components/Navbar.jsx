@@ -61,9 +61,11 @@ export default function Navbar() {
   const isTranslucentPage = location.pathname === '/'
   const isDashboardPage = location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/admin') || location.pathname.startsWith('/profile')
   const isVideoBg = ['/', '/login', '/contact', '/book-us', '/about'].includes(location.pathname) || isDashboardPage
-  const isDarkBackground = isVideoBg || isNightDive || isDashboardPage
+  const isDarkBackground = isVideoBg || isNightDive || isDashboardPage || isShopPage
 
-  const containerGlass = isDarkBackground
+  const containerGlass = isShopPage
+    ? 'border border-white/25 bg-[#003865]/95 backdrop-blur-2xl text-white shadow-[0_8px_32px_0_rgba(0,0,0,0.35)]'
+    : isDarkBackground
     ? 'border border-white/25 bg-[#001e3d]/55 backdrop-blur-2xl text-white shadow-[0_8px_32px_0_rgba(0,0,0,0.35)]'
     : 'border border-navy/15 bg-white/80 backdrop-blur-2xl text-navy shadow-[0_8px_32px_0_rgba(0,30,61,0.08)]'
 
@@ -198,7 +200,44 @@ export default function Navbar() {
               isBlueToolbar ? 'bg-[#003865]/95' : 'bg-[#001e3d]/90'
             } backdrop-blur-3xl text-white`}
           >
-            <div className="px-6 py-4">
+            <div className="px-5 py-4">
+              {/* Quick Actions Strip: Cart & Wishlist */}
+              <div className="grid grid-cols-2 gap-2 mb-3 pb-3 border-b border-white/15">
+                <Link
+                  to="/cart"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center justify-between bg-white/10 hover:bg-[#FFCD00] hover:text-[#001e3d] rounded-2xl px-3.5 py-2.5 text-xs font-bold transition active:scale-95 border border-white/15 cursor-pointer"
+                >
+                  <div className="flex items-center gap-2">
+                    <CartIcon />
+                    <span>My Cart</span>
+                  </div>
+                  {itemCount > 0 && (
+                    <span className="bg-[#FFCD00] text-[#001e3d] text-[11px] font-extrabold px-2 py-0.5 rounded-full">
+                      {itemCount}
+                    </span>
+                  )}
+                </Link>
+
+                <Link
+                  to="/wishlist"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center justify-between bg-white/10 hover:bg-[#FFCD00] hover:text-[#001e3d] rounded-2xl px-3.5 py-2.5 text-xs font-bold transition active:scale-95 border border-white/15 cursor-pointer"
+                >
+                  <div className="flex items-center gap-2">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                    </svg>
+                    <span>Wishlist</span>
+                  </div>
+                  {wishlistCount > 0 && (
+                    <span className="bg-[#FFCD00] text-[#001e3d] text-[11px] font-extrabold px-2 py-0.5 rounded-full">
+                      {wishlistCount}
+                    </span>
+                  )}
+                </Link>
+              </div>
+
               <nav className="flex flex-col gap-1" aria-label="Mobile">
                 {NAV.map((item) => (
                   <NavLink

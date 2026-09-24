@@ -10,6 +10,7 @@ export default function Checkout() {
   const [orderId, setOrderId] = useState('')
   const [paymentMethod, setPaymentMethod] = useState('card')
   const [shippingMethod, setShippingMethod] = useState('standard')
+  const [showMobileSummary, setShowMobileSummary] = useState(false)
 
   const [formData, setFormData] = useState({
     email: '',
@@ -114,98 +115,162 @@ export default function Checkout() {
           </Link>
         </div>
 
+        {/* Mobile Collapsible Order Summary Accordion */}
+        <div className="lg:hidden mb-6 rounded-2xl bg-white border border-navy/10 shadow-sm overflow-hidden">
+          <button
+            type="button"
+            onClick={() => setShowMobileSummary((prev) => !prev)}
+            className="w-full px-4 py-3.5 flex items-center justify-between bg-navy/5 text-navy font-bold text-xs sm:text-sm active:bg-navy/10 transition cursor-pointer"
+          >
+            <div className="flex items-center gap-2">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <path d="M16 10a4 4 0 0 1-8 0" />
+              </svg>
+              <span>{showMobileSummary ? 'Hide Order Summary' : 'Show Order Summary'}</span>
+              <span className="text-[10px] text-navy/60">{showMobileSummary ? '▲' : '▼'}</span>
+            </div>
+            <span className="font-heading text-base font-bold text-navy">
+              {formatCurrency(grandTotal)}
+            </span>
+          </button>
+
+          {showMobileSummary && (
+            <div className="p-4 border-t border-navy/10 space-y-4">
+              <div className="divide-y divide-navy/10 max-h-60 overflow-y-auto">
+                {items.map((item) => (
+                  <div key={item.inventoryId} className="py-2.5 flex items-center gap-3">
+                    <div className="w-12 h-14 rounded-xl overflow-hidden bg-[#F0F2F5] shrink-0 border border-navy/10 p-1 flex items-center justify-center">
+                      <img src={item.product?.image} alt={item.product?.name} className="max-h-full max-w-full object-contain" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-bold text-navy truncate">{item.product?.name}</p>
+                      <p className="text-[10px] text-navy/60 font-semibold">{item.product?.selectedSize} • {item.product?.selectedColor} • Qty: {item.quantity}</p>
+                    </div>
+                    <span className="text-xs font-bold text-navy">
+                      {formatCurrency((item.product?.price || 0) * item.quantity)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <div className="pt-2 border-t border-navy/10 space-y-1.5 text-xs">
+                <div className="flex justify-between text-navy/70">
+                  <span>Subtotal</span>
+                  <span>{formatCurrency(subtotal)}</span>
+                </div>
+                <div className="flex justify-between text-navy/70">
+                  <span>Shipping</span>
+                  <span>{shippingCost === 0 ? 'FREE' : formatCurrency(shippingCost)}</span>
+                </div>
+                <div className="flex justify-between text-navy font-bold text-sm pt-2 border-t border-navy/10">
+                  <span>Total</span>
+                  <span>{formatCurrency(grandTotal)}</span>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
         <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-start">
           
           {/* Main Checkout Form */}
           <div className="lg:col-span-8">
-            <form onSubmit={handleSubmit} className="space-y-10">
+            <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-10">
               
               {/* 1. Contact Info */}
-              <section className="bg-white rounded-[32px] border border-navy/5 p-6 sm:p-8 shadow-card">
+              <section className="bg-white rounded-2xl sm:rounded-[32px] border border-navy/5 p-5 sm:p-8 shadow-card">
                 <div className="flex items-center gap-3 mb-6">
                   <span className="flex h-8 w-8 items-center justify-center rounded-full bg-navy text-white text-xs font-bold">1</span>
-                  <h3 className="font-heading text-xl font-bold text-navy">Contact Details</h3>
+                  <h3 className="font-heading text-lg sm:text-xl font-bold text-navy">Contact Details</h3>
                 </div>
 
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="mb-2 block text-xs font-bold text-navy/70">Email Address *</label>
+                    <label className="mb-1.5 block text-xs font-bold text-navy/70">Email Address *</label>
                     <input
                       type="email"
                       name="email"
+                      autoComplete="email"
+                      inputMode="email"
                       required
                       placeholder="alex@example.com"
                       value={formData.email}
                       onChange={handleChange}
-                      className="w-full rounded-2xl bg-[#F0F2F5] px-4 py-3.5 text-xs sm:text-sm text-navy outline-none focus:ring-2 focus:ring-accent/50"
+                      className="w-full rounded-xl sm:rounded-2xl bg-[#F0F2F5] px-4 py-3 sm:py-3.5 text-xs sm:text-sm text-navy outline-none focus:ring-2 focus:ring-accent/50 scroll-mt-28"
                     />
                   </div>
                   <div>
-                    <label className="mb-2 block text-xs font-bold text-navy/70">Phone Number *</label>
+                    <label className="mb-1.5 block text-xs font-bold text-navy/70">Phone Number *</label>
                     <input
                       type="tel"
                       name="phone"
+                      autoComplete="tel"
+                      inputMode="tel"
                       required
                       placeholder="Phone number"
                       value={formData.phone}
                       onChange={handleChange}
-                      className="w-full rounded-2xl bg-[#F0F2F5] px-4 py-3.5 text-xs sm:text-sm text-navy outline-none focus:ring-2 focus:ring-accent/50"
+                      className="w-full rounded-xl sm:rounded-2xl bg-[#F0F2F5] px-4 py-3 sm:py-3.5 text-xs sm:text-sm text-navy outline-none focus:ring-2 focus:ring-accent/50 scroll-mt-28"
                     />
                   </div>
                 </div>
               </section>
 
               {/* 2. Shipping Address */}
-              <section className="bg-white rounded-[32px] border border-navy/5 p-6 sm:p-8 shadow-card">
+              <section className="bg-white rounded-2xl sm:rounded-[32px] border border-navy/5 p-5 sm:p-8 shadow-card">
                 <div className="flex items-center gap-3 mb-6">
                   <span className="flex h-8 w-8 items-center justify-center rounded-full bg-navy text-white text-xs font-bold">2</span>
-                  <h3 className="font-heading text-xl font-bold text-navy">Shipping Destination</h3>
+                  <h3 className="font-heading text-lg sm:text-xl font-bold text-navy">Shipping Destination</h3>
                 </div>
 
                 <div className="space-y-4">
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="mb-2 block text-xs font-bold text-navy/70">First Name *</label>
+                      <label className="mb-1.5 block text-xs font-bold text-navy/70">First Name *</label>
                       <input
                         type="text"
                         name="firstName"
+                        autoComplete="given-name"
                         required
                         placeholder="First name"
                         value={formData.firstName}
                         onChange={handleChange}
-                        className="w-full rounded-2xl bg-[#F0F2F5] px-4 py-3.5 text-xs sm:text-sm text-navy outline-none focus:ring-2 focus:ring-accent/50"
+                        className="w-full rounded-xl sm:rounded-2xl bg-[#F0F2F5] px-4 py-3 sm:py-3.5 text-xs sm:text-sm text-navy outline-none focus:ring-2 focus:ring-accent/50 scroll-mt-28"
                       />
                     </div>
                     <div>
-                      <label className="mb-2 block text-xs font-bold text-navy/70">Last Name *</label>
+                      <label className="mb-1.5 block text-xs font-bold text-navy/70">Last Name *</label>
                       <input
                         type="text"
                         name="lastName"
+                        autoComplete="family-name"
                         required
                         placeholder="Last name"
                         value={formData.lastName}
                         onChange={handleChange}
-                        className="w-full rounded-2xl bg-[#F0F2F5] px-4 py-3.5 text-xs sm:text-sm text-navy outline-none focus:ring-2 focus:ring-accent/50"
+                        className="w-full rounded-xl sm:rounded-2xl bg-[#F0F2F5] px-4 py-3 sm:py-3.5 text-xs sm:text-sm text-navy outline-none focus:ring-2 focus:ring-accent/50 scroll-mt-28"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-xs font-bold text-navy/70">Street Address / Resort Address *</label>
+                    <label className="mb-1.5 block text-xs font-bold text-navy/70">Street Address / Resort Address *</label>
                     <input
                       type="text"
                       name="address"
+                      autoComplete="street-address"
                       required
                       placeholder="House/Villa no., street, locality"
                       value={formData.address}
                       onChange={handleChange}
-                      className="w-full rounded-2xl bg-[#F0F2F5] px-4 py-3.5 text-xs sm:text-sm text-navy outline-none focus:ring-2 focus:ring-accent/50"
+                      className="w-full rounded-xl sm:rounded-2xl bg-[#F0F2F5] px-4 py-3 sm:py-3.5 text-xs sm:text-sm text-navy outline-none focus:ring-2 focus:ring-accent/50 scroll-mt-28"
                     />
                   </div>
 
                   <div className="grid sm:grid-cols-3 gap-4">
                     <div>
-                      <label className="mb-2 block text-xs font-bold text-navy/70">City *</label>
+                      <label className="mb-1.5 block text-xs font-bold text-navy/70">City *</label>
                       <input
                         type="text"
                         name="city"
@@ -214,11 +279,11 @@ export default function Checkout() {
                         placeholder="City"
                         value={formData.city}
                         onChange={handleChange}
-                        className="w-full rounded-2xl bg-[#F0F2F5] px-4 py-3.5 text-xs sm:text-sm text-navy outline-none focus:ring-2 focus:ring-accent/50"
+                        className="w-full rounded-xl sm:rounded-2xl bg-[#F0F2F5] px-4 py-3 sm:py-3.5 text-xs sm:text-sm text-navy outline-none focus:ring-2 focus:ring-accent/50 scroll-mt-28"
                       />
                     </div>
                     <div>
-                      <label className="mb-2 block text-xs font-bold text-navy/70">State / Region *</label>
+                      <label className="mb-1.5 block text-xs font-bold text-navy/70">State / Region *</label>
                       <input
                         type="text"
                         name="state"
@@ -227,11 +292,11 @@ export default function Checkout() {
                         placeholder="State"
                         value={formData.state}
                         onChange={handleChange}
-                        className="w-full rounded-2xl bg-[#F0F2F5] px-4 py-3.5 text-xs sm:text-sm text-navy outline-none focus:ring-2 focus:ring-accent/50"
+                        className="w-full rounded-xl sm:rounded-2xl bg-[#F0F2F5] px-4 py-3 sm:py-3.5 text-xs sm:text-sm text-navy outline-none focus:ring-2 focus:ring-accent/50 scroll-mt-28"
                       />
                     </div>
                     <div>
-                      <label className="mb-2 block text-xs font-bold text-navy/70">PIN / Postal Code *</label>
+                      <label className="mb-1.5 block text-xs font-bold text-navy/70">PIN / Postal Code *</label>
                       <input
                         type="text"
                         name="postalCode"
@@ -241,7 +306,7 @@ export default function Checkout() {
                         placeholder="PIN Code"
                         value={formData.postalCode}
                         onChange={handleChange}
-                        className="w-full rounded-2xl bg-[#F0F2F5] px-4 py-3.5 text-xs sm:text-sm text-navy outline-none focus:ring-2 focus:ring-accent/50"
+                        className="w-full rounded-xl sm:rounded-2xl bg-[#F0F2F5] px-4 py-3 sm:py-3.5 text-xs sm:text-sm text-navy outline-none focus:ring-2 focus:ring-accent/50 scroll-mt-28"
                       />
                     </div>
                   </div>

@@ -39,7 +39,7 @@ export default function Cart() {
 
   return (
     <div
-      className={isDashboard ? 'text-navy font-body' : 'min-h-screen bg-[#FAFAFA] text-navy font-body pt-24 sm:pt-32 pb-24'}
+      className={isDashboard ? 'text-navy font-body' : 'min-h-screen bg-[#FAFAFA] text-navy font-body pt-24 sm:pt-32 pb-32 sm:pb-24'}
       style={{ textShadow: 'none' }}
     >
       <div className={isDashboard ? 'w-full' : 'mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'}>
@@ -289,6 +289,28 @@ export default function Cart() {
         )}
 
       </div>
+
+      {/* Sticky Mobile Checkout Bar */}
+      {items.length > 0 && !loading && (
+        <div className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-xl border-t border-navy/10 px-4 py-3 shadow-[0_-8px_30px_rgba(0,0,0,0.1)] pb-[max(0.75rem,env(safe-area-inset-bottom))] flex items-center justify-between gap-3 animate-fade-in">
+          <div className="flex flex-col min-w-0">
+            <span className="text-[10px] font-bold text-navy/60 uppercase tracking-wider">
+              {itemCount} item{itemCount !== 1 ? 's' : ''} • Total
+            </span>
+            <span className="font-heading text-xl font-bold text-navy leading-none">
+              {formatCurrency(finalTotal)}
+            </span>
+          </div>
+
+          <Link
+            to="/checkout"
+            className="bg-navy active:scale-95 hover:bg-accent text-white hover:text-navy font-bold py-3 px-6 rounded-full transition shadow-md flex items-center gap-2 text-xs sm:text-sm cursor-pointer whitespace-nowrap"
+          >
+            <span>Checkout</span>
+            <span>→</span>
+          </Link>
+        </div>
+      )}
     </div>
   )
 }
