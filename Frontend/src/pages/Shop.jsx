@@ -355,7 +355,7 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
               src={product.image}
               alt={product.title}
               onLoad={() => setImgLoaded(true)}
-              className={`max-h-full max-w-full object-contain transition-all duration-300 group-hover:scale-105 relative z-[1] ${
+              className={`max-h-full max-w-full object-contain relative z-[1] ${
                 !imgLoaded ? 'opacity-0' : show3D ? 'opacity-0 pointer-events-none' : 'opacity-100'
               }`}
             />

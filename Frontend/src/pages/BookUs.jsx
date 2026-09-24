@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef, lazy, Suspense } from 'react'
+import { useState, useEffect, useMemo, useCallback, useRef, lazy, Suspense } from 'react'
 import { useSearchParams } from 'react-router'
 import { motion } from 'framer-motion'
 const InteractiveDiveMap = lazy(() => import('../components/InteractiveDiveMap'))

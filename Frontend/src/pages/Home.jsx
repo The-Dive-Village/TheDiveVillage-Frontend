@@ -215,12 +215,12 @@ export default function Home() {
               The Ocean <span className="text-[#FFCD00]">Welcomes All</span>
             </h2>
             <p className="mt-3 sm:mt-4 max-w-2xl mx-auto text-base sm:text-lg text-white/90 font-medium drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] text-center">
-              <span className="sm:hidden">You don't need to be an athlete or an expert to dive.<br />You only need curiosity to explore what lies below.</span>
+              <span className="sm:hidden">You don't need to be an expert. You only need the curiosity.</span>
               <span className="hidden sm:inline">You don't need to be an athlete or an expert to dive<br />You only need curiosity to explore what lies below.</span>
             </p>
           </SectionReveal>
 
-          <StaggerGrid className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none pb-6 gap-4 sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-6 lg:gap-8 mt-12 sm:mt-24 sm:overflow-visible px-2 sm:px-0">
+          <StaggerGrid className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none pb-6 gap-3.5 sm:gap-6 sm:grid sm:grid-cols-2 lg:grid-cols-4 lg:gap-8 mt-10 sm:mt-24 sm:overflow-visible px-2 sm:px-0">
             {[
               {
                 t: 'Enthusiastic Beginners',
@@ -247,24 +247,24 @@ export default function Home() {
                 desc: "For the bold, the curious and all the ocean lovers. Explore more. Dive deeper. Live the adventure."
               }
             ].map((item, i) => (
-              <StaggerItem key={i} className="w-[280px] xs:w-[300px] shrink-0 sm:w-auto snap-center h-full">
+              <StaggerItem key={i} className="w-[220px] xs:w-[240px] shrink-0 sm:w-auto snap-center h-full">
                 <div
                   onClick={() => {
                     navigate('/gallery')
                     window.scrollTo({ top: 0, behavior: 'smooth' })
                   }}
-                  className="h-full group cursor-pointer relative mt-8 sm:mt-10 flex flex-col pointer-events-auto"
+                  className="h-full group cursor-pointer relative mt-6 sm:mt-10 flex flex-col pointer-events-auto"
                 >
 
-                  {/* Floating transparent PNG image centered with respect to bg panel with automatic slow floating animation */}
+                  {/* Floating transparent PNG image centered with respect to bg panel - positioned lower on desktop and mobile */}
                   {item.img ? (
                     <motion.div
-                      animate={{ y: [0, -8, 0] }}
+                      animate={{ y: [0, -6, 0] }}
                       transition={{ duration: 3.2 + (i * 0.4), repeat: Infinity, ease: 'easeInOut' }}
-                      className={`absolute -top-12 sm:-top-16 lg:-top-20 inset-x-0 mx-auto w-full flex items-center justify-center z-20 pointer-events-none px-1 ${
+                      className={`absolute top-0 xs:top-1 sm:-top-6 lg:-top-8 inset-x-0 mx-auto w-full flex items-center justify-center z-20 pointer-events-none px-1 ${
                         i === 1 || i === 2
-                          ? 'max-w-[230px] sm:max-w-[270px] lg:max-w-[290px] h-[190px] sm:h-[240px] lg:h-[270px]'
-                          : 'max-w-[250px] sm:max-w-[300px] lg:max-w-[330px] h-[210px] sm:h-[260px] lg:h-[300px]'
+                          ? 'max-w-[170px] xs:max-w-[190px] sm:max-w-[270px] lg:max-w-[290px] h-[140px] xs:h-[160px] sm:h-[240px] lg:h-[270px]'
+                          : 'max-w-[185px] xs:max-w-[210px] sm:max-w-[300px] lg:max-w-[330px] h-[155px] xs:h-[175px] sm:h-[260px] lg:h-[300px]'
                       }`}
                     >
                       <img
@@ -278,7 +278,7 @@ export default function Home() {
                   ) : null}
 
                   {/* Actual Card Background & Content */}
-                  <div className="h-full w-full rounded-[24px] sm:rounded-[32px] overflow-hidden border border-white/30 relative flex flex-col p-5 sm:p-6 lg:p-7 pt-44 sm:pt-56 lg:pt-64 pb-6 sm:pb-8 z-10 transition duration-500 group-hover:border-white/60 shadow-2xl justify-end">
+                  <div className="h-full w-full rounded-[20px] sm:rounded-[32px] overflow-hidden border border-white/30 relative flex flex-col p-3.5 xs:p-4 sm:p-6 lg:p-7 pt-32 xs:pt-36 sm:pt-56 lg:pt-64 pb-4 sm:pb-8 z-10 transition duration-500 group-hover:border-white/60 shadow-2xl justify-end">
 
                     {item.bgImg ? (
                       <img
@@ -291,20 +291,20 @@ export default function Home() {
                     <div className="absolute bottom-0 inset-x-0 h-3/5 bg-gradient-to-t from-navy via-navy/80 to-transparent z-0 pointer-events-none" />
 
                     <div className="relative z-10 flex flex-col justify-end h-full mt-auto">
-                      <h3 className="font-heading text-lg sm:text-xl lg:text-2xl font-bold text-white uppercase tracking-wider mb-2 leading-tight text-left drop-shadow-md min-h-[48px] flex items-end">
+                      <h3 className="font-heading text-sm xs:text-base sm:text-xl lg:text-2xl font-bold text-white uppercase tracking-wider mb-1.5 sm:mb-2 leading-tight text-left drop-shadow-md min-h-[36px] sm:min-h-[48px] flex items-end">
                         {item.t}
                       </h3>
 
-                      <div className="w-8 h-[3px] bg-[#FFCD00] mb-3 shadow-sm shrink-0"></div>
+                      <div className="w-6 sm:w-8 h-[2.5px] sm:h-[3px] bg-[#FFCD00] mb-2 sm:mb-3 shadow-sm shrink-0"></div>
 
-                      <p className="text-white/90 text-sm font-medium mb-5 leading-relaxed text-left drop-shadow-sm min-h-[64px] flex items-start whitespace-normal">
+                      <p className="text-white/90 text-xs sm:text-sm font-medium mb-3 sm:mb-5 leading-relaxed text-left drop-shadow-sm line-clamp-3 sm:line-clamp-none min-h-[48px] sm:min-h-[64px] flex items-start whitespace-normal">
                         {item.desc}
                       </p>
 
                       <div className="mt-auto shrink-0 pt-1 flex justify-center w-full">
-                        <div className="inline-flex items-center gap-2 font-body text-xs font-bold uppercase tracking-widest bg-white/15 backdrop-blur-xl border border-white/30 text-white rounded-full px-5 py-2.5 transition-all duration-300 group-hover:bg-[#FFCD00] group-hover:text-navy group-hover:border-[#FFCD00] shadow-md cursor-pointer">
+                        <div className="inline-flex items-center gap-1.5 sm:gap-2 font-body text-[10px] sm:text-xs font-bold uppercase tracking-widest bg-white/15 backdrop-blur-xl border border-white/30 text-white rounded-full px-3.5 sm:px-5 py-1.5 sm:py-2.5 transition-all duration-300 group-hover:bg-[#FFCD00] group-hover:text-navy group-hover:border-[#FFCD00] shadow-md cursor-pointer">
                           <span>Dive In</span>
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-1">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-1">
                             <path d="M5 12h14"></path>
                             <path d="m12 5 7 7-7 7"></path>
                           </svg>
@@ -675,10 +675,10 @@ function InteractiveHighlights() {
   ]
 
   const itemsInSet = HIGHLIGHTS_DATA.length
-  const cardGap = containerWidth < 640 ? 12 : 20 // px gap between cards
+  const cardGap = containerWidth < 640 ? 10 : 20 // px gap between cards
 
-  // Responsively show 5 cards on desktop, 3 on tablet, 2 on wide mobile, 1.25 on narrow mobile
-  const cardsToShow = containerWidth < 480 ? 1.25 : (containerWidth < 768 ? 2 : (containerWidth < 1024 ? 3 : 5))
+  // Responsively show 5 cards on desktop, 3.2 on tablet, 2.3 on wide mobile, 1.45 on narrow mobile
+  const cardsToShow = containerWidth < 480 ? 1.45 : (containerWidth < 768 ? 2.3 : (containerWidth < 1024 ? 3.2 : 5))
   const cardWidth = Math.floor((containerWidth - (Math.ceil(cardsToShow) - 1) * cardGap) / cardsToShow)
   const singleSetWidth = itemsInSet * (cardWidth + cardGap)
 
@@ -862,7 +862,7 @@ function InteractiveHighlights() {
               key={`${current.id}-${i}`}
               onClick={(e) => handleNavigate(e, current.link)}
               style={{ width: `${cardWidth}px` }}
-              className="h-[360px] xs:h-[390px] sm:h-[450px] flex-shrink-0 rounded-[20px] sm:rounded-[28px] overflow-hidden shadow-2xl relative border border-white/20 bg-[#001E36] group cursor-pointer pointer-events-auto transition-all duration-500 hover:border-[#FFCD00]/70 hover:shadow-[0_12px_36px_rgba(0,0,0,0.85)] hover:-translate-y-1.5"
+              className="h-[290px] xs:h-[320px] sm:h-[450px] flex-shrink-0 rounded-[18px] sm:rounded-[28px] overflow-hidden shadow-2xl relative border border-white/20 bg-[#001E36] group cursor-pointer pointer-events-auto transition-all duration-500 hover:border-[#FFCD00]/70 hover:shadow-[0_12px_36px_rgba(0,0,0,0.85)] hover:-translate-y-1.5"
             >
               {current.image ? (
                 <img
@@ -873,21 +873,21 @@ function InteractiveHighlights() {
               ) : null}
               <div className="absolute inset-0 bg-gradient-to-t from-[#001224] via-[#001428]/60 to-transparent pointer-events-none" />
 
-              <div className="absolute inset-0 p-4 xs:p-5 sm:p-6 lg:p-7 flex flex-col justify-end pointer-events-auto">
+              <div className="absolute inset-0 p-3.5 xs:p-4 sm:p-6 lg:p-7 flex flex-col justify-end pointer-events-auto">
                 <div className="mt-auto flex flex-col">
-                  <span className="inline-flex items-center self-start text-[#FFCD00] font-heading font-bold text-[8px] xs:text-[9px] sm:text-[10px] uppercase tracking-widest bg-[#FFCD00]/15 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full border border-[#FFCD00]/30 mb-2 sm:mb-2.5 pointer-events-none shadow-sm backdrop-blur-md">
+                  <span className="inline-flex items-center self-start text-[#FFCD00] font-heading font-bold text-[8px] xs:text-[9px] sm:text-[10px] uppercase tracking-widest bg-[#FFCD00]/15 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full border border-[#FFCD00]/30 mb-1.5 sm:mb-2.5 pointer-events-none shadow-sm backdrop-blur-md">
                     Featured
                   </span>
-                  <h3 className="font-heading text-base xs:text-lg sm:text-2xl font-bold text-white leading-tight mb-1.5 sm:mb-2 pointer-events-none drop-shadow-md line-clamp-2 sm:whitespace-normal">
+                  <h3 className="font-heading text-sm xs:text-base sm:text-2xl font-bold text-white leading-tight mb-1 sm:mb-2 pointer-events-none drop-shadow-md line-clamp-2 sm:whitespace-normal">
                     {current.title}
                   </h3>
-                  <p className="text-white/85 text-xs sm:text-[13px] line-clamp-2 leading-relaxed mb-4 sm:mb-5 pointer-events-none text-left">
+                  <p className="text-white/85 text-[11px] xs:text-xs sm:text-[13px] line-clamp-2 leading-relaxed mb-3 sm:mb-5 pointer-events-none text-left">
                     {current.desc}
                   </p>
                   <button
                     type="button"
                     onClick={(e) => handleNavigate(e, current.link)}
-                    className="w-full py-2 xs:py-2.5 sm:py-3 px-3 sm:px-5 rounded-full bg-white/15 backdrop-blur-xl border border-white/30 text-white font-bold text-[10px] xs:text-[11px] sm:text-xs uppercase tracking-wider transition-all duration-300 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] hover:shadow-[0_8px_30px_rgba(255,205,0,0.5)] shadow-lg pointer-events-auto cursor-pointer relative z-30 flex items-center justify-center gap-1.5 sm:gap-2 group/btn"
+                    className="w-full py-1.5 xs:py-2 sm:py-3 px-2.5 sm:px-5 rounded-full bg-white/15 backdrop-blur-xl border border-white/30 text-white font-bold text-[9px] xs:text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-300 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] hover:shadow-[0_8px_30px_rgba(255,205,0,0.5)] shadow-lg pointer-events-auto cursor-pointer relative z-30 flex items-center justify-center gap-1.5 sm:gap-2 group/btn"
                   >
                     <span>{current.btnText || 'Explore'}</span>
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="sm:w-3.5 sm:h-3.5 transition-transform duration-300 group-hover/btn:translate-x-1">

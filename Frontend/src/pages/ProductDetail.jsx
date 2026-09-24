@@ -347,19 +347,11 @@ export default function ProductDetail() {
           {/* Right Column: Sticky Desktop Product Specifications & Actions */}
           <div className="lg:col-span-6 flex flex-col justify-start lg:sticky lg:top-28 lg:self-start">
             
-            {/* Category, Stock & Native Share Header */}
+            {/* Category & Native Share Header */}
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-3">
                 <span className="text-xs font-semibold uppercase tracking-widest text-navy/50">
                   {product.category}
-                </span>
-                <span className="h-1 w-1 rounded-full bg-navy/20" />
-                <span className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-700">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                  </span>
-                  {product.stockStatus || 'In Stock'}
                 </span>
               </div>
 
@@ -776,8 +768,6 @@ export default function ProductDetail() {
 function InteractiveProductImage({ src, alt }) {
   const [scale, setScale] = useState(1)
   const [position, setPosition] = useState({ x: 0, y: 0 })
-  const [isHoveringDesktop, setIsHoveringDesktop] = useState(false)
-  const [mousePos, setMousePos] = useState({ x: 50, y: 50, px: 0, py: 0 })
   const containerRef = useRef(null)
 
   const startDist = useRef(0)
@@ -785,16 +775,6 @@ function InteractiveProductImage({ src, alt }) {
   const startPos = useRef({ x: 0, y: 0 })
   const startTouch = useRef({ x: 0, y: 0 })
   const isDragging = useRef(false)
-
-  const handleMouseMove = (e) => {
-    if (!containerRef.current) return
-    const rect = containerRef.current.getBoundingClientRect()
-    const x = ((e.clientX - rect.left) / rect.width) * 100
-    const y = ((e.clientY - rect.top) / rect.height) * 100
-    const px = e.clientX - rect.left
-    const py = e.clientY - rect.top
-    setMousePos({ x: Math.max(0, Math.min(100, x)), y: Math.max(0, Math.min(100, y)), px, py })
-  }
 
   const handleTouchStart = (e) => {
     if (e.touches.length === 2) {
@@ -842,52 +822,20 @@ function InteractiveProductImage({ src, alt }) {
   return (
     <div
       ref={containerRef}
-      onMouseEnter={() => setIsHoveringDesktop(true)}
-      onMouseLeave={() => setIsHoveringDesktop(false)}
-      onMouseMove={handleMouseMove}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
-      className="w-full h-full flex items-center justify-center overflow-hidden touch-none relative select-none cursor-crosshair group/zoom"
+      className="w-full h-full flex items-center justify-center overflow-hidden touch-none relative select-none"
     >
       <img
         src={src}
         alt={alt}
-        className={`w-full h-full object-contain p-6 transition-transform duration-75 will-change-transform pointer-events-none select-none ${
-          isHoveringDesktop ? 'opacity-90' : 'opacity-100'
-        }`}
+        className="w-full h-full object-contain p-6 pointer-events-none select-none"
         style={{
           transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
         }}
         draggable={false}
       />
-
-      {/* Desktop Magnetic Magnifier Hover Zoom Lens */}
-      {isHoveringDesktop && (
-        <div
-          className="hidden md:block pointer-events-none absolute w-48 h-48 rounded-full border-2 border-[#FFCD00] shadow-[0_0_25px_rgba(0,0,0,0.35)] overflow-hidden bg-white z-30 ring-4 ring-navy/20"
-          style={{
-            left: `${mousePos.px - 96}px`,
-            top: `${mousePos.py - 96}px`,
-          }}
-        >
-          <div
-            className="w-full h-full absolute inset-0 bg-no-repeat bg-contain"
-            style={{
-              backgroundImage: `url(${src})`,
-              backgroundPosition: `${mousePos.x}% ${mousePos.y}%`,
-              backgroundSize: '320%',
-            }}
-          />
-          <div className="absolute inset-0 bg-radial-gradient from-transparent via-transparent to-black/10 pointer-events-none" />
-        </div>
-      )}
-
-      {/* Desktop Zoom Tooltip Hint */}
-      <div className="hidden md:flex absolute bottom-3 left-1/2 -translate-x-1/2 bg-navy/80 backdrop-blur-md text-white/90 text-[11px] font-semibold px-3 py-1 rounded-full border border-white/15 opacity-0 group-hover/zoom:opacity-100 transition duration-300 pointer-events-none items-center gap-1.5 shadow-md">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FFCD00" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
-        <span>Hover to inspect fabric & weave</span>
-      </div>
 
       {scale > 1 && (
         <button

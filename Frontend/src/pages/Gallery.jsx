@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { Link } from 'react-router'
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import Button from '../components/Button'
@@ -24,6 +24,15 @@ export default function Gallery() {
 
   const touchStartX = useRef(0)
   const touchStartY = useRef(0)
+
+  const filteredItems = useMemo(() => {
+    return itemsList.filter((item) => {
+      if (activeCategory === 'all') return true
+      if (activeCategory === 'videos') return item.type === 'video'
+      if (activeCategory === 'photos') return item.type === 'image'
+      return item.category === activeCategory
+    })
+  }, [itemsList, activeCategory])
 
   // Reset zoom & pan when switching media in lightbox
   useEffect(() => {
@@ -137,13 +146,6 @@ export default function Gallery() {
     }
     loadGallery()
   }, [])
-
-  const filteredItems = itemsList.filter((item) => {
-    if (activeCategory === 'all') return true
-    if (activeCategory === 'videos') return item.type === 'video'
-    if (activeCategory === 'photos') return item.type === 'image'
-    return item.category === activeCategory
-  })
 
   // Keyboard navigation for lightbox
   useEffect(() => {
