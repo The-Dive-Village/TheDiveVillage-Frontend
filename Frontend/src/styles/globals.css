@@ -714,3 +714,83 @@ a.bg-black:hover,
 .switch__input:checked ~ .switch__icon .switch__icon-part--11 {
 	transform: translateX(-50%) rotate(315deg) translateY(0.625em) scale(0);
 }
+
+/* Mobile Safe Area & Touch Ergonomics */
+@supports (padding-top: env(safe-area-inset-top)) {
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .safe-pb {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+}
+
+button, a, input, select, textarea {
+  touch-action: manipulation;
+}
+
+/* Skeleton Shimmer Loading Animations */
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(0, 56, 101, 0.05) 25%,
+    rgba(0, 56, 101, 0.12) 37%,
+    rgba(0, 56, 101, 0.05) 63%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.6s ease-in-out infinite;
+}
+
+.skeleton-shimmer-dark {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.05) 25%,
+    rgba(255, 255, 255, 0.14) 37%,
+    rgba(255, 255, 255, 0.05) 63%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.6s ease-in-out infinite;
+}
+
+/* ==========================================================================
+   CUSTOM DESKTOP SCROLLBAR & DESKTOP POLISH
+   ========================================================================== */
+@media (min-width: 1024px) {
+  /* Sleek brand scrollbar for desktop */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #001428;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #003865;
+    border-radius: 9999px;
+    border: 2px solid #001428;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #00AEC7;
+  }
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #003865 #001428;
+  }
+}
+
+/* Ensure all anchor targets and tab jump targets clear fixed desktop navbar */
+[id] {
+  scroll-margin-top: 7rem;
+}

@@ -530,16 +530,34 @@ export default function VideoSphereBackground() {
     if (!audio) return
 
     let isCleanedUp = false
-    const validUnlockEvents = ['click', 'pointerdown', 'mousedown', 'touchstart', 'touchend', 'keydown']
+    const validUnlockEvents = [
+      'click',
+      'pointerdown',
+      'pointerup',
+      'pointermove',
+      'mousedown',
+      'mouseup',
+      'mousemove',
+      'touchstart',
+      'touchend',
+      'touchmove',
+      'keydown',
+      'scroll',
+      'wheel',
+      'focus',
+      'visibilitychange',
+      'pageshow',
+    ]
 
     const removeUnlockListeners = () => {
       validUnlockEvents.forEach((evt) => {
         window.removeEventListener(evt, handleFirstInteraction, true)
         document.removeEventListener(evt, handleFirstInteraction, true)
+        document.body?.removeEventListener(evt, handleFirstInteraction, true)
       })
     }
 
-    const handleFirstInteraction = () => {
+    const startAudio = () => {
       if (isCleanedUp || isMutedRef.current) return
       const el = audioRef.current
       if (!el) return
@@ -556,23 +574,33 @@ export default function VideoSphereBackground() {
       }
     }
 
-    if (!isMuted) {
-      audio.muted = false
-      audio.volume = 0.5
-      const playPromise = audio.play()
+    const handleFirstInteraction = () => {
+      startAudio()
+    }
 
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => {
-            // Started unmuted successfully
-          })
-          .catch(() => {
-            // Autoplay blocked by browser policy: listen for genuine user interaction to unlock
-            validUnlockEvents.forEach((evt) => {
-              window.addEventListener(evt, handleFirstInteraction, { passive: true, capture: true })
-              document.addEventListener(evt, handleFirstInteraction, { passive: true, capture: true })
-            })
-          })
+    if (!isMuted) {
+      // 1. Immediate trigger on load
+      startAudio()
+
+      // 2. Comprehensive unlock listeners covering any mouse move, touch, key, or scroll
+      validUnlockEvents.forEach((evt) => {
+        window.addEventListener(evt, handleFirstInteraction, { passive: true, capture: true })
+        document.addEventListener(evt, handleFirstInteraction, { passive: true, capture: true })
+        document.body?.addEventListener(evt, handleFirstInteraction, { passive: true, capture: true })
+      })
+
+      // 3. Staggered retries for when audio finishes buffering
+      const timer1 = setTimeout(startAudio, 200)
+      const timer2 = setTimeout(startAudio, 800)
+
+      audio.addEventListener('canplaythrough', startAudio, { once: true })
+
+      return () => {
+        isCleanedUp = true
+        clearTimeout(timer1)
+        clearTimeout(timer2)
+        audio.removeEventListener('canplaythrough', startAudio)
+        removeUnlockListeners()
       }
     } else {
       removeUnlockListeners()
@@ -631,7 +659,7 @@ export default function VideoSphereBackground() {
 
   return (
     <>
-      <audio ref={audioRef} src={underwaterAudio} loop preload="auto" playsInline />
+      <audio ref={audioRef} src={underwaterAudio} loop autoPlay preload="auto" playsInline />
       <div className="fixed inset-0 -z-10 pointer-events-none">
         <div
           className="h-full w-full overflow-hidden"

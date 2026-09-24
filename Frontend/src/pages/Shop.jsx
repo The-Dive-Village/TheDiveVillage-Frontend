@@ -9,6 +9,7 @@ import { useAuth } from '../hooks/useAuth'
 import Button from '../components/Button'
 import SEOHead from '../components/SEOHead'
 import CustomerReviews from '../components/CustomerReviews'
+import { triggerHaptic, triggerSuccessHaptic } from '../utils/haptics'
 import picture3 from '../assets/Picture3.png'
 import divingVid from '../assets/Diving(1).mp4'
 import pop1 from '../assets/Products/pop1.jpeg'
@@ -48,8 +49,11 @@ export default function Shop() {
   }, [])
 
   const handleQuickAdd = (product, e) => {
-    e.preventDefault()
-    e.stopPropagation()
+    if (e) {
+      e.preventDefault()
+      e.stopPropagation()
+    }
+    triggerSuccessHaptic()
     if (!user?.uid) {
       navigate('/login')
       return
@@ -86,7 +90,7 @@ export default function Shop() {
       if (sortBy === 'rating') return (b.rating || 5) - (a.rating || 5)
       return 0
     })
-  }, [selectedCategory, searchQuery, sortBy])
+  }, [productsList, selectedCategory, searchQuery, sortBy])
 
   return (
     <div className="bg-[#FAFAFA] min-h-screen text-navy font-body pt-24 sm:pt-32 pb-24 overflow-x-hidden">
@@ -129,7 +133,6 @@ export default function Shop() {
 
           {/* Left Column: Title & Text */}
           <div className="relative z-10 max-w-xl">
-
             <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-3 text-white drop-shadow-lg">
               Merchandise
             </h1>
@@ -163,7 +166,10 @@ export default function Shop() {
             <span className="text-xs font-extrabold text-navy/60 md:text-cyan-400/90 uppercase tracking-wider whitespace-nowrap">Sort by:</span>
             <select
               value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
+              onChange={(e) => {
+                triggerHaptic(8)
+                setSortBy(e.target.value)
+              }}
               className="rounded-full border border-navy/15 md:border-white/20 bg-[#F0F2F5] md:bg-[#00223D]/80 px-4 py-2.5 text-xs sm:text-sm font-bold text-navy md:text-white focus:border-accent focus:outline-none transition cursor-pointer"
             >
               <option value="featured" className="text-navy bg-white md:bg-[#00223D] md:text-white">Featured / Newest</option>
@@ -210,7 +216,10 @@ export default function Shop() {
           {CATEGORIES.map((cat) => (
             <button
               key={cat.key}
-              onClick={() => setSelectedCategory(cat.key)}
+              onClick={() => {
+                triggerHaptic(8)
+                setSelectedCategory(cat.key)
+              }}
               className={`rounded-full px-5 py-2.5 text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 cursor-pointer ${
                 selectedCategory === cat.key
                   ? 'bg-accent text-[#001e3d] shadow-md font-extrabold'
@@ -221,7 +230,9 @@ export default function Shop() {
             </button>
           ))}
         </div>
-      </section>      {/* 3. PRODUCT LISTINGS */}
+      </section>
+
+      {/* 3. PRODUCT LISTINGS */}
       <section className="mx-auto max-w-7xl px-3.5 sm:px-6 lg:px-8 py-8">
         <div className="mb-6 flex justify-between items-center text-xs font-bold text-navy/60">
           <span>Showing {filteredProducts.length} product{filteredProducts.length !== 1 && 's'}</span>
@@ -246,6 +257,7 @@ export default function Shop() {
                 onToggleWishlist={(e) => {
                   e.preventDefault()
                   e.stopPropagation()
+                  triggerHaptic(15)
                   toggleWishlist(product)
                 }}
               />
@@ -264,6 +276,7 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
   const navigate = useNavigate()
   const [isHovered, setIsHovered] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)
+  const [imgLoaded, setImgLoaded] = useState(false)
   const viewerRef = useRef(null)
 
   useEffect(() => {
@@ -329,20 +342,26 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
       onClick={() => navigate(`/shop/${product.id}`)}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="group rounded-2xl sm:rounded-[32px] bg-white border border-navy/5 p-3 sm:p-6 shadow-card hover:shadow-float transition duration-300 flex flex-col justify-between cursor-pointer"
+      className="group rounded-2xl sm:rounded-[32px] bg-white border border-navy/5 p-3 sm:p-6 shadow-card hover:shadow-float transition duration-300 flex flex-col justify-between cursor-pointer relative"
     >
       <div>
         <div className="relative mb-3 sm:mb-5">
           <div className="aspect-[4/5] w-full rounded-xl sm:rounded-2xl overflow-hidden bg-[#F0F2F5] flex items-center justify-center p-2.5 sm:p-4 relative">
+            {/* Low-contrast Skeleton Shimmer Placeholder */}
+            {!imgLoaded && (
+              <div className="absolute inset-0 skeleton-shimmer bg-navy/5 z-0" aria-hidden="true" />
+            )}
             <img
               src={product.image}
               alt={product.title}
-              className={`max-h-full max-w-full object-contain transition-all duration-300 group-hover:scale-105 ${show3D ? 'opacity-0 pointer-events-none' : 'opacity-100'
-                }`}
+              onLoad={() => setImgLoaded(true)}
+              className={`max-h-full max-w-full object-contain transition-all duration-300 group-hover:scale-105 relative z-[1] ${
+                !imgLoaded ? 'opacity-0' : show3D ? 'opacity-0 pointer-events-none' : 'opacity-100'
+              }`}
             />
             {product.glb && (
               <div
-                className={`absolute inset-0 w-full h-full z-10 bg-gradient-to-b from-[#FFFFFF] via-[#F8FAFC] to-[#EDF2F7] flex items-center justify-center transition-opacity duration-300 ${show3D ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+                className={`absolute inset-0 w-full h-full z-10 bg-gradient-to-b from-[#FFFFFF] via-[#F8FAFC] to-[#EDF2F7] flex items-center justify-center transition-opacity duration-300 cursor-grab active:cursor-grabbing ${show3D ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
                   }`}
               >
                 <model-viewer
@@ -373,9 +392,15 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
                     <img src={product.image} alt={product.title} className="max-h-full max-w-full object-contain" />
                   </div>
                 </model-viewer>
+
+                {/* 3D Model Drag Hint Badge */}
+                <div className="hidden lg:flex absolute bottom-2 left-1/2 -translate-x-1/2 bg-navy/80 backdrop-blur-md px-2.5 py-0.5 rounded-full text-[9px] font-bold text-[#FFCD00] border border-[#FFCD00]/30 shadow-md items-center gap-1 pointer-events-none">
+                  <span>↻ Drag to rotate 360°</span>
+                </div>
               </div>
             )}
           </div>
+
           {product.tag && (
             <span className="absolute top-2 left-2 sm:top-3 sm:left-3 bg-white/95 backdrop-blur-md px-2 py-0.5 sm:px-3 sm:py-1 text-[9px] sm:text-[11px] font-bold text-navy rounded-full shadow-sm z-10">
               {product.tag}
@@ -423,7 +448,7 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
               <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
             </svg>
           </button>
-          <button onClick={(e) => onQuickAdd(product, e)} className="rounded-full bg-navy text-white px-3 py-1.5 sm:px-5 sm:py-2.5 text-[10px] sm:text-xs font-bold hover:bg-accent hover:text-navy transition shadow-sm flex items-center gap-1 cursor-pointer whitespace-nowrap">
+          <button onClick={(e) => onQuickAdd(product, e)} className="rounded-full bg-navy text-white px-3 py-1.5 sm:px-5 sm:py-2.5 text-[10px] sm:text-xs font-bold hover:bg-accent hover:text-navy active:scale-95 transition shadow-sm flex items-center gap-1 cursor-pointer whitespace-nowrap">
             <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" /><line x1="3" y1="6" x2="21" y2="6" /><path d="M16 10a4 4 0 0 1-8 0" /></svg>
             Add
           </button>

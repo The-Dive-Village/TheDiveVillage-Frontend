@@ -92,29 +92,6 @@ const TESTIMONIALS = [
   }
 ]
 
-const FAQ_DATA = [
-  {
-    q: 'Do I need to know how to swim to try scuba diving?',
-    a: 'No prior swimming experience or scuba certification is required for our Try Scuba or Discover Scuba Diving (DSD) programs. Our certified PADI/SSI instructors guide you 1-on-1 every step of the way in calm, shallow reef waters.'
-  },
-  {
-    q: 'What is the minimum age for scuba diving and snorkeling?',
-    a: 'Snorkeling is open to all ages (children 5+ recommended). For Scuba, the minimum age is 8 years for the PADI Bubblemaker program, and 10 years for Junior Open Water Diver and Discover Scuba programs.'
-  },
-  {
-    q: 'How do I reach Neil Island (Shaheed Dweep)?',
-    a: 'Neil Island is accessible via high-speed government and private ferries (Makruzz, Nautika, Green Ocean) operating daily from Port Blair (approx. 90 mins) and Havelock Island (approx. 45 mins). We can assist in arranging your ferry tickets and island transfers!'
-  },
-  {
-    q: 'What should I bring for my dive trip?',
-    a: 'Bring your swimwear, a towel, reef-safe sunscreen, comfortable beachwear, and a reusable water bottle. All high-end diving and snorkeling gear (wetsuits, masks, fins, tanks, BCDs) is fully provided by The Dive Village.'
-  },
-  {
-    q: 'When is the best season for diving in the Andaman Islands?',
-    a: 'The prime diving season runs from October through May, offering crystal-clear visibility (up to 25+ meters), calm seas, warm water (28°C–30°C), and abundant marine life encounters including turtles, manta rays, and vibrant corals.'
-  }
-]
-
 export default function Home() {
   const reduce = useReducedMotion()
   const navigate = useNavigate()
@@ -125,7 +102,6 @@ export default function Home() {
   const [revRole, setRevRole] = useState('')
   const [revText, setRevText] = useState('')
   const [revRating, setRevRating] = useState(5)
-  const [activeFaq, setActiveFaq] = useState(null)
 
   const handleReviewSubmit = (e) => {
     e.preventDefault()
@@ -179,7 +155,7 @@ export default function Home() {
               <div className="mt-6 sm:mt-10 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-6">
                 <Link
                   to="/book-us"
-                  className="w-fit inline-flex items-center justify-between gap-2.5 sm:gap-3 rounded-full bg-[#FFCD00] text-navy px-5 xs:px-6 sm:px-8 py-3 sm:py-4 font-body text-xs sm:text-sm tracking-widest font-bold uppercase shadow-[0_8px_32px_0_rgba(255,205,0,0.4)] transition-all duration-300 hover:scale-105 active:scale-95 group"
+                  className="w-fit inline-flex items-center justify-between gap-2.5 sm:gap-3 rounded-full bg-white/10 backdrop-blur-xl border border-white/40 px-5 xs:px-6 sm:px-8 py-3 sm:py-4 font-body text-xs sm:text-sm tracking-widest font-bold text-white uppercase shadow-[0_8px_32px_0_rgba(0,0,0,0.25)] transition-all duration-300 hover:scale-105 hover:bg-[#FFCD00] hover:text-navy hover:border-[#FFCD00] active:scale-95 group"
                 >
                   <span>Book Your Dive</span>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-1 shrink-0"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
@@ -232,19 +208,19 @@ export default function Home() {
       </section>
 
       {/* 4. WHO CAN DIVE */}
-      <section id="who-can-dive-section" className="relative py-6 sm:py-32 pointer-events-auto">
+      <section id="who-can-dive-section" className="relative py-16 sm:py-32 pointer-events-auto">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionReveal className="mb-4 sm:mb-16 flex flex-col items-center text-center">
+          <SectionReveal className="mb-10 sm:mb-16 flex flex-col items-center text-center">
             <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-white drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)] leading-tight">
               The Ocean <span className="text-[#FFCD00]">Welcomes All</span>
             </h2>
-            <p className="mt-2 sm:mt-4 max-w-2xl mx-auto text-base sm:text-lg text-white/90 font-medium drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] text-center sm:text-justify">
-              <span className="sm:hidden">You don't need to be an expert to dive.<br />You only need curiosity to explore.</span>
+            <p className="mt-3 sm:mt-4 max-w-2xl mx-auto text-base sm:text-lg text-white/90 font-medium drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] text-center">
+              <span className="sm:hidden">You don't need to be an athlete or an expert to dive.<br />You only need curiosity to explore what lies below.</span>
               <span className="hidden sm:inline">You don't need to be an athlete or an expert to dive<br />You only need curiosity to explore what lies below.</span>
             </p>
           </SectionReveal>
 
-          <StaggerGrid className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none pb-4 gap-2.5 sm:gap-6 sm:grid sm:grid-cols-2 lg:grid-cols-4 lg:gap-8 mt-2 sm:mt-24 sm:overflow-visible px-1">
+          <StaggerGrid className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none pb-6 gap-4 sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-6 lg:gap-8 mt-12 sm:mt-24 sm:overflow-visible px-2 sm:px-0">
             {[
               {
                 t: 'Enthusiastic Beginners',
@@ -271,24 +247,24 @@ export default function Home() {
                 desc: "For the bold, the curious and all the ocean lovers. Explore more. Dive deeper. Live the adventure."
               }
             ].map((item, i) => (
-              <StaggerItem key={i} className="w-[30vw] min-w-[108px] max-w-[130px] xs:w-[31vw] xs:min-w-[115px] sm:w-auto shrink-0 snap-center h-full">
+              <StaggerItem key={i} className="w-[280px] xs:w-[300px] shrink-0 sm:w-auto snap-center h-full">
                 <div
                   onClick={() => {
                     navigate('/gallery')
                     window.scrollTo({ top: 0, behavior: 'smooth' })
                   }}
-                  className="h-full group cursor-pointer relative mt-4 sm:mt-8 flex flex-col pointer-events-auto"
+                  className="h-full group cursor-pointer relative mt-8 sm:mt-10 flex flex-col pointer-events-auto"
                 >
 
                   {/* Floating transparent PNG image centered with respect to bg panel with automatic slow floating animation */}
                   {item.img ? (
                     <motion.div
-                      animate={{ y: [0, -6, 0] }}
+                      animate={{ y: [0, -8, 0] }}
                       transition={{ duration: 3.2 + (i * 0.4), repeat: Infinity, ease: 'easeInOut' }}
-                      className={`absolute top-0.5 sm:top-2 inset-x-0 mx-auto w-full flex items-center justify-center z-20 pointer-events-none px-1 ${
+                      className={`absolute -top-12 sm:-top-16 lg:-top-20 inset-x-0 mx-auto w-full flex items-center justify-center z-20 pointer-events-none px-1 ${
                         i === 1 || i === 2
-                          ? 'max-w-[95px] sm:max-w-[270px] h-[90px] xs:h-[105px] sm:h-[260px]'
-                          : 'max-w-[110px] sm:max-w-[320px] h-[100px] xs:h-[115px] sm:h-[290px]'
+                          ? 'max-w-[230px] sm:max-w-[270px] lg:max-w-[290px] h-[190px] sm:h-[240px] lg:h-[270px]'
+                          : 'max-w-[250px] sm:max-w-[300px] lg:max-w-[330px] h-[210px] sm:h-[260px] lg:h-[300px]'
                       }`}
                     >
                       <img
@@ -302,7 +278,7 @@ export default function Home() {
                   ) : null}
 
                   {/* Actual Card Background & Content */}
-                  <div className="h-full w-full rounded-xl sm:rounded-2xl overflow-hidden border border-white/30 relative flex flex-col p-2.5 xs:p-3 sm:p-6 pt-24 xs:pt-28 sm:pt-72 pb-3 sm:pb-7 z-10 transition duration-500 group-hover:border-white/60 shadow-2xl justify-end">
+                  <div className="h-full w-full rounded-[24px] sm:rounded-[32px] overflow-hidden border border-white/30 relative flex flex-col p-5 sm:p-6 lg:p-7 pt-44 sm:pt-56 lg:pt-64 pb-6 sm:pb-8 z-10 transition duration-500 group-hover:border-white/60 shadow-2xl justify-end">
 
                     {item.bgImg ? (
                       <img
@@ -315,20 +291,20 @@ export default function Home() {
                     <div className="absolute bottom-0 inset-x-0 h-3/5 bg-gradient-to-t from-navy via-navy/80 to-transparent z-0 pointer-events-none" />
 
                     <div className="relative z-10 flex flex-col justify-end h-full mt-auto">
-                      <h3 className="font-heading text-[11px] xs:text-xs sm:text-xl font-bold text-white uppercase tracking-wider mb-1 sm:mb-2 leading-tight text-center sm:text-left drop-shadow-md min-h-[30px] sm:min-h-[48px] flex items-center sm:items-end justify-center sm:justify-start">
+                      <h3 className="font-heading text-lg sm:text-xl lg:text-2xl font-bold text-white uppercase tracking-wider mb-2 leading-tight text-left drop-shadow-md min-h-[48px] flex items-end">
                         {item.t}
                       </h3>
 
-                      <div className="hidden sm:block w-8 h-[3px] bg-[#FFCD00] mb-3 shadow-sm shrink-0"></div>
+                      <div className="w-8 h-[3px] bg-[#FFCD00] mb-3 shadow-sm shrink-0"></div>
 
-                      <p className="hidden sm:flex text-white/90 text-sm font-medium mb-4 leading-relaxed text-justify drop-shadow-sm min-h-[64px] items-start whitespace-pre-line">
+                      <p className="text-white/90 text-sm font-medium mb-5 leading-relaxed text-left drop-shadow-sm min-h-[64px] flex items-start whitespace-normal">
                         {item.desc}
                       </p>
 
                       <div className="mt-auto shrink-0 pt-1 flex justify-center w-full">
-                        <div className="inline-flex items-center gap-1 sm:gap-2 font-body text-[10px] sm:text-xs font-bold uppercase tracking-widest bg-white/15 backdrop-blur-xl border border-white/30 text-white rounded-full px-2.5 sm:px-5 py-1 sm:py-2.5 transition-all duration-300 group-hover:bg-[#FFCD00] group-hover:text-navy group-hover:border-[#FFCD00] shadow-md cursor-pointer">
+                        <div className="inline-flex items-center gap-2 font-body text-xs font-bold uppercase tracking-widest bg-white/15 backdrop-blur-xl border border-white/30 text-white rounded-full px-5 py-2.5 transition-all duration-300 group-hover:bg-[#FFCD00] group-hover:text-navy group-hover:border-[#FFCD00] shadow-md cursor-pointer">
                           <span>Dive In</span>
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="hidden xs:inline transition-transform duration-300 group-hover:translate-x-1">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-1">
                             <path d="M5 12h14"></path>
                             <path d="m12 5 7 7-7 7"></path>
                           </svg>
@@ -541,105 +517,12 @@ export default function Home() {
       {/* 7.5 CUSTOMIZE DIVE EXPERIENCE */}
       <section id="customize-dive-section" className="py-6 sm:py-16 pointer-events-auto">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionReveal className="hidden sm:block text-center mb-8 max-w-3xl mx-auto">
-            <span className="inline-block bg-[#FFCD00]/15 border border-[#FFCD00]/30 rounded-full px-5 py-2 text-xs font-bold text-[#FFCD00] uppercase tracking-widest mb-4 shadow-sm backdrop-blur-md">
-              Plan Your Trip
-            </span>
-            <h2 className="font-heading text-3xl sm:text-5xl font-bold text-white leading-tight drop-shadow-md mb-4">
-              Design Your <span className="text-[#FFCD00]">Dream Experience</span>
-            </h2>
-            <p className="text-sm sm:text-base text-white/90 font-medium leading-relaxed drop-shadow-sm max-w-2xl mx-auto">
-              Select your dives, island stays, and extra adventures to build a custom itinerary and see an instant price estimate.
-            </p>
-          </SectionReveal>
-
           <CustomizeExperiencePanel />
         </div>
       </section>
 
-      {/* 8. EXPLORE OUR PROGRAMS (Interactive Carousel - Desktop Only duplicate) */}
-      <section id="services" className="hidden sm:block relative py-24 sm:py-32 pointer-events-auto overflow-hidden">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionReveal className="text-center mb-8 max-w-3xl mx-auto">
-            <span className="inline-block bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-5 py-2 text-xs font-bold text-[#FFCD00] uppercase tracking-widest mb-4 shadow-sm">
-              Discover Possibilities
-            </span>
-            <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight drop-shadow-md mb-4">
-              Explore Our <span className="text-[#FFCD00] font-bold">Programs</span>
-            </h2>
-            <p className="text-base sm:text-lg text-white/90 font-medium leading-relaxed drop-shadow-sm">
-              From your very first breath underwater to professional instructor certifications.
-            </p>
-          </SectionReveal>
-        </div>
-
-        <InteractiveHighlights />
-      </section>
-
-      {/* 9. THE DIVE VILLAGE GALLERY CAROUSEL */}
+      {/* 8. THE DIVE VILLAGE GALLERY CAROUSEL */}
       <GalleryPreview />
-
-      {/* 10. FAQ SECTION (Desktop Only) */}
-      <section className="hidden sm:block relative py-24 sm:py-32 text-white pointer-events-auto">
-        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-          <SectionReveal className="text-center mb-16">
-            <span className="inline-block bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-5 py-2 text-xs font-bold text-[#FFCD00] uppercase tracking-widest mb-4 shadow-sm">
-              Got Questions?
-            </span>
-            <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight drop-shadow-md mb-4">
-              Frequently Asked <span className="text-[#FFCD00] font-bold">Questions</span>
-            </h2>
-            <p className="text-base sm:text-lg text-white/90 font-medium leading-relaxed drop-shadow-sm max-w-2xl mx-auto">
-              Everything you need to know about diving in Neil Island with The Dive Village.
-            </p>
-          </SectionReveal>
-
-          <div className="space-y-4">
-            {FAQ_DATA.map((faq, i) => (
-              <div
-                key={i}
-                className="rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 overflow-hidden shadow-lg transition duration-300 hover:border-white/40"
-              >
-                <button
-                  type="button"
-                  onClick={() => setActiveFaq(activeFaq === i ? null : i)}
-                  className="w-full flex items-center justify-between p-6 text-left cursor-pointer select-none"
-                >
-                  <span className="font-heading text-lg sm:text-xl font-bold text-white pr-4">
-                    {faq.q}
-                  </span>
-                  <span className="w-8 h-8 rounded-full bg-white/15 border border-white/30 flex items-center justify-center text-white shrink-0">
-                    <svg
-                      className={`w-4 h-4 transition-transform duration-300 ${activeFaq === i ? 'rotate-180 text-[#FFCD00]' : ''}`}
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2.5}
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </span>
-                </button>
-                <AnimatePresence>
-                  {activeFaq === i && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="overflow-hidden"
-                    >
-                      <div className="px-6 pb-6 pt-2 text-white/90 font-medium text-sm sm:text-base leading-relaxed border-t border-white/10 mt-2">
-                        {faq.a}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* REVIEW MODAL */}
       <AnimatePresence>
@@ -792,10 +675,10 @@ function InteractiveHighlights() {
   ]
 
   const itemsInSet = HIGHLIGHTS_DATA.length
-  const cardGap = containerWidth < 640 ? 10 : 16 // px gap between cards
+  const cardGap = containerWidth < 640 ? 12 : 20 // px gap between cards
 
-  // Responsively show 3.1 cards on mobile to match Ocean Welcomes All (3 per row), 3.5 on tablet, 5 on desktop
-  const cardsToShow = containerWidth < 640 ? 3.1 : (containerWidth < 1024 ? 3.5 : 5)
+  // Responsively show 5 cards on desktop, 3 on tablet, 2 on wide mobile, 1.25 on narrow mobile
+  const cardsToShow = containerWidth < 480 ? 1.25 : (containerWidth < 768 ? 2 : (containerWidth < 1024 ? 3 : 5))
   const cardWidth = Math.floor((containerWidth - (Math.ceil(cardsToShow) - 1) * cardGap) / cardsToShow)
   const singleSetWidth = itemsInSet * (cardWidth + cardGap)
 
@@ -924,7 +807,6 @@ function InteractiveHighlights() {
       onMouseEnter={() => { isHoveredRef.current = true }}
       onMouseLeave={() => { isHoveredRef.current = false }}
       className="relative w-full max-w-[1800px] mx-auto my-4 pointer-events-auto px-1 sm:px-2"
-      data-lenis-prevent="true"
     >
       {/* Sleek Floating Arrow Buttons outside cards */}
       <button
@@ -966,7 +848,6 @@ function InteractiveHighlights() {
         onTouchCancel={handlePointerUp}
         className="w-full py-4 overflow-hidden cursor-grab active:cursor-grabbing select-none"
         style={{ touchAction: 'pan-y' }}
-        data-lenis-prevent="true"
       >
         <div
           ref={trackRef}
@@ -981,7 +862,7 @@ function InteractiveHighlights() {
               key={`${current.id}-${i}`}
               onClick={(e) => handleNavigate(e, current.link)}
               style={{ width: `${cardWidth}px` }}
-              className="h-[210px] xs:h-[235px] sm:h-[450px] flex-shrink-0 rounded-xl sm:rounded-[28px] overflow-hidden shadow-2xl relative border border-white/20 bg-[#001E36] group cursor-pointer pointer-events-auto transition-all duration-500 hover:border-[#FFCD00]/70 hover:shadow-[0_12px_36px_rgba(0,0,0,0.85)] hover:-translate-y-1.5"
+              className="h-[360px] xs:h-[390px] sm:h-[450px] flex-shrink-0 rounded-[20px] sm:rounded-[28px] overflow-hidden shadow-2xl relative border border-white/20 bg-[#001E36] group cursor-pointer pointer-events-auto transition-all duration-500 hover:border-[#FFCD00]/70 hover:shadow-[0_12px_36px_rgba(0,0,0,0.85)] hover:-translate-y-1.5"
             >
               {current.image ? (
                 <img
@@ -992,24 +873,24 @@ function InteractiveHighlights() {
               ) : null}
               <div className="absolute inset-0 bg-gradient-to-t from-[#001224] via-[#001428]/60 to-transparent pointer-events-none" />
 
-              <div className="absolute inset-0 p-2.5 xs:p-3 sm:p-6 lg:p-7 flex flex-col justify-end pointer-events-auto">
+              <div className="absolute inset-0 p-4 xs:p-5 sm:p-6 lg:p-7 flex flex-col justify-end pointer-events-auto">
                 <div className="mt-auto flex flex-col">
-                  <span className="hidden sm:inline-flex items-center self-start text-[#FFCD00] font-heading font-bold text-[7px] sm:text-[10px] uppercase tracking-widest bg-[#FFCD00]/15 px-1.5 sm:px-3 py-0.5 sm:py-1 rounded-full border border-[#FFCD00]/30 mb-1 sm:mb-2.5 pointer-events-none shadow-sm backdrop-blur-md">
+                  <span className="inline-flex items-center self-start text-[#FFCD00] font-heading font-bold text-[8px] xs:text-[9px] sm:text-[10px] uppercase tracking-widest bg-[#FFCD00]/15 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full border border-[#FFCD00]/30 mb-2 sm:mb-2.5 pointer-events-none shadow-sm backdrop-blur-md">
                     Featured
                   </span>
-                  <h3 className="font-heading text-[11px] xs:text-xs sm:text-2xl font-bold text-white leading-tight mb-1.5 sm:mb-2 pointer-events-none drop-shadow-md line-clamp-2 sm:whitespace-normal">
+                  <h3 className="font-heading text-base xs:text-lg sm:text-2xl font-bold text-white leading-tight mb-1.5 sm:mb-2 pointer-events-none drop-shadow-md line-clamp-2 sm:whitespace-normal">
                     {current.title}
                   </h3>
-                  <p className="hidden sm:block text-white/85 text-xs sm:text-[13px] line-clamp-2 leading-relaxed mb-5 pointer-events-none text-left">
+                  <p className="text-white/85 text-xs sm:text-[13px] line-clamp-2 leading-relaxed mb-4 sm:mb-5 pointer-events-none text-left">
                     {current.desc}
                   </p>
                   <button
                     type="button"
                     onClick={(e) => handleNavigate(e, current.link)}
-                    className="w-full py-1.5 xs:py-2 sm:py-3 px-1.5 sm:px-5 rounded-full bg-white/15 backdrop-blur-xl border border-white/30 text-white font-bold text-[9px] xs:text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-300 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] hover:shadow-[0_8px_30px_rgba(255,205,0,0.5)] shadow-lg pointer-events-auto cursor-pointer relative z-30 flex items-center justify-center gap-1 sm:gap-2 group/btn"
+                    className="w-full py-2 xs:py-2.5 sm:py-3 px-3 sm:px-5 rounded-full bg-white/15 backdrop-blur-xl border border-white/30 text-white font-bold text-[10px] xs:text-[11px] sm:text-xs uppercase tracking-wider transition-all duration-300 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] hover:shadow-[0_8px_30px_rgba(255,205,0,0.5)] shadow-lg pointer-events-auto cursor-pointer relative z-30 flex items-center justify-center gap-1.5 sm:gap-2 group/btn"
                   >
                     <span>{current.btnText || 'Explore'}</span>
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="sm:w-3.5 sm:h-3.5 transition-transform duration-300 group-hover/btn:translate-x-1">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="sm:w-3.5 sm:h-3.5 transition-transform duration-300 group-hover/btn:translate-x-1">
                       <path d="M5 12h14"></path>
                       <path d="m12 5 7 7-7 7"></path>
                     </svg>

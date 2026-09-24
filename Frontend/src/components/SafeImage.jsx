@@ -27,8 +27,10 @@ export default function SafeImage({
   alt = '',
   className = '',
   imgClassName = '',
+  dark = false,
   ...props
 }) {
+  const [loaded, setLoaded] = useState(false)
   const [failed, setFailed] = useState(false)
   const containerRef = useRef(null)
   const reduce = useReducedMotion()
@@ -42,19 +44,33 @@ export default function SafeImage({
   const y = useTransform(scrollYProgress, [0, 1], ["-10%", "10%"])
 
   if (!src || failed) {
-    return <div className={className} />
+    return (
+      <div className={`overflow-hidden relative ${className}`}>
+        <Placeholder alt={alt} className="w-full h-full" />
+      </div>
+    )
   }
 
   return (
-    <div ref={containerRef} className={`overflow-hidden ${className}`}>
+    <div ref={containerRef} className={`overflow-hidden relative ${className}`}>
+      {/* Low-contrast Skeleton Shimmer Placeholder while high-res image streams */}
+      {!loaded && (
+        <div 
+          className={`absolute inset-0 z-0 ${dark ? 'skeleton-shimmer-dark bg-white/10' : 'skeleton-shimmer bg-navy/5'}`}
+          aria-hidden="true"
+        />
+      )}
       <motion.img
         style={reduce ? {} : { y, scale: 1.25 }}
         src={src}
         alt={alt}
         loading="lazy"
         decoding="async"
+        onLoad={() => setLoaded(true)}
         onError={() => setFailed(true)}
-        className={`h-full w-full object-cover ${imgClassName}`}
+        className={`h-full w-full object-cover transition-opacity duration-500 relative z-[1] ${
+          loaded ? 'opacity-100' : 'opacity-0'
+        } ${imgClassName}`}
         {...props}
       />
     </div>

@@ -14,6 +14,7 @@ import {
   getAvailableCertificationsForAge,
   validateParticipantBooking,
 } from '../utils/courseEligibility'
+import { triggerHaptic, triggerSuccessHaptic, triggerErrorHaptic } from '../utils/haptics'
 import 'react-phone-number-input/style.css'
 import PhoneInput from 'react-phone-number-input'
 import turtleAnnaVideo from '../assets/New folder/Turtle Anna.mp4'
@@ -233,6 +234,99 @@ export default function BookUs() {
     })
   }
 
+  const handlePrevStep = useCallback(() => {
+    if (currentStep > 1) {
+      triggerHaptic(8)
+      setStepError('')
+      setCurrentStep((prev) => prev - 1)
+    }
+  }, [currentStep])
+
+  const handleNextStep = useCallback(() => {
+    if (currentStep === 1) {
+      if (!country) {
+        triggerErrorHaptic()
+        setStepError('Please select a dive country.')
+        return false
+      }
+      if (!locationId && !selectedLocation && !location) {
+        triggerErrorHaptic()
+        setStepError('Please select a dive location.')
+        return false
+      }
+      if (!date || date < todayStr || date > maxDateStr) {
+        triggerErrorHaptic()
+        setDateError('Please Select a Proper Date')
+        setStepError('Please select a valid date for your dive.')
+        return false
+      }
+      if (!groupSize || parseInt(groupSize, 10) < 1) {
+        triggerErrorHaptic()
+        setStepError('Please enter a valid number of participants (minimum 1).')
+        return false
+      }
+      setDateError('')
+      setStepError('')
+    }
+    if (currentStep === 2) {
+      const hasEmpty = participants.some((p) => !p.name || !p.age)
+      if (hasEmpty) {
+        triggerErrorHaptic()
+        setStepError('Please fill in the Name and Age for all participants.')
+        return false
+      }
+      const hasInvalidAge = participants.some((p) => parseInt(p.age, 10) < 8)
+      if (hasInvalidAge) {
+        triggerErrorHaptic()
+        setStepError('Minimum age for participating in diving activities is 8 years. Participants under 8 cannot proceed.')
+        return false
+      }
+      setStepError('')
+    }
+    if (currentStep === 3) {
+      const hasUnselected = participants.some((p) => !p.selectedProgram)
+      if (hasUnselected) {
+        triggerErrorHaptic()
+        setStepError('Please select an eligible program for each participant.')
+        return false
+      }
+      for (const p of participants) {
+        const val = validateParticipantBooking(p)
+        if (!val.valid) {
+          triggerErrorHaptic()
+          setStepError(val.error || 'Eligibility validation failed.')
+          return false
+        }
+      }
+      setStepError('')
+    }
+    if (currentStep < 4) {
+      triggerHaptic(10)
+      setStepError('')
+      setCurrentStep((prev) => prev + 1)
+      return true
+    }
+    return true
+  }, [currentStep, country, locationId, selectedLocation, location, date, todayStr, maxDateStr, groupSize, participants])
+
+  // Desktop keyboard step navigation (Enter to advance, Alt + Left Arrow to go back)
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.target.tagName === 'TEXTAREA' || isCalendarOpen) return
+
+      if (e.key === 'Enter' && !e.shiftKey && currentStep < 4) {
+        e.preventDefault()
+        handleNextStep()
+      } else if (e.altKey && (e.key === 'ArrowLeft' || e.key === 'Left')) {
+        e.preventDefault()
+        handlePrevStep()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [handleNextStep, handlePrevStep, isCalendarOpen, currentStep])
+
   const handleSubmit = async (e) => {
     e.preventDefault()
 
@@ -280,11 +374,14 @@ export default function BookUs() {
       )
 
       if (isSuccess) {
+        triggerSuccessHaptic()
         setSubmitted(true)
       } else {
+        triggerErrorHaptic()
         throw new Error('Server returned an invalid or incomplete booking response.')
       }
     } catch (err) {
+      triggerErrorHaptic()
       console.error('Booking submission error:', err)
       const errorMsg = err.message || 'Failed to submit booking. Please try again.'
       setStepError(`Booking submission failed: ${errorMsg}`)
@@ -1080,80 +1177,29 @@ export default function BookUs() {
               )}
 
               {/* Navigation Controls */}
+              {/* Navigation Controls */}
               <div className="pt-3.5 sm:pt-6 mt-3.5 sm:mt-6 border-t border-navy/5 flex items-center justify-between gap-3">
                 {currentStep > 1 ? (
                   <button
                     type="button"
-                    onClick={() => {
-                      setStepError('')
-                      setCurrentStep((prev) => prev - 1)
-                    }}
-                    className="rounded-full px-3.5 py-2 sm:px-6 sm:py-3.5 text-[11px] sm:text-sm font-bold text-navy hover:bg-[#F0F2F5] transition cursor-pointer"
+                    onClick={handlePrevStep}
+                    className="rounded-full px-3.5 py-2 sm:px-6 sm:py-3.5 text-[11px] sm:text-sm font-bold text-navy hover:bg-[#F0F2F5] active:scale-95 transition cursor-pointer flex items-center gap-1.5"
+                    title="Press Alt + ← to go back"
                   >
-                    ← Back
+                    <span>← Back</span>
+                    <kbd className="hidden lg:inline-block text-[9px] font-mono bg-navy/10 px-1.5 py-0.5 rounded text-navy/60">Alt+←</kbd>
                   </button>
                 ) : <div />}
 
                 {currentStep < 4 ? (
                   <button
                     type="button"
-                    onClick={() => {
-                      if (currentStep === 1) {
-                        if (!country) {
-                          setStepError('Please select a dive country.')
-                          return
-                        }
-                        if (!locationId && !selectedLocation && !location) {
-                          setStepError('Please select a dive location.')
-                          return
-                        }
-                        if (!date || date < todayStr || date > maxDateStr) {
-                          setDateError('Please Select a Proper Date')
-                          setStepError('Please select a valid date for your dive.')
-                          return
-                        }
-                        if (!groupSize || parseInt(groupSize, 10) < 1) {
-                          setStepError('Please enter a valid number of participants (minimum 1).')
-                          return
-                        }
-                        setDateError('')
-                        setStepError('')
-                      }
-                      if (currentStep === 2) {
-                        const hasEmpty = participants.some((p) => !p.name || !p.age)
-                        if (hasEmpty) {
-                          setStepError('Please fill in the Name and Age for all participants.')
-                          return
-                        }
-                        const hasInvalidAge = participants.some((p) => parseInt(p.age, 10) < 8)
-                        if (hasInvalidAge) {
-                          setStepError('Minimum age for participating in diving activities is 8 years. Participants under 8 cannot proceed.')
-                          return
-                        }
-                        setStepError('')
-                      }
-                      if (currentStep === 3) {
-                        const hasUnselected = participants.some((p) => !p.selectedProgram)
-                        if (hasUnselected) {
-                          setStepError('Please select an eligible program for each participant.')
-                          return
-                        }
-                        // Validate eligibility for each participant
-                        for (const p of participants) {
-                          const val = validateParticipantBooking(p)
-                          if (!val.valid) {
-                            setStepError(val.error || 'Eligibility validation failed.')
-                            return
-                          }
-                        }
-                        setStepError('')
-                      }
-                      setStepError('')
-                      setCurrentStep((prev) => prev + 1)
-                    }}
-                    className="rounded-full bg-navy hover:!bg-accent hover:!text-navy px-4 py-2 sm:px-8 sm:py-4 text-xs sm:text-sm font-bold text-white transition-all duration-200 shadow-md ml-auto cursor-pointer"
+                    onClick={handleNextStep}
+                    className="rounded-full bg-navy hover:!bg-accent hover:!text-navy active:scale-95 px-4 py-2 sm:px-8 sm:py-4 text-xs sm:text-sm font-bold text-white transition-all duration-200 shadow-md ml-auto cursor-pointer flex items-center gap-2"
+                    title="Press Enter to continue"
                   >
-                    Continue →
+                    <span>Continue →</span>
+                    <kbd className="hidden lg:inline-block text-[9px] font-mono bg-white/20 px-1.5 py-0.5 rounded text-white/90">↵</kbd>
                   </button>
                 ) : (
                   <button
@@ -1176,8 +1222,8 @@ export default function BookUs() {
 
           </div>
 
-          {/* Interactive Globe Map Column with generous height so globe does not get cut on mobile */}
-          <div className="lg:col-span-5 relative w-full min-w-0 max-w-full mx-auto h-[500px] xs:h-[540px] sm:h-[580px] lg:h-full min-h-[480px] sm:min-h-[520px] rounded-2xl sm:rounded-[36px] overflow-hidden bg-navy flex flex-col pt-4 sm:pt-8 shadow-card border border-navy/10 mt-6 lg:mt-0">
+          {/* Interactive Globe Map Column with Desktop Sticky Pinning */}
+          <div className="lg:col-span-5 lg:sticky lg:top-28 lg:self-start relative w-full min-w-0 max-w-full mx-auto h-[500px] xs:h-[540px] sm:h-[580px] lg:h-[calc(100vh-8.5rem)] min-h-[480px] sm:min-h-[520px] rounded-2xl sm:rounded-[36px] overflow-hidden bg-navy flex flex-col pt-4 sm:pt-6 shadow-card border border-navy/10 mt-6 lg:mt-0">
             <div className="text-center px-4 z-10 mb-2 pointer-events-none">
               <span className="text-accent text-[10px] font-bold uppercase tracking-widest">Interactive 3D Globe</span>
               <h3 className="font-heading text-xl sm:text-2xl font-bold text-white">Select Dive Location</h3>

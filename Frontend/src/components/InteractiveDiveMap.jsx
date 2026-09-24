@@ -91,6 +91,7 @@ export default function InteractiveDiveMap({
   const [isLoaded, setIsLoaded] = useState(false)
   const [popupSite, setPopupSite] = useState(null)
   const [isPopupOpen, setIsPopupOpen] = useState(false)
+  const [hoveredPinTooltip, setHoveredPinTooltip] = useState(null)
 
   const popupRef = useRef(null)
   const popupSiteRef = useRef(null)
@@ -726,21 +727,65 @@ export default function InteractiveDiveMap({
           lastInteractionTimeRef.current = Date.now()
           const pickedObjects = viewer.scene.drillPick(movement.endPosition, 3)
           let isPointer = false
+          let foundHover = null
+
           if (pickedObjects && pickedObjects.length > 0) {
             for (const obj of pickedObjects) {
               if (obj && obj.id) {
                 const idStr = String(obj.id.id || '')
-                if (
-                  idStr.startsWith('padi-') ||
-                  (idStr.startsWith('country-') && idStr !== 'country-envelope')
-                ) {
+                if (idStr.startsWith('padi-')) {
                   isPointer = true
+                  const locId = idStr.replace('padi-', '')
+                  let loc = null
+                  if (obj.id.properties && obj.id.properties.padiLocation) {
+                    const propVal = obj.id.properties.padiLocation
+                    loc = typeof propVal.getValue === 'function' ? propVal.getValue(window.Cesium?.JulianDate?.now?.() || new Date()) : propVal
+                  }
+                  if (!loc) {
+                    const cleanId = String(locId).trim()
+                    loc = countryLocationsRef.current.find(
+                      (l) => l && (String(l.id).trim() === cleanId || (l.padiId && String(l.padiId).trim() === cleanId))
+                    )
+                  }
+                  if (loc) {
+                    const creatureInfo = getDiveSiteCreatureInfo(loc)
+                    const placeName = getLocationDisplayName(loc) || loc.title || loc.name
+                    foundHover = {
+                      type: 'padi',
+                      title: placeName,
+                      depth: loc.depth || loc.maxDepth || (loc.minDepth ? `${loc.minDepth}-${loc.maxDepth || 30}m` : '12m - 30m'),
+                      visibility: loc.visibility || '20m - 40m',
+                      creatureName: creatureInfo?.name || 'Marine Life',
+                      creatureEmoji: creatureInfo?.emoji || '🐠',
+                      creatureFunFact: creatureInfo?.fact || '',
+                      x: movement.endPosition.x,
+                      y: movement.endPosition.y
+                    }
+                  }
+                  break
+                } else if (idStr.startsWith('country-') && idStr !== 'country-envelope') {
+                  isPointer = true
+                  let cName = null
+                  if (obj.id.properties && obj.id.properties.countryName) {
+                    const propVal = obj.id.properties.countryName
+                    cName = typeof propVal.getValue === 'function' ? propVal.getValue(window.Cesium?.JulianDate?.now?.() || new Date()) : propVal
+                  }
+                  if (!cName) cName = obj.id.name
+                  if (cName && cName !== 'envelope') {
+                    foundHover = {
+                      type: 'country',
+                      title: cName,
+                      x: movement.endPosition.x,
+                      y: movement.endPosition.y
+                    }
+                  }
                   break
                 }
               }
             }
           }
           viewer.scene.canvas.style.cursor = isPointer ? 'pointer' : 'default'
+          setHoveredPinTooltip(foundHover)
         }, Cesium.ScreenSpaceEventType.MOUSE_MOVE)
 
         handler.setInputAction((click) => {
@@ -1352,6 +1397,39 @@ export default function InteractiveDiveMap({
           )
         })()}
       </div>
+
+      {/* Desktop Hover Pin Preview Tooltip */}
+      {hoveredPinTooltip && !isPopupOpen && (
+        <div
+          className="pointer-events-none absolute z-30 transition-all duration-150 hidden md:block"
+          style={{
+            left: `${Math.min(Math.max(12, hoveredPinTooltip.x + 14), (containerRef.current?.clientWidth || 400) - 220)}px`,
+            top: `${Math.max(12, hoveredPinTooltip.y - 75)}px`,
+          }}
+        >
+          <div className="bg-[#00192e]/95 backdrop-blur-xl border border-cyan-400/40 rounded-xl p-2.5 shadow-[0_8px_30px_rgba(0,0,0,0.7)] text-white max-w-[220px]">
+            <div className="flex items-center gap-2">
+              <span className="text-lg leading-none">
+                {hoveredPinTooltip.type === 'padi' ? hoveredPinTooltip.creatureEmoji : '📍'}
+              </span>
+              <div className="min-w-0 flex-1">
+                <h4 className="font-heading text-xs font-bold text-white truncate leading-tight">
+                  {hoveredPinTooltip.title}
+                </h4>
+                <span className="text-[9px] font-semibold text-cyan-300 block uppercase tracking-wider">
+                  {hoveredPinTooltip.type === 'padi' ? 'Dive Site • Click to inspect' : 'Country • Click to explore'}
+                </span>
+              </div>
+            </div>
+            {hoveredPinTooltip.type === 'padi' && (
+              <div className="mt-2 pt-1.5 border-t border-white/10 flex items-center justify-between text-[9.5px] text-white/80">
+                <span>Depth: <strong className="text-amber-300">{hoveredPinTooltip.depth}</strong></span>
+                <span>Vis: <strong className="text-cyan-300">{hoveredPinTooltip.visibility}</strong></span>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Joystick Overlay */}
       <GlobeJoystick viewerRef={viewerRef} />
