@@ -5,6 +5,7 @@ import PhoneInput from 'react-phone-number-input'
 import 'react-phone-number-input/style.css'
 import { IMAGES, CAROUSEL_IMAGES, PANEL_IMAGES } from '../utils/images'
 import bookVideo from '../assets/Book(2).mp4'
+import divingVid from '../assets/Diving(1).mp4'
 import compiledNightDiveVideo from '../assets/Compiled Night Dive Video(2).mp4'
 import useNightDive from '../hooks/useNightDive'
 import SEOHead from '../components/SEOHead'
@@ -314,13 +315,23 @@ export default function Contact() {
           </a>
         </div>
 
-        {/* Bottom CTA Banner with Full Background Image */}
+        {/* Bottom CTA Banner with Video on Desktop & Image on Mobile */}
         <div className="mt-24 sm:mt-32 rounded-[40px] text-white p-8 sm:p-14 lg:p-20 relative overflow-hidden shadow-2xl border border-white/20 group">
-          {/* Full-bleed Background Image */}
+          {/* Mobile Background Image (Mobile Only) */}
           <img
             src={PANEL_IMAGES[6]}
             alt="Ocean Escape"
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+            className="block md:hidden absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+          />
+
+          {/* Desktop Video Background (Desktop Only) */}
+          <video
+            src={isNightDive ? compiledNightDiveVideo : divingVid}
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="hidden md:block absolute inset-0 w-full h-full object-cover transition-transform duration-[10000ms] group-hover:scale-105 opacity-60"
           />
 
           {/* Ambient Overlays for Contrast & Readability */}

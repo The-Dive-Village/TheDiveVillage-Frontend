@@ -147,34 +147,34 @@ export default function Shop() {
 
       {/* 2. STORE CONTROLS TOOLBAR IN BRAND BLUE */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-8">
-        <div className="rounded-[28px] bg-[#003865] p-4 sm:p-6 shadow-lift border border-white/15 text-white flex flex-col md:flex-row gap-4 items-center justify-between backdrop-blur-xl">
+        <div className="rounded-[28px] bg-white md:bg-[#003865] p-4 sm:p-6 shadow-card md:shadow-lift border border-navy/10 md:border-white/15 text-navy md:text-white flex flex-col md:flex-row gap-4 items-center justify-between backdrop-blur-xl transition-colors duration-300">
           <div className="relative w-full md:w-96">
             <input
               type="text"
               placeholder="Search rash guards, suits, gear..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full rounded-full border border-white/20 bg-[#00223D]/80 pl-12 pr-8 py-3 text-sm text-white placeholder:text-white/60 focus:border-accent focus:bg-[#00223D] focus:outline-none transition shadow-inner"
+              className="w-full rounded-full border border-navy/15 md:border-white/20 bg-[#F0F2F5] md:bg-[#00223D]/80 pl-12 pr-8 py-3 text-sm text-navy md:text-white placeholder:text-navy/40 md:placeholder:text-white/60 focus:border-accent focus:bg-white md:focus:bg-[#00223D] focus:outline-none transition shadow-inner"
             />
-            <svg className="absolute left-4 top-3.5 h-5 w-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-            {searchQuery && <button onClick={() => setSearchQuery('')} className="absolute right-4 top-3.5 text-xs text-white/70 hover:text-accent font-bold cursor-pointer">✕</button>}
+            <svg className="absolute left-4 top-3.5 h-5 w-5 text-navy/40 md:text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+            {searchQuery && <button onClick={() => setSearchQuery('')} className="absolute right-4 top-3.5 text-xs text-navy/50 md:text-white/70 hover:text-accent font-bold cursor-pointer">✕</button>}
           </div>
           <div className="flex items-center gap-3 w-full md:w-auto justify-end flex-wrap sm:flex-nowrap">
-            <span className="text-xs font-extrabold text-cyan-400/90 uppercase tracking-wider whitespace-nowrap">Sort by:</span>
+            <span className="text-xs font-extrabold text-navy/60 md:text-cyan-400/90 uppercase tracking-wider whitespace-nowrap">Sort by:</span>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="rounded-full border border-white/20 bg-[#00223D]/80 px-4 py-2.5 text-xs sm:text-sm font-bold text-white focus:border-accent focus:outline-none transition cursor-pointer"
+              className="rounded-full border border-navy/15 md:border-white/20 bg-[#F0F2F5] md:bg-[#00223D]/80 px-4 py-2.5 text-xs sm:text-sm font-bold text-navy md:text-white focus:border-accent focus:outline-none transition cursor-pointer"
             >
-              <option value="featured">Featured / Newest</option>
-              <option value="price-low">Price: Low to High</option>
-              <option value="price-high">Price: High to Low</option>
-              <option value="rating">Highest Rated</option>
+              <option value="featured" className="text-navy bg-white md:bg-[#00223D] md:text-white">Featured / Newest</option>
+              <option value="price-low" className="text-navy bg-white md:bg-[#00223D] md:text-white">Price: Low to High</option>
+              <option value="price-high" className="text-navy bg-white md:bg-[#00223D] md:text-white">Price: High to Low</option>
+              <option value="rating" className="text-navy bg-white md:bg-[#00223D] md:text-white">Highest Rated</option>
             </select>
 
             <Link
               to="/wishlist"
-              className="rounded-full bg-white/10 hover:!bg-[#FFCD00] hover:!text-[#001e3d] text-white font-bold px-5 py-2.5 text-xs sm:text-sm transition-all duration-200 shadow-md flex items-center gap-2 whitespace-nowrap border border-white/20 cursor-pointer"
+              className="rounded-full bg-navy/5 md:bg-white/10 hover:!bg-[#FFCD00] hover:!text-[#001e3d] text-navy md:text-white font-bold px-5 py-2.5 text-xs sm:text-sm transition-all duration-200 shadow-sm md:shadow-md flex items-center gap-2 whitespace-nowrap border border-navy/10 md:border-white/20 cursor-pointer"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
