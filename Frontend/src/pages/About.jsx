@@ -6,10 +6,14 @@ import SectionReveal, { StaggerGrid, StaggerItem } from '../components/SectionRe
 import SEOHead from '../components/SEOHead'
 import { CAROUSEL_IMAGES } from '../utils/images'
 import { useReviews } from '../contexts/ReviewsContext'
-import divingVid from '../assets/Diving(1).mp4'
-import aboutVid from '../assets/about.mp4'
-import jellyfishVideo from '../assets/jelly fish.mp4'
-import nightDiveVideo from '../assets/nightdive_fast.mp4'
+import divingVidLocal from '../assets/Diving(1).mp4'
+import aboutVidLocal from '../assets/about.mp4'
+import jellyfishVideoLocal from '../assets/jelly fish.mp4'
+
+const divingVid = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790244035/dive-village/ui-videos/diving_1_mp4.mp4'
+const aboutVid = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790244047/dive-village/ui-videos/about_mp4.mp4'
+const jellyfishVideo = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790244064/dive-village/ui-videos/jelly_fish_mp4.mp4'
+const nightDiveVideo = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243508/dive-village/hero-360/bpjuqk54webpdtghzbxk.mp4'
 import useNightDive from '../hooks/useNightDive'
 
 import zero2HeroImg from '../assets/Gallery/zero2hero.jpg'

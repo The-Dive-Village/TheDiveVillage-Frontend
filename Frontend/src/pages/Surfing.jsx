@@ -1,7 +1,8 @@
 import CourseTemplate from '../layouts/CourseTemplate'
 import SEOHead from '../components/SEOHead'
 import { IMAGES } from '../utils/images'
-import freediveVideo from '../assets/Gallery/Free Diving 1.mp4'
+import freediveVideoLocal from '../assets/Gallery/Free Diving 1.mp4'
+const freediveVideo = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790242293/dive-village/gallery-videos/free_diving_1_mp4.mp4' || freediveVideoLocal
 
 export default function Surfing() {
   const tours = [

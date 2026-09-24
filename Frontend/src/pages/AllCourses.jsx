@@ -5,7 +5,8 @@ import Button from '../components/Button'
 
 import scubaVid from '../assets/New folder/GX018843.mp4'
 import snorkelingVid from '../assets/New folder/Turtle Anna.mp4'
-import freedivingVid from '../assets/New folder/free diving 3.mp4'
+import freedivingVidLocal from '../assets/New folder/free diving 3.mp4'
+const freedivingVid = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790240858/dive-village/gallery-videos/free_diving_3_mp4.mp4' || freedivingVidLocal
 
 export default function AllCourses() {
   const reduce = useReducedMotion()

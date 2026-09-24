@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
-import preloaderVideo from '../assets/preloader.mp4'
+import preloaderVideoLocal from '../assets/preloader.mp4'
+const preloaderVideo = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790244031/dive-village/ui-videos/preloader_mp4.mp4'
 import { subscribeHeroVideoReady, getHeroVideoReady } from '../utils/mediaReadyManager'
 
 function DiverAnimation({ src, className }) {

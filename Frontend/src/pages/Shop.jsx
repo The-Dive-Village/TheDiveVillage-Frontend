@@ -10,9 +10,10 @@ import Button from '../components/Button'
 import SEOHead from '../components/SEOHead'
 import CustomerReviews from '../components/CustomerReviews'
 import picture3 from '../assets/Picture3.png'
-import divingVid from '../assets/Diving(1).mp4'
-import pop1 from '../assets/Products/pop1.jpeg'
-import pop2 from '../assets/Products/pop2.jpeg'
+import divingVidLocal from '../assets/Diving(1).mp4'
+const divingVid = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790244035/dive-village/ui-videos/diving_1_mp4.mp4'
+const pop1 = 'https://res.cloudinary.com/bbgt5nk7/image/upload/v1790244009/dive-village/products/qqpya5ppncnjorf4csbf.jpg'
+const pop2 = 'https://res.cloudinary.com/bbgt5nk7/image/upload/v1790244010/dive-village/products/zueb8bj6rg6iiit2wfqw.jpg'
 
 const CATEGORIES = [
   { key: 'all', label: 'All Merchandise' },

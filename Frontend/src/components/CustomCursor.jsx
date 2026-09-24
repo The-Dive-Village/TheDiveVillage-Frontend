@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import cursorVideo from '../assets/cursor.webm'
+import cursorVideoLocal from '../assets/cursor.webm'
+const cursorVideo = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790244012/dive-village/ui-videos/cursor_webm.webm'
 import cursorPng from '../assets/cursor.png'
 import cursorHoverPng from '../assets/cursor hover.png'
 import useNightDive from '../hooks/useNightDive'

@@ -33,9 +33,14 @@ export default function Gallery() {
             thumbnail: item.thumbnail || item.src,
           }))
 
-          // Combine Cloudinary-hosted DB photo items with local video items
-          const localVideos = GALLERY_ITEMS.filter((g) => g.type === 'video')
-          setItemsList([...mappedDbItems, ...localVideos])
+          const hasDbVideos = mappedDbItems.some((item) => item.type === 'video')
+          if (hasDbVideos) {
+            setItemsList(mappedDbItems)
+          } else {
+            // Combine Cloudinary-hosted DB photo items with local video items fallback
+            const localVideos = GALLERY_ITEMS.filter((g) => g.type === 'video')
+            setItemsList([...mappedDbItems, ...localVideos])
+          }
         }
       } catch (err) {
         console.warn('Could not load live gallery from DB, using fallback:', err)

@@ -48,54 +48,99 @@ import imgPhoto86761 from '../assets/Gallery/Photo00086761.jpg'
 import imgPhoto86765 from '../assets/Gallery/Photo00086765.jpg'
 import imgPhoto86771 from '../assets/Gallery/Photo00086771.jpg'
 
-// Distinct Videos matching user requests
-import vidTryDive from '../assets/Gallery/Try Dive.mp4'
-import vidDSDLite from '../assets/Gallery/DSD lite.mp4'
-import vidDiscoverScuba from '../assets/Gallery/Discover Scuba.mp4'
-import vidBubblemaker from '../assets/Gallery/Bubblemaker.mp4'
-import vidAddDiveAfterDSD from '../assets/Gallery/Additional dive ater dsd.mp4'
-import vidSnorkelling2 from '../assets/Gallery/Snorkelling2.mp4'
-import vidReefplant from '../assets/Gallery/Reefplant.mp4'
-import vidTurtlefish from '../assets/Gallery/Turtlefish.mp4'
-import vidFreedivingfun from '../assets/Gallery/Freedivingfun.mp4'
-import vidScuba1 from '../assets/Gallery/Scuba1.mp4'
-import vidSnorkelling3 from '../assets/Gallery/Snorkelling3.mp4'
-import vidScuba3 from '../assets/Gallery/Scuba3.MP4'
-import vidScuba4 from '../assets/Gallery/Scuba4.mp4'
-import vidScuba5 from '../assets/Gallery/Scuba5.mp4'
-import vidScuba6 from '../assets/Gallery/Scuba6.mp4'
-import vidScuba7 from '../assets/Gallery/Scuba7.mp4'
-import vidScuba8 from '../assets/Gallery/Scuba8.mp4'
-import vidScuba9 from '../assets/Gallery/Scuba9.MP4'
-import vidBuoyancy from '../assets/Gallery/Buoyancy.mp4'
-import vidProjectAware from '../assets/Gallery/projectaware.mp4'
-import vidRay from '../assets/Gallery/Ray.mp4'
-import vidRay1 from '../assets/Gallery/Ray1.mp4'
-import vidManta3 from '../assets/Gallery/manta3.mp4'
-import vidNightDive from '../assets/Compiled Night Dive Video(2).mp4'
-import vidNitrox from '../assets/Gallery/nitrox.mp4'
-import vidJellyfish from '../assets/Gallery/Jellyfish.mp4'
-import vidBoat from '../assets/Gallery/boat.mp4'
-import vidScuba2 from '../assets/Gallery/Scuba2.MP4'
-import vidSeafan from '../assets/Gallery/Seafan.mp4'
-import vid8Dive from '../assets/Gallery/8 dive.mp4'
-import vidLionfish from '../assets/Gallery/lionfish.MP4'
-import vidDiving12 from '../assets/Gallery/diving12.mp4'
-import vidTurtleFlyinnn from '../assets/Gallery/Turtle Flyinnn.mp4'
-import vidNightFast from '../assets/nightdive_fast.mp4'
-import vidDawnDive from '../assets/Gallery/Dawn Dive.mp4'
-import vidCombo1 from '../assets/Book(2).mp4'
+// Local Video Fallback Imports
+import vidTryDiveLocal from '../assets/Gallery/Try Dive.mp4'
+import vidDSDLiteLocal from '../assets/Gallery/DSD lite.mp4'
+import vidDiscoverScubaLocal from '../assets/Gallery/Discover Scuba.mp4'
+import vidBubblemakerLocal from '../assets/Gallery/Bubblemaker.mp4'
+import vidAddDiveAfterDSDLocal from '../assets/Gallery/Additional dive ater dsd.mp4'
+import vidSnorkelling2Local from '../assets/Gallery/Snorkelling2.mp4'
+import vidReefplantLocal from '../assets/Gallery/Reefplant.mp4'
+import vidTurtlefishLocal from '../assets/Gallery/Turtlefish.mp4'
+import vidFreedivingfunLocal from '../assets/Gallery/Freedivingfun.mp4'
+import vidScuba1Local from '../assets/Gallery/Scuba1.mp4'
+import vidSnorkelling3Local from '../assets/Gallery/Snorkelling3.mp4'
+import vidScuba3Local from '../assets/Gallery/Scuba3.MP4'
+import vidScuba4Local from '../assets/Gallery/Scuba4.mp4'
+import vidScuba5Local from '../assets/Gallery/Scuba5.mp4'
+import vidScuba6Local from '../assets/Gallery/Scuba6.mp4'
+import vidScuba7Local from '../assets/Gallery/Scuba7.mp4'
+import vidScuba8Local from '../assets/Gallery/Scuba8.mp4'
+import vidScuba9Local from '../assets/Gallery/Scuba9.MP4'
+import vidBuoyancyLocal from '../assets/Gallery/Buoyancy.mp4'
+import vidProjectAwareLocal from '../assets/Gallery/projectaware.mp4'
+import vidRayLocal from '../assets/Gallery/Ray.mp4'
+import vidRay1Local from '../assets/Gallery/Ray1.mp4'
+import vidManta3Local from '../assets/Gallery/manta3.mp4'
+import vidNightDiveLocal from '../assets/Compiled Night Dive Video(2).mp4'
+import vidNitroxLocal from '../assets/Gallery/nitrox.mp4'
+import vidJellyfishLocal from '../assets/Gallery/Jellyfish.mp4'
+import vidBoatLocal from '../assets/Gallery/boat.mp4'
+import vidScuba2Local from '../assets/Gallery/Scuba2.MP4'
+import vidSeafanLocal from '../assets/Gallery/Seafan.mp4'
+import vid8DiveLocal from '../assets/Gallery/8 dive.mp4'
+import vidLionfishLocal from '../assets/Gallery/lionfish.MP4'
+import vidDiving12Local from '../assets/Gallery/diving12.mp4'
+import vidTurtleFlyinnnLocal from '../assets/Gallery/Turtle Flyinnn.mp4'
+import vidDawnDiveLocal from '../assets/Gallery/Dawn Dive.mp4'
 import vidHeroFast from '../assets/Hero_fast.mp4'
 import vidHeroOptimized from '../assets/Hero_optimized.mp4'
-import vidProCourse from '../assets/Gallery/procourse.mp4'
-import vidProCourse1 from '../assets/Gallery/procourse1.mp4'
-import vidProCourseSpecial from '../assets/Gallery/procourse2.mp4'
-import vidProCourse2 from '../assets/Gallery/procourse (2).mp4'
-import vidFreedivingBasicMov from '../assets/Gallery/Free Diving 1.mp4'
-import vidFreediving3Mp4 from '../assets/Gallery/free diving 3.mp4'
-import vidSurfing from '../assets/Gallery/surfing.mp4'
-import vidGallery1 from '../assets/Gallery/gallery1.mp4'
-import vidHero1 from '../assets/Hero(1).mp4'
+import vidProCourseLocal from '../assets/Gallery/procourse.mp4'
+import vidProCourse1Local from '../assets/Gallery/procourse1.mp4'
+import vidProCourseSpecialLocal from '../assets/Gallery/procourse2.mp4'
+import vidProCourse2Local from '../assets/Gallery/procourse (2).mp4'
+import vidFreedivingBasicMovLocal from '../assets/Gallery/Free Diving 1.mp4'
+import vidFreediving3Mp4Local from '../assets/Gallery/free diving 3.mp4'
+import vidSurfingLocal from '../assets/Gallery/surfing.mp4'
+import vidGallery1Local from '../assets/Gallery/gallery1.mp4'
+
+// Migrated Cloudinary Video URLs
+const vidTryDive = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243902/dive-village/gallery-videos/try_dive_mp4.mp4' || vidTryDiveLocal
+const vidDSDLite = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243223/dive-village/gallery-videos/dsd_lite_mp4.mp4' || vidDSDLiteLocal
+const vidDiscoverScuba = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243174/dive-village/gallery-videos/discover_scuba_mp4.mp4' || vidDiscoverScubaLocal
+const vidBubblemaker = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790242086/dive-village/gallery-videos/bubblemaker_mp4.mp4' || vidBubblemakerLocal
+const vidAddDiveAfterDSD = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790242060/dive-village/gallery-videos/additional_dive_ater_dsd_mp4.mp4' || vidAddDiveAfterDSDLocal
+const vidSnorkelling2 = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243826/dive-village/gallery-videos/snorkelling2_mp4.mp4' || vidSnorkelling2Local
+const vidReefplant = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243577/dive-village/gallery-videos/reefplant_mp4.mp4' || vidReefplantLocal
+const vidTurtlefish = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243933/dive-village/gallery-videos/turtlefish_mp4.mp4' || vidTurtlefishLocal
+const vidFreedivingfun = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790242303/dive-village/gallery-videos/freedivingfun_mp4.mp4' || vidFreedivingfunLocal
+const vidScuba1 = vidScuba1Local
+const vidSnorkelling3 = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243835/dive-village/gallery-videos/snorkelling3_mp4.mp4' || vidSnorkelling3Local
+const vidScuba3 = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243630/dive-village/gallery-videos/scuba3_mp4.mp4' || vidScuba3Local
+const vidScuba4 = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243664/dive-village/gallery-videos/scuba4_mp4.mp4' || vidScuba4Local
+const vidScuba5 = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243702/dive-village/gallery-videos/scuba5_mp4.mp4' || vidScuba5Local
+const vidScuba6 = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243721/dive-village/gallery-videos/scuba6_mp4.mp4' || vidScuba6Local
+const vidScuba7 = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243752/dive-village/gallery-videos/scuba7_mp4.mp4' || vidScuba7Local
+const vidScuba8 = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243773/dive-village/gallery-videos/scuba8_mp4.mp4' || vidScuba8Local
+const vidScuba9 = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243783/dive-village/gallery-videos/scuba9_mp4.mp4' || vidScuba9Local
+const vidBuoyancy = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790242105/dive-village/gallery-videos/buoyancy_mp4.mp4' || vidBuoyancyLocal
+const vidProjectAware = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243488/dive-village/gallery-videos/projectaware_mp4.mp4' || vidProjectAwareLocal
+const vidRay = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243515/dive-village/gallery-videos/ray_mp4.mp4' || vidRayLocal
+const vidRay1 = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243533/dive-village/gallery-videos/ray1_mp4.mp4' || vidRay1Local
+const vidManta3 = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790242399/dive-village/gallery-videos/manta3_mp4.mp4' || vidManta3Local
+const vidNightDive = vidNightDiveLocal
+const vidNitrox = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790242447/dive-village/gallery-videos/nitrox_mp4.mp4' || vidNitroxLocal
+const vidJellyfish = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790242324/dive-village/gallery-videos/jellyfish_mp4.mp4' || vidJellyfishLocal
+const vidBoat = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790242073/dive-village/gallery-videos/boat_mp4.mp4' || vidBoatLocal
+const vidScuba2 = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243612/dive-village/gallery-videos/scuba2_mp4.mp4' || vidScuba2Local
+const vidSeafan = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243799/dive-village/gallery-videos/seafan_mp4.mp4' || vidSeafanLocal
+const vid8Dive = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790242044/dive-village/gallery-videos/8_dive_mp4.mp4' || vid8DiveLocal
+const vidLionfish = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790242362/dive-village/gallery-videos/lionfish_mp4.mp4' || vidLionfishLocal
+const vidDiving12 = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790242253/dive-village/gallery-videos/diving12_mp4.mp4' || vidDiving12Local
+const vidTurtleFlyinnn = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243922/dive-village/gallery-videos/turtle_flyinnn_mp4.mp4' || vidTurtleFlyinnnLocal
+const vidDawnDive = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790242182/dive-village/gallery-videos/dawn_dive_mp4.mp4' || vidDawnDiveLocal
+const vidProCourse = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243435/dive-village/gallery-videos/procourse_mp4.mp4' || vidProCourseLocal
+const vidProCourse1 = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243465/dive-village/gallery-videos/procourse1_mp4.mp4' || vidProCourse1Local
+const vidProCourseSpecial = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243473/dive-village/gallery-videos/procourse2_mp4.mp4' || vidProCourseSpecialLocal
+const vidProCourse2 = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243402/dive-village/gallery-videos/procourse_2_mp4.mp4' || vidProCourse2Local
+const vidFreedivingBasicMov = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790242293/dive-village/gallery-videos/free_diving_1_mp4.mp4' || vidFreedivingBasicMovLocal
+const vidFreediving3Mp4 = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790240858/dive-village/gallery-videos/free_diving_3_mp4.mp4' || vidFreediving3Mp4Local
+const vidSurfing = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790240878/dive-village/gallery-videos/surfing_mp4.mp4' || vidSurfingLocal
+const vidGallery1 = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790240872/dive-village/gallery-videos/gallery1_mp4.mp4' || vidGallery1Local
+
+const vidNightFast = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243508/dive-village/hero-360/bpjuqk54webpdtghzbxk.mp4'
+const vidCombo1 = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790242027/dive-village/hero-360/duskamhque0kugdulev7.mp4'
+const vidHero1 = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790247900/dive-village/hero-360/axaamnvtycndb5dabkow.mp4'
 
 export const CATEGORIES = [
   { key: 'all', label: 'All Services' },

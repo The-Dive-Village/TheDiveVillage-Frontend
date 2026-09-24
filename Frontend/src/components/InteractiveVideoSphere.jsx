@@ -2,7 +2,7 @@ import { useState, useEffect, Suspense, useRef } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls, useVideoTexture } from '@react-three/drei'
 import * as THREE from 'three'
-import videoFile from '../assets/Hero_3840x1920_production.mp4'
+const videoFile = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790248244/dive-village/hero-360/cj9jvkh5j6sozf2fhf0x.mp4'
 
 function getOrCreateDomVideoContainer() {
   let container = document.getElementById('interactive-video-dom-root')

@@ -17,7 +17,8 @@ import {
 import 'react-phone-number-input/style.css'
 import PhoneInput from 'react-phone-number-input'
 import turtleAnnaVideo from '../assets/New folder/Turtle Anna.mp4'
-import compiledNightDiveVideo from '../assets/Compiled Night Dive Video(2).mp4'
+import compiledNightDiveVideoLocal from '../assets/Compiled Night Dive Video(2).mp4'
+const compiledNightDiveVideo = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790244122/dive-village/ui-videos/compiled_night_dive_video_2_mp4.mp4'
 import useNightDive from '../hooks/useNightDive'
 
 // Backwards-compatible export alias for any legacy imports

@@ -27,8 +27,13 @@ export default function GalleryPreview() {
             type: (item.type || item.mediaType || 'image').toLowerCase(),
             src: item.src,
           }))
-          const localVideos = GALLERY_ITEMS.filter((g) => g.type === 'video')
-          setItemsList([...dbMapped, ...localVideos])
+          const hasDbVideos = dbMapped.some((item) => item.type === 'video')
+          if (hasDbVideos) {
+            setItemsList(dbMapped)
+          } else {
+            const localVideos = GALLERY_ITEMS.filter((g) => g.type === 'video')
+            setItemsList([...dbMapped, ...localVideos])
+          }
         }
       } catch (err) {
         console.warn('Could not load live gallery preview from DB:', err)

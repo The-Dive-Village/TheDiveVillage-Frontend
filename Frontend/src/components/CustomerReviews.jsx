@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import merch0 from '../assets/Products/merch0.jpg'
-import merch1 from '../assets/Products/merch1.jpg'
-import merch2 from '../assets/Products/merch2.jpg'
-import merch3 from '../assets/Products/merch3.jpg'
-import merch4 from '../assets/Products/merch4.jpg'
-import merch5 from '../assets/Products/merch 5.mp4'
+const merch0 = 'https://res.cloudinary.com/bbgt5nk7/image/upload/v1790244020/dive-village/reviews/scthqb8u6jscwk2laiyv.jpg'
+const merch1 = 'https://res.cloudinary.com/bbgt5nk7/image/upload/v1790244022/dive-village/reviews/lq36jjo99ualm5y6cnwg.jpg'
+const merch2 = 'https://res.cloudinary.com/bbgt5nk7/image/upload/v1790244024/dive-village/reviews/hyfyou1sr4xmjg87vqp0.jpg'
+const merch3 = 'https://res.cloudinary.com/bbgt5nk7/image/upload/v1790244025/dive-village/reviews/feaskib6hvao8x3ucetz.jpg'
+const merch4 = 'https://res.cloudinary.com/bbgt5nk7/image/upload/v1790244030/dive-village/reviews/aqniyjug5ropcb9xcorv.jpg'
+import merch5Local from '../assets/Products/merch 5.mp4'
+const merch5 = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790240882/dive-village/reviews/merch_5_mp4.mp4'
 import LazyVideo from './LazyVideo'
 
 export const MERCH_MEDIA_ITEMS = [
