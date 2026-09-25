@@ -11,7 +11,7 @@ const bookFile = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790242027/d
 const turtleVideo = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790242000/dive-village/hero-360/hhu28v7vfmdtbb8lwxan.mp4'
 const nightDiveVideo = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243508/dive-village/hero-360/bpjuqk54webpdtghzbxk.mp4'
 import underwaterAudio from '../assets/Underwater.mp3'
-import { setHeroVideoReady, getOrCreateHeroVideoElement } from '../utils/mediaReadyManager'
+import { setHeroVideoReady, getOrCreateHeroVideoElement, setHeroWebGLReady } from '../utils/mediaReadyManager'
 
 function getOrCreateDomVideoContainer() {
   let container = document.getElementById('hero-360-video-dom-root')
@@ -216,6 +216,7 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
   const targetOpacity3 = useRef(0)
   const vid2PlayingRef = useRef(false)
   const vid3PlayingRef = useRef(false)
+  const hasRenderedInitialFrameRef = useRef(false)
   const [loadSecondary, setLoadSecondary] = useState(false)
 
   useEffect(() => {
@@ -381,6 +382,10 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
           lastTime1.current = vid1.currentTime
           hasNewFrame1.current = false
           texture.needsUpdate = true
+          if (!hasRenderedInitialFrameRef.current && vid1.readyState >= 2 && vid1.videoWidth > 0) {
+            hasRenderedInitialFrameRef.current = true
+            setHeroWebGLReady(true)
+          }
         }
       }
 

@@ -2,7 +2,12 @@ import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import preloaderVideoLocal from '../assets/preloader.mp4'
 const preloaderVideo = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790244031/dive-village/ui-videos/preloader_mp4.mp4'
-import { subscribeHeroVideoReady, getHeroVideoReady } from '../utils/mediaReadyManager'
+import {
+  subscribeHeroVideoReady,
+  getHeroVideoReady,
+  subscribeHeroWebGLReady,
+  getHeroWebGLReady
+} from '../utils/mediaReadyManager'
 
 function DiverAnimation({ src, className }) {
   const videoRef = useRef(null)
@@ -88,12 +93,19 @@ function DiverAnimation({ src, className }) {
 export default function Preloader({ onComplete }) {
   const [progress, setProgress] = useState(0)
   const isVideoReadyRef = useRef(getHeroVideoReady())
+  const isWebGLReadyRef = useRef(getHeroWebGLReady())
 
   useEffect(() => {
-    const unsubscribe = subscribeHeroVideoReady((ready) => {
+    const unsubVideo = subscribeHeroVideoReady((ready) => {
       isVideoReadyRef.current = ready
     })
-    return () => unsubscribe()
+    const unsubWebGL = subscribeHeroWebGLReady((ready) => {
+      isWebGLReadyRef.current = ready
+    })
+    return () => {
+      unsubVideo()
+      unsubWebGL()
+    }
   }, [])
 
   useEffect(() => {
@@ -105,14 +117,14 @@ export default function Preloader({ onComplete }) {
 
     const updateProgress = (currentTime) => {
       const elapsed = currentTime - startTime
-      const isVideoReady = isVideoReadyRef.current || elapsed >= maxSafetyTimeout
+      const isFullyReady = (isVideoReadyRef.current && isWebGLReadyRef.current) || elapsed >= maxSafetyTimeout
 
       let targetProgress
-      if (isVideoReady) {
+      if (isFullyReady) {
         // Smoothly progress to 100% by baseTargetDuration
         targetProgress = Math.min(100, (elapsed / baseTargetDuration) * 100)
       } else {
-        // If still buffering video, smoothly ease up to 85% and hold until ready
+        // If still buffering or uploading WebGL texture, smoothly ease up to 85% and hold until ready
         targetProgress = Math.min(85, (elapsed / baseTargetDuration) * 85)
       }
 

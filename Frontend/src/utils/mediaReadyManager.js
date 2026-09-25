@@ -7,13 +7,15 @@
 const HERO_VIDEO_SRC = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790248244/dive-village/hero-360/cj9jvkh5j6sozf2fhf0x.mp4'
 
 let isHeroVideoReady = false
-const listeners = new Set()
+let isHeroWebGLReady = false
+const videoListeners = new Set()
+const webglListeners = new Set()
 let warmHeroVideo = null
 
 export function setHeroVideoReady(ready = true) {
   if (isHeroVideoReady === ready) return
   isHeroVideoReady = ready
-  listeners.forEach((callback) => {
+  videoListeners.forEach((callback) => {
     try {
       callback(ready)
     } catch (e) {
@@ -27,13 +29,43 @@ export function getHeroVideoReady() {
 }
 
 export function subscribeHeroVideoReady(callback) {
-  listeners.add(callback)
+  videoListeners.add(callback)
   if (isHeroVideoReady) {
     callback(true)
   }
   return () => {
-    listeners.delete(callback)
+    videoListeners.delete(callback)
   }
+}
+
+export function setHeroWebGLReady(ready = true) {
+  if (isHeroWebGLReady === ready) return
+  isHeroWebGLReady = ready
+  webglListeners.forEach((callback) => {
+    try {
+      callback(ready)
+    } catch (e) {
+      console.error('Error in hero WebGL ready listener:', e)
+    }
+  })
+}
+
+export function getHeroWebGLReady() {
+  return isHeroWebGLReady
+}
+
+export function subscribeHeroWebGLReady(callback) {
+  webglListeners.add(callback)
+  if (isHeroWebGLReady) {
+    callback(true)
+  }
+  return () => {
+    webglListeners.delete(callback)
+  }
+}
+
+export function getIsHeroFullyReady() {
+  return isHeroVideoReady && isHeroWebGLReady
 }
 
 /**
