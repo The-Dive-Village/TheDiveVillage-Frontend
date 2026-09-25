@@ -210,6 +210,7 @@ export default function CustomCursor() {
             loop
             muted
             playsInline
+            crossOrigin="anonymous"
             onError={() => setVideoError(true)}
             className="w-16 sm:w-20 h-auto object-contain pointer-events-none select-none"
           />

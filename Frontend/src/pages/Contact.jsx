@@ -4,15 +4,8 @@ import { motion, useReducedMotion } from 'framer-motion'
 import PhoneInput from 'react-phone-number-input'
 import 'react-phone-number-input/style.css'
 import { IMAGES, CAROUSEL_IMAGES, PANEL_IMAGES } from '../utils/images'
-<<<<<<< HEAD
 const bookVideo = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790242027/dive-village/hero-360/duskamhque0kugdulev7.mp4'
-import compiledNightDiveVideoLocal from '../assets/Compiled Night Dive Video(2).mp4'
 const compiledNightDiveVideo = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790244122/dive-village/ui-videos/compiled_night_dive_video_2_mp4.mp4'
-=======
-import bookVideo from '../assets/Book(2).mp4'
-import divingVid from '../assets/Diving(1).mp4'
-import compiledNightDiveVideo from '../assets/Compiled Night Dive Video(2).mp4'
->>>>>>> f4ac55c0572ffa3520ab5233c0464524fc825ff4
 import useNightDive from '../hooks/useNightDive'
 import SEOHead from '../components/SEOHead'
 import api from '../services/api'

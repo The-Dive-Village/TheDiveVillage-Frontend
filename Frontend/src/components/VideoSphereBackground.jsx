@@ -42,8 +42,8 @@ function useDirectVideoTexture(src, playbackRate = 0.5, priority = false) {
 
     const domContainer = getOrCreateDomVideoContainer()
     const video = document.createElement('video')
-    video.src = src
     video.crossOrigin = 'anonymous'
+    video.src = src
     video.muted = true
     video.defaultMuted = true
     video.volume = 0

@@ -34,23 +34,27 @@ function DiverAnimation({ src, className }) {
           canvas.height = h
         }
         ctx.drawImage(video, 0, 0, w, h)
-        const frame = ctx.getImageData(0, 0, w, h)
-        const data = frame.data
-        const len = data.length
-        for (let i = 0; i < len; i += 4) {
-          const r = data[i]
-          const g = data[i + 1]
-          const b = data[i + 2]
-          const minVal = Math.min(r, g, b)
-          // Key out any off-white/grey video background pixels completely to transparent
-          if (minVal >= 210) {
-            data[i + 3] = 0
-          } else if (minVal > 165) {
-            const factor = (210 - minVal) / 45
-            data[i + 3] = Math.round(data[i + 3] * Math.max(0, Math.min(1, factor)))
+        try {
+          const frame = ctx.getImageData(0, 0, w, h)
+          const data = frame.data
+          const len = data.length
+          for (let i = 0; i < len; i += 4) {
+            const r = data[i]
+            const g = data[i + 1]
+            const b = data[i + 2]
+            const minVal = Math.min(r, g, b)
+            // Key out any off-white/grey video background pixels completely to transparent
+            if (minVal >= 210) {
+              data[i + 3] = 0
+            } else if (minVal > 165) {
+              const factor = (210 - minVal) / 45
+              data[i + 3] = Math.round(data[i + 3] * Math.max(0, Math.min(1, factor)))
+            }
           }
+          ctx.putImageData(frame, 0, 0)
+        } catch (e) {
+          // Fallback if canvas is tainted before crossOrigin resolves
         }
-        ctx.putImageData(frame, 0, 0)
       }
       animId = requestAnimationFrame(render)
     }
@@ -72,6 +76,7 @@ function DiverAnimation({ src, className }) {
         loop
         muted
         playsInline
+        crossOrigin="anonymous"
         style={{ position: 'fixed', left: '-9999px', top: '-9999px', width: '1px', height: '1px', opacity: 0, pointerEvents: 'none' }}
       />
       <canvas ref={canvasRef} className={`${className} pointer-events-none`} />
