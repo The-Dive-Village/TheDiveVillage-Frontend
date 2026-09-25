@@ -322,7 +322,7 @@ export default function Gallery() {
             </div>
             <div className="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col gap-4">
               <a
-                href="https://instagram.com"
+                href="https://www.instagram.com/thedivevillage"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="rounded-full bg-navy text-white px-8 py-4 text-center text-sm font-bold shadow-soft hover:bg-accent hover:text-navy transition"
