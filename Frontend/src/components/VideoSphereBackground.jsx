@@ -11,7 +11,7 @@ const bookFile = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790242027/d
 const turtleVideo = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790242000/dive-village/hero-360/hhu28v7vfmdtbb8lwxan.mp4'
 const nightDiveVideo = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243508/dive-village/hero-360/bpjuqk54webpdtghzbxk.mp4'
 import underwaterAudio from '../assets/Underwater.mp3'
-import { setHeroVideoReady } from '../utils/mediaReadyManager'
+import { setHeroVideoReady, getOrCreateHeroVideoElement } from '../utils/mediaReadyManager'
 
 function getOrCreateDomVideoContainer() {
   let container = document.getElementById('hero-360-video-dom-root')
@@ -40,26 +40,30 @@ function useDirectVideoTexture(src, playbackRate = 0.5, priority = false) {
     let rvfcId = null
     let fallbackCleanup = null
 
-    const domContainer = getOrCreateDomVideoContainer()
-    const video = document.createElement('video')
-    video.crossOrigin = 'anonymous'
-    video.src = src
-    video.muted = true
-    video.defaultMuted = true
-    video.volume = 0
-    video.playsInline = true
-    video.setAttribute('muted', '')
-    video.setAttribute('playsinline', '')
-    video.setAttribute('webkit-playsinline', '')
-    video.loop = true
-    video.autoplay = true
-    video.preload = 'auto'
-    video.playbackRate = playbackRate
+    // For priority hero video: reuse the singleton warm video element buffering since millisecond 0
+    let video
     if (priority) {
-      video.setAttribute('fetchpriority', 'high')
+      video = getOrCreateHeroVideoElement(src, playbackRate)
+    } else {
+      const domContainer = getOrCreateDomVideoContainer()
+      video = document.createElement('video')
+      video.crossOrigin = 'anonymous'
+      video.src = src
+      video.muted = true
+      video.defaultMuted = true
+      video.volume = 0
+      video.playsInline = true
+      video.setAttribute('muted', '')
+      video.setAttribute('playsinline', '')
+      video.setAttribute('webkit-playsinline', '')
+      video.loop = true
+      video.autoplay = true
+      video.preload = 'auto'
+      video.playbackRate = playbackRate
+      domContainer.appendChild(video)
     }
 
-    domContainer.appendChild(video)
+    if (!video) return
 
     const checkReadiness = () => {
       if (!isMounted) return false
@@ -176,11 +180,13 @@ function useDirectVideoTexture(src, playbackRate = 0.5, priority = false) {
       mediaEvents.forEach((evt) => {
         video.removeEventListener(evt, handleEvent)
       })
-      video.pause()
-      video.removeAttribute('src')
-      video.load()
-      if (video.parentNode) {
-        video.parentNode.removeChild(video)
+      if (!priority) {
+        video.pause()
+        video.removeAttribute('src')
+        video.load()
+        if (video.parentNode) {
+          video.parentNode.removeChild(video)
+        }
       }
       if (vidTexture) {
         vidTexture.dispose()
@@ -466,7 +472,7 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
 }
 
 export default function VideoSphereBackground() {
-  const [mounted, setMounted] = useState(false)
+  const [mounted, setMounted] = useState(true)
   // Audio state: Unmuted by default unless the user has explicitly muted it
   const [isMuted, setIsMuted] = useState(false)
   const [isNightDive, setIsNightDive] = useState(false)
