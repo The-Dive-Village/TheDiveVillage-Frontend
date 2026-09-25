@@ -27,15 +27,16 @@ function DiverAnimation({ src, className }) {
     const render = () => {
       if (!isRunning) return
       if (video.readyState >= 2) {
-        const w = video.videoWidth || 480
-        const h = video.videoHeight || 270
-        if (canvas.width !== w || canvas.height !== h) {
-          canvas.width = w
-          canvas.height = h
+        const targetW = 320
+        const aspect = (video.videoWidth && video.videoHeight) ? (video.videoHeight / video.videoWidth) : (9 / 16)
+        const targetH = Math.round(targetW * aspect) || 180
+        if (canvas.width !== targetW || canvas.height !== targetH) {
+          canvas.width = targetW
+          canvas.height = targetH
         }
-        ctx.drawImage(video, 0, 0, w, h)
+        ctx.drawImage(video, 0, 0, targetW, targetH)
         try {
-          const frame = ctx.getImageData(0, 0, w, h)
+          const frame = ctx.getImageData(0, 0, targetW, targetH)
           const data = frame.data
           const len = data.length
           for (let i = 0; i < len; i += 4) {

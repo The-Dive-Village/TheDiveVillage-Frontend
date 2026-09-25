@@ -64,7 +64,7 @@ function useDirectVideoTexture(src, playbackRate = 0.5, priority = false) {
     const checkReadiness = () => {
       if (!isMounted) return false
       return (
-        video.readyState >= 2 &&
+        video.readyState >= 3 &&
         video.videoWidth > 0 &&
         video.videoHeight > 0
       )
