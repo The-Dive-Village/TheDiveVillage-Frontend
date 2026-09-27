@@ -10,8 +10,8 @@ export default {
         cta: '#FF6106',
       },
       fontFamily: {
-        heading: ['Antonio'],
-        body: ['"Google Sans Flex"'],
+        heading: ['Antonio', 'sans-serif'],
+        body: ['"Google Sans Flex"', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
       },
       fontSize: {
         h1: ['clamp(2rem, 5vw, 3.5rem)', { lineHeight: '1.15', letterSpacing: '0.02em' }],

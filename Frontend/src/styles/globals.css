@@ -7,7 +7,8 @@
 
 @font-face {
   font-family: 'Antonio';
-  src: url('../assets/Fonts/Antonio/Antonio-VariableFont_wght.ttf') format('truetype');
+  src: url('/fonts/Antonio-VariableFont_wght.woff2') format('woff2'),
+       url('../assets/Fonts/Antonio/Antonio-VariableFont_wght.ttf') format('truetype');
   font-weight: 100 700;
   font-style: normal;
   font-display: swap;
@@ -15,7 +16,8 @@
 
 @font-face {
   font-family: 'Google Sans Flex';
-  src: url('../assets/Fonts/Google_Sans_Flex/GoogleSansFlex-VariableFont_GRAD,ROND,opsz,slnt,wdth,wght.ttf') format('truetype');
+  src: url('/fonts/GoogleSansFlex-VariableFont.woff2') format('woff2'),
+       url('../assets/Fonts/Google_Sans_Flex/GoogleSansFlex-VariableFont_GRAD,ROND,opsz,slnt,wdth,wght.ttf') format('truetype');
   font-weight: 1 1000;
   font-style: normal;
   font-display: swap;
