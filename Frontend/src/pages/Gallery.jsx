@@ -6,7 +6,6 @@ import SafeImage from '../components/SafeImage'
 import LazyVideo from '../components/LazyVideo'
 import SEOHead from '../components/SEOHead'
 import { GALLERY_ITEMS, GALLERY_CATEGORIES } from '../utils/galleryData'
-import { contentService } from '../services/contentService'
 import { triggerHaptic } from '../utils/haptics'
 import { shareContent } from '../utils/share'
 import ctaVideo from '../assets/New folder/Dive.MP4'
@@ -121,40 +120,6 @@ export default function Gallery() {
   const handlePanMouseUp = () => {
     setIsPanning(false)
   }
-
-  useEffect(() => {
-    async function loadGallery() {
-      try {
-        const res = await contentService.getGallery()
-        const rawItems = res.data?.data?.items || (Array.isArray(res.data?.data) ? res.data.data : [])
-        if (Array.isArray(rawItems) && rawItems.length > 0) {
-          const mappedDbItems = rawItems.map((item) => ({
-            id: item.id,
-            title: item.title || 'Underwater Moment',
-            species: item.species || item.subtitle || undefined,
-            category: item.category ? item.category.toLowerCase() : 'photos',
-            location: item.location || 'The Dive Village',
-            type: (item.type || item.mediaType || 'image').toLowerCase(),
-            src: item.src,
-            poster: item.thumbnail || undefined,
-            thumbnail: item.thumbnail || item.src,
-          }))
-
-          const hasDbVideos = mappedDbItems.some((item) => item.type === 'video')
-          if (hasDbVideos) {
-            setItemsList(mappedDbItems)
-          } else {
-            // Combine Cloudinary-hosted DB photo items with local video items fallback
-            const localVideos = GALLERY_ITEMS.filter((g) => g.type === 'video')
-            setItemsList([...mappedDbItems, ...localVideos])
-          }
-        }
-      } catch (err) {
-        console.warn('Could not load live gallery from DB, using fallback:', err)
-      }
-    }
-    loadGallery()
-  }, [])
 
   // Keyboard navigation for lightbox
   useEffect(() => {
@@ -513,15 +478,26 @@ export default function Gallery() {
                       }`}
                       title={thumbItem.title}
                     >
-                      <img
-                        src={thumbItem.thumbnail || thumbItem.poster || thumbItem.src}
-                        alt=""
-                        className="w-full h-full object-cover"
-                      />
-                      {thumbItem.type === 'video' && (
-                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center text-white text-[9px]">
-                          ▶
-                        </div>
+                      {thumbItem.type === 'video' ? (
+                        <>
+                          <video
+                            src={thumbItem.thumbnail || thumbItem.poster || thumbItem.src}
+                            muted
+                            playsInline
+                            preload="metadata"
+                            className="w-full h-full object-cover pointer-events-none"
+                          />
+                          <div className="absolute inset-0 bg-black/40 flex items-center justify-center text-white text-[9px]">
+                            ▶
+                          </div>
+                        </>
+                      ) : (
+                        <img
+                          src={thumbItem.thumbnail || thumbItem.poster || thumbItem.src}
+                          alt=""
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                        />
                       )}
                     </button>
                   )

@@ -11,6 +11,7 @@ import {
   COURSE_CATALOG,
   CERTIFICATION_OPTIONS,
   getEligibleCourses,
+  getRecommendedCourses,
   getAvailableCertificationsForAge,
   validateParticipantBooking,
 } from '../utils/courseEligibility'
@@ -169,6 +170,12 @@ export default function BookUs() {
     })
   }, [groupSize])
 
+  // Helper to pick intelligent default program without forcing try-dive onto certified divers
+  const resolveDefaultProgram = (age, hasCert, userCerts) => {
+    const recs = getRecommendedCourses(age, hasCert, userCerts)
+    return recs[0]?.id || ''
+  }
+
   const handleParticipantChange = (index, field, value) => {
     setParticipants((prev) => {
       const updated = [...prev]
@@ -200,10 +207,10 @@ export default function BookUs() {
             updated[index].hasCertification = false
           }
 
-          const eligible = getEligibleCourses(p.age, updated[index].hasCertification, updated[index].certifications)
+          const eligible = getRecommendedCourses(p.age, updated[index].hasCertification, updated[index].certifications)
           const isCurrentEligible = eligible.some((course) => course.id === p.selectedProgram)
           if (!isCurrentEligible) {
-            updated[index].selectedProgram = eligible[0]?.id || ''
+            updated[index].selectedProgram = resolveDefaultProgram(p.age, updated[index].hasCertification, updated[index].certifications)
           }
         }
       }
@@ -226,10 +233,10 @@ export default function BookUs() {
       }
 
       const p = updated[index]
-      const eligible = getEligibleCourses(p.age, p.hasCertification, p.certifications)
+      const eligible = getRecommendedCourses(p.age, p.hasCertification, p.certifications)
       const isCurrentEligible = eligible.some((course) => course.id === p.selectedProgram)
       if (!isCurrentEligible) {
-        updated[index].selectedProgram = eligible[0]?.id || ''
+        updated[index].selectedProgram = resolveDefaultProgram(p.age, p.hasCertification, p.certifications)
       }
       return updated
     })
@@ -453,7 +460,7 @@ export default function BookUs() {
   }
 
   return (
-    <div className={`min-h-screen text-navy font-body overflow-x-hidden ${isNightDive ? 'bg-[#0b1726]' : 'bg-[#FAFAFA]'}`} style={{ textShadow: 'none' }}>
+    <div className={`min-h-screen text-navy font-body overflow-x-clip ${isNightDive ? 'bg-[#0b1726]' : 'bg-[#FAFAFA]'}`} style={{ textShadow: 'none' }}>
       <SEOHead
         title="Book Scuba Diving Courses & Expeditions Online | The Dive Village"
         description="Book certified scuba diving courses, Discovery dives, snorkeling trips, and freediving packages online with instant confirmation at The Dive Village."
@@ -515,9 +522,9 @@ export default function BookUs() {
       </section>
 
       {/* 2. MAIN 4-STEP BOOKING WIZARD */}
-      <div className="mx-auto max-w-7xl px-3 xs:px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-16 sm:pb-24 w-full min-w-0 max-w-full overflow-hidden">
+      <div className="mx-auto max-w-7xl px-3 xs:px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-28 sm:pb-40 w-full min-w-0 max-w-full relative z-20">
         {/* Main 4-Step Layout */}
-        <div className="grid lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-14 w-full min-w-0 max-w-full">
+        <div className="grid lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-14 w-full min-w-0 max-w-full items-start">
 
           {/* Form Wizard Column */}
           <div className="lg:col-span-7 flex flex-col w-full min-w-0 max-w-full mx-auto">
@@ -579,7 +586,7 @@ export default function BookUs() {
               ))}
             </div>
 
-            <form onSubmit={handleSubmit} className="flex-1 flex flex-col bg-white p-3.5 xs:p-5 sm:p-10 rounded-2xl sm:rounded-[36px] border border-navy/5 shadow-card w-full min-w-0 max-w-full">
+            <form onSubmit={handleSubmit} className="flex-1 flex flex-col bg-white p-3.5 xs:p-5 sm:p-10 rounded-2xl sm:rounded-[36px] border border-navy/5 shadow-card w-full min-w-0 max-w-full min-h-[560px] sm:min-h-[620px] justify-between">
               <div className="flex-1 space-y-3.5 sm:space-y-6">
 
                 {/* STEP 1: Location & Group Size */}
@@ -1178,17 +1185,14 @@ export default function BookUs() {
               )}
 
               {/* Navigation Controls */}
-              {/* Navigation Controls */}
               <div className="pt-3.5 sm:pt-6 mt-3.5 sm:mt-6 border-t border-navy/5 flex items-center justify-between gap-3">
                 {currentStep > 1 ? (
                   <button
                     type="button"
                     onClick={handlePrevStep}
                     className="rounded-full px-3.5 py-2 sm:px-6 sm:py-3.5 text-[11px] sm:text-sm font-bold text-navy hover:bg-[#F0F2F5] active:scale-95 transition cursor-pointer flex items-center gap-1.5"
-                    title="Press Alt + ← to go back"
                   >
                     <span>← Back</span>
-                    <kbd className="hidden lg:inline-block text-[9px] font-mono bg-navy/10 px-1.5 py-0.5 rounded text-navy/60">Alt+←</kbd>
                   </button>
                 ) : <div />}
 
@@ -1197,10 +1201,8 @@ export default function BookUs() {
                     type="button"
                     onClick={handleNextStep}
                     className="rounded-full bg-navy hover:!bg-accent hover:!text-navy active:scale-95 px-4 py-2 sm:px-8 sm:py-4 text-xs sm:text-sm font-bold text-white transition-all duration-200 shadow-md ml-auto cursor-pointer flex items-center gap-2"
-                    title="Press Enter to continue"
                   >
                     <span>Continue →</span>
-                    <kbd className="hidden lg:inline-block text-[9px] font-mono bg-white/20 px-1.5 py-0.5 rounded text-white/90">↵</kbd>
                   </button>
                 ) : (
                   <button

@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router'
 import SectionReveal from './SectionReveal'
 import Button from './Button'
 import { GALLERY_ITEMS } from '../utils/galleryData'
-import { contentService } from '../services/contentService'
 
 export default function GalleryPreview() {
   const navigate = useNavigate()
@@ -12,35 +11,7 @@ export default function GalleryPreview() {
   const startX = useRef(0)
   const scrollLeft = useRef(0)
   const [isHovered, setIsHovered] = useState(false)
-  const [itemsList, setItemsList] = useState(GALLERY_ITEMS)
-
-  useEffect(() => {
-    async function loadGalleryPreview() {
-      try {
-        const res = await contentService.getGallery()
-        const rawItems = res.data?.data?.items || (Array.isArray(res.data?.data) ? res.data.data : [])
-        if (Array.isArray(rawItems) && rawItems.length > 0) {
-          const dbMapped = rawItems.map((item) => ({
-            id: item.id,
-            title: item.title || 'Underwater Moment',
-            category: item.category ? item.category.toLowerCase() : 'photos',
-            type: (item.type || item.mediaType || 'image').toLowerCase(),
-            src: item.src,
-          }))
-          const hasDbVideos = dbMapped.some((item) => item.type === 'video')
-          if (hasDbVideos) {
-            setItemsList(dbMapped)
-          } else {
-            const localVideos = GALLERY_ITEMS.filter((g) => g.type === 'video')
-            setItemsList([...dbMapped, ...localVideos])
-          }
-        }
-      } catch (err) {
-        console.warn('Could not load live gallery preview from DB:', err)
-      }
-    }
-    loadGalleryPreview()
-  }, [])
+  const [itemsList] = useState(GALLERY_ITEMS)
 
   const previewItems = itemsList.slice(0, 16)
 
@@ -87,19 +58,7 @@ export default function GalleryPreview() {
     }
   }, [])
 
-  const handlePrev = (e) => {
-    e.stopPropagation()
-    if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollBy({ left: -320, behavior: 'smooth' })
-    }
-  }
 
-  const handleNext = (e) => {
-    e.stopPropagation()
-    if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollBy({ left: 320, behavior: 'smooth' })
-    }
-  }
 
   const handlePointerDown = (e) => {
     isDragging.current = true
@@ -143,34 +102,12 @@ export default function GalleryPreview() {
         </SectionReveal>
       </div>
 
-      {/* Infinite scroll marquee & drag gallery with navigation arrows */}
+      {/* Infinite scroll marquee & drag gallery */}
       <div 
         className="relative w-full overflow-hidden"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        {/* Navigation Arrows */}
-        <button
-          type="button"
-          onClick={handlePrev}
-          className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 z-30 w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-navy/80 border border-white/30 text-white flex items-center justify-center shadow-2xl backdrop-blur-md hover:bg-accent hover:text-navy transition-all duration-300 cursor-pointer"
-          aria-label="Previous Gallery Image"
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="sm:w-[22px] sm:h-[22px]">
-            <path d="M15 18l-6-6 6-6" />
-          </svg>
-        </button>
-
-        <button
-          type="button"
-          onClick={handleNext}
-          className="absolute right-2 sm:left-auto sm:right-6 top-1/2 -translate-y-1/2 z-30 w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-navy/80 border border-white/30 text-white flex items-center justify-center shadow-2xl backdrop-blur-md hover:bg-accent hover:text-navy transition-all duration-300 cursor-pointer"
-          aria-label="Next Gallery Image"
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="sm:w-[22px] sm:h-[22px]">
-            <path d="M9 18l6-6-6-6" />
-          </svg>
-        </button>
 
         {/* Fade edges */}
         <div className="absolute left-0 top-0 bottom-0 w-12 sm:w-24 z-10 pointer-events-none"

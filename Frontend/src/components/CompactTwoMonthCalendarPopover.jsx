@@ -175,61 +175,57 @@ export default function CompactTwoMonthCalendarPopover({
       {isOpen && (
         <motion.div
           ref={popoverRef}
-          initial={{ opacity: 0, y: 8, scale: 0.98 }}
+          initial={{ opacity: 0, y: 6, scale: 0.98 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 8, scale: 0.98 }}
-          transition={{ duration: 0.18, ease: 'easeOut' }}
+          exit={{ opacity: 0, y: 6, scale: 0.98 }}
+          transition={{ duration: 0.16, ease: 'easeOut' }}
           role="dialog"
           aria-label="Select preferred dive date"
-          className="absolute top-full left-0 right-0 mx-auto sm:left-0 sm:right-auto sm:mx-0 mt-2 z-50 bg-white rounded-2xl sm:rounded-[28px] border border-navy/10 shadow-2xl p-2.5 xs:p-3 sm:p-5 w-[calc(100vw-36px)] max-w-[290px] xs:max-w-[315px] sm:w-[560px] sm:max-w-[580px] text-navy font-body select-none"
-          style={{ textShadow: 'none' }}
+          className="absolute top-full left-0 mt-2 z-[9999] bg-white rounded-2xl sm:rounded-3xl border border-navy/15 shadow-[0_25px_70px_rgba(0,30,61,0.35)] p-3 sm:p-5 w-[calc(100vw-32px)] max-w-[320px] sm:w-[560px] sm:max-w-[580px] text-navy select-none"
+          style={{ textShadow: 'none', backgroundColor: '#ffffff' }}
         >
-          {/* Header Bar with Navigation Arrows */}
-          <div className="flex items-center justify-between pb-2 sm:pb-3 mb-2 sm:mb-3 border-b border-navy/10">
-            <button
-              type="button"
-              onClick={handlePrevMonth}
-              disabled={isPrevDisabled}
-              aria-label="Previous month"
-              className="w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center bg-[#F0F2F5] text-navy hover:bg-navy hover:text-white transition disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-[#F0F2F5] disabled:hover:text-navy cursor-pointer"
-            >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="sm:w-3.5 sm:h-3.5">
-                <path d="M15 18l-6-6 6-6" />
-              </svg>
-            </button>
-
-            {/* Desktop / Dual Header vs Mobile Single Header */}
-            <div className="flex-1 flex items-center justify-around text-xs sm:text-base font-heading font-bold text-navy px-1 sm:px-2">
-              <span className="text-center">
-                {FULL_MONTH_NAMES[month1.month]} {month1.year}
-              </span>
-              <span className="hidden sm:inline text-navy/20 font-light">|</span>
-              <span className="hidden sm:inline text-center">
-                {FULL_MONTH_NAMES[month2.month]} {month2.year}
-              </span>
-            </div>
-
-            <button
-              type="button"
-              onClick={handleNextMonth}
-              aria-label="Next month"
-              className="w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center bg-[#F0F2F5] text-navy hover:bg-navy hover:text-white transition cursor-pointer"
-            >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="sm:w-3.5 sm:h-3.5">
-                <path d="M9 18l6-6-6-6" />
-              </svg>
-            </button>
-          </div>
-
           {/* Dual Month Grids Container */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 sm:divide-x sm:divide-navy/10">
             
             {/* MONTH 1 */}
-            <div>
+            <div className="sm:pr-2">
+              {/* Month 1 Header */}
+              <div className="flex items-center justify-between pb-2 mb-2 border-b border-navy/10">
+                <button
+                  type="button"
+                  onClick={handlePrevMonth}
+                  disabled={isPrevDisabled}
+                  aria-label="Previous month"
+                  className="w-7 h-7 rounded-full flex items-center justify-center bg-[#F0F2F5] text-navy hover:bg-navy hover:text-white transition disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-[#F0F2F5] disabled:hover:text-navy cursor-pointer"
+                >
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <path d="M15 18l-6-6 6-6" />
+                  </svg>
+                </button>
+
+                <span className="font-heading font-bold text-xs sm:text-sm text-navy tracking-wide">
+                  {FULL_MONTH_NAMES[month1.month]} {month1.year}
+                </span>
+
+                {/* Mobile-only Next Arrow when single column */}
+                <button
+                  type="button"
+                  onClick={handleNextMonth}
+                  aria-label="Next month"
+                  className="sm:hidden w-7 h-7 rounded-full flex items-center justify-center bg-[#F0F2F5] text-navy hover:bg-navy hover:text-white transition cursor-pointer"
+                >
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <path d="M9 18l6-6-6-6" />
+                  </svg>
+                </button>
+                {/* Desktop placeholder for symmetry */}
+                <div className="hidden sm:block w-7 h-7" />
+              </div>
+
               {/* Weekday Headers */}
-              <div className="grid grid-cols-7 text-center mb-1">
+              <div className="grid grid-cols-7 text-center mb-1.5">
                 {WEEKDAY_NAMES.map((w) => (
-                  <span key={w} className="text-[9px] sm:text-[10px] font-bold text-navy/50 uppercase">
+                  <span key={w} className="text-[8px] sm:text-[9px] font-bold text-navy/40 uppercase tracking-wider">
                     {w}
                   </span>
                 ))}
@@ -239,7 +235,7 @@ export default function CompactTwoMonthCalendarPopover({
               <div className="grid grid-cols-7 gap-y-1 justify-items-center">
                 {month1Grid.map((cell) => {
                   if (cell.isBlank) {
-                    return <div key={cell.key} className="w-7 h-7 xs:w-8 xs:h-8 sm:w-9 sm:h-9" />
+                    return <div key={cell.key} className="w-7 h-7 sm:w-8 sm:h-8" />
                   }
                   return (
                     <DateCell
@@ -253,11 +249,31 @@ export default function CompactTwoMonthCalendarPopover({
             </div>
 
             {/* MONTH 2 (Hidden on mobile, visible on sm and up) */}
-            <div className="hidden sm:block">
+            <div className="hidden sm:block sm:pl-4">
+              {/* Month 2 Header */}
+              <div className="flex items-center justify-between pb-2 mb-2 border-b border-navy/10">
+                <div className="w-7 h-7" />
+
+                <span className="font-heading font-bold text-xs sm:text-sm text-navy tracking-wide">
+                  {FULL_MONTH_NAMES[month2.month]} {month2.year}
+                </span>
+
+                <button
+                  type="button"
+                  onClick={handleNextMonth}
+                  aria-label="Next month"
+                  className="w-7 h-7 rounded-full flex items-center justify-center bg-[#F0F2F5] text-navy hover:bg-navy hover:text-white transition cursor-pointer"
+                >
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <path d="M9 18l6-6-6-6" />
+                  </svg>
+                </button>
+              </div>
+
               {/* Weekday Headers */}
-              <div className="grid grid-cols-7 text-center mb-1">
+              <div className="grid grid-cols-7 text-center mb-1.5">
                 {WEEKDAY_NAMES.map((w) => (
-                  <span key={w} className="text-[9px] sm:text-[10px] font-bold text-navy/50 uppercase">
+                  <span key={w} className="text-[8px] sm:text-[9px] font-bold text-navy/40 uppercase tracking-wider">
                     {w}
                   </span>
                 ))}
@@ -267,7 +283,7 @@ export default function CompactTwoMonthCalendarPopover({
               <div className="grid grid-cols-7 gap-y-1 justify-items-center">
                 {month2Grid.map((cell) => {
                   if (cell.isBlank) {
-                    return <div key={cell.key} className="w-7 h-7 xs:w-8 xs:h-8 sm:w-9 sm:h-9" />
+                    return <div key={cell.key} className="w-7 h-7 sm:w-8 sm:h-8" />
                   }
                   return (
                     <DateCell
@@ -282,19 +298,21 @@ export default function CompactTwoMonthCalendarPopover({
 
           </div>
 
-          {/* Compact Legend Bar */}
-          <div className="mt-2.5 pt-2 sm:mt-4 sm:pt-3 border-t border-navy/10 flex items-center justify-center gap-3 sm:gap-5 text-[10px] sm:text-[11px] font-semibold text-navy/70">
-            <div className="flex items-center gap-1">
-              <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-500" />
-              <span>Available</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-amber-400" />
-              <span>Limited</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-slate-300" />
-              <span>Unavailable</span>
+          {/* Symmetrical Legend Footer */}
+          <div className="mt-3 pt-2.5 sm:mt-4 sm:pt-3 border-t border-navy/10 flex items-center justify-between text-[9px] sm:text-[10px] font-medium text-navy/70">
+            <div className="flex items-center gap-3 sm:gap-4 mx-auto">
+              <div className="flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-500" />
+                <span>Available</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-amber-400" />
+                <span>Limited</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-slate-300" />
+                <span>Unavailable</span>
+              </div>
             </div>
           </div>
         </motion.div>
@@ -314,7 +332,7 @@ function DateCell({ cell, onClick }) {
       onClick={onClick}
       aria-label={`${dateKey} - ${status}`}
       aria-selected={isSelected}
-      className={`group relative flex flex-col items-center justify-center w-7.5 h-7.5 xs:w-8 xs:h-8 sm:w-9 sm:h-9 rounded-full text-[11px] sm:text-xs font-bold transition-all duration-150 ${
+      className={`group relative flex flex-col items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full text-[10px] sm:text-[11px] font-bold transition-all duration-150 ${
         isSelected
           ? 'bg-navy text-white shadow-md ring-2 ring-navy/20 scale-105'
           : isUnavailable
@@ -325,7 +343,7 @@ function DateCell({ cell, onClick }) {
       <span className="leading-none">{day}</span>
       {/* Availability indicator dot */}
       <span
-        className={`w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full mt-0.5 transition-colors ${
+        className={`w-1 h-1 rounded-full mt-0.5 transition-colors ${
           status === 'available'
             ? isSelected ? 'bg-accent' : 'bg-emerald-500'
             : status === 'limited'
