@@ -5,14 +5,14 @@ import Button from '../components/Button'
 import SafeImage from '../components/SafeImage'
 import LazyVideo from '../components/LazyVideo'
 import SEOHead from '../components/SEOHead'
-import { GALLERY_ITEMS, GALLERY_CATEGORIES } from '../utils/galleryData'
+import { GALLERY_ITEMS } from '../utils/galleryData'
 import { triggerHaptic } from '../utils/haptics'
 import { shareContent } from '../utils/share'
+import { useLenis } from '../utils/lenisReact'
 import ctaVideo from '../assets/New folder/Dive.MP4'
 
 export default function Gallery() {
   const [itemsList, setItemsList] = useState(GALLERY_ITEMS)
-  const [activeCategory, setActiveCategory] = useState('all')
   const [selectedMediaIndex, setSelectedMediaIndex] = useState(null)
   const [lightboxZoom, setLightboxZoom] = useState(1)
   const [panOffset, setPanOffset] = useState({ x: 0, y: 0 })
@@ -20,18 +20,28 @@ export default function Gallery() {
   const panStartRef = useRef({ x: 0, y: 0 })
   const filmstripRef = useRef(null)
   const reduce = useReducedMotion()
+  const lenis = useLenis()
 
   const touchStartX = useRef(0)
   const touchStartY = useRef(0)
 
-  const filteredItems = useMemo(() => {
-    return itemsList.filter((item) => {
-      if (activeCategory === 'all') return true
-      if (activeCategory === 'videos') return item.type === 'video'
-      if (activeCategory === 'photos') return item.type === 'image'
-      return item.category === activeCategory
-    })
-  }, [itemsList, activeCategory])
+  const filteredItems = itemsList
+
+  // Always scroll to top when mounting or reloading the Gallery page
+  useEffect(() => {
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual'
+    }
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+    if (lenis) {
+      lenis.scrollTo(0, { immediate: true })
+    }
+    const timer = setTimeout(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+      if (lenis) lenis.scrollTo(0, { immediate: true })
+    }, 50)
+    return () => clearTimeout(timer)
+  }, [lenis])
 
   // Reset zoom & pan when switching media in lightbox
   useEffect(() => {
@@ -191,28 +201,7 @@ export default function Gallery() {
           </p>
         </div>
 
-        {/* 2. CATEGORIES FILTER */}
-        <div className="flex gap-2 sm:gap-3 mb-12 border-b border-navy/10 pb-6 overflow-x-auto scrollbar-none flex-nowrap sm:flex-wrap">
-          {GALLERY_CATEGORIES.map((cat) => (
-            <button
-              key={cat.key}
-              onClick={() => {
-                triggerHaptic(8)
-                setActiveCategory(cat.key)
-                setSelectedMediaIndex(null)
-              }}
-              className={`rounded-full px-5 py-2.5 text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 cursor-pointer shrink-0 ${
-                activeCategory === cat.key
-                  ? 'bg-navy text-white shadow-md'
-                  : 'bg-[#F0F2F5] text-navy/70 hover:bg-navy/10 hover:text-navy'
-              }`}
-            >
-              {cat.label}
-            </button>
-          ))}
-        </div>
-
-        {/* 3. GALLERY MASONRY / GRID */}
+        {/* GALLERY MASONRY / GRID */}
         <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-6 lg:gap-8 mb-16 sm:mb-24">
           {filteredItems.map((item, idx) => (
             <motion.div
@@ -242,11 +231,6 @@ export default function Gallery() {
                   />
                 )}
 
-                {/* Serial Number Badge */}
-                <div className="absolute top-2.5 left-2.5 sm:top-3.5 sm:left-3.5 z-10 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-navy/85 backdrop-blur-md border border-white/20 text-accent font-heading font-bold text-[9px] sm:text-xs shadow-md tracking-wider">
-                  #{String(idx + 1).padStart(2, '0')}
-                </div>
-
                 {/* Hover Dark Gradient */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-300" />
                 
@@ -258,14 +242,11 @@ export default function Gallery() {
                 </div>
               </div>
 
-              {/* Information Panel Below Media - Title and Serial Number */}
-              <div className="p-3 sm:p-5 flex items-center justify-between gap-2 sm:gap-3 bg-white">
-                <h3 className="font-heading text-xs xs:text-sm sm:text-lg font-bold text-navy group-hover:text-accent transition duration-200 line-clamp-1 flex-1 leading-tight">
+              {/* Information Panel Below Media - Title */}
+              <div className="p-3 sm:p-5 bg-white">
+                <h3 className="font-heading text-xs xs:text-sm sm:text-lg font-bold text-navy group-hover:text-accent transition duration-200 line-clamp-1 leading-tight">
                   {item.title}
                 </h3>
-                <span className="text-[9px] sm:text-xs font-bold font-mono text-navy/50 bg-[#F0F2F5] px-1.5 sm:px-2 py-0.5 rounded-full shrink-0">
-                  #{String(idx + 1).padStart(2, '0')}
-                </span>
               </div>
             </motion.div>
           ))}
@@ -507,9 +488,6 @@ export default function Gallery() {
               {/* Lightbox Footer Bar - Title, Serial Number, Native Share, Action */}
               <div className="p-3.5 sm:p-5 bg-[#001830] border-t border-white/10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4">
                 <div className="flex items-center gap-3 max-w-2xl min-w-0">
-                  <span className="text-xs sm:text-sm font-bold font-mono text-accent bg-white/10 px-2.5 py-1 rounded-lg border border-white/10 shrink-0">
-                    #{String(selectedMediaIndex + 1).padStart(2, '0')}
-                  </span>
                   <h2 className="text-sm sm:text-xl font-bold font-heading text-white truncate">
                     {currentItem.title}
                   </h2>

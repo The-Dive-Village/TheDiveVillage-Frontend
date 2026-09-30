@@ -7,10 +7,15 @@ export default function ScrollToTop() {
   const lenis = useLenis()
 
   useEffect(() => {
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual'
+    }
+  }, [])
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
     if (lenis) {
       lenis.scrollTo(0, { immediate: true })
-    } else {
-      window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
     }
   }, [pathname, lenis])
 

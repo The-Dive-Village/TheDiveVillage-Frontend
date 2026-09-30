@@ -147,16 +147,11 @@ export default function GalleryPreview() {
                   loading="lazy"
                 />
               )}
-              {/* Overlay with Title and Serial Number */}
+              {/* Overlay with Title */}
               <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/30 to-transparent flex flex-col justify-end p-2.5 sm:p-4">
-                <div className="flex items-center gap-1.5 sm:gap-2">
-                  <span className="text-[9px] sm:text-[11px] font-bold font-mono text-accent bg-black/40 px-1.5 py-0.5 rounded border border-white/10 shrink-0">
-                    #{String((i % previewItems.length) + 1).padStart(2, '0')}
-                  </span>
-                  <h4 className="text-white font-heading font-bold text-xs sm:text-base leading-tight drop-shadow-md truncate">
-                    {item.title}
-                  </h4>
-                </div>
+                <h4 className="text-white font-heading font-bold text-xs sm:text-base leading-tight drop-shadow-md truncate">
+                  {item.title}
+                </h4>
               </div>
             </div>
           ))}

@@ -31,6 +31,8 @@ const EXCLUDED_FILES = new Set([
   'Sky1.jpg',
   'Turtle Flyinnn.mov',
   'Turtle Flyinnn.mp4',
+  'merch 5.mp4',
+  'nitrox.mp4',
 ])
 
 export const GALLERY_CATEGORIES = [
@@ -45,7 +47,7 @@ export const GALLERY_CATEGORIES = [
 
 const GALLERY_METADATA_MAP = {
   '5.jpg': { title: 'Dark Banded Fusilier', category: 'marine' },
-  '6.jpg': { title: 'Box Jellyfish Night Dive', category: 'marine' },
+  '6.jpg': { title: 'Box Jellyfish', category: 'marine' },
   '7.jpg': { title: 'Banded Coral Shrimp', category: 'marine' },
   '8 dive.mp4': { title: '8-Dive Adventure Package', category: 'scuba' },
   '8.jpg': { title: 'Diver in Baitfish Cyclone', category: 'scuba' },
@@ -53,7 +55,7 @@ const GALLERY_METADATA_MAP = {
   'Additional dive ater dsd.mp4': { title: 'Sweetlips/Grunts', category: 'scuba' },
   'Articulata.JPG': { title: 'Feather Star (Crinoid)', category: 'marine' },
   'Blue Lincka.jpg': { title: 'Blue Linckia Sea Star', category: 'marine' },
-  'Bubblemaker.mp4': { title: 'Browstripe Red Snapper', category: 'scuba' },
+  'Bubblemaker.mp4': { title: 'BlackTail Snapper', category: 'marine' },
   'Buoyancy.mp4': { title: 'Green Sea Turtle', category: 'marine' },
   'Certified Courses.jpg': { title: 'Certified Courses Training', category: 'scuba' },
   'Closeup1.mp4': { title: 'Table Coral & Damselfish', category: 'marine' },
@@ -61,50 +63,50 @@ const GALLERY_METADATA_MAP = {
   'DSD lite.mp4': { title: 'Discover Scuba Diving (DSD Lite)', category: 'scuba' },
   'Dawn Dive.mp4': { title: 'Dawn Dive Expedition', category: 'scuba' },
   'Deepdiver.mp4': { title: 'Green Sea Turtle', category: 'marine' },
-  'Discover Scuba.mp4': { title: 'Lionfish', category: 'marine' },
+  'Discover Scuba.mp4': { title: 'LionFish', category: 'marine' },
   'Flexible Fun Dives.jpg': { title: 'Flexible Fun Dives', category: 'scuba' },
   'Flexible Fun Dives.png': { title: 'Guided Coral Wall Dive', category: 'scuba' },
   'Free Diving (2).jpg': { title: 'Freediving Line Ascent', category: 'freediving' },
   'Free Diving 1.mov': { title: 'Freediving Single-Breath Journey', category: 'freediving' },
   'Free Diving 1.mp4': { title: 'Freediving Single-Breath Journey', category: 'freediving' },
   'Free Diving.jpg': { title: 'Freediving Ocean Depths', category: 'freediving' },
-  'Free Diving.png': { title: 'Freediving Reef Discovery', category: 'freediving' },
+  'Free Diving.png': { title: 'FreeDiving', category: 'freediving' },
   'Freedivingfun.mp4': { title: 'Freediving Fun & Practice', category: 'freediving' },
   'Introductory Programs.png': { title: 'Introductory Scuba Discovery', category: 'scuba' },
   'Jellyfish.mp4': { title: 'Moon Jellyfish', category: 'marine' },
   'Leaf Scorpian fish.mp4': { title: 'Leaf Scorpionfish', category: 'marine' },
-  'Lionfish.mp4': { title: 'Lionfish (Pterois)', category: 'marine' },
+  'Lionfish.mp4': { title: 'LionFish', category: 'marine' },
   'Nightdive.jpg': { title: 'Night Dive Illumination', category: 'scuba' },
   'Photo00086440.jpg': { title: 'Dark Banded Fusiliers', category: 'marine' },
   'Photo00086448.jpg': { title: 'Thorny Oyster', category: 'marine' },
   'Photo00086450.jpg': { title: 'Feather Star', category: 'marine' },
-  'Photo00086451.jpg': { title: 'Green Sea Turtle & Diver Encounter', category: 'marine' },
-  'Photo00086454.jpg': { title: 'Diver Descent in Deep Blue', category: 'scuba' },
+  'Photo00086451.jpg': { title: 'Green Sea Turtle', category: 'marine' },
+  'Photo00086454.jpg': { title: 'Scuba Diver', category: 'scuba' },
   'Photo00086476.jpg': { title: 'School of Batfish', category: 'marine' },
   'Photo00086485.jpg': { title: 'Moon Jellyfish Swarm', category: 'marine' },
   'Photo00086509.jpg': { title: 'Feather Star', category: 'marine' },
-  'Photo00086561.jpg': { title: 'Trained Diver', category: 'scuba' },
-  'Photo00086567.jpg': { title: 'Lionfish (Pterois)', category: 'marine' },
+  'Photo00086561.jpg': { title: 'Professional Diver', category: 'scuba' },
+  'Photo00086567.jpg': { title: 'LionFish', category: 'marine' },
   'Photo00086573.jpg': { title: 'Scuba Divers Ocean Descent', category: 'scuba' },
   'Photo00086574.jpg': { title: 'Leather Mushroom Coral', category: 'marine' },
-  'Photo00086576.jpg': { title: 'School of Fusiliers in Sunlight', category: 'marine' },
+  'Photo00086576.jpg': { title: 'School of Fusiliers', category: 'marine' },
   'Photo00086578.jpg': { title: 'Bluestripe Snapper School', category: 'marine' },
   'Photo00086586.jpg': { title: 'Banded Sea Snake', category: 'marine' },
   'Photo00086587.jpg': { title: 'Crown-of-Thorns Starfish', category: 'marine' },
   'Photo00086588.jpg': { title: 'Bubble Coral', category: 'marine' },
   'Photo00086611.jpg': { title: 'Pair of Threadfin Butterflyfish', category: 'marine' },
   'Photo00086694.jpg': { title: 'Green Sea Turtle & Baitball', category: 'marine' },
-  'Photo00086723.jpg': { title: 'Scuba Diver & Sea Turtle Encounter', category: 'scuba' },
+  'Photo00086723.jpg': { title: 'Green Sea Turtle', category: 'marine' },
   'Photo00086726.jpg': { title: 'Blackspotted Pufferfish in Barrel Sponge', category: 'marine' },
   'Photo00086738.jpg': { title: 'Divers with Bright Feather Star', category: 'scuba' },
   'Photo00086739.jpg': { title: 'Feather Star on Reef', category: 'marine' },
   'Photo00086742.jpg': { title: 'Spiky Sea Cucumber', category: 'marine' },
   'Photo00086760.jpg': { title: 'Ananas Sea Cucumber on Sand', category: 'marine' },
   'Photo00086761.jpg': { title: 'School of Sweetlips', category: 'marine' },
-  'Photo00086765.jpg': { title: 'Crown Jellyfish (Cephea)', category: 'marine' },
-  'Photo00086771.jpg': { title: 'Varicose Wart Slug (Nudibranch)', category: 'marine' },
+  'Photo00086765.jpg': { title: 'Crown JellyFish', category: 'marine' },
+  'Photo00086771.jpg': { title: 'Varicose Wart Slug', category: 'marine' },
   'Photo00086776.jpg': { title: 'Electric Blue Giant Clam', category: 'marine' },
-  'Photo00086787.jpg': { title: 'Clearfin Lionfish', category: 'marine' },
+  'Photo00086787.jpg': { title: 'LionFish', category: 'marine' },
   'Photo00086792.jpg': { title: 'Clownfish in Sea Anemone', category: 'marine' },
   'Ray.mp4': { title: 'Stingray / Whipray', category: 'marine' },
   'Ray1.mp4': { title: 'Spotted Eagle Ray', category: 'marine' },
@@ -123,7 +125,7 @@ const GALLERY_METADATA_MAP = {
   'Scuba8.mp4': { title: 'Magnificent Sea Anemone', category: 'marine' },
   'Scuba9.MP4': { title: 'Sheltered Anemonefish', category: 'marine' },
   'Scubadiving.jpg': { title: 'Scuba Diving Underwater Journey', category: 'scuba' },
-  'Sea fan.jpg': { title: 'Sea Fan (Gorgonian Coral)', category: 'marine' },
+  'Sea fan.jpg': { title: 'Sea Fan', category: 'marine' },
   'Seafan.mp4': { title: 'Ornate Ghost Pipefish', category: 'marine' },
   'Shoal.jpg': { title: 'School of Bait Ball', category: 'marine' },
   'Sky1.jpg': { title: 'Tropical Island Horizon', category: 'scenery' },
@@ -147,21 +149,72 @@ const GALLERY_METADATA_MAP = {
   'bush.mp4': { title: 'Soft Coral & Bush Coral Garden', category: 'marine' },
   'diving12.mp4': { title: '12-Dive Island Safari', category: 'scuba' },
   'free diving .mp4': { title: 'Freediving Depth Exploration', category: 'freediving' },
-  'free diving 3.mp4': { title: 'Freediving Reef Discovery', category: 'freediving' },
-  'gallery1.mp4': { title: 'Island Surf Safari', category: 'scenery' },
-  'lionfish.MP4': { title: 'Lionfish (Pterois)', category: 'marine' },
+  'free diving 3.mp4': { title: 'FreeDiving', category: 'freediving' },
+  'gallery1.mp4': { title: 'Safari', category: 'scenery' },
+  'lionfish.MP4': { title: 'LionFish', category: 'marine' },
   'merch 5.mp4': { title: 'Dive Village Gear Showcase', category: 'scenery' },
   'nitrox.mp4': { title: 'Enriched Air Nitrox Diving', category: 'scuba' },
   'procourse (2).mp4': { title: 'Schooling Vortex', category: 'marine' },
   'procourse.mp4': { title: 'Divemaster Professional Course', category: 'scuba' },
   'procourse1.mp4': { title: 'Giant Barrel Sponge', category: 'marine' },
-  'procourse2.mp4': { title: 'Professional Ocean Leadership', category: 'scuba' },
+  'procourse2.mp4': { title: 'Coral Reef', category: 'marine' },
   'projectaware.mp4': { title: 'Sardine Run', category: 'marine' },
   'surfing.mp4': { title: 'Surfing & Island Waves', category: 'scenery' },
-  'zero2hero.jpg': { title: 'Welcome to The Dive Village', category: 'scuba' },
+  'zero2hero.jpg': { title: 'Scuba Diving', category: 'scuba' },
 }
 
-export const GALLERY_ITEMS = Object.entries(mediaModules)
+// Custom order swaps: array of [indexA, indexB] (1-based numbers as seen in the gallery)
+const GALLERY_SWAPS = [
+  [58, 1],
+  [56, 2],
+  [69, 3],
+  [76, 4],
+  [46, 5],
+  [44, 6],
+  [9, 5],
+  [14, 7],
+  [44, 10],
+  [38, 11],
+  [10, 8],
+  [11, 9],
+  [53, 13],
+  [25, 16],
+  [23, 17],
+  [29, 18],
+  [13, 11],
+  [17, 13],
+  [16, 15],
+  [18, 16],
+  [63, 19],
+  [49, 20],
+  [43, 21],
+  [41, 22],
+  [72, 23],
+  [60, 24],
+  [50, 25],
+  [52, 26],
+  [56, 27],
+  [58, 28],
+  [69, 29],
+  [32, 30],
+  [36, 31],
+  [34, 32],
+  [54, 33],
+  [55, 34],
+  [56, 35],
+  [57, 36],
+  [58, 37],
+  [88, 38],
+  [86, 39],
+  [58, 43],
+  [66, 44],
+  [65, 45],
+  [60, 46],
+  [56, 57],
+  [48, 58],
+]
+
+const baseItems = Object.entries(mediaModules)
   .filter(([filePath]) => {
     const filename = filePath.split('/').pop() || ''
     return !EXCLUDED_FILES.has(filename)
@@ -186,5 +239,69 @@ export const GALLERY_ITEMS = Object.entries(mediaModules)
       src,
       title,
       category,
+      filename,
     }
   })
+
+// Apply sequential swaps
+const orderedItems = [...baseItems]
+GALLERY_SWAPS.forEach(([a, b]) => {
+  const idxA = a - 1
+  const idxB = b - 1
+  if (orderedItems[idxA] && orderedItems[idxB]) {
+    const temp = orderedItems[idxA]
+    orderedItems[idxA] = orderedItems[idxB]
+    orderedItems[idxB] = temp
+  }
+})
+
+// Specific gallery removals
+const REMOVED_FROM_GALLERY = new Set([
+  'Dawn Dive.mp4',
+  'Photo00086776.jpg',
+  'free diving .mp4',
+  'Leaf Scorpian fish.mp4',
+  'diving12.mp4',
+  'Discover Scuba.mp4',
+  'Scuba6.mp4',
+  'Stay.jpg',
+  'Thorny Oyster.jpg',
+  'Travel.mp4',
+  'Photo00086440.jpg',
+  'projectaware.mp4',
+  'Scuba2.MP4',
+  'Scuba4.jpg',
+  'Freedivingfun.mp4',
+  'Scuba2.jpg',
+  'Free Diving.jpg',
+  'Free Diving 1.mp4',
+  'Free Diving 1.mov',
+  'Turtle Anna.mp4',
+  'boat.mp4',
+  'merch 5.mp4',
+  'nitrox.mp4',
+])
+
+// Top curated featured items
+const TOP_FEATURED_ORDER = [
+  'Turtlefish.mp4',
+  'Photo00086792.jpg',
+  'Snorkelling2.mp4',
+]
+
+const nonRemovedItems = orderedItems.filter((item) => !REMOVED_FROM_GALLERY.has(item.filename))
+const topMap = new Map(nonRemovedItems.map((item) => [item.filename, item]))
+const topItems = TOP_FEATURED_ORDER.map((fn) => topMap.get(fn)).filter(Boolean)
+const topSet = new Set(TOP_FEATURED_ORDER)
+const otherItems = nonRemovedItems.filter((item) => !topSet.has(item.filename))
+const finalOrderedGallery = [...topItems, ...otherItems]
+
+export const GALLERY_ITEMS = finalOrderedGallery.map((item, index) => ({
+  ...item,
+  id: `gallery-${item.type === 'video' ? 'v' : 'p'}-${index}`,
+}))
+
+
+
+
+
