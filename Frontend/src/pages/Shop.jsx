@@ -120,13 +120,24 @@ export default function Shop() {
       </AnimatePresence>
 
       {/* 1. HERO BANNER */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-12">
-        <div className="relative rounded-[24px] sm:rounded-[36px] lg:rounded-[40px] overflow-hidden bg-[#001428] shadow-lift border border-white/10 w-full aspect-[1774/887] flex items-center justify-end">
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-10 sm:mb-12">
+        <div className="relative rounded-[24px] sm:rounded-[36px] lg:rounded-[40px] overflow-hidden bg-[#001428] shadow-lift border border-white/10 w-full h-[190px] xs:h-[230px] sm:h-[280px] lg:h-[450px] flex items-center justify-end">
           <img
             src={bannerImg}
             alt="Merchandise Banner"
-            className="w-full h-full object-cover object-center pointer-events-none block"
+            className="w-full h-full object-contain object-right sm:object-[60%_center] translate-x-2 sm:translate-x-6 lg:translate-x-8 pointer-events-none block"
           />
+
+          {/* Left Side Blue Gradient Overlay */}
+          <div className="absolute inset-y-0 left-0 w-3/5 sm:w-1/2 bg-gradient-to-r from-[#001428]/90 via-[#002244]/65 to-transparent pointer-events-none z-10" />
+
+          {/* Left Side Typography: MADE FOR ALL BODY TYPES */}
+          <div className="absolute left-5 xs:left-7 sm:left-10 lg:left-14 top-0 bottom-0 flex flex-col justify-center z-20 pointer-events-none max-w-xs sm:max-w-md">
+            <h2 className="font-heading text-lg xs:text-xl sm:text-3xl lg:text-5xl font-black text-white uppercase tracking-tight leading-[1.05] drop-shadow-[0_4px_16px_rgba(0,0,0,0.8)] text-justify [text-align-last:justify]">
+              MADE TO FIT<br />
+              <span className="text-[#FFCD00]">ALL BODY TYPES</span>
+            </h2>
+          </div>
 
           {/* Right Column: 3D Flipping Product Tag */}
           <div className="absolute right-3 sm:right-8 lg:right-12 top-0 bottom-0 z-10 shrink-0 h-full flex items-center">
@@ -207,11 +218,10 @@ export default function Shop() {
                 triggerHaptic(8)
                 setSelectedCategory(cat.key)
               }}
-              className={`rounded-full px-5 py-2.5 text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 cursor-pointer ${
-                selectedCategory === cat.key
-                  ? 'bg-accent text-[#001e3d] shadow-md font-extrabold'
-                  : 'bg-white text-navy/70 border border-navy/10 hover:bg-[#003865] hover:text-white hover:border-[#003865]'
-              }`}
+              className={`rounded-full px-5 py-2.5 text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 cursor-pointer ${selectedCategory === cat.key
+                ? 'bg-accent text-[#001e3d] shadow-md font-extrabold'
+                : 'bg-white text-navy/70 border border-navy/10 hover:bg-[#003865] hover:text-white hover:border-[#003865]'
+                }`}
             >
               {cat.label}
             </button>
@@ -342,9 +352,8 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
               src={product.image}
               alt={product.title}
               onLoad={() => setImgLoaded(true)}
-              className={`max-h-full max-w-full object-contain relative z-[1] ${
-                !imgLoaded ? 'opacity-0' : show3D ? 'opacity-0 pointer-events-none' : 'opacity-100'
-              }`}
+              className={`max-h-full max-w-full object-contain relative z-[1] ${!imgLoaded ? 'opacity-0' : show3D ? 'opacity-0 pointer-events-none' : 'opacity-100'
+                }`}
             />
             {product.glb && (
               <div
@@ -431,12 +440,12 @@ function FlippingProductTag() {
   return (
     <div className="relative h-full flex flex-col items-center justify-center select-none pointer-events-none py-2 sm:py-4">
       {/* Hanging Cord */}
-      <div className="w-0.5 h-3 sm:h-5 lg:h-6 bg-gradient-to-b from-white/40 via-accent to-white/60 shadow-sm mb-[-2px] relative z-20 shrink-0">
-        <div className="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-accent -top-1 -left-[2px] sm:-left-[3px] absolute shadow-sm" />
+      <div className="w-0.5 h-3 sm:h-5 lg:h-6 bg-white/90 shadow-[0_0_6px_rgba(255,255,255,0.7)] mb-[-2px] relative z-20 shrink-0">
+        <div className="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-white -top-1 -left-[2px] sm:-left-[3px] absolute shadow-[0_0_6px_rgba(255,255,255,0.9)]" />
       </div>
 
       {/* 3D Perspective Container matched to exact 447x864 image aspect ratio */}
-      <div className="perspective-1000 h-[calc(100%-12px)] sm:h-[calc(100%-20px)] max-h-[180px] sm:max-h-[260px] lg:max-h-[330px] aspect-[447/864] relative">
+      <div className="perspective-1000 h-[calc(100%-12px)] sm:h-[calc(100%-20px)] max-h-[140px] sm:max-h-[200px] lg:max-h-[240px] aspect-[447/864] relative">
         <motion.div
           animate={{ rotateY: -360 }}
           transition={{

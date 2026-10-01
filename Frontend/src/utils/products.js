@@ -46,6 +46,9 @@ import glbFullSuit from '../assets/3d model/black wetsuit 3d model.glb?url'
 import glbWomensShirt from '../assets/3d model/black long sleeve shirt 3d model.glb?url'
 import glbWomensStrap from '../assets/3d model/wetsuit 3d model.glb?url'
 import glbWetSuit from '../assets/Products/diving wetsuit 3d model (1).glb?url'
+import imgWetSuitLocal from '../assets/Products/wetsuit.jpg'
+import imgWetSuitFrontLocal from '../assets/Products/Wet suit front.png'
+import imgWetSuitBackLocal from '../assets/Products/Wet suit back.png'
 
 
 export const SHOP_PRODUCTS = [
@@ -269,8 +272,8 @@ export const SHOP_PRODUCTS = [
     name: 'Wet Suit',
     price: 7999,
     oldPrice: 9999,
-    image: imgWetSuitFront,
-    images: [imgWetSuitFront, imgWetSuitBack, imgWetSuitLookbook],
+    image: imgWetSuitLocal,
+    images: [imgWetSuitFrontLocal, imgWetSuitBackLocal, imgWetSuitLocal],
     imageLabels: ['Front', 'Back', 'Lookbook'],
     glb: glbWetSuit,
     category: 'Skin Wear',

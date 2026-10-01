@@ -222,6 +222,13 @@ export default function Home() {
         </div>
       </section>
 
+      {/* CUSTOMIZE DIVE EXPERIENCE */}
+      <section id="customize-dive-section" className="py-6 sm:py-16 pointer-events-auto">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <CustomizeExperiencePanel />
+        </div>
+      </section>
+
       {/* 4. WHO CAN DIVE */}
       <section id="who-can-dive-section" className="relative py-16 sm:py-32 pointer-events-auto">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -458,13 +465,6 @@ export default function Home() {
               </StaggerItem>
             ))}
           </StaggerGrid>
-        </div>
-      </section>
-
-      {/* 7.5 CUSTOMIZE DIVE EXPERIENCE */}
-      <section id="customize-dive-section" className="py-6 sm:py-16 pointer-events-auto">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <CustomizeExperiencePanel />
         </div>
       </section>
 
