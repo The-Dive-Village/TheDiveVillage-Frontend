@@ -177,11 +177,6 @@ export default function BookUs() {
     })
   }, [groupSize])
 
-  // Helper to pick intelligent default program without forcing try-dive onto certified divers
-  const resolveDefaultProgram = (age, hasCert, userCerts) => {
-    const recs = getRecommendedCourses(age, hasCert, userCerts)
-    return recs[0]?.id || ''
-  }
 
   const handleParticipantChange = (index, field, value) => {
     setParticipants((prev) => {
@@ -217,7 +212,7 @@ export default function BookUs() {
           const eligible = getRecommendedCourses(p.age, updated[index].hasCertification, updated[index].certifications)
           const isCurrentEligible = eligible.some((course) => course.id === p.selectedProgram)
           if (!isCurrentEligible) {
-            updated[index].selectedProgram = resolveDefaultProgram(p.age, updated[index].hasCertification, updated[index].certifications)
+            updated[index].selectedProgram = ''
           }
         }
       }
@@ -243,7 +238,7 @@ export default function BookUs() {
       const eligible = getRecommendedCourses(p.age, p.hasCertification, p.certifications)
       const isCurrentEligible = eligible.some((course) => course.id === p.selectedProgram)
       if (!isCurrentEligible) {
-        updated[index].selectedProgram = resolveDefaultProgram(p.age, p.hasCertification, p.certifications)
+        updated[index].selectedProgram = ''
       }
       return updated
     })
@@ -945,7 +940,7 @@ export default function BookUs() {
                                               {ageNum < 10 ? 'Introductory & Snorkeling options' : 'Beginner & Discover Scuba options'}
                                             </span>
                                           </div>
-                                          <div className={`w-3.5 h-3.5 sm:w-5 sm:h-5 rounded-full border flex items-center justify-center shrink-0 ${!p.hasCertification ? 'border-accent bg-accent text-navy' : 'border-navy/20'
+                                          <div className={`w-3.5 h-3.5 sm:w-5 sm:h-5 rounded-full border flex items-center justify-center shrink-0 ${!p.hasCertification ? 'border-white bg-white text-navy' : 'border-navy/20'
                                             }`}>
                                             {!p.hasCertification && <span className="text-[8px] sm:text-[10px] font-bold">✓</span>}
                                           </div>
@@ -967,7 +962,7 @@ export default function BookUs() {
                                               {ageNum < 10 ? 'Select completed youth programs' : 'Advanced, Specialities & Fun Dives'}
                                             </span>
                                           </div>
-                                          <div className={`w-3.5 h-3.5 sm:w-5 sm:h-5 rounded-full border flex items-center justify-center shrink-0 ${p.hasCertification ? 'border-accent bg-accent text-navy' : 'border-navy/20'
+                                          <div className={`w-3.5 h-3.5 sm:w-5 sm:h-5 rounded-full border flex items-center justify-center shrink-0 ${p.hasCertification ? 'border-white bg-white text-navy' : 'border-navy/20'
                                             }`}>
                                             {p.hasCertification && <span className="text-[8px] sm:text-[10px] font-bold">✓</span>}
                                           </div>
@@ -992,12 +987,12 @@ export default function BookUs() {
                                                 type="button"
                                                 onClick={() => handleToggleCertification(idx, opt.id)}
                                                 className={`p-2 sm:p-3 rounded-lg border text-left text-[10px] sm:text-xs font-semibold sm:font-bold transition flex items-center justify-between gap-1.5 ${isSelected
-                                                  ? 'bg-accent/15 text-navy border-accent/60 shadow-sm'
+                                                  ? 'bg-navy text-white border-navy shadow-sm'
                                                   : 'bg-white text-navy/80 border-navy/10 hover:border-navy/30 hover:bg-navy/[0.02]'
                                                   }`}
                                               >
                                                 <span className="truncate">{opt.name}</span>
-                                                <span className={`w-3 h-3 sm:w-4 sm:h-4 rounded-md border flex items-center justify-center shrink-0 text-[8px] sm:text-[10px] ${isSelected ? 'bg-navy text-white border-navy font-bold' : 'border-navy/20'
+                                                <span className={`w-3 h-3 sm:w-4 sm:h-4 rounded-md border flex items-center justify-center shrink-0 text-[8px] sm:text-[10px] ${isSelected ? 'bg-white text-navy border-white font-bold' : 'border-navy/20'
                                                   }`}>
                                                   {isSelected ? '✓' : ''}
                                                 </span>
@@ -1044,7 +1039,7 @@ export default function BookUs() {
 
                     <div data-lenis-prevent className="space-y-3.5 sm:space-y-8 max-h-[500px] sm:max-h-[550px] overflow-y-auto overscroll-contain pr-1">
                       {participants.map((p, idx) => {
-                        const eligible = getEligibleCourses(p.age, p.hasCertification, p.certifications)
+                        const eligible = getRecommendedCourses(p.age, p.hasCertification, p.certifications)
                         const certNames = (p.certifications || [])
                           .map((id) => CERTIFICATION_OPTIONS.find((c) => c.id === id)?.name)
                           .filter(Boolean)
@@ -1064,7 +1059,7 @@ export default function BookUs() {
                                 </p>
                               </div>
                               <span className="text-[9px] sm:text-[11px] font-bold px-2 py-0.5 sm:px-3.5 sm:py-1 rounded-full bg-navy/[0.06] text-navy border border-navy/10">
-                                {eligible.length} Eligible Program(s)
+                                {eligible.length} Suggested Program(s)
                               </span>
                             </div>
 
@@ -1076,9 +1071,9 @@ export default function BookUs() {
                               <div className="space-y-2.5">
                                 <div className="flex justify-between items-center">
                                   <label htmlFor={`select-program-${p.id}`} className="text-[9px] sm:text-xs font-bold text-navy/70 uppercase tracking-wider">
-                                    Select Program
+                                    Choose Suggested Program
                                   </label>
-                                  <span className="text-[9px] sm:text-[11px] text-navy/50 font-medium">Tap card or dropdown</span>
+                                  <span className="text-[9px] sm:text-[11px] text-navy/50 font-medium">Tap any card below</span>
                                 </div>
 
                                 {/* Accessible Native Select Dropdown */}
@@ -1118,7 +1113,7 @@ export default function BookUs() {
                                       >
                                         <div className="flex justify-between items-start gap-1.5">
                                           <div>
-                                            <span className={`text-[8px] sm:text-[10px] font-bold uppercase tracking-widest block mb-0.5 ${isSelected ? 'text-accent' : 'text-navy/50'
+                                            <span className={`text-[8px] sm:text-[10px] font-bold uppercase tracking-widest block mb-0.5 ${isSelected ? 'text-cyan-300' : 'text-navy/50'
                                               }`}>
                                               {prog.category}
                                             </span>
@@ -1126,7 +1121,7 @@ export default function BookUs() {
                                               {prog.name}
                                             </h5>
                                           </div>
-                                          <div className={`w-3.5 h-3.5 sm:w-5 sm:h-5 rounded-full border shrink-0 flex items-center justify-center mt-0.5 ${isSelected ? 'border-accent bg-accent text-navy' : 'border-navy/20 bg-transparent'
+                                          <div className={`w-3.5 h-3.5 sm:w-5 sm:h-5 rounded-full border shrink-0 flex items-center justify-center mt-0.5 ${isSelected ? 'border-white bg-white text-navy' : 'border-navy/20 bg-transparent'
                                             }`}>
                                             {isSelected && <span className="text-[8px] sm:text-[10px] font-bold">✓</span>}
                                           </div>

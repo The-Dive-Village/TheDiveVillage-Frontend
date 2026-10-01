@@ -24,20 +24,20 @@ export const CERTIFICATIONS = {
 export const CERTIFICATION_OPTIONS = [
   // Age 8-9 prior experience options (supported by TDV spreadsheet)
   { id: CERTIFICATIONS.TRY_DIVE, name: 'Try Dive', minAgeToHold: 8 },
-  { id: CERTIFICATIONS.PADI_BUBBLEMAKER, name: 'PADI Bubblemaker', minAgeToHold: 8, maxAgeToHold: 10 },
-  { id: CERTIFICATIONS.PADI_SKIN_DIVER, name: 'PADI Skin Diver', minAgeToHold: 8 },
+  { id: CERTIFICATIONS.PADI_BUBBLEMAKER, name: 'Bubblemaker', minAgeToHold: 8, maxAgeToHold: 10 },
+  { id: CERTIFICATIONS.PADI_SKIN_DIVER, name: 'Skin Diver', minAgeToHold: 8 },
   { id: CERTIFICATIONS.REEF_EXPLORER, name: 'Reef Explorer', minAgeToHold: 8 },
 
   // Age 10+ formal certifications
-  { id: CERTIFICATIONS.PADI_DSD, name: 'PADI Discover Scuba Dive (DSD)', minAgeToHold: 10 },
-  { id: CERTIFICATIONS.OPEN_WATER, name: 'PADI Open Water Diver (or equivalent)', minAgeToHold: 10 },
-  { id: CERTIFICATIONS.ADVENTURE_DIVER, name: 'PADI Adventure Diver', minAgeToHold: 10 },
-  { id: CERTIFICATIONS.ADVANCED_OPEN_WATER, name: 'PADI Advanced Open Water', minAgeToHold: 12 },
+  { id: CERTIFICATIONS.PADI_DSD, name: 'Discover Scuba Dive (DSD)', minAgeToHold: 10 },
+  { id: CERTIFICATIONS.OPEN_WATER, name: 'Open Water Diver (or equivalent)', minAgeToHold: 10 },
+  { id: CERTIFICATIONS.ADVENTURE_DIVER, name: 'Adventure Diver', minAgeToHold: 10 },
+  { id: CERTIFICATIONS.ADVANCED_OPEN_WATER, name: 'Advanced Open Water', minAgeToHold: 12 },
   { id: CERTIFICATIONS.EFR, name: 'EFR Primary & Secondary Care', minAgeToHold: 12 },
-  { id: CERTIFICATIONS.RESCUE_DIVER, name: 'PADI Rescue Diver', minAgeToHold: 12 },
+  { id: CERTIFICATIONS.RESCUE_DIVER, name: 'Rescue Diver', minAgeToHold: 12 },
   { id: CERTIFICATIONS.LOGGED_40_DIVES, name: '40+ Logged Dives', minAgeToHold: 10 },
-  { id: CERTIFICATIONS.BASIC_FREEDIVER, name: 'PADI Basic Freediver (or equivalent)', minAgeToHold: 12 },
-  { id: CERTIFICATIONS.DIVEMASTER, name: 'PADI Divemaster / Pro', minAgeToHold: 18 },
+  { id: CERTIFICATIONS.BASIC_FREEDIVER, name: 'Basic Freediver (or equivalent)', minAgeToHold: 12 },
+  { id: CERTIFICATIONS.DIVEMASTER, name: 'Divemaster / Pro', minAgeToHold: 18 },
 ]
 
 /**
@@ -78,10 +78,10 @@ export const COURSE_CATALOG = [
     prerequisites: null,
     certLabel: 'No prior certification required'
   },
-  // 3. PADI Discover Scuba Dive
+  // 3. Discover Scuba Dive
   {
     id: 'padi-dsd',
-    name: 'PADI Discover Scuba Dive',
+    name: 'Discover Scuba Dive',
     category: 'Introductory Programs',
     minimumAge: 10,
     bookingType: 'beginner',
@@ -98,10 +98,10 @@ export const COURSE_CATALOG = [
     prerequisites: null,
     certLabel: 'No prior certification required'
   },
-  // 5. PADI Bubblemaker
+  // 5. Bubblemaker
   {
     id: 'padi-bubblemaker',
-    name: 'PADI Bubblemaker',
+    name: 'Bubblemaker',
     category: 'Kids & Family',
     minimumAge: 8,
     maxAge: 10,
@@ -120,12 +120,12 @@ export const COURSE_CATALOG = [
       type: 'SINGLE',
       requirement: CERTIFICATIONS.PADI_DSD
     },
-    certLabel: 'PADI Discover Scuba Dive (DSD)'
+    certLabel: 'Discover Scuba Dive (DSD)'
   },
-  // 7. PADI Skin Diver
+  // 7. Skin Diver
   {
     id: 'padi-skin-diver',
-    name: 'PADI Skin Diver',
+    name: 'Skin Diver',
     category: 'Snorkeling',
     minimumAge: 8,
     bookingType: 'certification_required',
@@ -133,12 +133,12 @@ export const COURSE_CATALOG = [
       type: 'SINGLE',
       requirement: CERTIFICATIONS.PADI_DSD
     },
-    certLabel: 'PADI Discover Scuba Dive (DSD)'
+    certLabel: 'Discover Scuba Dive (DSD)'
   },
-  // 8. PADI Scuba Diver
+  // 8. Scuba Diver
   {
     id: 'padi-scuba-diver',
-    name: 'PADI Scuba Diver',
+    name: 'Scuba Diver',
     category: 'Certification Courses',
     minimumAge: 10,
     bookingType: 'certification_required',
@@ -146,12 +146,12 @@ export const COURSE_CATALOG = [
       type: 'SINGLE',
       requirement: CERTIFICATIONS.PADI_DSD
     },
-    certLabel: 'PADI Discover Scuba Dive (DSD)'
+    certLabel: 'Discover Scuba Dive (DSD)'
   },
-  // 9. PADI Open Water Diver
+  // 9. Open Water Diver
   {
     id: 'padi-open-water',
-    name: 'PADI Open Water Diver',
+    name: 'Open Water Diver',
     category: 'Certification Courses',
     minimumAge: 10,
     bookingType: 'certification_required',
@@ -159,12 +159,12 @@ export const COURSE_CATALOG = [
       type: 'SINGLE',
       requirement: CERTIFICATIONS.PADI_DSD
     },
-    certLabel: 'PADI Discover Scuba Dive (DSD)'
+    certLabel: 'Discover Scuba Dive (DSD)'
   },
-  // 10. PADI Adventure Diver
+  // 10. Adventure Diver
   {
     id: 'padi-adventure-diver',
-    name: 'PADI Adventure Diver',
+    name: 'Adventure Diver',
     category: 'Continuing Education',
     minimumAge: 10,
     bookingType: 'certification_required',
@@ -172,12 +172,12 @@ export const COURSE_CATALOG = [
       type: 'SINGLE',
       requirement: CERTIFICATIONS.OPEN_WATER
     },
-    certLabel: 'PADI Open Water Diver'
+    certLabel: 'Open Water Diver'
   },
-  // 11. PADI Advanced Open Water
+  // 11. Advanced Open Water
   {
     id: 'padi-advanced-ow',
-    name: 'PADI Advanced Open Water',
+    name: 'Advanced Open Water',
     category: 'Continuing Education',
     minimumAge: 12,
     bookingType: 'certification_required',
@@ -185,7 +185,7 @@ export const COURSE_CATALOG = [
       type: 'AND',
       requirements: [CERTIFICATIONS.OPEN_WATER, CERTIFICATIONS.PADI_DSD]
     },
-    certLabel: 'PADI Open Water Diver + PADI Discover Scuba Dive'
+    certLabel: 'Open Water Diver + Discover Scuba Dive'
   },
   // 12. EFR Primary & Secondary Care
   {
@@ -198,12 +198,12 @@ export const COURSE_CATALOG = [
       type: 'AND',
       requirements: [CERTIFICATIONS.OPEN_WATER, CERTIFICATIONS.PADI_DSD]
     },
-    certLabel: 'PADI Open Water Diver + PADI Discover Scuba Dive'
+    certLabel: 'Open Water Diver + Discover Scuba Dive'
   },
-  // 13. PADI Rescue Diver
+  // 13. Rescue Diver
   {
     id: 'padi-rescue-diver',
-    name: 'PADI Rescue Diver',
+    name: 'Rescue Diver',
     category: 'Continuing Education',
     minimumAge: 12,
     bookingType: 'certification_required',
@@ -211,12 +211,12 @@ export const COURSE_CATALOG = [
       type: 'AND',
       requirements: [CERTIFICATIONS.ADVANCED_OPEN_WATER, CERTIFICATIONS.EFR]
     },
-    certLabel: 'PADI Advanced Open Water + EFR Primary & Secondary Care'
+    certLabel: 'Advanced Open Water + EFR Primary & Secondary Care'
   },
-  // 14. PADI Reactivate (with dive)
+  // 14. Reactivate (with dive)
   {
     id: 'padi-reactivate',
-    name: 'PADI Reactivate (with dive)',
+    name: 'Reactivate (with dive)',
     category: 'Refreshers',
     minimumAge: 10,
     bookingType: 'certification_required',
@@ -224,7 +224,7 @@ export const COURSE_CATALOG = [
       type: 'SINGLE',
       requirement: CERTIFICATIONS.OPEN_WATER
     },
-    certLabel: 'PADI Open Water Diver (or equivalent)'
+    certLabel: 'Open Water Diver (or equivalent)'
   },
   // 15. Full Refresher (with dive)
   {
@@ -237,7 +237,7 @@ export const COURSE_CATALOG = [
       type: 'SINGLE',
       requirement: CERTIFICATIONS.OPEN_WATER
     },
-    certLabel: 'PADI Open Water Diver (or equivalent)'
+    certLabel: 'Open Water Diver (or equivalent)'
   },
   // 16. Lite Refresher (confined only)
   {
@@ -250,7 +250,7 @@ export const COURSE_CATALOG = [
       type: 'SINGLE',
       requirement: CERTIFICATIONS.OPEN_WATER
     },
-    certLabel: 'PADI Open Water Diver (or equivalent)'
+    certLabel: 'Open Water Diver (or equivalent)'
   },
   // 17. Peak Performance Buoyancy
   {
@@ -263,7 +263,7 @@ export const COURSE_CATALOG = [
       type: 'SINGLE',
       requirement: CERTIFICATIONS.OPEN_WATER
     },
-    certLabel: 'PADI Open Water Diver'
+    certLabel: 'Open Water Diver'
   },
   // 18. Project AWARE
   {
@@ -286,7 +286,7 @@ export const COURSE_CATALOG = [
       type: 'OR',
       requirements: [CERTIFICATIONS.ADVENTURE_DIVER, CERTIFICATIONS.ADVANCED_OPEN_WATER]
     },
-    certLabel: 'PADI Adventure Diver / Advanced Open Water Diver'
+    certLabel: 'Adventure Diver / Advanced Open Water Diver'
   },
   // 20. Wreck Diver
   {
@@ -299,7 +299,7 @@ export const COURSE_CATALOG = [
       type: 'OR',
       requirements: [CERTIFICATIONS.ADVENTURE_DIVER, CERTIFICATIONS.ADVANCED_OPEN_WATER]
     },
-    certLabel: 'PADI Adventure Diver / Advanced Open Water Diver'
+    certLabel: 'Adventure Diver / Advanced Open Water Diver'
   },
   // 21. Night Diver
   {
@@ -312,7 +312,7 @@ export const COURSE_CATALOG = [
       type: 'SINGLE',
       requirement: CERTIFICATIONS.OPEN_WATER
     },
-    certLabel: 'PADI Open Water Diver'
+    certLabel: 'Open Water Diver'
   },
   // 22. Enriched Air Nitrox
   {
@@ -325,7 +325,7 @@ export const COURSE_CATALOG = [
       type: 'SINGLE',
       requirement: CERTIFICATIONS.OPEN_WATER
     },
-    certLabel: 'PADI Open Water Diver'
+    certLabel: 'Open Water Diver'
   },
   // 23-30. Fun Dive Packages
   {
@@ -335,7 +335,7 @@ export const COURSE_CATALOG = [
     minimumAge: 10,
     bookingType: 'certification_required',
     prerequisites: { type: 'SINGLE', requirement: CERTIFICATIONS.OPEN_WATER },
-    certLabel: 'PADI Open Water Diver'
+    certLabel: 'Open Water Diver'
   },
   {
     id: '2-dives',
@@ -344,7 +344,7 @@ export const COURSE_CATALOG = [
     minimumAge: 10,
     bookingType: 'certification_required',
     prerequisites: { type: 'SINGLE', requirement: CERTIFICATIONS.OPEN_WATER },
-    certLabel: 'PADI Open Water Diver'
+    certLabel: 'Open Water Diver'
   },
   {
     id: '4-dives',
@@ -353,7 +353,7 @@ export const COURSE_CATALOG = [
     minimumAge: 10,
     bookingType: 'certification_required',
     prerequisites: { type: 'SINGLE', requirement: CERTIFICATIONS.OPEN_WATER },
-    certLabel: 'PADI Open Water Diver'
+    certLabel: 'Open Water Diver'
   },
   {
     id: '6-dives',
@@ -362,7 +362,7 @@ export const COURSE_CATALOG = [
     minimumAge: 10,
     bookingType: 'certification_required',
     prerequisites: { type: 'SINGLE', requirement: CERTIFICATIONS.OPEN_WATER },
-    certLabel: 'PADI Open Water Diver'
+    certLabel: 'Open Water Diver'
   },
   {
     id: '8-dives',
@@ -371,7 +371,7 @@ export const COURSE_CATALOG = [
     minimumAge: 10,
     bookingType: 'certification_required',
     prerequisites: { type: 'SINGLE', requirement: CERTIFICATIONS.OPEN_WATER },
-    certLabel: 'PADI Open Water Diver'
+    certLabel: 'Open Water Diver'
   },
   {
     id: '10-dives',
@@ -380,7 +380,7 @@ export const COURSE_CATALOG = [
     minimumAge: 10,
     bookingType: 'certification_required',
     prerequisites: { type: 'SINGLE', requirement: CERTIFICATIONS.OPEN_WATER },
-    certLabel: 'PADI Open Water Diver'
+    certLabel: 'Open Water Diver'
   },
   {
     id: '12-dives',
@@ -389,7 +389,7 @@ export const COURSE_CATALOG = [
     minimumAge: 10,
     bookingType: 'certification_required',
     prerequisites: { type: 'SINGLE', requirement: CERTIFICATIONS.OPEN_WATER },
-    certLabel: 'PADI Open Water Diver'
+    certLabel: 'Open Water Diver'
   },
   {
     id: 'post-12-dives',
@@ -398,7 +398,7 @@ export const COURSE_CATALOG = [
     minimumAge: 10,
     bookingType: 'certification_required',
     prerequisites: { type: 'SINGLE', requirement: CERTIFICATIONS.OPEN_WATER },
-    certLabel: 'PADI Open Water Diver'
+    certLabel: 'Open Water Diver'
   },
   {
     id: 'night-dive',
@@ -407,7 +407,7 @@ export const COURSE_CATALOG = [
     minimumAge: 12,
     bookingType: 'certification_required',
     prerequisites: { type: 'SINGLE', requirement: CERTIFICATIONS.OPEN_WATER },
-    certLabel: 'PADI Open Water Diver'
+    certLabel: 'Open Water Diver'
   },
   {
     id: 'dawn-dive',
@@ -416,22 +416,22 @@ export const COURSE_CATALOG = [
     minimumAge: 10,
     bookingType: 'certification_required',
     prerequisites: { type: 'SINGLE', requirement: CERTIFICATIONS.OPEN_WATER },
-    certLabel: 'PADI Open Water Diver'
+    certLabel: 'Open Water Diver'
   },
-  // 33. PADI DSD + Open Water (Bundled Pathway)
+  // 33. DSD + Open Water (Bundled Pathway)
   {
     id: 'padi-dsd-ow-combo',
-    name: 'PADI DSD + Open Water',
+    name: 'DSD + Open Water',
     category: 'Bundled Pathways',
     minimumAge: 10,
     bookingType: 'pathway',
     prerequisites: null,
     certLabel: 'No prior certification required'
   },
-  // 34. PADI OW + Advanced (Bundled Pathway)
+  // 34. OW + Advanced (Bundled Pathway)
   {
     id: 'padi-ow-aow-combo',
-    name: 'PADI OW + Advanced',
+    name: 'OW + Advanced',
     category: 'Bundled Pathways',
     minimumAge: 12,
     bookingType: 'pathway',
@@ -449,12 +449,12 @@ export const COURSE_CATALOG = [
       type: 'AND',
       requirements: [CERTIFICATIONS.ADVANCED_OPEN_WATER, CERTIFICATIONS.EFR]
     },
-    certLabel: 'PADI Advanced Open Water + EFR Primary & Secondary Care'
+    certLabel: 'Advanced Open Water + EFR Primary & Secondary Care'
   },
-  // 36. PADI Divemaster
+  // 36. Divemaster
   {
     id: 'padi-divemaster',
-    name: 'PADI Divemaster',
+    name: 'Divemaster',
     category: 'Professional Track',
     minimumAge: 18,
     bookingType: 'certification_required',
@@ -462,7 +462,7 @@ export const COURSE_CATALOG = [
       type: 'AND',
       requirements: [CERTIFICATIONS.RESCUE_DIVER, CERTIFICATIONS.EFR, CERTIFICATIONS.LOGGED_40_DIVES]
     },
-    certLabel: 'Rescue Diver + EFR + 40 logged dives (PADI prerequisites)'
+    certLabel: 'Rescue Diver + EFR + 40 logged dives (Prerequisites)'
   },
   // 37. EFR + Rescue + Divemaster
   {
@@ -480,7 +480,7 @@ export const COURSE_CATALOG = [
         CERTIFICATIONS.LOGGED_40_DIVES
       ]
     },
-    certLabel: 'PADI Advanced Open Water + EFR Primary & Secondary Care + Rescue Diver + EFR + 40 logged dives (PADI prerequisites)'
+    certLabel: 'Advanced Open Water + EFR Primary & Secondary Care + Rescue Diver + EFR + 40 logged dives (Prerequisites)'
   },
   // 38. EFR + Rescue + DM (prereqs)
   {
@@ -509,20 +509,20 @@ export const COURSE_CATALOG = [
     prerequisites: null,
     certLabel: 'No prior certification required'
   },
-  // 40. PADI Basic Freediver
+  // 40. Basic Freediver
   {
     id: 'padi-basic-freediver',
-    name: 'PADI Basic Freediver',
+    name: 'Basic Freediver',
     category: 'Freediving',
     minimumAge: 12,
     bookingType: 'beginner',
     prerequisites: null,
     certLabel: 'No prior certification required'
   },
-  // 41. PADI Freediver
+  // 41. Freediver
   {
     id: 'padi-freediver',
-    name: 'PADI Freediver',
+    name: 'Freediver',
     category: 'Freediving',
     minimumAge: 15,
     bookingType: 'certification_required',
@@ -530,7 +530,7 @@ export const COURSE_CATALOG = [
       type: 'SINGLE',
       requirement: CERTIFICATIONS.BASIC_FREEDIVER
     },
-    certLabel: 'PADI Basic Freediver (or equivalent)'
+    certLabel: 'Basic Freediver (or equivalent)'
   },
   // 42. Reef Explorer
   {
@@ -563,7 +563,7 @@ export const COURSE_CATALOG = [
       type: 'SINGLE',
       requirement: CERTIFICATIONS.OPEN_WATER
     },
-    certLabel: 'PADI Open Water Diver'
+    certLabel: 'Open Water Diver'
   }
 ]
 
@@ -831,6 +831,46 @@ export function getRecommendedCourses(age, hasCert = false, userCerts = []) {
       if (courseId === 'padi-scuba-diver') return 95
       if (courseId === 'add-dive-after-dsd') return 90
       if (courseId === 'padi-skin-diver') return 85
+      return 40
+    }
+
+    // Skin Diver certification / prior experience
+    if (certList.includes(CERTIFICATIONS.PADI_SKIN_DIVER)) {
+      if (courseId === 'padi-basic-freediver') return 100
+      if (courseId === 'padi-freediver') return 98
+      if (courseId === 'padi-dsd') return 95
+      if (courseId === 'padi-dsd-ow-combo') return 90
+      if (courseId === 'ocean-explorer') return 85
+      if (courseId === 'reef-explorer') return 80
+      if (courseId === 'dsd-lite') return 75
+      if (courseId === 'try-dive') return 70
+      return 40
+    }
+
+    // Basic Freediver certification
+    if (certList.includes(CERTIFICATIONS.BASIC_FREEDIVER)) {
+      if (courseId === 'padi-freediver') return 100
+      if (courseId === 'padi-dsd') return 90
+      if (courseId === 'padi-dsd-ow-combo') return 85
+      return 40
+    }
+
+    // Bubblemaker prior experience
+    if (certList.includes(CERTIFICATIONS.PADI_BUBBLEMAKER)) {
+      if (courseId === 'padi-skin-diver') return 100
+      if (courseId === 'reef-explorer') return 95
+      if (courseId === 'try-dive') return 90
+      if (courseId === 'discover-snorkeling') return 85
+      return 40
+    }
+
+    // Try Dive or Reef Explorer prior experience
+    if (certList.includes(CERTIFICATIONS.TRY_DIVE) || certList.includes(CERTIFICATIONS.REEF_EXPLORER)) {
+      if (courseId === 'padi-dsd') return 100
+      if (courseId === 'dsd-lite') return 95
+      if (courseId === 'padi-dsd-ow-combo') return 90
+      if (courseId === 'ocean-explorer') return 85
+      if (courseId === 'padi-basic-freediver') return 80
       return 40
     }
 
