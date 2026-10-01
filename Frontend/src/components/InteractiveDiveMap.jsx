@@ -756,7 +756,6 @@ export default function InteractiveDiveMap({
                       depth: loc.depth || loc.maxDepth || (loc.minDepth ? `${loc.minDepth}-${loc.maxDepth || 30}m` : '12m - 30m'),
                       visibility: loc.visibility || '20m - 40m',
                       creatureName: creatureInfo?.name || 'Marine Life',
-                      creatureEmoji: creatureInfo?.emoji || '🐠',
                       creatureFunFact: creatureInfo?.fact || '',
                       x: movement.endPosition.x,
                       y: movement.endPosition.y
@@ -1409,8 +1408,8 @@ export default function InteractiveDiveMap({
         >
           <div className="bg-[#00192e]/95 backdrop-blur-xl border border-cyan-400/40 rounded-xl p-2.5 shadow-[0_8px_30px_rgba(0,0,0,0.7)] text-white max-w-[220px]">
             <div className="flex items-center gap-2">
-              <span className="text-lg leading-none">
-                {hoveredPinTooltip.type === 'padi' ? hoveredPinTooltip.creatureEmoji : '📍'}
+              <span className="w-5 h-5 rounded-full bg-cyan-400/20 flex items-center justify-center text-cyan-300 shrink-0">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
               </span>
               <div className="min-w-0 flex-1">
                 <h4 className="font-heading text-xs font-bold text-white truncate leading-tight">

@@ -277,18 +277,23 @@ export default function Home() {
                       animate={{ y: [0, -6, 0] }}
                       transition={{ duration: 3.2 + (i * 0.4), repeat: Infinity, ease: 'easeInOut' }}
                       className={`absolute top-0 xs:top-1 ${
-                        i === 0 || i === 2 ? 'sm:top-1 lg:top-2' : 'sm:-top-6 lg:-top-8'
+                        i === 0 || i === 2 ? 'sm:top-1 lg:top-2' : i === 3 ? 'sm:-top-4 lg:-top-5' : 'sm:-top-6 lg:-top-8'
                       } inset-x-0 mx-auto w-full flex items-center justify-center z-20 pointer-events-none px-1 ${
-                        i === 1 || i === 2
+                        i === 0 // 1st panel - slightly smaller
+                          ? 'max-w-[155px] xs:max-w-[175px] sm:max-w-[245px] lg:max-w-[265px] h-[130px] xs:h-[145px] sm:h-[215px] lg:h-[240px]'
+                          : i === 1 // 2nd panel - original size
                           ? 'max-w-[170px] xs:max-w-[190px] sm:max-w-[270px] lg:max-w-[290px] h-[140px] xs:h-[160px] sm:h-[240px] lg:h-[270px]'
-                          : 'max-w-[185px] xs:max-w-[210px] sm:max-w-[300px] lg:max-w-[330px] h-[155px] xs:h-[175px] sm:h-[260px] lg:h-[300px]'
+                          : i === 2 // 3rd panel - slightly smaller
+                          ? 'max-w-[145px] xs:max-w-[165px] sm:max-w-[230px] lg:max-w-[250px] h-[120px] xs:h-[135px] sm:h-[200px] lg:h-[225px]'
+                          : // 4th panel - slightly smaller
+                            'max-w-[155px] xs:max-w-[175px] sm:max-w-[245px] lg:max-w-[265px] h-[130px] xs:h-[145px] sm:h-[215px] lg:h-[240px]'
                       }`}
                     >
                       <img
                         src={item.img}
                         alt={item.t}
                         className={`w-full h-full max-w-full max-h-full object-contain drop-shadow-[0_15px_30px_rgba(0,0,0,0.8)] transition-all duration-500 ${
-                          i === 1 || i === 2 ? 'scale-95' : 'scale-105'
+                          i === 1 ? 'scale-95' : i === 2 ? 'scale-85' : 'scale-90'
                         }`}
                       />
                     </motion.div>

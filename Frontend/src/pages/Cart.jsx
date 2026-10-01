@@ -36,8 +36,12 @@ export default function Cart() {
 
         {items.length === 0 && !loading ? (
           <div className="py-16 sm:py-20 text-center max-w-xl mx-auto bg-[#F8FAFC] rounded-[36px] p-8 sm:p-12 shadow-sm border border-navy/5">
-            <div className="w-20 h-20 rounded-full bg-white flex items-center justify-center mx-auto mb-6 text-3xl shadow-sm border border-navy/10">
-              🛍️
+            <div className="w-20 h-20 rounded-full bg-white flex items-center justify-center mx-auto mb-6 text-navy/60 shadow-sm border border-navy/10">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <path d="M16 10a4 4 0 0 1-8 0"/>
+              </svg>
             </div>
             <h2 className="font-heading text-2xl sm:text-3xl font-bold mb-3 text-navy">Your cart is empty.</h2>
             <p className="text-navy/60 mb-8 text-sm leading-relaxed max-w-md mx-auto">
@@ -80,7 +84,11 @@ export default function Cart() {
                             className="max-h-full max-w-full object-contain"
                           />
                         ) : (
-                          <div className="text-2xl text-navy/40">🤿</div>
+                          <div className="text-navy/40">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                            </svg>
+                          </div>
                         )}
                       </Link>
 

@@ -262,9 +262,10 @@ export default function Navbar() {
                     toggleNightDive()
                     setOpen(false)
                   }}
-                  className="rounded-xl px-4 py-3 font-heading text-[15px] font-bold transition duration-hover text-left text-white hover:bg-white/10 cursor-pointer"
+                  className="rounded-xl px-4 py-3 font-heading text-[15px] font-bold transition duration-hover text-left text-white hover:bg-white/10 cursor-pointer flex items-center gap-2"
                 >
-                  {isNightDive ? '☀️ Switch to Day Dive' : '🌙 Switch to Night Dive'}
+                  <ThemeToggle isNightDive={isNightDive} />
+                  <span>{isNightDive ? 'Switch to Day Dive' : 'Switch to Night Dive'}</span>
                 </button>
               </nav>
             </div>
