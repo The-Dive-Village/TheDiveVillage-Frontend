@@ -227,8 +227,9 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
-  // Primary video is prioritized with 'auto' preload and high priority (calm slowed playback)
-  const { texture, hasNewFrameRef: hasNewFrame1, lastTimeRef: lastTime1 } = useDirectVideoTexture(videoSrc, 0.5, true)
+  // Light mode: primary 360 video smoothly paced (0.45x). Dark mode (Night Dive): default speed (1.0x).
+  const primaryPlaybackRate = isNightDive ? 1.0 : 0.45
+  const { texture, hasNewFrameRef: hasNewFrame1, lastTimeRef: lastTime1 } = useDirectVideoTexture(videoSrc, primaryPlaybackRate, true)
   // Secondary videos are strictly lazy-loaded only when user scrolls or needs them ON DESKTOP
   const { texture: texture2, hasNewFrameRef: hasNewFrame2, lastTimeRef: lastTime2 } = useDirectVideoTexture(!isMobile && isHome && !isNightDive && loadSecondary ? bookFile : null, 0.5, false)
   const { texture: texture3, hasNewFrameRef: hasNewFrame3, lastTimeRef: lastTime3 } = useDirectVideoTexture(!isMobile && isHome && !isNightDive && loadSecondary ? turtleVideo : null, 0.5, false)
@@ -504,37 +505,7 @@ export default function VideoSphereBackground() {
     return () => observer.disconnect()
   }, [])
 
-  // Control night dive video playback
-  useEffect(() => {
-    const video = nightVideoRef.current
-    if (video) {
-      video.muted = true
-      video.defaultMuted = true
-      video.playbackRate = 0.5
-      if (isNightDive) {
-        const playPromise = video.play()
-        if (playPromise !== undefined) {
-          playPromise.then(() => {
-            if (video) video.playbackRate = 0.5
-          }).catch((err) => {
-            console.warn('Night dive video play notice:', err)
-            const handleInteract = () => {
-              if (video) {
-                video.playbackRate = 0.5
-                video.play().catch(() => { })
-              }
-              window.removeEventListener('pointerdown', handleInteract)
-              window.removeEventListener('touchstart', handleInteract)
-            }
-            window.addEventListener('pointerdown', handleInteract, { once: true })
-            window.addEventListener('touchstart', handleInteract, { once: true })
-          })
-        }
-      } else {
-        video.pause()
-      }
-    }
-  }, [isNightDive])
+
 
   // Automatic ambient audio playback with robust browser autoplay policy handling
   useEffect(() => {
@@ -679,33 +650,6 @@ export default function VideoSphereBackground() {
             background: 'radial-gradient(circle at center, #003865 0%, #001e3d 55%, #000e1c 100%)'
           }}
         >
-          <video
-            ref={(el) => {
-              if (el) {
-                el.muted = true
-                el.defaultMuted = true
-                nightVideoRef.current = el
-              }
-            }}
-            src={isNightDive ? nightDiveVideo : undefined}
-            autoPlay={isNightDive}
-            loop
-            muted
-            playsInline
-            preload={isNightDive ? 'auto' : 'none'}
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              opacity: isNightDive ? 1 : 0,
-              pointerEvents: 'none',
-              transition: 'opacity 0.5s ease-in-out',
-              zIndex: isNightDive ? 10 : -1,
-            }}
-          />
           <div style={{ width: '100%', height: '100%' }}>
             <Canvas
               dpr={[1, 1.5]}

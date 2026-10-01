@@ -66,7 +66,7 @@ export default function Wishlist() {
             </div>
             <h2 className="font-heading text-3xl font-bold mb-3 text-navy">Your wishlist is empty.</h2>
             <p className="text-navy/60 mb-8 text-sm leading-relaxed">
-              Explore our ocean-crafted hoodies, pro dive suits, UPF 50+ rash guards, and branded essentials, and tap the heart icon on any product to save it here.
+              Explore our ocean-crafted hoodies, pro dive suits, rash guards, and branded essentials, and tap the heart icon on any product to save it here.
             </p>
             <Button as={Link} to="/shop" className="w-full justify-center bg-navy text-white hover:bg-accent">
               Explore Merchandise Store →
@@ -104,9 +104,6 @@ export default function Wishlist() {
                         <h3 className="font-heading text-lg sm:text-xl font-bold text-navy leading-snug hover:text-accent transition">
                           {item.title || item.name}
                         </h3>
-                        <p className="font-heading text-base font-bold text-navy mt-1">
-                          {formatCurrency(item.price)}
-                        </p>
                       </div>
                     </div>
 
@@ -159,10 +156,6 @@ export default function Wishlist() {
                     <span>Saved Items</span>
                     <span className="font-bold text-navy">{count}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span>Total Saved Value</span>
-                    <span className="font-bold text-navy">{formatCurrency(totalValue)}</span>
-                  </div>
                 </div>
 
                 <div className="space-y-3">
@@ -180,15 +173,6 @@ export default function Wishlist() {
                   >
                     Continue Shopping
                   </Link>
-                </div>
-
-                <div className="pt-4 border-t border-navy/10 space-y-2 text-[11px] text-navy/60">
-                  <p className="flex items-center gap-2">
-                    <span className="text-accent font-bold">✓</span> Free express shipping over ₹1,999
-                  </p>
-                  <p className="flex items-center gap-2">
-                    <span className="text-accent font-bold">✓</span> 100% Ocean-Tested Quality Guarantee
-                  </p>
                 </div>
               </div>
             </div>

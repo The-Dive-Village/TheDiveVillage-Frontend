@@ -53,29 +53,28 @@ export default function AdminDashboard() {
   }, [])
 
   return (
-    <SectionReveal className="space-y-8">
+    <SectionReveal className="space-y-6 antialiased">
       {/* 1. Header Banner */}
-      <div className="rounded-[32px] bg-gradient-to-r from-[#001e3d]/90 via-[#002b54]/85 to-[#001428]/90 border border-white/15 p-6 sm:p-8 backdrop-blur-xl shadow-2xl relative overflow-hidden">
-        <div className="absolute right-0 top-0 w-80 h-80 bg-accent/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+      <div className="rounded-2xl bg-white border border-gray-200/90 p-6 sm:p-8 shadow-xs">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-[11px] font-bold text-accent uppercase tracking-wider mb-3 border border-white/15">
-              <span>Overview & Analytics</span>
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-0.5 text-[11px] font-semibold text-slate-600 uppercase tracking-wider mb-2 border border-gray-200">
+              Overview & Analytics
             </div>
-            <h1 className="font-heading text-3xl sm:text-5xl font-bold text-white tracking-tight">
-              Admin <span className="text-[#FFCD00]">Dashboard</span>
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+              Administration Dashboard
             </h1>
-            <p className="text-white/70 text-xs sm:text-sm mt-1 max-w-xl">
-              Real-time monitoring of active bookings, gear inventory, website content, and guest testimonials.
+            <p className="text-slate-500 text-xs sm:text-sm mt-1 max-w-xl">
+              Live monitoring of bookings, inventory catalog, website media assets, and guest reviews.
             </p>
           </div>
 
           <div className="flex items-center gap-3 shrink-0">
-            <div className="rounded-2xl bg-white/10 backdrop-blur-md px-4 py-2.5 border border-white/15 text-right">
-              <span className="text-[10px] uppercase font-bold text-white/50 block">Status</span>
-              <span className="text-xs font-bold text-emerald-400 flex items-center gap-1.5 justify-end">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-                Live & Operational
+            <div className="rounded-xl bg-slate-50 px-4 py-2 border border-gray-200 text-right">
+              <span className="text-[10px] uppercase font-bold text-slate-400 block">System Status</span>
+              <span className="text-xs font-semibold text-emerald-700 flex items-center gap-1.5 justify-end">
+                <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                Operational
               </span>
             </div>
           </div>
@@ -87,14 +86,14 @@ export default function AdminDashboard() {
         {/* Pending Bookings */}
         <Link
           to="/admin/orders"
-          className="group rounded-3xl bg-[#001e3d]/75 backdrop-blur-xl border border-white/15 hover:border-cyan-400/50 p-6 shadow-xl hover:-translate-y-1 transition-all duration-300 relative overflow-hidden"
+          className="group rounded-xl bg-white border border-gray-200/90 hover:border-gray-300 p-5 shadow-xs transition-all duration-150"
         >
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-bold uppercase tracking-wider text-cyan-300">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xs font-semibold uppercase tracking-wide text-slate-600">
               Pending Bookings
             </span>
-            <div className="w-10 h-10 rounded-2xl bg-cyan-400/10 text-cyan-300 flex items-center justify-center border border-cyan-400/20 group-hover:scale-110 transition duration-300">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <div className="w-9 h-9 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center border border-blue-100">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
                 <line x1="16" y1="2" x2="16" y2="6" />
                 <line x1="8" y1="2" x2="8" y2="6" />
@@ -103,10 +102,10 @@ export default function AdminDashboard() {
             </div>
           </div>
           <div className="flex items-baseline justify-between">
-            <span className="font-heading text-4xl font-bold text-white">
+            <span className="text-3xl font-extrabold text-slate-900">
               {loadingStats ? '—' : stats.pendingBookings}
             </span>
-            <span className="text-xs px-2.5 py-1 rounded-full bg-cyan-400/15 text-cyan-200 font-bold border border-cyan-400/20">
+            <span className="text-xs px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 font-semibold border border-gray-200">
               Total {stats.totalBookings}
             </span>
           </div>
@@ -115,14 +114,14 @@ export default function AdminDashboard() {
         {/* Catalog Products */}
         <Link
           to="/admin/catalog"
-          className="group rounded-3xl bg-[#001e3d]/75 backdrop-blur-xl border border-white/15 hover:border-emerald-400/50 p-6 shadow-xl hover:-translate-y-1 transition-all duration-300 relative overflow-hidden"
+          className="group rounded-xl bg-white border border-gray-200/90 hover:border-gray-300 p-5 shadow-xs transition-all duration-150"
         >
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-bold uppercase tracking-wider text-emerald-300">
-              Gear & Catalog
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xs font-semibold uppercase tracking-wide text-slate-600">
+              Active Gear & Items
             </span>
-            <div className="w-10 h-10 rounded-2xl bg-emerald-400/10 text-emerald-300 flex items-center justify-center border border-emerald-400/20 group-hover:scale-110 transition duration-300">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <div className="w-9 h-9 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center border border-emerald-100">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
                 <line x1="3" y1="6" x2="21" y2="6" />
                 <path d="M16 10a4 4 0 0 1-8 0" />
@@ -130,11 +129,11 @@ export default function AdminDashboard() {
             </div>
           </div>
           <div className="flex items-baseline justify-between">
-            <span className="font-heading text-4xl font-bold text-white">
+            <span className="text-3xl font-extrabold text-slate-900">
               {loadingStats ? '—' : stats.totalProducts}
             </span>
-            <span className="text-xs px-2.5 py-1 rounded-full bg-emerald-400/15 text-emerald-200 font-bold border border-emerald-400/20">
-              Live Items
+            <span className="text-xs px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 font-semibold border border-gray-200">
+              Live Products
             </span>
           </div>
         </Link>
@@ -142,14 +141,14 @@ export default function AdminDashboard() {
         {/* Gallery Media */}
         <Link
           to="/admin/content"
-          className="group rounded-3xl bg-[#001e3d]/75 backdrop-blur-xl border border-white/15 hover:border-[#FFCD00]/50 p-6 shadow-xl hover:-translate-y-1 transition-all duration-300 relative overflow-hidden"
+          className="group rounded-xl bg-white border border-gray-200/90 hover:border-gray-300 p-5 shadow-xs transition-all duration-150"
         >
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#FFCD00]">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xs font-semibold uppercase tracking-wide text-slate-600">
               Gallery Media
             </span>
-            <div className="w-10 h-10 rounded-2xl bg-[#FFCD00]/10 text-[#FFCD00] flex items-center justify-center border border-[#FFCD00]/20 group-hover:scale-110 transition duration-300">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <div className="w-9 h-9 rounded-lg bg-indigo-50 text-indigo-700 flex items-center justify-center border border-indigo-100">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
                 <circle cx="8.5" cy="8.5" r="1.5" />
                 <polyline points="21 15 16 10 5 21" />
@@ -157,11 +156,11 @@ export default function AdminDashboard() {
             </div>
           </div>
           <div className="flex items-baseline justify-between">
-            <span className="font-heading text-4xl font-bold text-white">
+            <span className="text-3xl font-extrabold text-slate-900">
               {loadingStats ? '—' : stats.totalGallery}
             </span>
-            <span className="text-xs px-2.5 py-1 rounded-full bg-[#FFCD00]/15 text-[#FFCD00] font-bold border border-[#FFCD00]/20">
-              Media Assets
+            <span className="text-xs px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 font-semibold border border-gray-200">
+              Assets
             </span>
           </div>
         </Link>
@@ -169,14 +168,14 @@ export default function AdminDashboard() {
         {/* FAQs & CMS */}
         <Link
           to="/admin/content"
-          className="group rounded-3xl bg-[#001e3d]/75 backdrop-blur-xl border border-white/15 hover:border-purple-400/50 p-6 shadow-xl hover:-translate-y-1 transition-all duration-300 relative overflow-hidden"
+          className="group rounded-xl bg-white border border-gray-200/90 hover:border-gray-300 p-5 shadow-xs transition-all duration-150"
         >
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-bold uppercase tracking-wider text-purple-300">
-              Active FAQs
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xs font-semibold uppercase tracking-wide text-slate-600">
+              FAQ Entries
             </span>
-            <div className="w-10 h-10 rounded-2xl bg-purple-400/10 text-purple-300 flex items-center justify-center border border-purple-400/20 group-hover:scale-110 transition duration-300">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <div className="w-9 h-9 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center border border-amber-100">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="10" />
                 <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
                 <line x1="12" y1="17" x2="12.01" y2="17" />
@@ -184,46 +183,44 @@ export default function AdminDashboard() {
             </div>
           </div>
           <div className="flex items-baseline justify-between">
-            <span className="font-heading text-4xl font-bold text-white">
+            <span className="text-3xl font-extrabold text-slate-900">
               {loadingStats ? '—' : stats.totalFaqs}
             </span>
-            <span className="text-xs px-2.5 py-1 rounded-full bg-purple-400/15 text-purple-200 font-bold border border-purple-400/20">
-              CMS Articles
+            <span className="text-xs px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 font-semibold border border-gray-200">
+              Articles
             </span>
           </div>
         </Link>
       </div>
 
       {/* 3. Review Moderation Panel */}
-      <div className="rounded-[32px] bg-[#001e3d]/80 backdrop-blur-xl border border-white/15 p-6 sm:p-8 shadow-2xl">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-6 mb-6">
+      <div className="rounded-2xl bg-white border border-gray-200/90 p-6 sm:p-8 shadow-xs">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-200 pb-5 mb-6">
           <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-xs font-bold uppercase tracking-widest text-[#FFCD00]">Moderation</span>
-            </div>
-            <h2 className="font-heading text-2xl sm:text-3xl font-bold text-white">
-              Guest Reviews Moderation
+            <span className="text-xs font-semibold uppercase tracking-wide text-slate-500 block mb-0.5">Moderation</span>
+            <h2 className="text-xl font-bold text-slate-900">
+              Customer Reviews
             </h2>
-            <p className="text-xs text-white/60 mt-1">Approve community feedback before displaying it on the live website.</p>
+            <p className="text-xs text-slate-500 mt-0.5">Approve submitted community feedback before displaying on the live website.</p>
           </div>
 
-          <div className="flex gap-2 bg-black/30 p-1.5 rounded-2xl border border-white/10 self-start sm:self-auto">
+          <div className="flex gap-1.5 bg-slate-100 p-1 rounded-xl border border-gray-200 self-start sm:self-auto">
             <button
               onClick={() => setActiveTab('pending')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer ${
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 cursor-pointer ${
                 activeTab === 'pending'
-                  ? 'bg-[#FFCD00] text-[#001e3d] shadow-md font-extrabold'
-                  : 'text-white/70 hover:text-white hover:bg-white/5'
+                  ? 'bg-white text-slate-900 shadow-2xs font-bold'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
               }`}
             >
               Pending Approval ({pendingReviews.length})
             </button>
             <button
               onClick={() => setActiveTab('approved')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer ${
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 cursor-pointer ${
                 activeTab === 'approved'
-                  ? 'bg-[#FFCD00] text-[#001e3d] shadow-md font-extrabold'
-                  : 'text-white/70 hover:text-white hover:bg-white/5'
+                  ? 'bg-white text-slate-900 shadow-2xs font-bold'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
               }`}
             >
               Live on Site ({approvedReviews.length})
@@ -235,57 +232,52 @@ export default function AdminDashboard() {
         {activeTab === 'pending' && (
           <div>
             {pendingReviews.length === 0 ? (
-              <div className="text-center py-16 px-4 bg-white/[0.02] rounded-3xl border border-dashed border-white/10">
-                <div className="w-14 h-14 mx-auto rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center mb-3 border border-emerald-500/20">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                </div>
-                <h3 className="text-base font-bold text-white mb-1">All Caught Up!</h3>
-                <p className="text-xs text-white/50 max-w-sm mx-auto">
-                  There are no pending visitor reviews waiting for review. New guest submissions will appear here.
+              <div className="text-center py-12 px-4 bg-slate-50/50 rounded-xl border border-dashed border-gray-200">
+                <p className="text-sm font-semibold text-slate-800 mb-1">No pending reviews</p>
+                <p className="text-xs text-slate-500 max-w-sm mx-auto">
+                  All guest submissions have been reviewed and published.
                 </p>
               </div>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {pendingReviews.map((rev) => (
                   <div
                     key={rev.id}
-                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 p-6 rounded-2xl bg-white/[0.04] border border-white/10 hover:border-white/20 transition-all duration-200"
+                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 rounded-xl border border-gray-200 bg-slate-50/40 hover:bg-slate-50 transition-all duration-150"
                   >
-                    <div className="flex items-start gap-4 flex-1 min-w-0">
-                      <div className="w-12 h-12 rounded-2xl overflow-hidden border border-[#FFCD00]/40 shrink-0 bg-navy">
+                    <div className="flex items-start gap-3.5 flex-1 min-w-0">
+                      <div className="w-11 h-11 rounded-lg overflow-hidden border border-gray-200 shrink-0 bg-white">
                         <SafeImage src={rev.image} alt={rev.name} className="w-full h-full object-cover" />
                       </div>
-                      <div className="space-y-1.5 flex-1 min-w-0">
-                        <div className="flex flex-wrap items-center gap-2.5">
-                          <h4 className="font-bold text-white text-sm sm:text-base">{rev.name}</h4>
-                          <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-white/10 text-white/80 font-medium">
+                      <div className="space-y-1 flex-1 min-w-0">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <h4 className="font-bold text-slate-900 text-sm">{rev.name}</h4>
+                          <span className="text-[11px] px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-medium">
                             {rev.role}
                           </span>
-                          <span className="text-[11px] text-white/40">{rev.createdAt}</span>
+                          <span className="text-[11px] text-slate-400">{rev.createdAt}</span>
                         </div>
-                        <div className="flex gap-1 text-[#FFCD00] text-sm">
+                        <div className="flex gap-0.5 text-amber-500 text-xs">
                           {[...Array(rev.rating || 5)].map((_, i) => (
                             <span key={i}>★</span>
                           ))}
                         </div>
-                        <p className="text-xs sm:text-sm text-white/90 pt-0.5 leading-relaxed break-words">
+                        <p className="text-xs sm:text-sm text-slate-700 pt-0.5 leading-relaxed">
                           "{rev.text}"
                         </p>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-3 shrink-0 pt-3 sm:pt-0 border-t sm:border-t-0 border-white/10">
+                    <div className="flex items-center gap-2 shrink-0 pt-3 sm:pt-0 border-t sm:border-t-0 border-gray-200">
                       <button
                         onClick={() => approveReview(rev.id)}
-                        className="px-5 py-2.5 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs transition shadow-md cursor-pointer flex items-center gap-1.5"
+                        className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs transition shadow-2xs cursor-pointer flex items-center gap-1"
                       >
-                        <span>✓ Approve & Publish</span>
+                        Approve
                       </button>
                       <button
                         onClick={() => deleteReview(rev.id)}
-                        className="px-4 py-2.5 rounded-full bg-red-500/20 hover:bg-red-500/30 text-red-300 font-bold text-xs border border-red-500/30 transition cursor-pointer"
+                        className="px-3 py-1.5 rounded-lg bg-white border border-gray-300 hover:bg-rose-50 hover:text-rose-700 text-slate-600 font-semibold text-xs transition cursor-pointer"
                       >
                         Delete
                       </button>
@@ -298,40 +290,40 @@ export default function AdminDashboard() {
         )}
 
         {activeTab === 'approved' && (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {approvedReviews.map((rev) => (
               <div
                 key={rev.id}
-                className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 p-6 rounded-2xl bg-white/[0.03] border border-white/10"
+                className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 rounded-xl border border-gray-200 bg-white"
               >
-                <div className="flex items-start gap-4 flex-1 min-w-0">
-                  <div className="w-12 h-12 rounded-2xl overflow-hidden border border-emerald-400/40 shrink-0 bg-navy">
+                <div className="flex items-start gap-3.5 flex-1 min-w-0">
+                  <div className="w-11 h-11 rounded-lg overflow-hidden border border-gray-200 shrink-0 bg-white">
                     <SafeImage src={rev.image} alt={rev.name} className="w-full h-full object-cover" />
                   </div>
-                  <div className="space-y-1.5 flex-1 min-w-0">
-                    <div className="flex flex-wrap items-center gap-2.5">
-                      <h4 className="font-bold text-white text-sm sm:text-base">{rev.name}</h4>
-                      <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30">
-                        Live on Site
+                  <div className="space-y-1 flex-1 min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h4 className="font-bold text-slate-900 text-sm">{rev.name}</h4>
+                      <span className="text-[11px] px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 font-semibold border border-emerald-200">
+                        Published
                       </span>
                     </div>
-                    <div className="flex gap-1 text-[#FFCD00] text-sm">
+                    <div className="flex gap-0.5 text-amber-500 text-xs">
                       {[...Array(rev.rating || 5)].map((_, i) => (
                         <span key={i}>★</span>
                       ))}
                     </div>
-                    <p className="text-xs sm:text-sm text-white/90 pt-0.5 leading-relaxed break-words">
+                    <p className="text-xs sm:text-sm text-slate-700 pt-0.5 leading-relaxed">
                       "{rev.text}"
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 shrink-0">
+                <div className="flex items-center gap-2 shrink-0">
                   <button
                     onClick={() => deleteReview(rev.id)}
-                    className="px-4 py-2 rounded-full bg-red-500/20 hover:bg-red-500/30 text-red-300 font-bold text-xs border border-red-500/30 transition cursor-pointer"
+                    className="px-3 py-1.5 rounded-lg bg-white border border-gray-300 hover:bg-rose-50 hover:text-rose-700 text-slate-600 font-semibold text-xs transition cursor-pointer"
                   >
-                    Remove Review
+                    Remove
                   </button>
                 </div>
               </div>

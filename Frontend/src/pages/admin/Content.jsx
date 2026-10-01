@@ -263,57 +263,58 @@ export default function AdminContent() {
   })
 
   return (
-    <SectionReveal>
+    <SectionReveal className="antialiased">
       {/* Toast Notification */}
       {notification && (
         <div
-          className={`fixed top-5 right-5 z-50 flex items-center gap-3 px-5 py-3 rounded-xl border shadow-2xl transition-all animate-bounce ${
+          className={`fixed top-5 right-5 z-50 flex items-center gap-2.5 px-4 py-2.5 rounded-lg border shadow-lg transition-all ${
             notification.type === 'success'
-              ? 'bg-emerald-950/90 border-emerald-500/50 text-emerald-200'
-              : 'bg-rose-950/90 border-rose-500/50 text-rose-200'
+              ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
+              : 'bg-rose-50 border-rose-200 text-rose-800'
           }`}
         >
           {notification.type === 'success' ? (
-            <CheckCircle className="w-5 h-5 text-emerald-400" />
+            <CheckCircle className="w-4 h-4 text-emerald-600" />
           ) : (
-            <AlertCircle className="w-5 h-5 text-rose-400" />
+            <AlertCircle className="w-4 h-4 text-rose-600" />
           )}
-          <span className="text-sm font-medium">{notification.message}</span>
+          <span className="text-xs font-semibold">{notification.message}</span>
         </div>
       )}
 
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 bg-white border border-gray-200/90 p-6 rounded-2xl shadow-xs">
         <div>
-          <h1 className="font-heading text-h2 font-bold text-white">Content Management (CMS)</h1>
-          <p className="mt-1 text-slate-400 text-sm">
-            Manage FAQs and Gallery Media visible on the public website.
+          <span className="text-slate-500 text-xs font-semibold uppercase tracking-wider block mb-0.5">Content Management</span>
+          <h1 className="text-2xl font-bold text-slate-900">Site Content & CMS</h1>
+          <p className="mt-0.5 text-slate-500 text-xs sm:text-sm">
+            Manage FAQs and Gallery media assets visible on the public website.
           </p>
         </div>
 
         {/* Tab Selection */}
-        <div className="flex items-center gap-2 bg-slate-900/80 p-1.5 rounded-2xl border border-white/10">
+        <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl border border-gray-200">
           <button
             onClick={() => setActiveTab('faq')}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
               activeTab === 'faq'
-                ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30'
-                : 'text-slate-400 hover:text-white hover:bg-white/5'
+                ? 'bg-white text-slate-900 shadow-2xs font-bold'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
             }`}
           >
-            <HelpCircle className="w-4 h-4" />
+            <HelpCircle className="w-3.5 h-3.5" />
             FAQs ({faqs.length})
           </button>
           <button
             onClick={() => setActiveTab('gallery')}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
               activeTab === 'gallery'
-                ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30'
-                : 'text-slate-400 hover:text-white hover:bg-white/5'
+                ? 'bg-white text-slate-900 shadow-2xs font-bold'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
             }`}
           >
-            <ImageIcon className="w-4 h-4" />
-            Gallery Media ({gallery.length})
+            <ImageIcon className="w-3.5 h-3.5" />
+            Gallery ({gallery.length})
           </button>
         </div>
       </div>
@@ -322,19 +323,19 @@ export default function AdminContent() {
       {/* FAQ TAB CONTENT */}
       {/* ========================================================================= */}
       {activeTab === 'faq' && (
-        <div className="space-y-6">
+        <div className="space-y-4">
           {/* Controls Bar */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 bg-slate-900/60 p-4 rounded-2xl border border-white/10">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-gray-200/90 shadow-xs">
             <div className="flex flex-1 flex-col sm:flex-row items-center gap-3">
               {/* Search */}
               <div className="relative w-full sm:w-72">
-                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
                 <input
                   type="text"
                   placeholder="Search FAQs..."
                   value={faqSearch}
                   onChange={(e) => setFaqSearch(e.target.value)}
-                  className="w-full bg-slate-800/80 border border-white/10 rounded-xl pl-10 pr-4 py-2 text-sm text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-all"
+                  className="w-full bg-white border border-gray-200 rounded-lg pl-9 pr-3.5 py-2 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-900 transition-all shadow-2xs"
                 />
               </div>
 
@@ -342,7 +343,7 @@ export default function AdminContent() {
               <select
                 value={faqCategoryFilter}
                 onChange={(e) => setFaqCategoryFilter(e.target.value)}
-                className="w-full sm:w-48 bg-slate-800/80 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-all"
+                className="w-full sm:w-48 bg-white border border-gray-200 rounded-lg px-3 py-2 text-xs sm:text-sm font-semibold text-slate-800 focus:outline-none focus:border-slate-900 transition-all cursor-pointer shadow-2xs"
               >
                 <option value="ALL">All Categories</option>
                 {faqCategories.map((cat) => (
@@ -355,18 +356,18 @@ export default function AdminContent() {
 
             <button
               onClick={() => handleOpenFaqModal()}
-              className="flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-semibold text-sm shadow-lg shadow-blue-600/30 transition-all"
+              className="flex items-center justify-center gap-1.5 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg font-semibold text-xs transition-all shadow-xs cursor-pointer"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-3.5 h-3.5" />
               Add FAQ
             </button>
           </div>
 
-          {/* FAQ Accordion / List */}
+          {/* FAQ List */}
           {faqLoading ? (
-            <div className="text-center py-16 text-slate-400">Loading FAQs from DB...</div>
+            <div className="text-center py-12 text-slate-500 bg-white rounded-2xl border border-gray-200 shadow-xs">Loading FAQs...</div>
           ) : filteredFaqs.length === 0 ? (
-            <div className="text-center py-16 text-slate-400 bg-slate-900/40 rounded-2xl border border-white/10">
+            <div className="text-center py-12 text-slate-500 bg-white rounded-2xl border border-gray-200 shadow-xs">
               No FAQs found.
             </div>
           ) : (
@@ -374,52 +375,52 @@ export default function AdminContent() {
               {filteredFaqs.map((faq) => (
                 <div
                   key={faq.id}
-                  className={`bg-slate-900/60 border rounded-2xl p-5 transition-all ${
-                    faq.isActive ? 'border-white/10' : 'border-rose-500/30 opacity-60'
+                  className={`bg-white border rounded-xl p-4 sm:p-5 shadow-xs transition-all ${
+                    faq.isActive ? 'border-gray-200' : 'border-rose-200 bg-rose-50/20 opacity-75'
                   }`}
                 >
                   <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2.5 mb-2">
-                        <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-gray-200">
                           {faq.category || 'General'}
                         </span>
-                        <span className="text-xs text-slate-500">Order: {faq.displayOrder}</span>
+                        <span className="text-xs text-slate-400">Order: {faq.displayOrder}</span>
                         {!faq.isActive && (
-                          <span className="text-xs font-semibold px-2 py-0.5 rounded bg-rose-500/20 text-rose-400 border border-rose-500/30">
-                            Inactive / Hidden
+                          <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-rose-50 text-rose-700 border border-rose-200">
+                            Hidden
                           </span>
                         )}
                       </div>
-                      <h3 className="text-base font-semibold text-white">{faq.question}</h3>
-                      <p className="mt-2 text-slate-300 text-sm leading-relaxed whitespace-pre-line">
+                      <h3 className="text-sm sm:text-base font-bold text-slate-900">{faq.question}</h3>
+                      <p className="mt-1 text-slate-600 text-xs sm:text-sm leading-relaxed whitespace-pre-line">
                         {faq.answer}
                       </p>
                     </div>
 
-                    <div className="flex items-center gap-2 shrink-0">
+                    <div className="flex items-center gap-1.5 shrink-0">
                       <button
                         onClick={() => handleToggleFaqActive(faq)}
                         title={faq.isActive ? 'Hide on Public Site' : 'Publish to Public Site'}
-                        className={`p-2 rounded-xl border transition-all ${
+                        className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
                           faq.isActive
-                            ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20'
-                            : 'bg-slate-800 border-white/10 text-slate-400 hover:text-white'
+                            ? 'bg-emerald-50 border-emerald-200 text-emerald-700 hover:bg-emerald-100'
+                            : 'bg-slate-100 border-gray-200 text-slate-600 hover:text-slate-900'
                         }`}
                       >
-                        {faq.isActive ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                        {faq.isActive ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
                       </button>
                       <button
                         onClick={() => handleOpenFaqModal(faq)}
-                        className="p-2 bg-slate-800 border border-white/10 text-slate-300 hover:text-white hover:bg-slate-700 rounded-xl transition-all"
+                        className="p-1.5 bg-white border border-gray-300 text-slate-700 hover:bg-slate-50 rounded-lg transition-all cursor-pointer shadow-2xs"
                       >
-                        <Edit2 className="w-4 h-4" />
+                        <Edit2 className="w-3.5 h-3.5" />
                       </button>
                       <button
                         onClick={() => handleDeleteFaq(faq.id)}
-                        className="p-2 bg-rose-500/10 border border-rose-500/30 text-rose-400 hover:bg-rose-500/20 rounded-xl transition-all"
+                        className="p-1.5 bg-rose-50 border border-rose-200 text-rose-700 hover:bg-rose-100 rounded-lg transition-all cursor-pointer"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </div>
                   </div>
@@ -434,50 +435,50 @@ export default function AdminContent() {
       {/* GALLERY TAB CONTENT */}
       {/* ========================================================================= */}
       {activeTab === 'gallery' && (
-        <div className="space-y-6">
+        <div className="space-y-4">
           {/* Controls Bar */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 bg-slate-900/60 p-4 rounded-2xl border border-white/10">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-gray-200/90 shadow-xs">
             <div className="flex flex-1 flex-col sm:flex-row items-center gap-3">
               {/* Search */}
               <div className="relative w-full sm:w-72">
-                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
                 <input
                   type="text"
                   placeholder="Search media title or location..."
                   value={gallerySearch}
                   onChange={(e) => setGallerySearch(e.target.value)}
-                  className="w-full bg-slate-800/80 border border-white/10 rounded-xl pl-10 pr-4 py-2 text-sm text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-all"
+                  className="w-full bg-white border border-gray-200 rounded-lg pl-9 pr-3.5 py-2 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-900 transition-all shadow-2xs"
                 />
               </div>
 
               {/* Media Type Filter */}
-              <div className="flex items-center bg-slate-800/80 p-1 rounded-xl border border-white/10">
+              <div className="flex items-center bg-slate-100 p-1 rounded-xl border border-gray-200">
                 <button
                   onClick={() => setGalleryTypeFilter('ALL')}
-                  className={`px-3 py-1 text-xs font-semibold rounded-lg transition-all ${
+                  className={`px-3 py-1 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
                     galleryTypeFilter === 'ALL'
-                      ? 'bg-blue-600 text-white'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-white text-slate-900 shadow-2xs font-bold'
+                      : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
                   All ({gallery.length})
                 </button>
                 <button
                   onClick={() => setGalleryTypeFilter('IMAGE')}
-                  className={`px-3 py-1 text-xs font-semibold rounded-lg transition-all ${
+                  className={`px-3 py-1 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
                     galleryTypeFilter === 'IMAGE'
-                      ? 'bg-blue-600 text-white'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-white text-slate-900 shadow-2xs font-bold'
+                      : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
                   Images ({gallery.filter((g) => g.mediaType === 'IMAGE').length})
                 </button>
                 <button
                   onClick={() => setGalleryTypeFilter('VIDEO')}
-                  className={`px-3 py-1 text-xs font-semibold rounded-lg transition-all ${
+                  className={`px-3 py-1 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
                     galleryTypeFilter === 'VIDEO'
-                      ? 'bg-blue-600 text-white'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-white text-slate-900 shadow-2xs font-bold'
+                      : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
                   Videos ({gallery.filter((g) => g.mediaType === 'VIDEO').length})
@@ -487,18 +488,18 @@ export default function AdminContent() {
 
             <button
               onClick={() => handleOpenGalleryModal()}
-              className="flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-semibold text-sm shadow-lg shadow-blue-600/30 transition-all"
+              className="flex items-center justify-center gap-1.5 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg font-semibold text-xs transition-all shadow-xs cursor-pointer"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-3.5 h-3.5" />
               Add Media
             </button>
           </div>
 
           {/* Gallery Media Grid */}
           {galleryLoading ? (
-            <div className="text-center py-16 text-slate-400">Loading Gallery from DB...</div>
+            <div className="text-center py-12 text-slate-500 bg-white rounded-2xl border border-gray-200 shadow-xs">Loading Gallery...</div>
           ) : filteredGallery.length === 0 ? (
-            <div className="text-center py-16 text-slate-400 bg-slate-900/40 rounded-2xl border border-white/10">
+            <div className="text-center py-12 text-slate-500 bg-white rounded-2xl border border-gray-200 shadow-xs">
               No media items found.
             </div>
           ) : (
@@ -506,12 +507,12 @@ export default function AdminContent() {
               {filteredGallery.map((item) => (
                 <div
                   key={item.id}
-                  className={`group relative bg-slate-900/80 border rounded-2xl overflow-hidden transition-all flex flex-col justify-between ${
-                    item.isActive ? 'border-white/10 hover:border-blue-500/50' : 'border-rose-500/30 opacity-60'
+                  className={`group bg-white border rounded-xl overflow-hidden shadow-xs transition-all flex flex-col justify-between ${
+                    item.isActive ? 'border-gray-200 hover:border-gray-300' : 'border-rose-200 opacity-70'
                   }`}
                 >
                   {/* Media Preview Thumbnail */}
-                  <div className="relative aspect-video bg-slate-950 overflow-hidden">
+                  <div className="relative aspect-video bg-slate-100 overflow-hidden">
                     {item.mediaType === 'VIDEO' ? (
                       <video
                         src={item.src}
@@ -526,63 +527,63 @@ export default function AdminContent() {
                       <img
                         src={item.src}
                         alt={item.title || 'Gallery item'}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                       />
                     )}
 
                     {/* Media Type Badge */}
-                    <div className="absolute top-2.5 left-2.5 flex items-center gap-1 px-2.5 py-1 rounded-lg bg-black/60 backdrop-blur-md border border-white/10 text-xs font-semibold text-white">
+                    <div className="absolute top-2 left-2 flex items-center gap-1 px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-xs text-[10px] font-semibold text-white">
                       {item.mediaType === 'VIDEO' ? (
                         <>
-                          <Film className="w-3.5 h-3.5 text-amber-400" /> Video
+                          <Film className="w-3 h-3 text-amber-300" /> Video
                         </>
                       ) : (
                         <>
-                          <ImageIcon className="w-3.5 h-3.5 text-blue-400" /> Image
+                          <ImageIcon className="w-3 h-3 text-blue-300" /> Image
                         </>
                       )}
                     </div>
 
                     {/* Status Badge */}
-                    <div className="absolute top-2.5 right-2.5">
+                    <div className="absolute top-2 right-2">
                       <button
                         onClick={() => handleToggleGalleryActive(item)}
-                        className={`p-1.5 rounded-lg border backdrop-blur-md transition-all ${
+                        className={`p-1 rounded-md border backdrop-blur-xs transition-all cursor-pointer ${
                           item.isActive
-                            ? 'bg-emerald-950/80 border-emerald-500/40 text-emerald-400'
-                            : 'bg-rose-950/80 border-rose-500/40 text-rose-400'
+                            ? 'bg-emerald-600 text-white border-emerald-500'
+                            : 'bg-rose-600 text-white border-rose-500'
                         }`}
                       >
-                        {item.isActive ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
+                        {item.isActive ? <Eye className="w-3 h-3" /> : <EyeOff className="w-3 h-3" />}
                       </button>
                     </div>
                   </div>
 
                   {/* Details */}
-                  <div className="p-4 flex-1 flex flex-col justify-between">
+                  <div className="p-3.5 flex-1 flex flex-col justify-between">
                     <div>
-                      <h4 className="font-semibold text-white text-sm line-clamp-1">
+                      <h4 className="font-bold text-slate-900 text-xs sm:text-sm line-clamp-1">
                         {item.title || 'Untitled Media'}
                       </h4>
-                      <div className="flex items-center justify-between text-xs text-slate-400 mt-1">
-                        <span>{item.location || 'The Dive Village'}</span>
-                        <span className="text-slate-500">Order: {item.displayOrder}</span>
+                      <div className="flex items-center justify-between text-[11px] text-slate-500 mt-1">
+                        <span>{item.location || 'Dive Village'}</span>
+                        <span className="text-slate-400">Order: {item.displayOrder}</span>
                       </div>
                     </div>
 
                     {/* Card Actions */}
-                    <div className="flex items-center justify-between gap-2 mt-4 pt-3 border-t border-white/5">
+                    <div className="flex items-center justify-between gap-1.5 mt-3 pt-2.5 border-t border-gray-100">
                       <button
                         onClick={() => handleOpenGalleryModal(item)}
-                        className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-semibold transition-all"
+                        className="flex-1 flex items-center justify-center gap-1 py-1 bg-white border border-gray-300 hover:bg-slate-50 text-slate-700 rounded-lg text-xs font-semibold transition-all shadow-2xs cursor-pointer"
                       >
-                        <Edit2 className="w-3.5 h-3.5" /> Edit
+                        <Edit2 className="w-3 h-3" /> Edit
                       </button>
                       <button
                         onClick={() => handleDeleteGallery(item.id)}
-                        className="p-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 rounded-lg transition-all"
+                        className="p-1 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-lg transition-all cursor-pointer"
                       >
-                        <Trash2 className="w-3.5 h-3.5" />
+                        <Trash2 className="w-3 h-3" />
                       </button>
                     </div>
                   </div>
@@ -597,23 +598,23 @@ export default function AdminContent() {
       {/* FAQ MODAL */}
       {/* ========================================================================= */}
       {faqModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-slate-900 border border-white/10 rounded-3xl w-full max-w-xl p-6 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-5">
-              <h2 className="text-lg font-bold text-white">
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white border border-gray-200 rounded-2xl w-full max-w-xl p-6 shadow-xl text-slate-900 space-y-4">
+            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+              <h2 className="text-lg font-bold text-slate-900">
                 {editingFaq ? 'Edit FAQ' : 'Add New FAQ'}
               </h2>
               <button
                 onClick={() => setFaqModalOpen(false)}
-                className="p-1 text-slate-400 hover:text-white rounded-lg"
+                className="p-1 text-slate-400 hover:text-slate-600 rounded-lg"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleSaveFaq} className="space-y-4">
+            <form onSubmit={handleSaveFaq} className="space-y-3.5 text-xs font-semibold">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                <label className="block text-slate-700 mb-1">
                   Question *
                 </label>
                 <input
@@ -622,12 +623,12 @@ export default function AdminContent() {
                   value={faqFormData.question}
                   onChange={(e) => setFaqFormData({ ...faqFormData, question: e.target.value })}
                   placeholder="e.g. Do I need previous diving certification?"
-                  className="w-full bg-slate-800 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500"
+                  className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-900 focus:outline-none focus:border-slate-900 font-normal"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                <label className="block text-slate-700 mb-1">
                   Answer *
                 </label>
                 <textarea
@@ -636,13 +637,13 @@ export default function AdminContent() {
                   value={faqFormData.answer}
                   onChange={(e) => setFaqFormData({ ...faqFormData, answer: e.target.value })}
                   placeholder="Detailed answer text..."
-                  className="w-full bg-slate-800 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500 resize-none"
+                  className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-900 focus:outline-none focus:border-slate-900 resize-none font-normal"
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">
+                  <label className="block text-slate-700 mb-1">
                     Category
                   </label>
                   <input
@@ -650,12 +651,12 @@ export default function AdminContent() {
                     value={faqFormData.category}
                     onChange={(e) => setFaqFormData({ ...faqFormData, category: e.target.value })}
                     placeholder="General, Booking, Safety..."
-                    className="w-full bg-slate-800 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500"
+                    className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-900 focus:outline-none focus:border-slate-900 font-normal"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">
+                  <label className="block text-slate-700 mb-1">
                     Display Order
                   </label>
                   <input
@@ -664,12 +665,12 @@ export default function AdminContent() {
                     onChange={(e) =>
                       setFaqFormData({ ...faqFormData, displayOrder: parseInt(e.target.value) || 0 })
                     }
-                    className="w-full bg-slate-800 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500"
+                    className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-900 focus:outline-none focus:border-slate-900 font-normal"
                   />
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 pt-2">
+              <div className="flex items-center gap-3 pt-1">
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
                     type="checkbox"
@@ -679,24 +680,24 @@ export default function AdminContent() {
                     }
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                  <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-slate-900"></div>
                 </label>
-                <span className="text-sm font-semibold text-white">
+                <span className="text-xs font-semibold text-slate-700">
                   Publish on public site ({faqFormData.isActive ? 'Active' : 'Hidden'})
                 </span>
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-white/10">
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
                 <button
                   type="button"
                   onClick={() => setFaqModalOpen(false)}
-                  className="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-sm font-semibold transition-all"
+                  className="px-4 py-2 bg-white border border-gray-300 hover:bg-slate-50 text-slate-700 rounded-lg text-xs font-semibold transition-all cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-sm font-semibold shadow-lg shadow-blue-600/30 transition-all"
+                  className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-semibold transition-all cursor-pointer shadow-xs"
                 >
                   Save FAQ
                 </button>
@@ -710,37 +711,37 @@ export default function AdminContent() {
       {/* GALLERY MODAL */}
       {/* ========================================================================= */}
       {galleryModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-slate-900 border border-white/10 rounded-3xl w-full max-w-xl p-6 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-5">
-              <h2 className="text-lg font-bold text-white">
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white border border-gray-200 rounded-2xl w-full max-w-xl p-6 shadow-xl text-slate-900 space-y-4">
+            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+              <h2 className="text-lg font-bold text-slate-900">
                 {editingGallery ? 'Edit Media Item' : 'Add Gallery Media'}
               </h2>
               <button
                 onClick={() => setGalleryModalOpen(false)}
-                className="p-1 text-slate-400 hover:text-white rounded-lg"
+                className="p-1 text-slate-400 hover:text-slate-600 rounded-lg"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleSaveGallery} className="space-y-4">
+            <form onSubmit={handleSaveGallery} className="space-y-3.5 text-xs font-semibold">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                <label className="block text-slate-700 mb-1">
                   Title / Caption
                 </label>
                 <input
                   type="text"
                   value={galleryFormData.title}
                   onChange={(e) => setGalleryFormData({ ...galleryFormData, title: e.target.value })}
-                  placeholder="e.g. Manta Ray Night Dive"
-                  className="w-full bg-slate-800 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500"
+                  placeholder="e.g. Scuba Diving Experience"
+                  className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-900 focus:outline-none focus:border-slate-900 font-normal"
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">
+                  <label className="block text-slate-700 mb-1">
                     Media Type
                   </label>
                   <select
@@ -748,7 +749,7 @@ export default function AdminContent() {
                     onChange={(e) =>
                       setGalleryFormData({ ...galleryFormData, mediaType: e.target.value })
                     }
-                    className="w-full bg-slate-800 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500"
+                    className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-800 focus:outline-none focus:border-slate-900 cursor-pointer"
                   >
                     <option value="IMAGE">Image</option>
                     <option value="VIDEO">Video</option>
@@ -756,7 +757,7 @@ export default function AdminContent() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">
+                  <label className="block text-slate-700 mb-1">
                     Location
                   </label>
                   <input
@@ -765,15 +766,15 @@ export default function AdminContent() {
                     onChange={(e) =>
                       setGalleryFormData({ ...galleryFormData, location: e.target.value })
                     }
-                    placeholder="e.g. Maldives, Nusa Penida"
-                    className="w-full bg-slate-800 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500"
+                    placeholder="e.g. Main Reef"
+                    className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-900 focus:outline-none focus:border-slate-900 font-normal"
                   />
                 </div>
               </div>
 
               {/* Upload Widget & URL */}
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                <label className="block text-slate-700 mb-1">
                   Media Source URL *
                 </label>
                 <div className="flex gap-2">
@@ -783,7 +784,7 @@ export default function AdminContent() {
                     value={galleryFormData.src}
                     onChange={(e) => setGalleryFormData({ ...galleryFormData, src: e.target.value })}
                     placeholder="https://res.cloudinary.com/..."
-                    className="flex-1 bg-slate-800 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500"
+                    className="flex-1 bg-white border border-gray-300 rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-900 focus:outline-none focus:border-slate-900 font-normal"
                   />
                   <CloudinaryUploadWidget
                     onSuccess={(url) => setGalleryFormData({ ...galleryFormData, src: url })}
@@ -794,7 +795,7 @@ export default function AdminContent() {
               {/* Thumbnail URL for video */}
               {galleryFormData.mediaType === 'VIDEO' && (
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">
+                  <label className="block text-slate-700 mb-1">
                     Poster/Thumbnail Image URL (Optional)
                   </label>
                   <input
@@ -804,14 +805,14 @@ export default function AdminContent() {
                       setGalleryFormData({ ...galleryFormData, thumbnail: e.target.value })
                     }
                     placeholder="https://..."
-                    className="w-full bg-slate-800 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500"
+                    className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-900 focus:outline-none focus:border-slate-900 font-normal"
                   />
                 </div>
               )}
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">
+                  <label className="block text-slate-700 mb-1">
                     Category
                   </label>
                   <input
@@ -820,13 +821,13 @@ export default function AdminContent() {
                     onChange={(e) =>
                       setGalleryFormData({ ...galleryFormData, category: e.target.value })
                     }
-                    placeholder="Underwater, Marine Life, Action..."
-                    className="w-full bg-slate-800 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500"
+                    placeholder="Underwater, Training, Action..."
+                    className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-900 focus:outline-none focus:border-slate-900 font-normal"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">
+                  <label className="block text-slate-700 mb-1">
                     Display Order
                   </label>
                   <input
@@ -838,12 +839,12 @@ export default function AdminContent() {
                         displayOrder: parseInt(e.target.value) || 0,
                       })
                     }
-                    className="w-full bg-slate-800 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500"
+                    className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-900 focus:outline-none focus:border-slate-900 font-normal"
                   />
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 pt-2">
+              <div className="flex items-center gap-3 pt-1">
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
                     type="checkbox"
@@ -853,24 +854,24 @@ export default function AdminContent() {
                     }
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                  <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-slate-900"></div>
                 </label>
-                <span className="text-sm font-semibold text-white">
+                <span className="text-xs font-semibold text-slate-700">
                   Publish on gallery page ({galleryFormData.isActive ? 'Active' : 'Hidden'})
                 </span>
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-white/10">
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
                 <button
                   type="button"
                   onClick={() => setGalleryModalOpen(false)}
-                  className="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-sm font-semibold transition-all"
+                  className="px-4 py-2 bg-white border border-gray-300 hover:bg-slate-50 text-slate-700 rounded-lg text-xs font-semibold transition-all cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-sm font-semibold shadow-lg shadow-blue-600/30 transition-all"
+                  className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-semibold transition-all cursor-pointer shadow-xs"
                 >
                   Save Media Item
                 </button>

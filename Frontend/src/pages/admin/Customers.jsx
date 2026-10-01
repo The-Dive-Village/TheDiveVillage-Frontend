@@ -57,32 +57,35 @@ export default function AdminCustomers() {
       <div className="space-y-6">
         
         {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white/5 border border-white/10 p-6 rounded-3xl backdrop-blur-md">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white border border-gray-200/90 p-6 rounded-2xl shadow-xs">
           <div>
-            <span className="text-accent text-xs font-bold uppercase tracking-wider block mb-1">Customer Management</span>
-            <h1 className="font-heading text-3xl font-bold text-white">Booking Requests ({bookings.length})</h1>
+            <span className="text-slate-500 text-xs font-semibold uppercase tracking-wider block mb-0.5">Customer Inquiries</span>
+            <h1 className="text-2xl font-bold text-slate-900">Booking Requests ({bookings.length})</h1>
           </div>
           <button
             onClick={fetchBookings}
-            className="bg-white/10 text-white px-5 py-2.5 rounded-full font-bold text-xs hover:bg-white/20 transition cursor-pointer"
+            className="bg-white border border-gray-300 text-slate-700 px-4 py-2 rounded-lg font-semibold text-xs hover:bg-slate-50 transition shadow-xs cursor-pointer flex items-center gap-1.5"
           >
-            🔄 Refresh List
+            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
+            </svg>
+            Refresh List
           </button>
         </div>
 
         {/* Filter & Search */}
-        <form onSubmit={handleSearchSubmit} className="grid sm:grid-cols-3 gap-4">
+        <form onSubmit={handleSearchSubmit} className="grid sm:grid-cols-3 gap-3 sm:gap-4">
           <input
             type="text"
             placeholder="Search by customer name, email, or location..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="sm:col-span-2 bg-white/5 border border-white/15 rounded-2xl px-5 py-3.5 text-sm font-medium text-white placeholder-white/40 outline-none focus:border-accent transition"
+            className="sm:col-span-2 bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-xs sm:text-sm font-medium text-slate-900 placeholder-slate-400 outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900 transition shadow-2xs"
           />
           <select
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
-            className="bg-[#00284e] border border-white/15 rounded-2xl px-5 py-3.5 text-sm font-bold text-white outline-none focus:border-accent transition cursor-pointer"
+            className="bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-xs sm:text-sm font-semibold text-slate-800 outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900 transition cursor-pointer shadow-2xs"
           >
             {STATUS_OPTIONS.map((st) => (
               <option key={st} value={st}>
@@ -94,59 +97,59 @@ export default function AdminCustomers() {
 
         {/* List View */}
         {loading ? (
-          <div className="p-12 text-center text-white/50 bg-white/5 rounded-3xl border border-white/10">
-            <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-            <p className="text-sm font-medium">Loading booking requests...</p>
+          <div className="p-12 text-center text-slate-500 bg-white rounded-2xl border border-gray-200 shadow-xs">
+            <div className="w-6 h-6 border-2 border-slate-900 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+            <p className="text-xs sm:text-sm font-medium">Loading booking requests...</p>
           </div>
         ) : error ? (
-          <div className="p-8 text-center text-rose-300 bg-rose-500/10 rounded-3xl border border-rose-500/20 text-sm font-bold">
-            ⚠️ {error}
+          <div className="p-6 text-center text-rose-700 bg-rose-50 rounded-2xl border border-rose-200 text-xs sm:text-sm font-semibold">
+            {error}
           </div>
         ) : bookings.length === 0 ? (
-          <div className="p-12 text-center text-white/50 bg-white/5 rounded-3xl border border-white/10">
-            <p className="text-base font-bold text-white mb-1">No booking requests found</p>
-            <p className="text-xs">No customer booking submissions match the current filter.</p>
+          <div className="p-12 text-center text-slate-500 bg-white rounded-2xl border border-gray-200 shadow-xs">
+            <p className="text-sm font-bold text-slate-900 mb-1">No booking requests found</p>
+            <p className="text-xs text-slate-500">No submissions match the current filter.</p>
           </div>
         ) : (
-          <div className="overflow-x-auto rounded-3xl border border-white/10 bg-white/5 backdrop-blur-md">
-            <table className="w-full text-left text-sm text-white">
-              <thead className="bg-white/10 text-xs uppercase tracking-wider text-accent border-b border-white/10">
+          <div className="overflow-x-auto rounded-2xl border border-gray-200 bg-white shadow-xs">
+            <table className="w-full text-left text-xs sm:text-sm text-slate-800">
+              <thead className="bg-slate-50 text-[11px] uppercase tracking-wider text-slate-500 border-b border-gray-200">
                 <tr>
-                  <th className="px-6 py-4 font-bold">Customer</th>
-                  <th className="px-6 py-4 font-bold">Location & Country</th>
-                  <th className="px-6 py-4 font-bold">Preferred Date</th>
-                  <th className="px-6 py-4 font-bold">Group</th>
-                  <th className="px-6 py-4 font-bold">Status</th>
-                  <th className="px-6 py-4 font-bold text-right">Actions</th>
+                  <th className="px-6 py-3.5 font-bold">Customer</th>
+                  <th className="px-6 py-3.5 font-bold">Location & Country</th>
+                  <th className="px-6 py-3.5 font-bold">Preferred Date</th>
+                  <th className="px-6 py-3.5 font-bold">Group</th>
+                  <th className="px-6 py-3.5 font-bold">Status</th>
+                  <th className="px-6 py-3.5 font-bold text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/10 font-medium">
+              <tbody className="divide-y divide-gray-100 font-medium">
                 {bookings.map((b) => (
-                  <tr key={b.id} className="hover:bg-white/5 transition">
+                  <tr key={b.id} className="hover:bg-slate-50/60 transition">
                     <td className="px-6 py-4">
-                      <p className="font-bold text-white">{b.contactName}</p>
-                      <p className="text-xs text-white/60">{b.contactEmail}</p>
-                      {b.contactPhone && <p className="text-[11px] text-accent font-mono">{b.contactPhone}</p>}
+                      <p className="font-bold text-slate-900">{b.contactName}</p>
+                      <p className="text-xs text-slate-500">{b.contactEmail}</p>
+                      {b.contactPhone && <p className="text-[11px] text-slate-400 font-mono">{b.contactPhone}</p>}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <p className="font-bold text-white">{b.location}</p>
-                      <p className="text-xs text-white/50">{b.country}</p>
+                      <p className="font-bold text-slate-900">{b.location}</p>
+                      <p className="text-xs text-slate-500">{b.country}</p>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap font-bold text-accent">
+                    <td className="px-6 py-4 whitespace-nowrap font-semibold text-slate-800">
                       {b.date}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap font-bold">
+                    <td className="px-6 py-4 whitespace-nowrap font-medium text-slate-700">
                       {b.groupSize} Person(s)
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                      <span className={`px-2.5 py-0.5 rounded-md text-[11px] font-semibold uppercase ${
                         b.status === 'NEW'
-                          ? 'bg-blue-500/20 text-blue-300 border border-blue-500/40'
+                          ? 'bg-blue-50 text-blue-700 border border-blue-200'
                           : b.status === 'CONTACTED'
-                          ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
+                          ? 'bg-amber-50 text-amber-700 border border-amber-200'
                           : b.status === 'CONFIRMED'
-                          ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
-                          : 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
+                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                          : 'bg-rose-50 text-rose-700 border border-rose-200'
                       }`}>
                         {b.status}
                       </span>
@@ -154,7 +157,7 @@ export default function AdminCustomers() {
                     <td className="px-6 py-4 whitespace-nowrap text-right">
                       <button
                         onClick={() => setSelectedBooking(b)}
-                        className="px-3.5 py-1.5 rounded-xl bg-accent text-navy font-bold text-xs hover:bg-white transition cursor-pointer shadow-sm"
+                        className="px-3 py-1 rounded-lg border border-gray-300 bg-white text-slate-700 font-semibold text-xs hover:bg-slate-50 transition cursor-pointer shadow-2xs"
                       >
                         Inspect Request
                       </button>
@@ -169,62 +172,57 @@ export default function AdminCustomers() {
         {/* Detailed Booking Inspection Modal */}
         <AnimatePresence>
           {selectedBooking && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm"
-            >
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs">
               <motion.div
-                initial={{ scale: 0.95, y: 10 }}
-                animate={{ scale: 1, y: 0 }}
-                exit={{ scale: 0.95, y: 10 }}
-                className="bg-[#00284e] border border-white/15 rounded-3xl p-6 sm:p-8 max-w-xl w-full text-white shadow-2xl space-y-6 max-h-[85vh] overflow-y-auto"
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.95, opacity: 0 }}
+                className="bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 max-w-xl w-full text-slate-900 shadow-xl space-y-4 max-h-[85vh] overflow-y-auto"
               >
-                <div className="flex justify-between items-center border-b border-white/10 pb-4">
+                <div className="flex justify-between items-center border-b border-gray-100 pb-3">
                   <div>
-                    <span className="text-xs text-accent font-bold uppercase tracking-wider block">Booking Request Detail</span>
-                    <h3 className="font-heading text-2xl font-bold">{selectedBooking.contactName}</h3>
+                    <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">Booking Details</span>
+                    <h3 className="text-xl font-bold text-slate-900">{selectedBooking.contactName}</h3>
                   </div>
-                  <button onClick={() => setSelectedBooking(null)} className="text-white/60 hover:text-white text-lg">✕</button>
+                  <button onClick={() => setSelectedBooking(null)} className="text-slate-400 hover:text-slate-600 text-sm font-bold">✕</button>
                 </div>
 
-                <div className="space-y-4 text-xs">
-                  <div className="grid grid-cols-2 gap-4 bg-white/5 p-4 rounded-2xl border border-white/10">
+                <div className="space-y-3 text-xs">
+                  <div className="grid grid-cols-2 gap-3 bg-slate-50 p-3.5 rounded-xl border border-gray-200">
                     <div>
-                      <span className="text-white/50 block font-bold mb-0.5">Contact Email</span>
-                      <span className="font-bold text-white text-sm">{selectedBooking.contactEmail}</span>
+                      <span className="text-slate-500 block font-semibold mb-0.5">Email</span>
+                      <span className="font-bold text-slate-900 text-xs sm:text-sm">{selectedBooking.contactEmail}</span>
                     </div>
                     <div>
-                      <span className="text-white/50 block font-bold mb-0.5">Phone Number</span>
-                      <span className="font-bold text-accent text-sm">{selectedBooking.contactPhone || 'N/A'}</span>
+                      <span className="text-slate-500 block font-semibold mb-0.5">Phone</span>
+                      <span className="font-bold text-slate-900 text-xs sm:text-sm">{selectedBooking.contactPhone || 'N/A'}</span>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4 bg-white/5 p-4 rounded-2xl border border-white/10">
+                  <div className="grid grid-cols-2 gap-3 bg-slate-50 p-3.5 rounded-xl border border-gray-200">
                     <div>
-                      <span className="text-white/50 block font-bold mb-0.5">Location & Country</span>
-                      <span className="font-bold text-white">{selectedBooking.location} ({selectedBooking.country})</span>
+                      <span className="text-slate-500 block font-semibold mb-0.5">Location</span>
+                      <span className="font-bold text-slate-900">{selectedBooking.location} ({selectedBooking.country})</span>
                     </div>
                     <div>
-                      <span className="text-white/50 block font-bold mb-0.5">Preferred Date</span>
-                      <span className="font-bold text-accent">{selectedBooking.date}</span>
+                      <span className="text-slate-500 block font-semibold mb-0.5">Preferred Date</span>
+                      <span className="font-bold text-slate-900">{selectedBooking.date}</span>
                     </div>
                   </div>
 
                   {/* Participants Summary */}
                   {Array.isArray(selectedBooking.participants) && selectedBooking.participants.length > 0 && (
-                    <div className="bg-white/5 p-4 rounded-2xl border border-white/10 space-y-2">
-                      <span className="text-white/50 block font-bold uppercase tracking-wider text-[10px]">
+                    <div className="bg-slate-50 p-3.5 rounded-xl border border-gray-200 space-y-2">
+                      <span className="text-slate-500 block font-semibold uppercase tracking-wider text-[10px]">
                         Participants ({selectedBooking.participants.length})
                       </span>
                       {selectedBooking.participants.map((p, idx) => (
-                        <div key={idx} className="flex justify-between items-center bg-white/5 p-2.5 rounded-xl border border-white/5 text-xs">
+                        <div key={idx} className="flex justify-between items-center bg-white p-2.5 rounded-lg border border-gray-200 text-xs">
                           <div>
-                            <span className="font-bold text-white block">{p.name || `Participant ${idx + 1}`}</span>
-                            <span className="text-[10px] text-white/50">Age: {p.age || 'N/A'}</span>
+                            <span className="font-semibold text-slate-900 block">{p.name || `Participant ${idx + 1}`}</span>
+                            <span className="text-[10px] text-slate-400">Age: {p.age || 'N/A'}</span>
                           </div>
-                          <span className="font-bold text-accent bg-accent/10 px-2.5 py-0.5 rounded-full text-[10px]">
+                          <span className="font-semibold text-slate-700 bg-slate-100 px-2.5 py-0.5 rounded-md text-[10px]">
                             {p.selectedProgram || 'Selected Course'}
                           </span>
                         </div>
@@ -233,25 +231,25 @@ export default function AdminCustomers() {
                   )}
 
                   {selectedBooking.specialRequests && (
-                    <div className="bg-white/5 p-4 rounded-2xl border border-white/10">
-                      <span className="text-white/50 block font-bold mb-1 uppercase tracking-wider text-[10px]">Special Requests / Notes</span>
-                      <p className="text-white/90 text-xs">{selectedBooking.specialRequests}</p>
+                    <div className="bg-slate-50 p-3.5 rounded-xl border border-gray-200">
+                      <span className="text-slate-500 block font-semibold mb-1 uppercase tracking-wider text-[10px]">Special Requests / Notes</span>
+                      <p className="text-slate-700 text-xs leading-relaxed">{selectedBooking.specialRequests}</p>
                     </div>
                   )}
 
                   {/* Status Updater */}
-                  <div className="pt-3 border-t border-white/10 flex flex-col gap-2">
-                    <span className="text-white/70 font-bold uppercase tracking-wider text-[10px]">Update Booking Status</span>
+                  <div className="pt-3 border-t border-gray-100 flex flex-col gap-2">
+                    <span className="text-slate-500 font-semibold uppercase tracking-wider text-[10px]">Update Status</span>
                     <div className="flex flex-wrap gap-2">
                       {['NEW', 'CONTACTED', 'CONFIRMED', 'CANCELLED'].map((st) => (
                         <button
                           key={st}
                           disabled={updatingStatus}
                           onClick={() => handleUpdateStatus(selectedBooking.id, st)}
-                          className={`px-4 py-2 rounded-xl font-bold text-xs transition cursor-pointer ${
+                          className={`px-3 py-1.5 rounded-lg font-semibold text-xs transition cursor-pointer ${
                             selectedBooking.status === st
-                              ? 'bg-accent text-navy shadow-md ring-2 ring-accent/50'
-                              : 'bg-white/10 text-white hover:bg-white/20'
+                              ? 'bg-slate-900 text-white shadow-2xs'
+                              : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                           }`}
                         >
                           {st}
@@ -264,13 +262,13 @@ export default function AdminCustomers() {
                 <div className="pt-2 text-right">
                   <button
                     onClick={() => setSelectedBooking(null)}
-                    className="px-6 py-2.5 rounded-xl bg-white/10 text-white font-bold text-xs hover:bg-white/20 transition cursor-pointer"
+                    className="px-4 py-2 rounded-lg border border-gray-300 bg-white text-slate-700 font-semibold text-xs hover:bg-slate-50 transition cursor-pointer"
                   >
                     Close
                   </button>
                 </div>
               </motion.div>
-            </motion.div>
+            </div>
           )}
         </AnimatePresence>
 

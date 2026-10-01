@@ -59,7 +59,7 @@ export default function CommandPalette({ isOpen, onClose }) {
         id: `product-${p.id}`,
         type: 'product',
         title: p.title,
-        subtitle: `₹${p.price?.toLocaleString('en-IN') || p.price} • ${p.category}`,
+        subtitle: `${p.category || 'Official Gear'}`,
         url: `/product/${p.id}`,
         icon: '👕',
         category: 'Shop Gear',

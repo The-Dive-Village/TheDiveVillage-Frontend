@@ -8,34 +8,7 @@ export default function Cart() {
   const { items, itemCount, subtotal, loading, removeItem, updateQuantity } = useCart()
   const location = useLocation()
   const isDashboard = location.pathname.startsWith('/dashboard')
-
-  const [promoCode, setPromoCode] = useState('')
-  const [discount, setDiscount] = useState(0)
-  const [promoError, setPromoError] = useState('')
-  const [promoSuccess, setPromoSuccess] = useState('')
-
-  const freeShippingThreshold = 1999
-  const amountAwayFromFreeShipping = Math.max(0, freeShippingThreshold - subtotal)
-  const shippingFee = subtotal >= freeShippingThreshold || subtotal === 0 ? 0 : 99
-  const finalTotal = Math.max(0, subtotal - discount + shippingFee)
-
-  const handleApplyPromo = (e) => {
-    e.preventDefault()
-    setPromoError('')
-    setPromoSuccess('')
-
-    const code = promoCode.trim().toUpperCase()
-    if (code === 'DIVE10' || code === 'VILLAGE10') {
-      const disc = Math.round(subtotal * 0.1)
-      setDiscount(disc)
-      setPromoSuccess(`🎉 10% discount applied! You saved ${formatCurrency(disc)}`)
-    } else if (code === 'FREESHIP') {
-      setDiscount(shippingFee)
-      setPromoSuccess('🎉 Free shipping coupon applied!')
-    } else {
-      setPromoError('Invalid coupon code. Try "DIVE10" for 10% off.')
-    }
-  }
+  const finalTotal = subtotal
 
   return (
     <div
@@ -68,7 +41,7 @@ export default function Cart() {
             </div>
             <h2 className="font-heading text-2xl sm:text-3xl font-bold mb-3 text-navy">Your cart is empty.</h2>
             <p className="text-navy/60 mb-8 text-sm leading-relaxed max-w-md mx-auto">
-              Explore our ocean-crafted hoodies, pro dive suits, UPF 50+ rash guards, and branded essentials, or reserve your next certification course.
+              Explore our ocean-crafted hoodies, pro dive suits, rash guards, and branded essentials, or reserve your next certification course.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
               <Button as={Link} to="/shop" className="w-full sm:w-auto justify-center bg-navy text-white hover:bg-accent">
@@ -84,27 +57,6 @@ export default function Cart() {
             
             {/* Left Column: Cart Items */}
             <div className="lg:col-span-8 space-y-6">
-              
-              {/* Free Shipping Progress Alert */}
-              <div className="rounded-2xl bg-white border border-navy/10 p-4 shadow-sm">
-                {amountAwayFromFreeShipping === 0 ? (
-                  <p className="text-xs font-bold text-emerald-700 flex items-center gap-2">
-                    <span>🎉</span> You have qualified for <strong>FREE Express Shipping</strong>!
-                  </p>
-                ) : (
-                  <div>
-                    <p className="text-xs font-bold text-navy/80 mb-2">
-                      Add <strong className="text-accent">{formatCurrency(amountAwayFromFreeShipping)}</strong> more to unlock <strong>FREE Shipping</strong>!
-                    </p>
-                    <div className="w-full h-2 bg-[#F0F2F5] rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-accent rounded-full transition-all duration-500"
-                        style={{ width: `${Math.min(100, (subtotal / freeShippingThreshold) * 100)}%` }}
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
 
               {/* Items List */}
               <div className="bg-white rounded-[32px] border border-navy/5 p-6 sm:p-8 shadow-card divide-y divide-navy/10">
@@ -141,16 +93,10 @@ export default function Cart() {
                           >
                             {product.title || product.name || 'Dive Item'}
                           </Link>
-                          <span className="font-heading text-base font-bold text-navy sm:text-right shrink-0">
-                            {formatCurrency(itemSubtotal)}
-                          </span>
                         </div>
 
-                        {/* Metadata & Unit Price */}
+                        {/* Metadata */}
                         <div className="flex flex-wrap items-center gap-2 text-xs text-navy/60 mb-4">
-                          <span className="font-bold text-navy">
-                            {formatCurrency(itemPrice)} each
-                          </span>
                           {product.selectedSize && product.selectedSize !== 'Standard' && (
                             <span className="bg-[#F0F2F5] px-2.5 py-1 rounded-lg font-semibold text-navy">
                               Size: {product.selectedSize}
@@ -212,28 +158,6 @@ export default function Cart() {
                 })}
               </div>
 
-              {/* Promo Code Input */}
-              <div className="bg-white rounded-3xl border border-navy/5 p-6 shadow-card">
-                <h3 className="font-heading text-sm font-bold text-navy mb-3">Have a Promo or Gift Code?</h3>
-                <form onSubmit={handleApplyPromo} className="flex gap-2">
-                  <input
-                    type="text"
-                    placeholder="e.g. DIVE10"
-                    value={promoCode}
-                    onChange={(e) => setPromoCode(e.target.value)}
-                    className="flex-1 rounded-2xl bg-[#F0F2F5] px-4 py-2.5 text-xs sm:text-sm text-navy uppercase font-bold outline-none focus:ring-2 focus:ring-accent/50"
-                  />
-                  <button
-                    type="submit"
-                    className="rounded-2xl bg-navy text-white px-5 py-2.5 text-xs font-bold hover:bg-accent transition cursor-pointer"
-                  >
-                    Apply
-                  </button>
-                </form>
-                {promoSuccess && <p className="text-xs font-bold text-emerald-600 mt-2">{promoSuccess}</p>}
-                {promoError && <p className="text-xs font-bold text-red-500 mt-2">{promoError}</p>}
-              </div>
-
             </div>
 
             {/* Right Column: Order Summary */}
@@ -247,28 +171,6 @@ export default function Cart() {
                   <span>Total Items</span>
                   <span className="font-bold text-navy">{itemCount}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span>Items Subtotal</span>
-                  <span className="font-bold text-navy">{formatCurrency(subtotal)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Estimated Shipping</span>
-                  <span className={`font-bold ${shippingFee === 0 ? 'text-emerald-600' : 'text-navy'}`}>
-                    {shippingFee === 0 ? 'FREE' : formatCurrency(shippingFee)}
-                  </span>
-                </div>
-                {discount > 0 && (
-                  <div className="flex justify-between text-emerald-700 font-bold">
-                    <span>Coupon Discount</span>
-                    <span>- {formatCurrency(discount)}</span>
-                  </div>
-                )}
-                <div className="flex justify-between text-navy pt-4 border-t border-navy/10">
-                  <span className="font-bold text-lg">Total</span>
-                  <span className="font-heading font-bold text-2xl text-navy">
-                    {formatCurrency(finalTotal)}
-                  </span>
-                </div>
               </div>
 
               <Link
@@ -278,11 +180,6 @@ export default function Cart() {
                 <span>Proceed to Checkout</span>
                 <span>→</span>
               </Link>
-
-              <div className="space-y-2 pt-4 border-t border-navy/5 text-[11px] text-navy/60 text-center">
-                <p>🔒 256-Bit Bank Grade SSL Encryption</p>
-                <p>📦 100% Genuine Branded Merchandise Guarantee</p>
-              </div>
             </div>
 
           </div>
@@ -294,11 +191,8 @@ export default function Cart() {
       {items.length > 0 && !loading && (
         <div className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-xl border-t border-navy/10 px-4 py-3 shadow-[0_-8px_30px_rgba(0,0,0,0.1)] pb-[max(0.75rem,env(safe-area-inset-bottom))] flex items-center justify-between gap-3 animate-fade-in">
           <div className="flex flex-col min-w-0">
-            <span className="text-[10px] font-bold text-navy/60 uppercase tracking-wider">
-              {itemCount} item{itemCount !== 1 ? 's' : ''} • Total
-            </span>
-            <span className="font-heading text-xl font-bold text-navy leading-none">
-              {formatCurrency(finalTotal)}
+            <span className="font-heading text-sm font-bold text-navy leading-none">
+              {itemCount} item{itemCount !== 1 ? 's' : ''} in cart
             </span>
           </div>
 

@@ -5,10 +5,11 @@ import PhoneInput from 'react-phone-number-input'
 import 'react-phone-number-input/style.css'
 import { IMAGES, CAROUSEL_IMAGES, PANEL_IMAGES } from '../utils/images'
 const bookVideo = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790242027/dive-village/hero-360/duskamhque0kugdulev7.mp4'
-const compiledNightDiveVideo = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790244122/dive-village/ui-videos/compiled_night_dive_video_2_mp4.mp4'
+const compiledNightDiveVideo = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243508/dive-village/hero-360/bpjuqk54webpdtghzbxk.mp4'
 const divingVid = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790244035/dive-village/ui-videos/diving_1_mp4.mp4'
 import useNightDive from '../hooks/useNightDive'
 import SEOHead from '../components/SEOHead'
+import MerchBannerCTA from '../components/MerchBannerCTA'
 import api from '../services/api'
 
 export default function Contact() {
@@ -65,6 +66,24 @@ export default function Contact() {
         subject: formData.subject,
         message: formData.message,
       })
+
+      try {
+        const newEnquiryRecord = {
+          id: `ENQ-${Date.now().toString(36).toUpperCase()}`,
+          type: 'Enquiry',
+          subject: formData.subject || 'General Enquiry',
+          contactName: formData.name,
+          contactEmail: formData.email,
+          contactPhone: formData.phone || null,
+          message: formData.message,
+          status: 'Inquiry Received',
+          createdAt: new Date().toISOString(),
+        }
+        const existing = JSON.parse(localStorage.getItem('dive_village_enquiries') || '[]')
+        localStorage.setItem('dive_village_enquiries', JSON.stringify([newEnquiryRecord, ...existing]))
+      } catch (e) {
+        console.warn('Could not save enquiry locally:', e)
+      }
 
       setSuccess(true)
       setFormData({
@@ -315,62 +334,8 @@ export default function Contact() {
           </a>
         </div>
 
-        {/* Bottom CTA Banner with Video on Desktop & Image on Mobile */}
-        <div className="mt-24 sm:mt-32 rounded-[40px] text-white p-8 sm:p-14 lg:p-20 relative overflow-hidden shadow-2xl border border-white/20 group">
-          {/* Mobile Background Image (Mobile Only) */}
-          <img
-            src={PANEL_IMAGES[6]}
-            alt="Ocean Escape"
-            className="block md:hidden absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
-          />
-
-          {/* Desktop Video Background (Desktop Only) */}
-          <video
-            src={isNightDive ? compiledNightDiveVideo : divingVid}
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="hidden md:block absolute inset-0 w-full h-full object-cover transition-transform duration-[10000ms] group-hover:scale-105 opacity-60"
-          />
-
-          {/* Ambient Overlays for Contrast & Readability */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#001428]/95 via-[#001428]/70 to-[#001428]/35 pointer-events-none" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#001428]/85 via-transparent to-black/20 pointer-events-none" />
-          <div className="absolute -right-20 -top-20 w-96 h-96 bg-accent/15 rounded-full blur-3xl pointer-events-none" />
-
-          {/* Content Overlay */}
-          <div className="relative z-10 max-w-2xl flex flex-col justify-center">
-            <span className="inline-block self-start bg-white/15 backdrop-blur-md border border-white/25 rounded-full px-4 py-1.5 text-xs font-bold text-accent uppercase tracking-widest mb-6 shadow-sm">
-              Start Now
-            </span>
-            <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight tracking-tight mb-4 drop-shadow-md">
-              Discover Your Next <span className="font-heading font-bold text-accent"><br />Ocean Escape</span>
-            </h2>
-            <p className="text-base sm:text-lg font-medium text-white/90 leading-relaxed max-w-xl mb-8 drop-shadow-sm">
-              Ready to take the plunge? Plan your trip in minutes and enjoy every moment of your dive adventure with certified dive experts.
-            </p>
-
-            <div className="flex flex-wrap items-center gap-2.5 sm:gap-4">
-              <Link
-                to="/book-us"
-                className="rounded-full bg-white/15 backdrop-blur-xl border border-white/30 text-white font-bold px-5 py-2.5 sm:px-8 sm:py-4 text-xs sm:text-sm uppercase tracking-wider transition-all duration-300 hover:scale-105 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] flex items-center gap-1.5 sm:gap-2 cursor-pointer"
-              >
-                <span>Book Your Dive Now</span>
-                <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M5 12h14" />
-                  <path d="m12 5 7 7-7 7" />
-                </svg>
-              </Link>
-              <Link
-                to="/services"
-                className="rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold px-4 py-2.5 sm:px-6 sm:py-4 text-xs sm:text-sm uppercase tracking-wider transition-all duration-300 hover:scale-105 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] cursor-pointer"
-              >
-                Explore Programs
-              </Link>
-            </div>
-          </div>
-        </div>
+        {/* Merchandise Banner CTA */}
+        <MerchBannerCTA className="mt-20 sm:mt-28" />
 
       </div>
     </div>

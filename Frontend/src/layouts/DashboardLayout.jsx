@@ -1,49 +1,65 @@
 import { NavLink, Outlet } from 'react-router'
 import Navbar from '../components/Navbar'
+import { useAuth } from '../hooks/useAuth'
 
 const LINKS = [
   { to: '/dashboard', label: 'Overview', end: true },
-  { to: '/dashboard/profile', label: 'Profile' },
-  { to: '/dashboard/orders', label: 'Orders' },
-  { to: '/dashboard/wishlist', label: 'Wishlist' },
-  { to: '/dashboard/cart', label: 'Cart' },
+  { to: '/dashboard/profile', label: 'Your Profile' },
+  { to: '/dashboard/orders', label: 'Your Orders' },
+  { to: '/dashboard/wishlist', label: 'Saved Wishlist' },
+  { to: '/dashboard/cart', label: 'Shopping Cart' },
 ]
 
 export default function DashboardLayout() {
-  return (
-    <div className="min-h-screen bg-[#021426] font-body text-white pt-20 sm:pt-28 pb-12 sm:pb-16" style={{ textShadow: 'none' }}>
-      <Navbar />
-      <div className="mx-auto flex max-w-7xl flex-col gap-4 sm:gap-8 px-3 sm:px-6 lg:flex-row lg:px-8">
-        
-        {/* Navigation Tabs (Horizontal Pill Bar on Mobile, Sticky Sidebar on Desktop) */}
-        <aside className="w-full shrink-0 lg:w-64">
-          <nav className="rounded-2xl sm:rounded-3xl bg-[#003865]/90 border border-white/15 p-1.5 sm:p-4 shadow-card sticky top-20 sm:top-28 lg:top-32 backdrop-blur-xl z-20 overflow-x-auto no-scrollbar flex flex-row lg:flex-col gap-1.5 sm:gap-2">
-            {LINKS.map((l) => (
-              <NavLink
-                key={l.to}
-                to={l.to}
-                end={l.end}
-                className={({ isActive }) =>
-                  `shrink-0 whitespace-nowrap rounded-xl sm:rounded-2xl px-3.5 py-2 sm:px-5 sm:py-3 text-xs sm:text-sm font-bold transition duration-200 ${
-                    isActive 
-                      ? 'bg-accent text-[#001e3d] shadow-md font-extrabold' 
-                      : 'text-white/75 hover:bg-white/10 hover:text-white'
-                  }`
-                }
-              >
-                {l.label}
-              </NavLink>
-            ))}
-          </nav>
-        </aside>
+  const { user } = useAuth()
 
-        {/* Main Content Area in Brand Blue */}
-        <div className="min-w-0 flex-1">
-          <div className="rounded-2xl sm:rounded-3xl bg-[#003865]/90 border border-white/15 p-4 sm:p-8 lg:p-12 shadow-card min-h-[50vh] sm:min-h-[60vh] backdrop-blur-xl text-white">
-            <Outlet />
+  return (
+    <div className="min-h-screen bg-[#F8FAFC] font-body text-slate-900 pt-20 sm:pt-28 pb-12 sm:pb-16 antialiased">
+      <Navbar />
+      
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* Minimalist Top Profile Header Strip */}
+        <div className="mb-6 sm:mb-8 pb-4 border-b border-gray-200 flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+              {user?.displayName || 'My Account'}
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+              Manage your profile details, orders, and dive activity.
+            </p>
           </div>
         </div>
 
+        <div className="flex flex-col lg:flex-row gap-6 sm:gap-8 items-start">
+          {/* Navigation Sidebar (Vertical pill with active indicator matching reference) */}
+          <aside className="w-full shrink-0 lg:w-64">
+            <nav className="rounded-2xl bg-white border border-gray-200/90 p-2 sm:p-2.5 shadow-xs sticky top-20 sm:top-28 lg:top-32 flex flex-row lg:flex-col gap-1 overflow-x-auto no-scrollbar">
+              {LINKS.map((l) => (
+                <NavLink
+                  key={l.to}
+                  to={l.to}
+                  end={l.end}
+                  className={({ isActive }) =>
+                    `shrink-0 whitespace-nowrap rounded-xl px-4 py-2.5 text-xs sm:text-sm font-semibold transition-all duration-150 relative ${
+                      isActive
+                        ? 'bg-slate-900 text-white shadow-xs font-bold'
+                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                    }`
+                  }
+                >
+                  {l.label}
+                </NavLink>
+              ))}
+            </nav>
+          </aside>
+
+          {/* Main Content Area */}
+          <main className="min-w-0 flex-1 w-full">
+            <div className="rounded-2xl bg-white border border-gray-200/90 p-5 sm:p-8 lg:p-10 shadow-xs min-h-[55vh] text-slate-900">
+              <Outlet />
+            </div>
+          </main>
+        </div>
       </div>
     </div>
   )

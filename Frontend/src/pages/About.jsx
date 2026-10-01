@@ -4,6 +4,7 @@ import Button from '../components/Button'
 import SafeImage from '../components/SafeImage'
 import SectionReveal, { StaggerGrid, StaggerItem } from '../components/SectionReveal'
 import SEOHead from '../components/SEOHead'
+import MerchBannerCTA from '../components/MerchBannerCTA'
 import { CAROUSEL_IMAGES } from '../utils/images'
 import { useReviews } from '../contexts/ReviewsContext'
 import divingVidLocal from '../assets/Diving(1).mp4'
@@ -13,7 +14,6 @@ import jellyfishVideoLocal from '../assets/jelly fish.mp4'
 const divingVid = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790244035/dive-village/ui-videos/diving_1_mp4.mp4'
 const aboutVid = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790244047/dive-village/ui-videos/about_mp4.mp4'
 const jellyfishVideo = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790244064/dive-village/ui-videos/jelly_fish_mp4.mp4'
-const nightDiveVideo = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243508/dive-village/hero-360/bpjuqk54webpdtghzbxk.mp4'
 import useNightDive from '../hooks/useNightDive'
 
 import zero2HeroImg from '../assets/Gallery/zero2hero.jpg'
@@ -53,21 +53,21 @@ const TESTIMONIALS = [
     id: 'rev-1',
     name: "Sofia Stalance",
     role: "Open Water Diver",
-    text: "The Dive Village completely changed my perspective on the ocean. The instructors were incredibly patient, and the focus on safety made my first dive unforgettable.",
+    text: "The pre-dive briefing was thorough, and my instructor stayed right by my side until my breathing relaxed. By dive two, my buoyancy felt like second nature—truly unforgettable.",
     image: CAROUSEL_IMAGES[1]
   },
   {
     id: 'rev-2',
     name: "Krishawn Rahul",
-    role: "Marine Biologist",
-    text: "I've dived all over the world, but the dedication to eco-stewardship here is unmatched. It's inspiring to see a dive center that truly cares about coral restoration and leaving no trace.",
+    role: "Certified Diver",
+    text: "Every dive felt relaxed and unhurried. Top-notch equipment, small groups, and instructors who focus on safety and technique. Pure weightlessness from start to finish.",
     image: CAROUSEL_IMAGES[2]
   },
   {
     id: 'rev-3',
     name: "Michael Antony",
-    role: "Advanced Adventurer",
-    text: "From the seamless booking process to the personalized dive charters, everything was flawless. A vibrant community that genuinely feels like a second home.",
+    role: "Experienced Diver",
+    text: "One of the most professional dive centers I've dived with. Flawless gear, seamless surface support, and well-executed dive plans every single time.",
     image: CAROUSEL_IMAGES[0]
   }
 ]
@@ -358,50 +358,8 @@ export default function About() {
           </div>
         </div>
 
-        {/* 2.5 READY TO EXPLORE THE OCEAN — FULL-BLEED TRANSLUCENT CTA WITH HERO VIDEO */}
-        <div className="rounded-[40px] text-white p-8 sm:p-14 lg:p-20 relative overflow-hidden shadow-2xl border border-white/20 group">
-          <video
-            src={divingVid}
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-[10000ms] group-hover:scale-105 opacity-60"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#001428]/95 via-[#001428]/75 to-[#001428]/40 pointer-events-none" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#001428]/90 via-transparent to-black/20 pointer-events-none" />
-          <div className="absolute -right-20 -top-20 w-96 h-96 bg-[#FFCD00]/15 rounded-full blur-3xl pointer-events-none" />
-          
-          <div className="relative z-10 max-w-2xl flex flex-col justify-center">
-            <span className="inline-block self-start bg-white/15 backdrop-blur-md border border-white/25 rounded-full px-4 py-1.5 text-xs font-bold text-[#FFCD00] uppercase tracking-widest mb-6 shadow-sm">
-              Start Now
-            </span>
-            <h2 className="font-heading text-4xl sm:text-6xl lg:text-7xl font-bold uppercase tracking-tight text-white leading-tight mb-4 drop-shadow-md">
-              Discover Your Next <span className="font-heading font-bold text-[#FFCD00]"><br />Ocean Escape</span>
-            </h2>
-            <p className="text-base sm:text-lg font-medium text-white/90 leading-relaxed max-w-xl mb-8 drop-shadow-sm">
-              Whether it's your very first breath underwater or your next technical certification, we are ready to guide you every step of the way.
-            </p>
-            <div className="flex flex-wrap gap-3 sm:gap-4 items-center">
-              <Link
-                to="/book-us"
-                className="rounded-full bg-white/15 backdrop-blur-xl border border-white/30 text-white font-bold px-5 py-2.5 sm:px-8 sm:py-4 text-xs sm:text-sm uppercase tracking-wider transition-all duration-300 hover:scale-105 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] flex items-center gap-1.5 sm:gap-2 cursor-pointer"
-              >
-                <span>Book Your Dive Now</span>
-                <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M5 12h14" />
-                  <path d="m12 5 7 7-7 7" />
-                </svg>
-              </Link>
-              <Link
-                to="/contact"
-                className="rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold px-4 py-2.5 sm:px-6 sm:py-4 text-xs sm:text-sm uppercase tracking-wider transition-all duration-300 hover:scale-105 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] cursor-pointer"
-              >
-                Contact Our Team
-              </Link>
-            </div>
-          </div>
-        </div>
+        {/* Merchandise Banner CTA */}
+        <MerchBannerCTA className="mt-16 sm:mt-24" />
 
         </div>
       </div>

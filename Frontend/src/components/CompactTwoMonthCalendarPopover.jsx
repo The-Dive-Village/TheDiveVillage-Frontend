@@ -297,24 +297,6 @@ export default function CompactTwoMonthCalendarPopover({
             </div>
 
           </div>
-
-          {/* Symmetrical Legend Footer */}
-          <div className="mt-3 pt-2.5 sm:mt-4 sm:pt-3 border-t border-navy/10 flex items-center justify-between text-[9px] sm:text-[10px] font-medium text-navy/70">
-            <div className="flex items-center gap-3 sm:gap-4 mx-auto">
-              <div className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-500" />
-                <span>Available</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-amber-400" />
-                <span>Limited</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-slate-300" />
-                <span>Unavailable</span>
-              </div>
-            </div>
-          </div>
         </motion.div>
       )}
     </AnimatePresence>
@@ -332,7 +314,7 @@ function DateCell({ cell, onClick }) {
       onClick={onClick}
       aria-label={`${dateKey} - ${status}`}
       aria-selected={isSelected}
-      className={`group relative flex flex-col items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full text-[10px] sm:text-[11px] font-bold transition-all duration-150 ${
+      className={`group relative flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full text-[10px] sm:text-[11px] font-bold transition-all duration-150 ${
         isSelected
           ? 'bg-navy text-white shadow-md ring-2 ring-navy/20 scale-105'
           : isUnavailable
@@ -341,16 +323,6 @@ function DateCell({ cell, onClick }) {
       }`}
     >
       <span className="leading-none">{day}</span>
-      {/* Availability indicator dot */}
-      <span
-        className={`w-1 h-1 rounded-full mt-0.5 transition-colors ${
-          status === 'available'
-            ? isSelected ? 'bg-accent' : 'bg-emerald-500'
-            : status === 'limited'
-            ? isSelected ? 'bg-accent' : 'bg-amber-400'
-            : 'bg-slate-300 opacity-60'
-        }`}
-      />
     </button>
   )
 }

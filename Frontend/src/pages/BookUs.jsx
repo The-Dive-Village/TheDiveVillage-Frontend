@@ -19,8 +19,7 @@ import { triggerHaptic, triggerSuccessHaptic, triggerErrorHaptic } from '../util
 import 'react-phone-number-input/style.css'
 import PhoneInput from 'react-phone-number-input'
 import turtleAnnaVideo from '../assets/New folder/Turtle Anna.mp4'
-import compiledNightDiveVideoLocal from '../assets/Compiled Night Dive Video(2).mp4'
-const compiledNightDiveVideo = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790244122/dive-village/ui-videos/compiled_night_dive_video_2_mp4.mp4'
+const compiledNightDiveVideo = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243508/dive-village/hero-360/bpjuqk54webpdtghzbxk.mp4'
 import useNightDive from '../hooks/useNightDive'
 
 // Backwards-compatible export alias for any legacy imports
@@ -33,8 +32,16 @@ export default function BookUs() {
 
   const [currentStep, setCurrentStep] = useState(1)
 
-  // Today & 1 year max date bounds
+  // Today, 4-day preparation cooldown minimum date, & 1 year max date bounds
   const todayStr = useMemo(() => new Date().toISOString().split('T')[0], [])
+  const cooldownMinDateStr = useMemo(() => {
+    const d = new Date()
+    d.setDate(d.getDate() + 4)
+    const y = d.getFullYear()
+    const m = String(d.getMonth() + 1).padStart(2, '0')
+    const day = String(d.getDate()).padStart(2, '0')
+    return `${y}-${m}-${day}`
+  }, [])
   const maxDateStr = useMemo(() => {
     const d = new Date()
     d.setFullYear(d.getFullYear() + 1)
@@ -262,10 +269,10 @@ export default function BookUs() {
         setStepError('Please select a dive location.')
         return false
       }
-      if (!date || date < todayStr || date > maxDateStr) {
+      if (!date || date < cooldownMinDateStr || date > maxDateStr) {
         triggerErrorHaptic()
-        setDateError('Please Select a Proper Date')
-        setStepError('Please select a valid date for your dive.')
+        setDateError('Please select a date after the 4-day cooldown period.')
+        setStepError('Please select a valid date after the 4-day cooldown period.')
         return false
       }
       if (!groupSize || parseInt(groupSize, 10) < 1) {
@@ -383,6 +390,27 @@ export default function BookUs() {
 
       if (isSuccess) {
         triggerSuccessHaptic()
+        try {
+          const newBookingRecord = {
+            id: res?.data?.booking?.id || res?.booking?.id || `BK-${Date.now().toString(36).toUpperCase()}`,
+            type: 'Booking Request',
+            country,
+            location,
+            date,
+            groupSize: participants.length,
+            contactName: contact.name,
+            contactEmail: contact.email,
+            contactPhone: contact.phone || null,
+            specialRequests: contact.requests || null,
+            participants,
+            status: 'Pending Review',
+            createdAt: new Date().toISOString(),
+          }
+          const existing = JSON.parse(localStorage.getItem('dive_village_bookings') || '[]')
+          localStorage.setItem('dive_village_bookings', JSON.stringify([newBookingRecord, ...existing]))
+        } catch (e) {
+          console.warn('Could not save booking locally:', e)
+        }
         setSubmitted(true)
       } else {
         triggerErrorHaptic()
@@ -749,15 +777,15 @@ export default function BookUs() {
                           selectedDate={date}
                           onSelectDate={(formattedDDMMYYYY, yyyyMmDd) => {
                             setDate(yyyyMmDd)
-                            if (yyyyMmDd && (yyyyMmDd < todayStr || yyyyMmDd > maxDateStr)) {
-                              setDateError('Please Select a Proper Date')
+                            if (yyyyMmDd && (yyyyMmDd < cooldownMinDateStr || yyyyMmDd > maxDateStr)) {
+                              setDateError('Please select a date after the 4-day cooldown period.')
                             } else {
                               setDateError('')
                               setStepError('')
                             }
                             setIsCalendarOpen(false)
                           }}
-                          minDate={todayStr}
+                          minDate={cooldownMinDateStr}
                           maxDate={maxDateStr}
                           toggleBtnRef={datePickerBtnRef}
                         />
@@ -774,15 +802,26 @@ export default function BookUs() {
                           Number of People
                         </label>
                         <input
-                          type="number"
-                          min="1"
-                          max="20"
+                          type="text"
+                          inputMode="numeric"
+                          pattern="[0-9]*"
                           value={groupSize}
                           onChange={(e) => {
-                            const val = Math.max(1, parseInt(e.target.value, 10) || 1)
-                            setGroupSize(val)
+                            const raw = e.target.value.replace(/[^0-9]/g, '')
+                            setGroupSize(raw)
                             setStepError('')
                           }}
+                          onBlur={() => {
+                            const val = parseInt(groupSize, 10)
+                            if (isNaN(val) || val < 1) {
+                              setGroupSize(1)
+                            } else if (val > 20) {
+                              setGroupSize(20)
+                            } else {
+                              setGroupSize(val)
+                            }
+                          }}
+                          placeholder="1"
                           required
                           className="w-full rounded-lg sm:rounded-2xl bg-[#F0F2F5] px-3 py-2 sm:px-5 sm:py-4 text-[11px] sm:text-sm font-semibold sm:font-bold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition"
                         />

@@ -28,9 +28,6 @@ export default function LazyVideo({
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             setIsInView(true)
-            if (videoRef.current && autoPlay) {
-              videoRef.current.play().catch(() => {})
-            }
           } else {
             if (videoRef.current) {
               videoRef.current.pause()
@@ -38,12 +35,24 @@ export default function LazyVideo({
           }
         })
       },
-      { rootMargin: '200px 0px', threshold: 0.1 }
+      { rootMargin: '400px 0px', threshold: 0.05 }
     )
 
     observer.observe(el)
     return () => observer.disconnect()
-  }, [autoPlay])
+  }, [])
+
+  // Actively start video playback whenever in view or src changes
+  useEffect(() => {
+    if (isInView && videoRef.current && autoPlay) {
+      videoRef.current.muted = true
+      videoRef.current.defaultMuted = true
+      const p = videoRef.current.play()
+      if (p !== undefined) {
+        p.catch(() => {})
+      }
+    }
+  }, [isInView, autoPlay, src])
 
   return (
     <div ref={containerRef} className={`relative overflow-hidden ${className}`}>
@@ -55,11 +64,19 @@ export default function LazyVideo({
           autoPlay={autoPlay}
           loop={loop}
           muted={muted}
+          defaultMuted={true}
           playsInline={playsInline}
           controls={controls}
-          preload="metadata"
+          preload="auto"
           onLoadedMetadata={() => setIsLoaded(true)}
-          onLoadedData={() => setIsLoaded(true)}
+          onLoadedData={(e) => {
+            setIsLoaded(true)
+            if (autoPlay) e.currentTarget.play().catch(() => {})
+          }}
+          onCanPlay={(e) => {
+            setIsLoaded(true)
+            if (autoPlay) e.currentTarget.play().catch(() => {})
+          }}
           className={`w-full h-full object-cover transition-opacity duration-300 ${
             isLoaded || !poster ? 'opacity-100' : 'opacity-0'
           }`}
@@ -76,3 +93,4 @@ export default function LazyVideo({
     </div>
   )
 }
+

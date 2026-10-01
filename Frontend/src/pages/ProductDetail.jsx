@@ -22,17 +22,29 @@ export default function ProductDetail() {
 
   const product = SHOP_PRODUCTS.find((p) => p.id === id) || SHOP_PRODUCTS[0]
 
+  const relatedScrollRef = useRef(null)
+
+  const scrollRelated = (direction) => {
+    if (relatedScrollRef.current) {
+      const scrollAmount = direction === 'left' ? -320 : 320
+      relatedScrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' })
+    }
+  }
+
+  const cap = SHOP_PRODUCTS.find((p) => p.id === 'product-dive-cap')
+  const bag = SHOP_PRODUCTS.find((p) => p.id === 'product-ocean-bag')
+  const others = SHOP_PRODUCTS.filter(
+    (p) => p.id !== product.id && p.id !== 'product-dive-cap' && p.id !== 'product-ocean-bag'
+  )
+
   let relatedProducts = []
   if (product.id === 'product-dive-cap') {
-    const bag = SHOP_PRODUCTS.find((p) => p.id === 'product-ocean-bag')
-    const others = SHOP_PRODUCTS.filter((p) => p.id !== product.id && p.id !== 'product-ocean-bag').slice(0, 3)
     relatedProducts = bag ? [bag, ...others] : others
   } else if (product.id === 'product-ocean-bag') {
-    const cap = SHOP_PRODUCTS.find((p) => p.id === 'product-dive-cap')
-    const others = SHOP_PRODUCTS.filter((p) => p.id !== product.id && p.id !== 'product-dive-cap').slice(0, 3)
     relatedProducts = cap ? [cap, ...others] : others
   } else {
-    relatedProducts = SHOP_PRODUCTS.filter((p) => p.id !== product.id).slice(0, 4)
+    const priority = [cap, bag].filter(Boolean)
+    relatedProducts = [...priority, ...others]
   }
 
   // Construct media items: 3D Model appears FIRST by default, followed by Front, Back, Open 1, Open 2, etc.
@@ -63,6 +75,18 @@ export default function ProductDetail() {
   const [activeTab, setActiveTab] = useState('details')
   const [toastMessage, setToastMessage] = useState(null)
   const [isAdding, setIsAdding] = useState(false)
+  const [floatingImage, setFloatingImage] = useState(null)
+  const [floatingZoom, setFloatingZoom] = useState(1)
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') setFloatingImage(null)
+    }
+    if (floatingImage) {
+      window.addEventListener('keydown', handleKeyDown)
+    }
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [floatingImage])
 
   const swipeTouchStartX = useRef(0)
   const swipeTouchStartY = useRef(0)
@@ -300,21 +324,17 @@ export default function ProductDetail() {
                         playsInline
                         className="w-full h-full object-cover rounded-[28px]"
                       />
-                      <div className="hidden sm:flex absolute top-4 right-4 bg-navy/90 backdrop-blur-md px-3.5 py-1.5 text-xs font-bold text-[#FFCD00] rounded-full shadow-lg z-10 border border-[#FFCD00]/40 items-center gap-2 pointer-events-none">
-                        <span className="w-2.5 h-2.5 rounded-full bg-[#FFCD00] animate-ping" />
-                        <span>360 view of the Product</span>
-                      </div>
                     </>
                   ) : (
                     <InteractiveProductImage
                       src={activeMedia?.src || product.image}
                       alt={product.title}
+                      onOpenFloating={(imgSrc) => {
+                        triggerHaptic(8)
+                        setFloatingImage(imgSrc)
+                        setFloatingZoom(1)
+                      }}
                     />
-                  )}
-                  {product.tag && (
-                    <span className="hidden sm:inline-block absolute top-4 left-4 bg-white/95 backdrop-blur-md px-3 py-1 text-xs font-bold text-navy rounded-full shadow-sm z-10 pointer-events-none">
-                      {product.tag}
-                    </span>
                   )}
                 </div>
 
@@ -619,7 +639,7 @@ export default function ProductDetail() {
                 <h3 className="font-heading text-2xl font-bold text-navy mb-2">Universal Sizing Chart</h3>
                 <div className="bg-[#F0F2F5] border border-navy/10 rounded-2xl p-4 mb-4">
                   <p className="text-xs sm:text-sm text-navy/80 leading-relaxed font-medium">
-                    ✨ <strong>One Size Fits Most (Adaptive Stretch):</strong> Crafted from 4-way ultra-stretch performance fabric. Choose <strong>Type A</strong> for sizes XS to M or <strong>Type B</strong> for sizes L to XXL.
+                    ✨ <strong>One Size Fits Most (Adaptive Stretch):</strong> Crafted from 4-way ultra-stretch performance fabric. Choose <strong>(S-M)</strong> for sizes S to M or <strong>(L-XXL)</strong> for sizes L to XXL.
                   </p>
                 </div>
               </div>
@@ -636,8 +656,8 @@ export default function ProductDetail() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-navy/10 text-navy/80">
-                    <tr><td className="p-3.5 font-bold text-navy">Type A</td><td className="p-3.5 font-semibold">XS to M</td><td className="p-3.5">32 - 40</td><td className="p-3.5">26 - 33</td><td className="p-3.5">155 - 180</td><td className="p-3.5">48 - 78</td></tr>
-                    <tr><td className="p-3.5 font-bold text-navy">Type B</td><td className="p-3.5 font-semibold">L to XXL</td><td className="p-3.5">41 - 48</td><td className="p-3.5">34 - 42</td><td className="p-3.5">175 - 195</td><td className="p-3.5">75 - 105</td></tr>
+                    <tr><td className="p-3.5 font-bold text-navy">(S-M)</td><td className="p-3.5 font-semibold">S to M</td><td className="p-3.5">32 - 40</td><td className="p-3.5">26 - 33</td><td className="p-3.5">155 - 180</td><td className="p-3.5">48 - 78</td></tr>
+                    <tr><td className="p-3.5 font-bold text-navy">(L-XXL)</td><td className="p-3.5 font-semibold">L to XXL</td><td className="p-3.5">41 - 48</td><td className="p-3.5">34 - 42</td><td className="p-3.5">175 - 195</td><td className="p-3.5">75 - 105</td></tr>
                   </tbody>
                 </table>
               </div>
@@ -646,55 +666,73 @@ export default function ProductDetail() {
         </div>
 
         {/* You May Also Like / Recommendations */}
-        <div>
-          <div className="flex justify-between items-center mb-6 sm:mb-8">
-            <div>
-              <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-accent block">Explore More</span>
-              <h2 className="font-heading text-2xl sm:text-3xl font-bold text-navy">You May Also Like</h2>
-            </div>
-            <Link to="/shop" className="text-xs sm:text-sm font-bold text-navy hover:text-accent transition flex items-center gap-1">
-              View All →
-            </Link>
+        <div className="relative">
+          <div className="mb-6 sm:mb-8">
+            <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-accent block">Explore More</span>
+            <h2 className="font-heading text-2xl sm:text-3xl font-bold text-navy">You May Also Like</h2>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
-            {relatedProducts.map((p) => (
-              <Link
-                key={p.id}
-                to={`/shop/${p.id}`}
-                className="group rounded-2xl sm:rounded-3xl bg-white border border-navy/5 p-3 sm:p-5 shadow-card hover:shadow-float transition duration-300 flex flex-col justify-between"
-              >
-                <div>
-                  <div className="aspect-[4/5] w-full overflow-hidden rounded-xl sm:rounded-2xl bg-[#F0F2F5] mb-2.5 sm:mb-4 flex items-center justify-center p-2 sm:p-3 relative">
-                    <img
-                      src={p.image}
-                      alt={p.title}
-                      className="max-h-full max-w-full object-contain transition duration-500 group-hover:scale-105"
-                    />
-                    {p.tag && (
-                      <span className="hidden sm:inline-block absolute top-3 left-3 bg-white/90 px-2.5 py-0.5 text-[10px] font-bold rounded-full text-navy shadow-sm">
-                        {p.tag}
-                      </span>
-                    )}
-                  </div>
-                  <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-accent block mb-0.5 sm:mb-1">
-                    {p.category}
-                  </span>
-                  <h3 className="font-heading font-bold text-xs sm:text-sm text-navy group-hover:text-accent transition line-clamp-2 leading-snug">
-                    {p.title}
-                  </h3>
-                </div>
+          <div className="relative group/carousel">
+            {/* Left Navigation Arrow on the side */}
+            <button
+              type="button"
+              onClick={() => scrollRelated('left')}
+              aria-label="Previous products"
+              className="absolute -left-3 sm:-left-5 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/95 border border-navy/15 shadow-float backdrop-blur-md flex items-center justify-center text-navy hover:text-accent hover:bg-white hover:scale-110 active:scale-95 transition-all duration-200 cursor-pointer"
+            >
+              <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
 
-                <div className="mt-3 sm:mt-4 pt-2 sm:pt-3 border-t border-navy/5 flex justify-between items-baseline">
-                  <span className="font-heading font-bold text-navy text-xs sm:text-base">
-                    
-                  </span>
-                  <span className="text-[10px] sm:text-xs font-bold text-accent group-hover:underline">
-                    View Gear →
-                  </span>
-                </div>
-              </Link>
-            ))}
+            {/* Carousel Row */}
+            <div
+              ref={relatedScrollRef}
+              className="flex gap-4 sm:gap-6 overflow-x-auto scroll-smooth pb-4 pt-1 no-scrollbar px-1"
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            >
+              {relatedProducts.map((p) => (
+                <Link
+                  key={p.id}
+                  to={`/shop/${p.id}`}
+                  className="group w-[220px] xs:w-[250px] sm:w-[270px] lg:w-[285px] shrink-0 rounded-2xl sm:rounded-3xl bg-white border border-navy/5 p-3 sm:p-5 shadow-card hover:shadow-float transition duration-300 flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="aspect-[4/5] w-full overflow-hidden rounded-xl sm:rounded-2xl bg-[#F0F2F5] mb-2.5 sm:mb-4 flex items-center justify-center p-2 sm:p-3 relative">
+                      <img
+                        src={p.image}
+                        alt={p.title}
+                        className="max-h-full max-w-full object-contain transition duration-500 group-hover:scale-105"
+                      />
+                    </div>
+                    <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-accent block mb-0.5 sm:mb-1">
+                      {p.category}
+                    </span>
+                    <h3 className="font-heading font-bold text-xs sm:text-sm text-navy group-hover:text-accent transition line-clamp-2 leading-snug">
+                      {p.title}
+                    </h3>
+                  </div>
+
+                  <div className="mt-3 sm:mt-4 pt-2 sm:pt-3 border-t border-navy/5 flex justify-end items-center">
+                    <span className="text-[10px] sm:text-xs font-bold text-accent group-hover:underline">
+                      View Gear →
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+
+            {/* Right Navigation Arrow on the side */}
+            <button
+              type="button"
+              onClick={() => scrollRelated('right')}
+              aria-label="Next products"
+              className="absolute -right-3 sm:-right-5 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/95 border border-navy/15 shadow-float backdrop-blur-md flex items-center justify-center text-navy hover:text-accent hover:bg-white hover:scale-110 active:scale-95 transition-all duration-200 cursor-pointer"
+            >
+              <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
           </div>
         </div>
 
@@ -703,11 +741,8 @@ export default function ProductDetail() {
       {/* Sticky Mobile Add to Cart Bar */}
       <div className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-xl border-t border-navy/10 px-4 py-3 shadow-[0_-8px_30px_rgba(0,0,0,0.1)] pb-[max(0.75rem,env(safe-area-inset-bottom))] flex items-center justify-between gap-2.5 animate-fade-in">
         <div className="flex flex-col min-w-0">
-          <span className="text-[10px] font-bold text-navy/60 uppercase tracking-wider truncate max-w-[120px]">
+          <span className="text-xs font-bold text-navy uppercase tracking-wider truncate max-w-[150px]">
             {product.title}
-          </span>
-          <span className="font-heading text-lg font-bold text-navy leading-none">
-            {product.price ? formatCurrency(product.price) : 'Enquire'}
           </span>
         </div>
 
@@ -761,11 +796,112 @@ export default function ProductDetail() {
           </button>
         </div>
       </div>
+
+      {/* Floating Window Lightbox Modal */}
+      <AnimatePresence>
+        {floatingImage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setFloatingImage(null)}
+            className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xl flex items-center justify-center p-3 sm:p-6 md:p-8 select-none"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.92, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.92, y: 20 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative max-w-4xl w-full bg-white rounded-3xl sm:rounded-[36px] shadow-[0_25px_60px_rgba(0,0,0,0.5)] border border-navy/10 flex flex-col overflow-hidden max-h-[92vh]"
+            >
+              {/* Floating Header */}
+              <div className="flex items-center justify-between px-5 py-4 sm:px-7 sm:py-5 border-b border-navy/10 bg-slate-50/80 backdrop-blur-md">
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-accent block">Product Visual Preview</span>
+                  <h3 className="font-heading text-sm sm:text-lg font-bold text-navy">{product.title}</h3>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setFloatingZoom((prev) => Math.max(1, prev - 0.5))}
+                    disabled={floatingZoom <= 1}
+                    className="w-8 h-8 rounded-full bg-white border border-navy/15 text-navy disabled:opacity-35 flex items-center justify-center text-sm font-bold shadow-sm hover:bg-navy/5 active:scale-95 transition cursor-pointer"
+                    title="Zoom Out"
+                  >
+                    −
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setFloatingZoom((prev) => Math.min(3, prev + 0.5))}
+                    disabled={floatingZoom >= 3}
+                    className="w-8 h-8 rounded-full bg-white border border-navy/15 text-navy disabled:opacity-35 flex items-center justify-center text-sm font-bold shadow-sm hover:bg-navy/5 active:scale-95 transition cursor-pointer"
+                    title="Zoom In"
+                  >
+                    +
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      triggerHaptic(8)
+                      setFloatingImage(null)
+                    }}
+                    className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-navy/10 hover:bg-navy text-navy hover:text-white flex items-center justify-center transition shadow-sm active:scale-90 cursor-pointer ml-1 sm:ml-2"
+                    aria-label="Close floating window"
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
+
+              {/* Center Floating Content Container */}
+              <div className="relative flex-1 min-h-[300px] sm:min-h-[420px] max-h-[62vh] overflow-hidden bg-[#F8FAFC] flex items-center justify-center p-4 sm:p-8">
+                <img
+                  src={floatingImage}
+                  alt={product.title}
+                  className="max-h-full max-w-full object-contain transition-transform duration-300 select-none drop-shadow-md"
+                  style={{ transform: `scale(${floatingZoom})` }}
+                  draggable={false}
+                />
+              </div>
+
+              {/* Bottom Thumbnail Switcher if multiple images exist */}
+              {mediaItems.filter((m) => m.type === 'image').length > 1 && (
+                <div className="px-4 py-3 sm:px-6 sm:py-4 border-t border-navy/10 bg-white flex items-center justify-center gap-2 sm:gap-3 overflow-x-auto">
+                  {mediaItems
+                    .filter((m) => m.type === 'image')
+                    .map((m, idx) => {
+                      const isSelected = floatingImage === m.src
+                      return (
+                        <button
+                          key={m.id || idx}
+                          type="button"
+                          onClick={() => {
+                            triggerHaptic(6)
+                            setFloatingImage(m.src)
+                            setFloatingZoom(1)
+                            setActiveMedia(m)
+                          }}
+                          className={`relative w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden border-2 transition-all duration-200 cursor-pointer p-1 bg-[#F0F2F5] shrink-0 ${
+                            isSelected ? 'border-accent shadow-md scale-105 bg-white' : 'border-navy/10 opacity-70 hover:opacity-100'
+                          }`}
+                        >
+                          <img src={m.src} alt={m.label} className="w-full h-full object-contain" />
+                        </button>
+                      )
+                    })}
+                </div>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
 
-function InteractiveProductImage({ src, alt }) {
+function InteractiveProductImage({ src, alt, onOpenFloating }) {
   const [scale, setScale] = useState(1)
   const [position, setPosition] = useState({ x: 0, y: 0 })
   const containerRef = useRef(null)
@@ -825,22 +961,43 @@ function InteractiveProductImage({ src, alt }) {
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
-      className="w-full h-full flex items-center justify-center overflow-hidden touch-none relative select-none"
+      onClick={() => onOpenFloating && onOpenFloating(src)}
+      className="w-full h-full flex items-center justify-center overflow-hidden touch-none relative select-none cursor-zoom-in group/img"
     >
       <img
         src={src}
         alt={alt}
-        className="w-full h-full object-contain p-6 pointer-events-none select-none"
+        className="w-full h-full object-contain p-6 pointer-events-none select-none transition-transform duration-300 group-hover/img:scale-105"
         style={{
           transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
         }}
         draggable={false}
       />
 
+      {/* Floating Window Hint Button */}
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation()
+          if (onOpenFloating) onOpenFloating(src)
+        }}
+        className="absolute top-3.5 right-3.5 w-8 h-8 rounded-full bg-white/90 hover:bg-white text-navy/80 hover:text-accent shadow-md border border-navy/10 flex items-center justify-center transition hover:scale-110 active:scale-95 cursor-pointer z-10"
+        title="Open in floating window"
+        aria-label="Expand image in floating window"
+      >
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="15 3 21 3 21 9" />
+          <polyline points="9 21 3 21 3 15" />
+          <line x1="21" y1="3" x2="14" y2="10" />
+          <line x1="3" y1="21" x2="10" y2="14" />
+        </svg>
+      </button>
+
       {scale > 1 && (
         <button
           type="button"
-          onClick={() => {
+          onClick={(e) => {
+            e.stopPropagation()
             setScale(1)
             setPosition({ x: 0, y: 0 })
           }}

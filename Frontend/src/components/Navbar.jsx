@@ -16,7 +16,6 @@ const NAV = [
   { to: '/services', label: 'Services' },
   { to: '/gallery', label: 'Gallery' },
   { to: '/shop', label: 'Shop' },
-  { to: '/contact', label: 'Contact Us' },
   { to: '/book-us', label: 'Book Us', highlight: true },
 ]
 
@@ -52,33 +51,23 @@ export default function Navbar() {
     }
   }
 
-  const isShopPage = location.pathname.startsWith('/shop') || location.pathname.startsWith('/product') || location.pathname === '/cart' || location.pathname === '/wishlist' || location.pathname === '/checkout'
-  const isServicesPage = location.pathname.startsWith('/services') || location.pathname.startsWith('/our-services') || location.pathname.startsWith('/courses') || ['/scuba-diving', '/snorkeling', '/freediving', '/scuba', '/surfing'].includes(location.pathname)
-  const isBookUsPage = location.pathname.startsWith('/book-us')
-  const isGalleryPage = location.pathname.startsWith('/gallery')
-  const isContactPage = location.pathname.startsWith('/contact')
-  const isBlueToolbar = isShopPage || isServicesPage || isBookUsPage || isGalleryPage || isContactPage
-  const isTranslucentPage = location.pathname === '/'
-  const isDashboardPage = location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/admin') || location.pathname.startsWith('/profile')
-  const isVideoBg = ['/', '/login', '/contact', '/book-us', '/about'].includes(location.pathname) || isDashboardPage
-  const isDarkBackground = isVideoBg || isNightDive || isDashboardPage || isShopPage
+  const isHomePage = location.pathname === '/'
 
-  const containerGlass = isShopPage
-    ? 'border border-white/25 bg-[#003865]/95 backdrop-blur-2xl text-white shadow-[0_8px_32px_0_rgba(0,0,0,0.35)]'
-    : isDarkBackground
+  // Home page keeps original translucent styling; all other pages get full opaque blue
+  const containerGlass = isHomePage
     ? 'border border-white/25 bg-[#001e3d]/55 backdrop-blur-2xl text-white shadow-[0_8px_32px_0_rgba(0,0,0,0.35)]'
-    : 'border border-navy/15 bg-white/80 backdrop-blur-2xl text-navy shadow-[0_8px_32px_0_rgba(0,30,61,0.08)]'
+    : 'border border-white/20 bg-[#003865] text-white shadow-[0_8px_32px_0_rgba(0,0,0,0.35)]'
 
-  const textColor = isDarkBackground ? 'text-white' : 'text-navy'
-  const borderColor = isDarkBackground ? 'border-white/20' : 'border-navy/20'
-  const btnBg = isDarkBackground ? 'bg-white/10' : 'bg-navy/10'
-  const btnText = isDarkBackground ? 'text-white' : 'text-navy'
+  const textColor = 'text-white'
+  const borderColor = 'border-white/20'
+  const btnBg = 'bg-white/10'
+  const btnText = 'text-white'
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-[9999] w-full px-3 xs:px-4 sm:px-6 pointer-events-none flex flex-col items-center pt-2.5 sm:pt-3">
+    <header className="fixed top-0 left-0 right-0 z-[9999] w-full px-3 xs:px-4 sm:px-6 pointer-events-none flex flex-col items-center pt-2.5 sm:pt-1">
       <div className={`pointer-events-auto mx-auto flex justify-between sm:grid sm:grid-cols-[1fr_auto_1fr] h-[52px] sm:h-[64px] lg:h-[68px] w-full max-w-7xl 2xl:max-w-[1700px] items-center rounded-full ${containerGlass} px-3 xs:px-4 sm:px-8 lg:px-12 transition-all duration-300`}>
         
-        {/* Left Side: Home, Book Us, Contact Us (desktop) */}
+        {/* Left Side: Home, Book Us, Shop (desktop) */}
         <div className="flex items-center justify-start gap-4 sm:gap-4 lg:gap-8 pl-1 sm:pl-2">
           <NavLink
             to="/"
@@ -114,9 +103,9 @@ export default function Navbar() {
             </span>
           </NavLink>
           <NavLink
-            to="/contact"
-            onMouseEnter={() => prefetchRoute('/contact')}
-            onTouchStart={() => prefetchRoute('/contact')}
+            to="/shop"
+            onMouseEnter={() => prefetchRoute('/shop')}
+            onTouchStart={() => prefetchRoute('/shop')}
             className={({ isActive }) =>
               `hidden lg:block relative whitespace-nowrap font-body text-[14px] sm:text-[15px] font-bold tracking-wide transition-all duration-300 ${
                 isActive 
@@ -125,7 +114,7 @@ export default function Navbar() {
               }`
             }
           >
-            Contact Us
+            Shop
           </NavLink>
         </div>
 
@@ -197,7 +186,7 @@ export default function Navbar() {
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.25 }}
             className={`pointer-events-auto mt-2 w-full max-w-7xl 2xl:max-w-[1700px] overflow-hidden rounded-3xl border border-white/20 shadow-2xl ${
-              isBlueToolbar ? 'bg-[#003865]/95' : 'bg-[#001e3d]/90'
+              !isHomePage ? 'bg-[#003865]' : 'bg-[#001e3d]/90'
             } backdrop-blur-3xl text-white`}
           >
             <div className="px-5 py-4">

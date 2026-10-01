@@ -5,8 +5,8 @@ const INITIAL_REVIEWS = [
   {
     id: 'rev-1',
     name: "Sofia Stalance",
-    role: "Advanced Open Water Diver",
-    text: "Did my Advanced Open Water with Sanjeev and the crew in Havelock. Having instructors who genuinely emphasize neutral buoyancy and reef protection made all the difference. Saw manta rays at Dixon's Pinnacle—an unforgettable dive.",
+    role: "Open Water Diver",
+    text: "The pre-dive briefing was thorough, and my instructor stayed right by my side until my breathing relaxed. By dive two, my buoyancy felt like second nature—truly unforgettable.",
     rating: 5,
     image: CAROUSEL_IMAGES[1],
     approved: true,
@@ -15,8 +15,8 @@ const INITIAL_REVIEWS = [
   {
     id: 'rev-2',
     name: "Krishawn Rahul",
-    role: "Marine Ecology Enthusiast",
-    text: "As someone passionate about coral ecosystems, their respect for marine wildlife blew me away. Intimate small-group dives, zero touch policies, and the instructors know every reef species by name. It really feels like family.",
+    role: "Certified Diver",
+    text: "Every dive felt relaxed and unhurried. Top-notch equipment, small groups, and instructors who focus on safety and technique. Pure weightlessness from start to finish.",
     rating: 5,
     image: CAROUSEL_IMAGES[2],
     approved: true,
@@ -25,8 +25,8 @@ const INITIAL_REVIEWS = [
   {
     id: 'rev-3',
     name: "Michael Antony",
-    role: "Rescue Diver & Underwater Photographer",
-    text: "From seamless logistics and custom boat charters to top-tier safety gear, everything was top notch. The night dive with glowing bioluminescence was pure magic. Easily the best dive community in the region.",
+    role: "Experienced Diver",
+    text: "One of the most professional dive centers I've dived with. Flawless gear, seamless surface support, and well-executed dive plans every single time.",
     rating: 5,
     image: CAROUSEL_IMAGES[0],
     approved: true,
@@ -42,23 +42,12 @@ export function ReviewsProvider({ children }) {
       const saved = localStorage.getItem('tdv_reviews')
       if (!saved) return INITIAL_REVIEWS
       const parsed = JSON.parse(saved)
-      const hasOldNames = parsed.some(
-        (r) =>
-          r.name === 'Alex Johnson' ||
-          r.name === 'Maria Garcia' ||
-          r.name === 'David Chen' ||
-          r.name === 'Rohan Deshmukh' ||
-          r.name === 'Dr. Ananya Sen' ||
-          r.name === 'Vikramaditya Rathore'
-      )
-      if (hasOldNames) {
-        const customOnes = parsed.filter(
-          (r) => !['rev-1', 'rev-2', 'rev-3'].includes(r.id)
-        )
-        return [...INITIAL_REVIEWS, ...customOnes]
-      }
       const defaultMap = Object.fromEntries(INITIAL_REVIEWS.map((r) => [r.id, r]))
-      return parsed.map((r) => (defaultMap[r.id] ? { ...r, image: defaultMap[r.id].image } : r))
+      const hasDefault = parsed.some((r) => defaultMap[r.id])
+      if (!hasDefault) {
+        return [...INITIAL_REVIEWS, ...parsed]
+      }
+      return parsed.map((r) => (defaultMap[r.id] ? { ...defaultMap[r.id] } : r))
     } catch {
       return INITIAL_REVIEWS
     }

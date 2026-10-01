@@ -76,19 +76,19 @@ const TESTIMONIALS = [
   {
     name: "Sofia Stalance",
     role: "Open Water Diver",
-    text: "The Dive Village completely changed my perspective on the ocean. The instructors were incredibly patient, and the focus on safety made my first dive unforgettable.",
+    text: "The pre-dive briefing was thorough, and my instructor stayed right by my side until my breathing relaxed. By dive two, my buoyancy felt like second nature—truly unforgettable.",
     image: CAROUSEL_IMAGES[1]
   },
   {
     name: "Krishawn Rahul",
-    role: "Marine Biologist",
-    text: "I've dived all over the world, but the dedication to eco-stewardship here is unmatched. It's inspiring to see a dive center that truly cares about coral restoration and leaving no trace.",
+    role: "Certified Diver",
+    text: "Every dive felt relaxed and unhurried. Top-notch equipment, small groups, and instructors who focus on safety and technique. Pure weightlessness from start to finish.",
     image: CAROUSEL_IMAGES[2]
   },
   {
     name: "Michael Antony",
-    role: "Advanced Adventurer",
-    text: "From the seamless booking process to the personalized dive charters, everything was flawless. A vibrant community that genuinely feels like a second home.",
+    role: "Experienced Diver",
+    text: "One of the most professional dive centers I've dived with. Flawless gear, seamless surface support, and well-executed dive plans every single time.",
     image: CAROUSEL_IMAGES[0]
   }
 ]
@@ -143,7 +143,7 @@ export default function Home() {
       />
 
       {/* 1. HERO */}
-      <section className="relative flex min-h-[100dvh] sm:min-h-screen items-start sm:items-end justify-start pb-12 sm:pb-16 pt-24 xs:pt-28 sm:pt-[120px] pointer-events-none">
+      <section className="relative flex min-h-[100dvh] sm:min-h-screen items-start sm:items-end justify-start pb-12 sm:pb-32 md:pb-40 lg:pb-48 pt-24 xs:pt-28 sm:pt-[120px] pointer-events-none">
 
         <div className="relative z-10 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 pointer-events-none">
           <div className="max-w-3xl">
@@ -276,7 +276,9 @@ export default function Home() {
                     <motion.div
                       animate={{ y: [0, -6, 0] }}
                       transition={{ duration: 3.2 + (i * 0.4), repeat: Infinity, ease: 'easeInOut' }}
-                      className={`absolute top-0 xs:top-1 sm:-top-6 lg:-top-8 inset-x-0 mx-auto w-full flex items-center justify-center z-20 pointer-events-none px-1 ${
+                      className={`absolute top-0 xs:top-1 ${
+                        i === 0 || i === 2 ? 'sm:top-1 lg:top-2' : 'sm:-top-6 lg:-top-8'
+                      } inset-x-0 mx-auto w-full flex items-center justify-center z-20 pointer-events-none px-1 ${
                         i === 1 || i === 2
                           ? 'max-w-[170px] xs:max-w-[190px] sm:max-w-[270px] lg:max-w-[290px] h-[140px] xs:h-[160px] sm:h-[240px] lg:h-[270px]'
                           : 'max-w-[185px] xs:max-w-[210px] sm:max-w-[300px] lg:max-w-[330px] h-[155px] xs:h-[175px] sm:h-[260px] lg:h-[300px]'
@@ -293,7 +295,7 @@ export default function Home() {
                   ) : null}
 
                   {/* Actual Card Background & Content */}
-                  <div className="h-full w-full rounded-[20px] sm:rounded-[32px] overflow-hidden border border-white/30 relative flex flex-col p-3.5 xs:p-4 sm:p-6 lg:p-7 pt-32 xs:pt-36 sm:pt-56 lg:pt-64 pb-4 sm:pb-8 z-10 transition duration-500 group-hover:border-white/60 shadow-2xl justify-end">
+                  <div className="h-full w-full rounded-[20px] sm:rounded-[32px] overflow-hidden border border-white/30 relative flex flex-col p-3.5 xs:p-4 sm:p-6 lg:p-7 pt-32 xs:pt-36 sm:pt-56 lg:pt-64 pb-4 sm:pb-8 z-10 transition duration-500 group-hover:border-white/60 shadow-2xl justify-end who-can-dive-card">
 
                     {item.bgImg ? (
                       <img
@@ -303,7 +305,7 @@ export default function Home() {
                       />
                     ) : null}
 
-                    <div className="absolute bottom-0 inset-x-0 h-3/5 bg-gradient-to-t from-navy via-navy/80 to-transparent z-0 pointer-events-none" />
+                    <div className="absolute bottom-0 inset-x-0 h-3/5 bg-gradient-to-t from-navy via-navy/80 to-transparent z-0 pointer-events-none who-can-dive-overlay" />
 
                     <div className="relative z-10 flex flex-col justify-end h-full mt-auto">
                       <h3 className="font-heading text-sm xs:text-base sm:text-xl lg:text-2xl font-bold text-white uppercase tracking-wider mb-1.5 sm:mb-2 leading-tight text-left drop-shadow-md min-h-[36px] sm:min-h-[48px] flex items-end">
@@ -416,7 +418,6 @@ export default function Home() {
           <StaggerGrid className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none pb-4 gap-3 sm:gap-6 sm:grid sm:grid-cols-2 lg:grid-cols-4 lg:gap-8 sm:overflow-visible px-1">
             {[
               {
-                num: '01',
                 title: 'Travel Logistics',
                 desc: 'Seamless transfers and hassle free travel, arrival to departure.',
                 video: travelVid,
@@ -427,7 +428,6 @@ export default function Home() {
                 )
               },
               {
-                num: '02',
                 title: 'Comfortable Stays',
                 desc: 'Handpicked accommodations for a perfect escape, made easy.',
                 img: stayImg,
@@ -438,7 +438,6 @@ export default function Home() {
                 )
               },
               {
-                num: '03',
                 title: 'Local Cuisine',
                 desc: 'Savor authentic flavors, freshly crafted delicacies by local chefs.',
                 img: foodImg,
@@ -449,7 +448,6 @@ export default function Home() {
                 )
               },
               {
-                num: '04',
                 title: 'Personal Itineraries',
                 desc: 'Custom experiences tailored to your travel style and made to fit.',
                 video: itineraryVid,
@@ -463,18 +461,24 @@ export default function Home() {
             ].map((item, i) => (
               <StaggerItem key={i} className="w-[62vw] min-w-[215px] max-w-[270px] aspect-square sm:w-auto sm:aspect-auto shrink-0 snap-center h-full">
                 <div
-                  onClick={() => navigate('/contact')}
+                  onClick={() => {
+                    if (i === 3) {
+                      const el = document.getElementById('customize-dive-section')
+                      if (el) {
+                        el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                        return
+                      }
+                    }
+                    navigate('/contact')
+                  }}
                   className="group relative h-full w-full rounded-2xl sm:rounded-[28px] lg:rounded-[32px] bg-[#00172b]/40 backdrop-blur-2xl border border-white/20 p-3 sm:p-5 lg:p-6 shadow-[0_8px_30px_rgba(0,0,0,0.3)] transition-all duration-500 hover:-translate-y-3 hover:bg-[#00172b]/60 hover:border-[#00AEC7] hover:shadow-[0_12px_40px_rgba(0,174,199,0.25)] flex flex-col justify-between cursor-pointer"
                 >
                   <div className="flex flex-col flex-1">
-                    {/* Top Bar: Icon Box & Number */}
-                    <div className="flex items-center justify-between mb-1.5 sm:mb-4">
+                    {/* Top Bar: Icon Box */}
+                    <div className="flex items-center mb-1.5 sm:mb-4">
                       <div className="w-7 h-7 sm:w-11 sm:h-11 lg:w-12 lg:h-12 rounded-xl sm:rounded-2xl bg-[#00AEC7]/20 border border-[#00AEC7]/50 flex items-center justify-center shadow-sm group-hover:bg-[#00AEC7]/30 group-hover:border-[#00AEC7] transition duration-300">
                         {item.icon}
                       </div>
-                      <span className="font-heading font-bold text-xs sm:text-lg text-[#FFCD00] tracking-wider">
-                        {item.num}
-                      </span>
                     </div>
 
                     {/* Main Heading Text */}
@@ -509,18 +513,20 @@ export default function Home() {
                     </div>
                   </div>
 
-                  {/* Footer: Learn More & Circular Arrow (Desktop Only) */}
-                  <div className="hidden sm:flex items-center justify-between pt-3 border-t border-white/20 text-xs font-bold">
-                    <span className="text-white/90 group-hover:text-[#FFCD00] transition-colors">
-                      Learn more
-                    </span>
-                    <div className="w-8 h-8 rounded-full border border-[#00AEC7] bg-[#00AEC7]/10 flex items-center justify-center text-[#00AEC7] group-hover:bg-[#FFCD00] group-hover:border-[#FFCD00] group-hover:text-[#001e3d] transition-all duration-300 shadow-sm">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-0.5">
-                        <path d="M5 12h14" />
-                        <path d="m12 5 7 7-7 7" />
-                      </svg>
+                  {/* Footer: Learn More & Circular Arrow (Desktop Only - Last panel only) */}
+                  {i === 3 && (
+                    <div className="hidden sm:flex items-center justify-between pt-3 border-t border-white/20 text-xs font-bold">
+                      <span className="text-white/90 group-hover:text-[#FFCD00] transition-colors">
+                        Learn more
+                      </span>
+                      <div className="w-8 h-8 rounded-full border border-[#00AEC7] bg-[#00AEC7]/10 flex items-center justify-center text-[#00AEC7] group-hover:bg-[#FFCD00] group-hover:border-[#FFCD00] group-hover:text-[#001e3d] transition-all duration-300 shadow-sm">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-0.5">
+                          <path d="M5 12h14" />
+                          <path d="m12 5 7 7-7 7" />
+                        </svg>
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                 </div>
               </StaggerItem>

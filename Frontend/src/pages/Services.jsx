@@ -4,10 +4,18 @@ import { motion, useReducedMotion } from 'framer-motion'
 import Button from '../components/Button'
 import SafeImage from '../components/SafeImage'
 import SEOHead from '../components/SEOHead'
+import MerchBannerCTA from '../components/MerchBannerCTA'
 import { IMAGES, CAROUSEL_IMAGES } from '../utils/images'
-import video2Bg from '../assets/2.mp4'
 
 import { CATEGORIES, SERVICES_DATA } from '../data/servicesData'
+
+const getVideoPoster = (videoSrc) => {
+  if (!videoSrc || typeof videoSrc !== 'string') return undefined
+  if (videoSrc.includes('cloudinary.com')) {
+    return videoSrc.replace(/\.(mp4|MP4|mov|MOV|webm)$/i, '.jpg')
+  }
+  return undefined
+}
 
 export default function Services() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -136,10 +144,15 @@ export default function Services() {
                   <div className="relative h-40 xs:h-44 sm:h-56 w-full overflow-hidden bg-navy/10 shrink-0">
                     {service.video ? (
                       <video
-                        src={service.video}
+                        src={`${service.video}#t=0.001`}
+                        poster={getVideoPoster(service.video)}
+                        preload="auto"
                         loop
                         muted
                         playsInline
+                        onLoadedMetadata={(e) => {
+                          e.currentTarget.currentTime = 0.001
+                        }}
                         className="absolute inset-0 w-full h-full object-cover object-center transition duration-700 group-hover:scale-105"
                         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                       />
@@ -153,9 +166,6 @@ export default function Services() {
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/35 to-transparent pointer-events-none" />
                     <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-5 right-3">
-                       <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-accent mb-0.5 sm:mb-1 block truncate">
-                        {CATEGORIES.find(c => c.key === service.category)?.label}
-                      </span>
                       <h3 className="font-heading text-sm xs:text-base sm:text-xl font-bold text-white leading-tight line-clamp-2">{service.title}</h3>
                     </div>
                   </div>
@@ -221,52 +231,8 @@ export default function Services() {
           </div>
         </div>
 
-        {/* 5. CALL TO ACTION WITH 2.MP4 VIDEO BACKGROUND */}
-        <div 
-          onClick={() => navigate('/contact')}
-          className="rounded-[40px] bg-navy text-white p-10 sm:p-16 lg:p-20 relative overflow-hidden shadow-lift cursor-pointer group border border-white/10"
-        >
-          {/* Video Background */}
-          <video
-            src={video2Bg}
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="absolute inset-0 w-full h-full object-cover z-0 opacity-50 transition-transform duration-700 group-hover:scale-105"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/80 to-navy/40 z-0" />
-
-          <div className="relative z-10 max-w-3xl">
-            <span className="inline-block bg-white/10 backdrop-blur-md rounded-full px-4 py-1.5 text-xs font-bold text-accent uppercase tracking-widest mb-6 border border-white/10">
-              Custom Requirements
-            </span>
-            <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight text-white mb-6 group-hover:text-accent transition">
-              Have a custom requirement?
-            </h2>
-            <p className="text-lg sm:text-xl text-white/80 max-w-xl mb-10 leading-relaxed font-medium">
-              We organize private boat charters, corporate team retreats, family dive camps, and personalized multi-day dive expeditions.
-            </p>
-            <div className="flex flex-wrap gap-4 items-center">
-              <Link
-                to="/contact"
-                className="rounded-full bg-accent px-8 py-4 text-sm font-bold text-navy transition hover:bg-white shadow-lg flex items-center gap-2 border border-transparent hover:border-accent"
-              >
-                Contact us for more information →
-              </Link>
-              <a
-                href="tel:+918971001010"
-                onClick={(e) => e.stopPropagation()}
-                className="rounded-full border border-white/30 backdrop-blur-md px-6 py-4 text-sm font-bold text-white transition hover:bg-white/10 flex items-center gap-2"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/>
-                </svg>
-                Call Us: +91 89710 01010
-              </a>
-            </div>
-          </div>
-        </div>
+        {/* 5. MERCHANDISE BANNER CALL TO ACTION */}
+        <MerchBannerCTA className="mt-8" />
 
       </div>
     </div>

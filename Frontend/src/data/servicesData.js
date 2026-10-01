@@ -72,7 +72,7 @@ import vidProjectAwareLocal from '../assets/Gallery/projectaware.mp4'
 import vidRayLocal from '../assets/Gallery/Ray.mp4'
 import vidRay1Local from '../assets/Gallery/Ray1.mp4'
 import vidManta3Local from '../assets/Gallery/manta3.mp4'
-import vidNightDiveLocal from '../assets/Compiled Night Dive Video(2).mp4'
+import vidNightDiveLocal from '../assets/Night Dive.mp4'
 import vidNitroxLocal from '../assets/Gallery/nitrox.mp4'
 import vidJellyfishLocal from '../assets/Gallery/Jellyfish.mp4'
 import vidBoatLocal from '../assets/Gallery/boat.mp4'
@@ -89,8 +89,8 @@ import vidProCourseLocal from '../assets/Gallery/procourse.mp4'
 import vidProCourse1Local from '../assets/Gallery/procourse1.mp4'
 import vidProCourseSpecialLocal from '../assets/Gallery/procourse2.mp4'
 import vidProCourse2Local from '../assets/Gallery/procourse (2).mp4'
-import vidFreedivingBasicMovLocal from '../assets/Gallery/Free Diving 1.mp4'
-import vidFreediving3Mp4Local from '../assets/Gallery/free diving 3.mp4'
+import vidFreeDiving01 from '../assets/Gallery/FreeDiving01.mp4'
+import vidFreeDiving02 from '../assets/Gallery/FreeDiving02.mp4'
 import vidSurfingLocal from '../assets/Gallery/surfing.mp4'
 import vidGallery1Local from '../assets/Gallery/gallery1.mp4'
 
@@ -117,8 +117,7 @@ const vidBuoyancy = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v179024210
 const vidProjectAware = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243488/dive-village/gallery-videos/projectaware_mp4.mp4' || vidProjectAwareLocal
 const vidRay = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243515/dive-village/gallery-videos/ray_mp4.mp4' || vidRayLocal
 const vidRay1 = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243533/dive-village/gallery-videos/ray1_mp4.mp4' || vidRay1Local
-const vidManta3 = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790242399/dive-village/gallery-videos/manta3_mp4.mp4' || vidManta3Local
-const vidNightDive = vidNightDiveLocal
+const vidNightDive = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243508/dive-village/hero-360/bpjuqk54webpdtghzbxk.mp4'
 const vidNitrox = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790242447/dive-village/gallery-videos/nitrox_mp4.mp4' || vidNitroxLocal
 const vidJellyfish = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790242324/dive-village/gallery-videos/jellyfish_mp4.mp4' || vidJellyfishLocal
 const vidBoat = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790242073/dive-village/gallery-videos/boat_mp4.mp4' || vidBoatLocal
@@ -133,8 +132,6 @@ const vidProCourse = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v17902434
 const vidProCourse1 = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243465/dive-village/gallery-videos/procourse1_mp4.mp4' || vidProCourse1Local
 const vidProCourseSpecial = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243473/dive-village/gallery-videos/procourse2_mp4.mp4' || vidProCourseSpecialLocal
 const vidProCourse2 = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243402/dive-village/gallery-videos/procourse_2_mp4.mp4' || vidProCourse2Local
-const vidFreedivingBasicMov = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790242293/dive-village/gallery-videos/free_diving_1_mp4.mp4' || vidFreedivingBasicMovLocal
-const vidFreediving3Mp4 = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790240858/dive-village/gallery-videos/free_diving_3_mp4.mp4' || vidFreediving3Mp4Local
 const vidSurfing = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790240878/dive-village/gallery-videos/surfing_mp4.mp4' || vidSurfingLocal
 const vidGallery1 = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790240872/dive-village/gallery-videos/gallery1_mp4.mp4' || vidGallery1Local
 
@@ -358,7 +355,7 @@ export const SERVICES_DATA = [
     title: 'Wreck Diver',
     short_desc: 'Explore underwater wrecks.',
     long_desc: 'Learn how to safely and effectively navigate, map, and explore historic underwater shipwrecks.',
-    video: vidManta3,
+    video: vidFreeDiving01,
     image: imgPhoto86573,
     highlights: 'Duration: 1–2 days | 4 dives',
     days_min: 2, days_max: 3, min_age: ''
@@ -576,7 +573,7 @@ export const SERVICES_DATA = [
     title: 'Basic Freediver',
     short_desc: 'Learn the basics of breath-hold diving.',
     long_desc: 'Focus on static apnea, dynamic apnea, and safety in confined water.',
-    video: vidFreedivingBasicMov,
+    video: vidFreeDiving01,
     image: imgFreeDivingPng,
     highlights: 'Duration: 1–2 days | Confined water + theory',
     days_min: 1, days_max: 2, min_age: 12
@@ -586,7 +583,7 @@ export const SERVICES_DATA = [
     title: 'Freediver',
     short_desc: 'Build strong freediving skills.',
     long_desc: 'Expand breath-hold time and depth techniques in open water.',
-    video: vidFreediving3Mp4,
+    video: vidFreeDiving02,
     image: imgFreeDivingJpg,
     highlights: 'Duration: 2–3 days | Includes confined + open water',
     days_min: 2, days_max: 3, min_age: 15

@@ -358,6 +358,7 @@
 /* --- NIGHT DIVE MODE (DARK THEME OVERRIDES) --- */
 .night-dive,
 .night-dive body,
+.night-dive #root,
 .night-dive .glass-premium {
   background-color: #030a12 !important;
   color: #f8fafc !important;
@@ -370,88 +371,201 @@
   color: #f8fafc !important;
 }
 
-.night-dive .bg-\[\#FAFAFA\],
-.night-dive .bg-white,
-.night-dive .bg-\[\#F0F2F5\],
-.night-dive .bg-\[\#f0f9ff\],
-.night-dive .bg-slate-50,
-.night-dive .bg-slate-100 {
-  background-color: #0b1726 !important;
+/* Deep ocean dark backgrounds for page shells and containers */
+.night-dive [class*="bg-[#FAFAFA]"],
+.night-dive [class*="bg-[#F8FAFC]"],
+.night-dive [class*="bg-[#F0F2F5]"],
+.night-dive [class*="bg-[#f0f9ff]"] {
+  background-color: #030a12 !important;
   color: #f8fafc !important;
-  border-color: rgba(255, 255, 255, 0.15) !important;
 }
 
-.night-dive .bg-\[\#FAFAFA\] .bg-white,
-.night-dive .bg-\[\#F0F2F5\] .bg-white,
-.night-dive .bg-white .bg-\[\#F0F2F5\],
-.night-dive .bg-white\/80,
-.night-dive .bg-white\/90,
-.night-dive .bg-white\/95 {
-  background-color: #112236 !important;
+/* Primary surface cards, panels & modals */
+.night-dive [class*="bg-white"],
+.night-dive aside nav,
+.night-dive main > div {
+  background-color: #081424 !important;
   color: #f8fafc !important;
-  border-color: rgba(255, 255, 255, 0.15) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+/* Sub-cards, metrics, widgets, empty states & table rows */
+.night-dive [class*="bg-slate-50"],
+.night-dive [class*="bg-slate-100"],
+.night-dive [class*="bg-gray-50"],
+.night-dive [class*="bg-gray-100"] {
+  background-color: #0f2038 !important;
+  color: #f8fafc !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
 }
 
 .night-dive .shadow-card,
 .night-dive .shadow-lift,
-.night-dive .shadow-float {
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6) !important;
+.night-dive .shadow-float,
+.night-dive .shadow-xs,
+.night-dive .shadow-sm,
+.night-dive .shadow-2xs {
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7) !important;
 }
 
-.night-dive .text-navy,
-.night-dive h1.text-navy,
-.night-dive h2.text-navy,
-.night-dive h3.text-navy,
-.night-dive h4.text-navy,
-.night-dive p.text-navy,
-.night-dive label.text-navy,
-.night-dive span.text-navy,
-.night-dive div.text-navy,
-.night-dive blockquote.text-navy,
-.night-dive .text-\[\#003865\],
-.night-dive .text-\[\#003865\]\/95,
-.night-dive .text-\[\#003865\]\/90,
-.night-dive .text-\[\#003865\]\/85,
-.night-dive .text-\[\#003865\]\/80,
-.night-dive .text-\[\#003865\]\/75,
-.night-dive .text-\[\#003865\]\/70,
-.night-dive .text-\[\#003865\]\/60,
-.night-dive .text-\[\#003865\]\/50,
-.night-dive .text-\[\#003865\]\/40 {
+/* Headings and high-contrast text elements */
+.night-dive h1,
+.night-dive h2,
+.night-dive h3,
+.night-dive h4,
+.night-dive h5,
+.night-dive h6,
+.night-dive [class*="text-slate-900"],
+.night-dive [class*="text-slate-800"],
+.night-dive [class*="text-slate-700"],
+.night-dive [class*="text-gray-900"],
+.night-dive [class*="text-gray-800"],
+.night-dive [class*="text-navy"],
+.night-dive [class*="text-[#003865]"] {
   color: #ffffff !important;
 }
 
-.night-dive .text-navy\/90,
-.night-dive .text-navy\/80,
-.night-dive .text-navy\/70,
-.night-dive .text-navy\/60,
-.night-dive .text-navy\/50,
-.night-dive .text-navy\/40,
-.night-dive .text-navy\/30 {
-  color: rgba(255, 255, 255, 0.88) !important;
+/* Muted / secondary subtext */
+.night-dive [class*="text-slate-600"],
+.night-dive [class*="text-slate-500"],
+.night-dive [class*="text-slate-400"],
+.night-dive [class*="text-gray-600"],
+.night-dive [class*="text-gray-500"],
+.night-dive [class*="text-gray-400"],
+.night-dive [class*="text-navy/"] {
+  color: rgba(255, 255, 255, 0.75) !important;
 }
 
-.night-dive .text-\[\#00AEC7\] {
+.night-dive [class*="text-[#00AEC7]"],
+.night-dive [class*="text-accent"] {
   color: #FFCD00 !important;
 }
 
-.night-dive .bg-navy\/5,
-.night-dive .bg-navy\/10,
-.night-dive .bg-black\/5,
-.night-dive .bg-black\/10,
-.night-dive .bg-\[\#003865\]\/5 {
-  background-color: rgba(255, 255, 255, 0.08) !important;
+/* Borders */
+.night-dive [class*="border-gray-100"],
+.night-dive [class*="border-gray-200"],
+.night-dive [class*="border-gray-300"],
+.night-dive [class*="border-slate-100"],
+.night-dive [class*="border-slate-200"],
+.night-dive [class*="border-slate-300"],
+.night-dive [class*="border-navy"] {
+  border-color: rgba(255, 255, 255, 0.14) !important;
+}
+
+/* Sidebar Navigation Tabs in Night Mode */
+.night-dive aside nav a.active,
+.night-dive nav a.active[class*="bg-slate-900"],
+.night-dive aside nav a[class*="bg-slate-900"] {
+  background-color: #FFCD00 !important;
+  color: #001e3d !important;
+  font-weight: 700 !important;
+  box-shadow: 0 4px 14px rgba(255, 205, 0, 0.35) !important;
+}
+
+.night-dive aside nav a:not(.active),
+.night-dive nav a:not(.active)[class*="text-slate-600"] {
+  color: rgba(255, 255, 255, 0.75) !important;
+  background-color: transparent !important;
+}
+
+.night-dive aside nav a:not(.active):hover,
+.night-dive nav a:not(.active):hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
   color: #ffffff !important;
 }
 
-.night-dive .border-navy\/5,
-.night-dive .border-navy\/10,
-.night-dive .border-navy\/20,
-.night-dive .border-navy\/30,
-.night-dive .border-\[\#003865\]\/10,
-.night-dive .border-\[\#00AEC7\]\/30,
-.night-dive .border-\[\#00AEC7\]\/40 {
-  border-color: rgba(255, 255, 255, 0.15) !important;
+/* Primary Action Buttons */
+.night-dive button[class*="bg-slate-900"],
+.night-dive a[class*="bg-slate-900"] {
+  background-color: #FFCD00 !important;
+  color: #001e3d !important;
+  font-weight: 700 !important;
+  border-color: #FFCD00 !important;
+  box-shadow: 0 4px 16px rgba(255, 205, 0, 0.25) !important;
+}
+
+.night-dive button[class*="bg-slate-900"]:hover,
+.night-dive a[class*="bg-slate-900"]:hover {
+  background-color: #ffe066 !important;
+  color: #001e3d !important;
+  transform: translateY(-1px);
+}
+
+/* Secondary / Outline Buttons */
+.night-dive button[class*="border-gray-300"],
+.night-dive a[class*="border-gray-300"],
+.night-dive button[class*="bg-white"],
+.night-dive a[class*="bg-white"] {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.night-dive button[class*="border-gray-300"]:hover,
+.night-dive a[class*="border-gray-300"]:hover,
+.night-dive button[class*="bg-white"]:hover,
+.night-dive a[class*="bg-white"]:hover {
+  background-color: rgba(255, 255, 255, 0.15) !important;
+  color: #ffffff !important;
+}
+
+/* Status Badges */
+.night-dive [class*="bg-emerald-50"] {
+  background-color: rgba(16, 185, 129, 0.18) !important;
+  color: #34d399 !important;
+  border-color: rgba(16, 185, 129, 0.35) !important;
+}
+
+.night-dive [class*="bg-blue-50"] {
+  background-color: rgba(0, 174, 199, 0.18) !important;
+  color: #38bdf8 !important;
+  border-color: rgba(0, 174, 199, 0.35) !important;
+}
+
+.night-dive [class*="bg-purple-50"] {
+  background-color: rgba(168, 85, 247, 0.18) !important;
+  color: #c084fc !important;
+  border-color: rgba(168, 85, 247, 0.35) !important;
+}
+
+.night-dive [class*="bg-amber-50"] {
+  background-color: rgba(245, 158, 11, 0.18) !important;
+  color: #fbbf24 !important;
+  border-color: rgba(245, 158, 11, 0.35) !important;
+}
+
+.night-dive [class*="bg-indigo-50"] {
+  background-color: rgba(99, 102, 241, 0.18) !important;
+  color: #818cf8 !important;
+  border-color: rgba(99, 102, 241, 0.35) !important;
+}
+
+.night-dive [class*="bg-slate-100"] {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+}
+
+/* Dark Overlays for Who Can Dive Cards & Ocean Gradients in Night Dive Mode */
+.night-dive .who-can-dive-card {
+  background-color: #030a12 !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.8) !important;
+}
+
+.night-dive .who-can-dive-overlay {
+  background: linear-gradient(to top, #030a12 0%, rgba(3, 10, 18, 0.95) 45%, rgba(3, 10, 18, 0.7) 75%, transparent 100%) !important;
+}
+
+.night-dive [class*="from-navy"] {
+  --tw-gradient-from: #030a12 var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgba(3, 10, 18, 0) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-from), var(--tw-gradient-to)) !important;
+}
+
+.night-dive [class*="via-navy"] {
+  --tw-gradient-via: rgba(3, 10, 18, 0.85) var(--tw-gradient-via-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), rgba(3, 10, 18, 0.85), var(--tw-gradient-to) !important;
 }
 
 .night-dive input,
@@ -516,7 +630,7 @@ a.bg-navy {
 }
 
 /* Hover state only: vibrant yellow with dark navy text */
-button:not([data-no-glass]):not(.switch__input):hover,
+button:not([data-no-glass]):not(.switch__input):not(.faq-box-btn):hover,
 a.btn:hover,
 .btn:hover,
 button.glass-btn:hover,
@@ -534,6 +648,22 @@ a.bg-black:hover,
   color: #001e3d !important;
   border-color: #FFCD00 !important;
   box-shadow: 0 10px 30px rgba(255, 205, 0, 0.4) !important;
+}
+
+/* FAQ Box Neutral Accordion Styles */
+.faq-box-btn,
+.faq-box-btn:hover,
+.faq-box-btn:focus,
+.faq-box-btn:active {
+  background-color: transparent !important;
+  color: #003865 !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.faq-box-btn:hover {
+  background-color: rgba(0, 56, 101, 0.05) !important;
 }
 
 /* Night-dive button contrast adjustment */

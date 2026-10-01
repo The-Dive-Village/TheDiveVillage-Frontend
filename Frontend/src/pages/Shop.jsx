@@ -11,6 +11,7 @@ import SEOHead from '../components/SEOHead'
 import CustomerReviews from '../components/CustomerReviews'
 import { triggerHaptic, triggerSuccessHaptic } from '../utils/haptics'
 import picture3 from '../assets/Picture3.png'
+import bannerImg from '../assets/banner.png'
 import divingVidLocal from '../assets/Diving(1).mp4'
 const divingVid = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790244035/dive-village/ui-videos/diving_1_mp4.mp4'
 const pop1 = 'https://res.cloudinary.com/bbgt5nk7/image/upload/v1790244009/dive-village/products/qqpya5ppncnjorf4csbf.jpg'
@@ -97,8 +98,8 @@ export default function Shop() {
     <div className="bg-[#FAFAFA] min-h-screen text-navy font-body pt-24 sm:pt-32 pb-24 overflow-x-hidden">
       <SEOHead
         title="Dive Shop & Sustainable Marine Apparel | The Dive Village"
-        description="Shop high-performance ocean gear, eco-friendly dive apparel, UPF rashguards, and diving accessories. Designed for comfort, durability, and marine conservation."
-        keywords="scuba diving shop, dive gear store, ocean apparel, UPF rashguards, dive suits, eco-friendly swimsuits, dive village merch"
+        description="Shop high-performance ocean gear, eco-friendly dive apparel, dive suits, and diving accessories. Designed for comfort, durability, and marine conservation."
+        keywords="scuba diving shop, dive gear store, ocean apparel, dive suits, eco-friendly swimsuits, dive village merch"
         canonicalUrl="https://thedivevillage.com/shop"
       />
       {/* Toast Notification */}
@@ -120,30 +121,15 @@ export default function Shop() {
 
       {/* 1. HERO BANNER */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-12">
-        <div className="relative rounded-[40px] overflow-hidden bg-navy text-white shadow-lift border border-white/10 flex flex-col md:flex-row items-center justify-between min-h-[380px] p-8 sm:p-12 lg:p-14 gap-8">
-          <video
-            src={divingVid}
-            autoPlay
-            loop
-            muted
-            playsInline
-            onPlay={(e) => { e.currentTarget.playbackRate = 0.7 }}
-            className="absolute inset-0 w-full h-full object-cover opacity-50"
+        <div className="relative rounded-[24px] sm:rounded-[36px] lg:rounded-[40px] overflow-hidden bg-[#001428] shadow-lift border border-white/10 w-full aspect-[2170/725] flex items-center justify-end">
+          <img
+            src={bannerImg}
+            alt="Merchandise Banner"
+            className="w-full h-full object-contain sm:object-cover object-center pointer-events-none block"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-navy/90 via-navy/60 to-navy/30" />
-
-          {/* Left Column: Title & Text */}
-          <div className="relative z-10 max-w-xl">
-            <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-3 text-white drop-shadow-lg">
-              Merchandise
-            </h1>
-            <p className="text-sm sm:text-base text-white/80 leading-relaxed max-w-lg">
-              Gear up with The Dive Village. High-performance apparel, dive suits, caps, and accessories.
-            </p>
-          </div>
 
           {/* Right Column: 3D Flipping Product Tag */}
-          <div className="relative z-10 shrink-0 self-center md:self-auto py-2 md:mr-16 lg:mr-28 xl:mr-36">
+          <div className="absolute right-3 sm:right-8 lg:right-12 top-0 bottom-0 z-10 shrink-0 h-full flex items-center">
             <FlippingProductTag />
           </div>
         </div>
@@ -393,37 +379,15 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
                     <img src={product.image} alt={product.title} className="max-h-full max-w-full object-contain" />
                   </div>
                 </model-viewer>
-
-                {/* 3D Model Drag Hint Badge */}
-                <div className="hidden lg:flex absolute bottom-2 left-1/2 -translate-x-1/2 bg-navy/80 backdrop-blur-md px-2.5 py-0.5 rounded-full text-[9px] font-bold text-[#FFCD00] border border-[#FFCD00]/30 shadow-md items-center gap-1 pointer-events-none">
-                  <span>↻ Drag to rotate 360°</span>
-                </div>
               </div>
             )}
           </div>
-
-          {product.tag && (
-            <span className="absolute top-2 left-2 sm:top-3 sm:left-3 bg-white/95 backdrop-blur-md px-2 py-0.5 sm:px-3 sm:py-1 text-[9px] sm:text-[11px] font-bold text-navy rounded-full shadow-sm z-10">
-              {product.tag}
-            </span>
-          )}
         </div>
 
         <div className="mb-2 sm:mb-4">
           <span className="text-[9px] sm:text-[11px] font-bold uppercase tracking-wider text-accent block mb-0.5 sm:mb-1">{product.category}</span>
           <h3 className="font-heading text-xs xs:text-sm sm:text-xl font-bold text-navy leading-tight sm:leading-snug group-hover:text-accent transition line-clamp-2 sm:line-clamp-none">{product.title}</h3>
           <p className="text-[10px] sm:text-xs text-navy/70 line-clamp-1 sm:line-clamp-2 mt-1 sm:mt-2 leading-relaxed hidden xs:block">{product.description}</p>
-          <div className="mt-2 sm:mt-4 pt-2 sm:pt-3 border-t border-navy/5 flex flex-wrap items-center justify-between text-[9px] sm:text-xs gap-1">
-            <div className="flex items-center gap-1">
-              <span className="text-navy/50 text-[9px] sm:text-[10px] uppercase font-bold mr-0.5">Colors:</span>
-              {product.colors?.slice(0, 3).map((c, idx) => (
-                <span key={idx} className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 rounded-full border border-white shadow-sm" style={{ backgroundColor: c.hex }} />
-              ))}
-            </div>
-            <div className="text-navy/60 font-semibold text-[9px] sm:text-[11px]">
-              {product.sizes?.[0] || 'One Size'}
-            </div>
-          </div>
         </div>
       </div>
 
@@ -465,14 +429,14 @@ function programTag(tag) {
 
 function FlippingProductTag() {
   return (
-    <div className="relative flex flex-col items-center justify-center select-none pointer-events-none">
+    <div className="relative h-full flex flex-col items-center justify-center select-none pointer-events-none py-2 sm:py-4">
       {/* Hanging Cord */}
-      <div className="w-0.5 h-6 bg-gradient-to-b from-white/40 via-accent to-white/60 shadow-sm mb-[-2px] relative z-20">
-        <div className="w-2 h-2 rounded-full bg-accent -top-1.5 -left-[3px] absolute shadow-sm" />
+      <div className="w-0.5 h-3 sm:h-5 lg:h-6 bg-gradient-to-b from-white/40 via-accent to-white/60 shadow-sm mb-[-2px] relative z-20 shrink-0">
+        <div className="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-accent -top-1 -left-[2px] sm:-left-[3px] absolute shadow-sm" />
       </div>
 
       {/* 3D Perspective Container matched to exact 447x864 image aspect ratio */}
-      <div className="perspective-1000 h-[280px] sm:h-[340px] aspect-[447/864] relative">
+      <div className="perspective-1000 h-[calc(100%-12px)] sm:h-[calc(100%-20px)] max-h-[180px] sm:max-h-[260px] lg:max-h-[330px] aspect-[447/864] relative">
         <motion.div
           animate={{ rotateY: -360 }}
           transition={{
@@ -480,30 +444,30 @@ function FlippingProductTag() {
             ease: 'linear',
             repeat: Number.POSITIVE_INFINITY,
           }}
-          className="w-full h-full preserve-3d relative rounded-2xl shadow-[0_15px_35px_rgba(0,0,0,0.4)]"
+          className="w-full h-full preserve-3d relative rounded-xl sm:rounded-2xl shadow-[0_15px_35px_rgba(0,0,0,0.4)]"
           style={{ transformStyle: 'preserve-3d' }}
         >
           {/* FRONT SIDE (pop1.jpeg) */}
           <div
-            className="absolute inset-0 w-full h-full rounded-2xl overflow-hidden backface-hidden bg-transparent"
+            className="absolute inset-0 w-full h-full rounded-xl sm:rounded-2xl overflow-hidden backface-hidden bg-transparent"
             style={{ backfaceVisibility: 'hidden' }}
           >
             <img
               src={pop1}
               alt="Product Tag Front"
-              className="w-full h-full object-fill rounded-2xl"
+              className="w-full h-full object-fill rounded-xl sm:rounded-2xl"
             />
           </div>
 
           {/* BACK SIDE (pop2.jpeg) */}
           <div
-            className="absolute inset-0 w-full h-full rounded-2xl overflow-hidden backface-hidden bg-transparent"
+            className="absolute inset-0 w-full h-full rounded-xl sm:rounded-2xl overflow-hidden backface-hidden bg-transparent"
             style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
           >
             <img
               src={pop2}
               alt="Product Tag Back"
-              className="w-full h-full object-fill rounded-2xl"
+              className="w-full h-full object-fill rounded-xl sm:rounded-2xl"
             />
           </div>
         </motion.div>

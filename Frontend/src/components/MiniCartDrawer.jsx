@@ -117,9 +117,6 @@ export default function MiniCartDrawer({ isOpen, onClose }) {
                             Size: <strong className="text-cyan-300">{item.selectedSize}</strong>
                           </span>
                         )}
-                        <span className="text-xs font-bold text-accent block mt-1">
-                          ₹{unitPrice.toLocaleString('en-IN')}
-                        </span>
                       </div>
 
                       <div className="flex flex-col items-end gap-2 shrink-0">
@@ -178,14 +175,11 @@ export default function MiniCartDrawer({ isOpen, onClose }) {
             {items.length > 0 && (
               <div className="p-5 border-t border-white/10 bg-[#001428] space-y-3">
                 <div className="flex items-center justify-between text-xs text-white/70">
-                  <span>Subtotal</span>
-                  <span className="font-heading text-lg font-bold text-white">
-                    ₹{subtotal.toLocaleString('en-IN')}
+                  <span>Total Items</span>
+                  <span className="font-heading text-base font-bold text-white">
+                    {items.reduce((acc, i) => acc + (i.quantity || 1), 0)}
                   </span>
                 </div>
-                <p className="text-[10px] text-white/50">
-                  Taxes and shipping calculated at checkout. Free shipping on orders over ₹2,500.
-                </p>
 
                 <div className="grid grid-cols-2 gap-2 pt-1">
                   <Link

@@ -136,13 +136,15 @@ export default function ServiceDetail() {
                 {faqList.map((faq, idx) => {
                   const isOpen = openFaq === idx
                   return (
-                    <div key={idx} className="bg-white rounded-2xl border border-navy/5 overflow-hidden shadow-sm">
+                    <div key={idx} className="bg-white rounded-2xl border border-navy/5 overflow-hidden shadow-sm transition-all duration-200">
                       <button 
+                        type="button"
+                        data-no-glass
                         onClick={() => setOpenFaq(isOpen ? null : idx)}
-                        className="w-full text-left px-6 py-5 flex items-center justify-between font-bold text-navy hover:bg-navy/5 transition-colors text-sm sm:text-base"
+                        className="faq-box-btn w-full text-left px-6 py-5 flex items-center justify-between font-bold text-navy hover:bg-navy/5 transition-colors text-sm sm:text-base cursor-pointer select-none"
                       >
-                        {faq.q}
-                        <span className={`text-2xl transition-transform ${isOpen ? 'rotate-45 text-accent' : ''}`}>+</span>
+                        <span className="pr-4">{faq.q}</span>
+                        <span className={`text-2xl transition-transform duration-300 shrink-0 ${isOpen ? 'rotate-45 text-navy' : 'text-navy/50'}`}>+</span>
                       </button>
                       <AnimatePresence>
                         {isOpen && (
@@ -150,8 +152,9 @@ export default function ServiceDetail() {
                             initial={{ height: 0, opacity: 0 }}
                             animate={{ height: 'auto', opacity: 1 }}
                             exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.25, ease: 'easeOut' }}
                           >
-                            <div className="px-6 pb-5 text-navy/70 text-sm font-medium leading-relaxed">
+                            <div className="px-6 pb-5 text-navy/70 text-sm font-medium leading-relaxed border-t border-navy/5 pt-3">
                               {faq.a}
                             </div>
                           </motion.div>

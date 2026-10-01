@@ -60,15 +60,13 @@ export const SHOP_PRODUCTS = [
     imageLabels: ['Front', 'Back', 'Lookbook'],
     glb: glbWomensShirt,
     category: 'Tops',
-    tag: 'New Arrival',
-    description: 'Stay protected and stylish in the water. Features a sweetheart neckline, premium stretch, and sun protection.',
+    description: 'Stay protected and stylish in the water. Features a sweetheart neckline, premium stretch, and comfortable fit.',
     features: [
-      'UPF 50+ Protection: Helps protect your skin from harmful UV rays during outdoor activities.',
       'Quick-Dry Fabric: Dries quickly after getting wet, keeping you comfortable in and out of the water.',
       '4-Way Stretch: Flexible fabric allows easy movement without restricting your mobility.',
       'Lightweight & Breathable: Lightweight fabric allows airflow and keeps you comfortable during extended wear.'
     ],
-    sizes: ['Type A (XS to M)', 'Type B (L to XXL)'],
+    sizes: ['(S-M)', '(L-XXL)'],
     colors: [
       { name: 'Black', hex: '#000000' }
     ],
@@ -88,7 +86,6 @@ export const SHOP_PRODUCTS = [
     imageLabels: ['Front', 'Back', 'Lookbook'],
     glb: glbWomensPants,
     category: 'Bottoms',
-    tag: 'Bestseller',
     description: 'High-waisted dive pants offering full-length coverage and thigh-smoothing panels for ultimate comfort and confidence.',
     features: [
       'High-Waist Fit: Provides comfortable coverage and a secure fit while keeping you supported during movement.',
@@ -96,7 +93,7 @@ export const SHOP_PRODUCTS = [
       'Thigh-Smoothing Panels: Designed to provide extra coverage and create a smoother appearance around the thighs.',
       'Full-Length Coverage: Offers extended coverage for your legs while providing comfort and protection during water activities.'
     ],
-    sizes: ['Type A (XS to M)', 'Type B (L to XXL)'],
+    sizes: ['(S-M)', '(L-XXL)'],
     colors: [
       { name: 'Black', hex: '#000000' }
     ],
@@ -116,7 +113,6 @@ export const SHOP_PRODUCTS = [
     imageLabels: ['Front', 'Back', 'Lookbook'],
     glb: glbWomensStrap,
     category: 'Tops',
-    tag: 'Essential',
     description: 'Supportive and comfortable dive top featuring heavy-duty Velcro straps and built-in chest support.',
     features: [
       'Heavy-Duty Velcro Straps: Strong Velcro fastening keeps the shoulder straps securely in place during movement and water activities.',
@@ -124,7 +120,7 @@ export const SHOP_PRODUCTS = [
       'Stretch-Fit Fabric: Flexible fabric moves with your body for unrestricted movement while swimming or diving.',
       'Full-Body Coverage: Provides comfortable coverage across the torso and upper legs for added protection in the water.'
     ],
-    sizes: ['Type A (XS to M)', 'Type B (L to XXL)'],
+    sizes: ['(S-M)', '(L-XXL)'],
     colors: [
       { name: 'Black', hex: '#000000' }
     ],
@@ -144,7 +140,6 @@ export const SHOP_PRODUCTS = [
     imageLabels: ['Front', 'Back', 'Lookbook'],
     glb: glbUnisexShorts,
     category: 'Bottoms',
-    tag: 'Comfort',
     description: 'Experience seamless comfort with these dive shorts, designed without visible stitching to reduce irritation.',
     features: [
       'Seamless Comfort: Designed without visible seams or stitching that can rub against the skin during water activities.',
@@ -152,7 +147,7 @@ export const SHOP_PRODUCTS = [
       'Stretch-Fit Fabric: Flexible fabric moves naturally with your body for unrestricted movement while swimming or diving.',
       'Lightweight & Quick-Dry: Lightweight fabric dries quickly after getting wet, keeping you comfortable in and out of the water.'
     ],
-    sizes: ['Type A (XS to M)', 'Type B (L to XXL)'],
+    sizes: ['(S-M)', '(L-XXL)'],
     colors: [
       { name: 'Black', hex: '#000000' }
     ],
@@ -172,7 +167,6 @@ export const SHOP_PRODUCTS = [
     imageLabels: ['Front', 'Back', 'Lookbook'],
     glb: glbUnisexShirt,
     category: 'Tops',
-    tag: 'Essential',
     description: 'A versatile, lightweight dive shirt featuring hidden neck seams and quick-dry fabric for all-day comfort.',
     features: [
       'Hidden Neck Seams: Seams are finished and tucked inside the collar to prevent stitching from rubbing against the neck.',
@@ -180,7 +174,7 @@ export const SHOP_PRODUCTS = [
       '4-Way Stretch: Flexible fabric moves with your body for unrestricted movement during swimming and diving.',
       'Lightweight & Breathable: Lightweight construction allows airflow and keeps you comfortable during extended wear.'
     ],
-    sizes: ['Type A (XS to M)', 'Type B (L to XXL)'],
+    sizes: ['(S-M)', '(L-XXL)'],
     colors: [
       { name: 'Black', hex: '#000000' }
     ],
@@ -200,7 +194,6 @@ export const SHOP_PRODUCTS = [
     imageLabels: ['Front', 'Back', 'Lookbook 1', 'Lookbook 2'],
     glb: glbFullSuit,
     category: 'Skin Wear',
-    tag: 'Premium',
     description: 'Ultimate full-body protection with grip panels on the knees and seat, front zip closure, and stirrup foot straps.',
     features: [
       'Grip Panels: Textured panels on the knees and seat provide added grip and support where you need it most.',
@@ -208,7 +201,7 @@ export const SHOP_PRODUCTS = [
       'Stirrup Foot Straps: Integrated foot straps help keep the suit securely in place and prevent the legs from riding up during movement.',
       'Full-Body Coverage: Provides extended coverage from the neck to the ankles for added protection and comfort in the water.'
     ],
-    sizes: ['Type A (XS to M)', 'Type B (L to XXL)'],
+    sizes: ['(S-M)', '(L-XXL)'],
     colors: [
       { name: 'Black', hex: '#000000' }
     ],
@@ -228,10 +221,8 @@ export const SHOP_PRODUCTS = [
     imageLabels: ['Front', 'Back'],
     glb: glbCap,
     category: 'Accessories',
-    tag: 'New Arrival',
-    description: 'Durable, quick-dry ocean cap with sun glare protection and adjustable strap for beach, boat, and water activities.',
+    description: 'Durable, quick-dry ocean cap with adjustable strap for beach, boat, and water activities.',
     features: [
-      'UV Sun Protection: Shields your head, face, and eyes from intense glare and sun exposure on the boat and shore.',
       'Quick-Dry Breathable Fabric: Fast-drying material resists saltwater staining and allows maximum airflow.',
       'Adjustable Secure Strap: Custom fit rear strap ensures your cap stays secure even in windy boat conditions.',
       'Saltwater-Resistant Construction: Anti-corrosive eyelets and durable stitching engineered for maritime environments.'
@@ -256,7 +247,6 @@ export const SHOP_PRODUCTS = [
     imageLabels: ['Front', 'Back', 'Inside', 'Open Top', 'Detail'],
     glb: glbBag,
     category: 'Accessories',
-    tag: 'Essential',
     description: 'Heavy-duty waterproof gear bag designed for carrying wetsuits, towels, dive equipment, and beach essentials.',
     features: [
       'Water-Resistant Marine Fabric: High-density tarpaulin/nylon keeps wet gear isolated and dry gear protected.',
@@ -284,7 +274,6 @@ export const SHOP_PRODUCTS = [
     imageLabels: ['Front', 'Back', 'Lookbook'],
     glb: glbWetSuit,
     category: 'Skin Wear',
-    tag: 'New Arrival',
     description: 'Premium neoprene wetsuit engineered for optimal thermal insulation, hydrodynamic flexibility, and full-body protection during ocean dives.',
     features: [
       'Thermal Neoprene Insulation: High-density micro-cell neoprene retains core body warmth during deep, cold ocean dives.',
@@ -292,7 +281,7 @@ export const SHOP_PRODUCTS = [
       'Abrasion-Resistant Reinforced Panels: High-friction zones on knees and shoulders engineered to withstand scuba gear contact.',
       'Heavy-Duty Back Zip with Extended Pull Leash: Saltwater-resistant zipper designed for smooth closure and easy self-donning.'
     ],
-    sizes: ['Type A (XS to M)', 'Type B (L to XXL)'],
+    sizes: ['(S-M)', '(L-XXL)'],
     colors: [
       { name: 'Black', hex: '#000000' }
     ],

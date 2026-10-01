@@ -169,20 +169,20 @@ export default function CustomCursor() {
         transition: 'opacity 0.08s ease-out',
       }}
     >
-      {/* Night Dive Mode Underwater Flashlight Beam & Spotlight Aura */}
+      {/* Night Dive Mode Underwater Flashlight Beam & Spotlight Aura (Subtle reduced halo) */}
       {isNightDive && (
         <div
           className="pointer-events-none absolute rounded-full transition-all duration-300"
           style={{
-            width: isHovering ? '380px' : '320px',
-            height: isHovering ? '380px' : '320px',
-            left: isHovering ? '-190px' : '-160px',
-            top: isHovering ? '-190px' : '-160px',
+            width: isHovering ? '180px' : '140px',
+            height: isHovering ? '180px' : '140px',
+            left: isHovering ? '-90px' : '-70px',
+            top: isHovering ? '-90px' : '-70px',
             background: isHovering
-              ? 'radial-gradient(circle, rgba(0, 242, 254, 0.38) 0%, rgba(255, 205, 0, 0.22) 35%, rgba(0, 56, 101, 0.08) 65%, transparent 80%)'
-              : 'radial-gradient(circle, rgba(0, 242, 254, 0.24) 0%, rgba(255, 205, 0, 0.14) 30%, rgba(0, 56, 101, 0.05) 60%, transparent 75%)',
+              ? 'radial-gradient(circle, rgba(0, 242, 254, 0.16) 0%, rgba(255, 205, 0, 0.08) 35%, rgba(0, 56, 101, 0.03) 65%, transparent 80%)'
+              : 'radial-gradient(circle, rgba(0, 242, 254, 0.10) 0%, rgba(255, 205, 0, 0.05) 30%, transparent 70%)',
             mixBlendMode: 'screen',
-            filter: 'blur(6px)',
+            filter: 'blur(5px)',
           }}
         />
       )}
@@ -195,8 +195,8 @@ export default function CustomCursor() {
           transform: `translate(-4.6%, -57.5%) rotate(20deg) scale(${isHovering ? 1.15 : 1.0})`,
           filter: isNightDive
             ? (isHovering
-                ? 'drop-shadow(0 0 12px #00F2FE) drop-shadow(0 0 24px rgba(0, 242, 254, 0.8)) brightness(1.35) contrast(1.15)'
-                : 'drop-shadow(0 0 8px #00F2FE) drop-shadow(0 0 16px rgba(0, 242, 254, 0.6)) brightness(1.25) contrast(1.1)')
+                ? 'drop-shadow(0 0 6px rgba(0, 242, 254, 0.6)) brightness(1.15) contrast(1.05)'
+                : 'drop-shadow(0 0 4px rgba(0, 242, 254, 0.4)) brightness(1.1) contrast(1.05)')
             : (isHovering
                 ? 'drop-shadow(0 4px 12px rgba(0, 56, 101, 0.4)) brightness(1.05)'
                 : 'drop-shadow(0 2px 8px rgba(0, 30, 61, 0.25))'),

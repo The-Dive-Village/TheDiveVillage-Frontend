@@ -72,10 +72,11 @@ export function getIsHeroFullyReady() {
  * Gets or initializes the singleton hero video DOM element.
  * Eagerly buffers the 3840x1920 stream from millisecond zero.
  */
-export function getOrCreateHeroVideoElement(src = HERO_VIDEO_SRC, playbackRate = 0.5) {
+export function getOrCreateHeroVideoElement(src = HERO_VIDEO_SRC, playbackRate = 0.45) {
   if (typeof window === 'undefined') return null
 
   if (warmHeroVideo && warmHeroVideo.src === src) {
+    warmHeroVideo.playbackRate = playbackRate
     return warmHeroVideo
   }
 

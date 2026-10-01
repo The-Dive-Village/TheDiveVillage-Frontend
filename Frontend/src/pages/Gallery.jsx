@@ -9,7 +9,7 @@ import { GALLERY_ITEMS } from '../utils/galleryData'
 import { triggerHaptic } from '../utils/haptics'
 import { shareContent } from '../utils/share'
 import { useLenis } from '../utils/lenisReact'
-import ctaVideo from '../assets/New folder/Dive.MP4'
+import diversBg from '../assets/divers.png'
 
 export default function Gallery() {
   const [itemsList, setItemsList] = useState(GALLERY_ITEMS)
@@ -211,6 +211,10 @@ export default function Gallery() {
               transition={{ delay: Math.min(idx * 0.02, 0.25) }}
               className="group flex flex-col rounded-2xl sm:rounded-[24px] overflow-hidden bg-white border border-navy/10 shadow-sm hover:shadow-xl hover:border-cyan-500/30 transition-all duration-300 cursor-pointer"
               onClick={() => openLightbox(idx)}
+              onMouseEnter={(e) => {
+                const vid = e.currentTarget.querySelector('video')
+                if (vid) vid.play().catch(() => {})
+              }}
             >
               {/* Media Container */}
               <div className="relative aspect-[4/3] xs:aspect-square sm:aspect-[16/11] w-full overflow-hidden bg-navy/10">
@@ -282,18 +286,15 @@ export default function Gallery() {
           </div>
         </div>
 
-        {/* 5. CALL TO ACTION WITH BACKGROUND VIDEO */}
+        {/* 5. CALL TO ACTION WITH BACKGROUND IMAGE */}
         <div className="rounded-[40px] bg-navy text-white p-10 sm:p-16 lg:p-20 relative overflow-hidden shadow-lift group border border-white/10">
-          {/* Background Video */}
-          <video
-            src={ctaVideo}
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-[10000ms] group-hover:scale-105 opacity-50 z-0"
+          {/* Background Image: divers.png */}
+          <img
+            src={diversBg}
+            alt="The Dive Village Divers"
+            className="absolute inset-0 w-full h-full object-cover object-[center_right] sm:object-center transition-transform duration-[7000ms] group-hover:scale-105 opacity-60 z-0"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/80 to-navy/40 z-0" />
+          <div className="absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/80 to-navy/30 z-0" />
           <div className="absolute -left-20 -bottom-20 w-96 h-96 bg-accent/20 rounded-full blur-3xl pointer-events-none z-0" />
 
           <div className="relative z-10 max-w-3xl">
