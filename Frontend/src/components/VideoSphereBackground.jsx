@@ -8,6 +8,7 @@ const videoFile = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790248244/
 import divingFileLocal from '../assets/Diving(1).mp4'
 const divingFile = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790244035/dive-village/ui-videos/diving_1_mp4.mp4'
 const bookFile = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790242027/dive-village/hero-360/duskamhque0kugdulev7.mp4'
+const turtleVideo = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790242000/dive-village/hero-360/hhu28v7vfmdtbb8lwxan.mp4'
 const nightDiveVideo = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790845672/dive-village/ui-videos/night_dive_mp4.mp4'
 import underwaterAudio from '../assets/Underwater.mp3'
 import { setHeroVideoReady, getOrCreateHeroVideoElement, setHeroWebGLReady } from '../utils/mediaReadyManager'
@@ -445,13 +446,13 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
       meshRef.current.rotation.y += (finalTargetY - meshRef.current.rotation.y) * delta * 5
       meshRef.current.rotation.x += (finalTargetX - meshRef.current.rotation.x) * delta * 5
 
-      if (!isMobile && meshRef2.current && isHome) {
+      if (!isMobile && meshRef2.current && meshRef2.current.material && isHome) {
         meshRef2.current.rotation.y = meshRef.current.rotation.y - (Math.PI / 2.5)
         meshRef2.current.rotation.x = meshRef.current.rotation.x - (Math.PI / 1.68)
         meshRef2.current.material.opacity += (targetOpacity2.current - meshRef2.current.material.opacity) * delta * 2.5
       }
 
-      if (!isMobile && meshRef3.current && isHome) {
+      if (!isMobile && meshRef3.current && meshRef3.current.material && isHome) {
         meshRef3.current.rotation.y = meshRef.current.rotation.y + (Math.PI * 1.45)
         meshRef3.current.rotation.x = meshRef.current.rotation.x - (Math.PI * 1.1)
         meshRef3.current.material.opacity += (targetOpacity3.current - meshRef3.current.material.opacity) * delta * 2.5
