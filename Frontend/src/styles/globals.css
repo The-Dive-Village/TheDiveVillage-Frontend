@@ -356,11 +356,22 @@
 }
 
 /* --- NIGHT DIVE MODE (DARK THEME OVERRIDES) --- */
-.night-dive,
-.night-dive body,
-.night-dive #root,
+.night-dive {
+  color: #f8fafc !important;
+}
+
+.night-dive body {
+  background-color: transparent !important;
+  color: #f8fafc !important;
+}
+
+.night-dive #root {
+  background-color: transparent !important;
+  color: #f8fafc !important;
+}
+
 .night-dive .glass-premium {
-  background-color: #030a12 !important;
+  background-color: rgba(8, 20, 36, 0.85) !important;
   color: #f8fafc !important;
 }
 
@@ -382,8 +393,7 @@
 
 /* Primary surface cards, panels & modals */
 .night-dive [class*="bg-white"],
-.night-dive aside nav,
-.night-dive main > div {
+.night-dive aside nav {
   background-color: #081424 !important;
   color: #f8fafc !important;
   border-color: rgba(255, 255, 255, 0.12) !important;

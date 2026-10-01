@@ -18,8 +18,8 @@ import {
 import { triggerHaptic, triggerSuccessHaptic, triggerErrorHaptic } from '../utils/haptics'
 import 'react-phone-number-input/style.css'
 import PhoneInput from 'react-phone-number-input'
-import turtleAnnaVideo from '../assets/New folder/Turtle Anna.mp4'
-import compiledNightDiveVideo from '../assets/Night Dive.mp4'
+const turtleAnnaVideo = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243911/dive-village/gallery-videos/turtle_anna_mp4.mp4'
+const compiledNightDiveVideo = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790845672/dive-village/ui-videos/night_dive_mp4.mp4'
 import useNightDive from '../hooks/useNightDive'
 
 // Backwards-compatible export alias for any legacy imports

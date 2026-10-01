@@ -8,8 +8,7 @@ const videoFile = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790248244/
 import divingFileLocal from '../assets/Diving(1).mp4'
 const divingFile = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790244035/dive-village/ui-videos/diving_1_mp4.mp4'
 const bookFile = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790242027/dive-village/hero-360/duskamhque0kugdulev7.mp4'
-const turtleVideo = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790242000/dive-village/hero-360/hhu28v7vfmdtbb8lwxan.mp4'
-import nightDiveVideo from '../assets/Night Dive.mp4'
+const nightDiveVideo = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790845672/dive-village/ui-videos/night_dive_mp4.mp4'
 import underwaterAudio from '../assets/Underwater.mp3'
 import { setHeroVideoReady, getOrCreateHeroVideoElement, setHeroWebGLReady } from '../utils/mediaReadyManager'
 
@@ -231,7 +230,7 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
   // Light mode on Home: priority singleton. Dark mode (Night Dive): dynamic local 360 video element (1.0x).
   const primaryPlaybackRate = isNightDive ? 1.0 : 0.45
   const isHeroSingleton = !isNightDive && isHome
-  const { texture, hasNewFrameRef: hasNewFrame1, lastTimeRef: lastTime1 } = useDirectVideoTexture(videoSrc, primaryPlaybackRate, isHeroSingleton)
+  const { texture, hasNewFrameRef: hasNewFrame1, lastTimeRef: lastTime1 } = useDirectVideoTexture(!isNightDive ? videoSrc : null, primaryPlaybackRate, isHeroSingleton)
   // Secondary videos are strictly lazy-loaded only when user scrolls or needs them ON DESKTOP
   const { texture: texture2, hasNewFrameRef: hasNewFrame2, lastTimeRef: lastTime2 } = useDirectVideoTexture(!isMobile && isHome && !isNightDive && loadSecondary ? bookFile : null, 0.5, false)
   const { texture: texture3, hasNewFrameRef: hasNewFrame3, lastTimeRef: lastTime3 } = useDirectVideoTexture(!isMobile && isHome && !isNightDive && loadSecondary ? turtleVideo : null, 0.5, false)
@@ -377,15 +376,20 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
   }, [])
 
   useFrame((state, delta) => {
+    if (isNightDive) return
     if (meshRef.current) {
-      // 1. Frame-driven texture 1 update
+      // 1. Frame-driven texture 1 update (strictly on new presented frames)
       if (texture && texture.image) {
         const vid1 = texture.image
-        if (!vid1.paused && vid1.readyState >= 2) {
-          texture.needsUpdate = true
-          if (!hasRenderedInitialFrameRef.current && vid1.videoWidth > 0) {
-            hasRenderedInitialFrameRef.current = true
-            setHeroWebGLReady(true)
+        if (!vid1.paused && vid1.readyState >= 2 && vid1.videoWidth > 0) {
+          if (hasNewFrame1.current || vid1.currentTime !== lastTime1.current) {
+            lastTime1.current = vid1.currentTime
+            hasNewFrame1.current = false
+            texture.needsUpdate = true
+            if (!hasRenderedInitialFrameRef.current) {
+              hasRenderedInitialFrameRef.current = true
+              setHeroWebGLReady(true)
+            }
           }
         }
       }
@@ -506,6 +510,29 @@ export default function VideoSphereBackground() {
   }, [])
 
 
+
+  // Control night dive video playback when mode changes
+  useEffect(() => {
+    const video = nightVideoRef.current
+    if (!video) return
+
+    if (isNightDive) {
+      const playPromise = video.play()
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          const handleInteract = () => {
+            video.play().catch(() => {})
+            window.removeEventListener('pointerdown', handleInteract)
+            window.removeEventListener('touchstart', handleInteract)
+          }
+          window.addEventListener('pointerdown', handleInteract, { once: true })
+          window.addEventListener('touchstart', handleInteract, { once: true })
+        })
+      }
+    } else {
+      video.pause()
+    }
+  }, [isNightDive])
 
   // Automatic ambient audio playback with robust browser autoplay policy handling
   useEffect(() => {
@@ -650,6 +677,38 @@ export default function VideoSphereBackground() {
             background: 'radial-gradient(circle at center, #003865 0%, #001e3d 55%, #000e1c 100%)'
           }}
         >
+          <video
+            ref={(el) => {
+              if (el) {
+                el.muted = true
+                el.defaultMuted = true
+                nightVideoRef.current = el
+              }
+            }}
+            src={nightDiveVideo}
+            autoPlay={isNightDive}
+            loop
+            muted
+            playsInline
+            preload="auto"
+            disablePictureInPicture
+            disableRemotePlayback
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              opacity: isNightDive ? 1 : 0,
+              pointerEvents: 'none',
+              transition: 'opacity 0.4s ease-in-out',
+              zIndex: isNightDive ? 2 : -1,
+              transform: 'translate3d(0, 0, 0)',
+              willChange: 'opacity, transform',
+              backfaceVisibility: 'hidden',
+            }}
+          />
           <div style={{ width: '100%', height: '100%' }}>
             <Canvas
               dpr={[1, 1.5]}
