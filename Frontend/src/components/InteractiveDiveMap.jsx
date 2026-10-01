@@ -1307,23 +1307,9 @@ export default function InteractiveDiveMap({
           const creature = getDiveSiteCreatureInfo(popupSite.id, popupSite)
           return (
             <div className="relative">
-              {/* 1. Header: Title & Close Button */}
-              <div className="px-2.5 sm:px-3 pt-2 sm:pt-2.5 pb-1.5 flex items-center justify-between gap-1.5 border-b border-white/10 bg-white/[0.03]">
-                <div className="min-w-0 flex-1">
-                  <h3 className="font-heading font-bold text-xs sm:text-sm text-white leading-tight truncate">
-                    {popupSite.title || popupSite.name || 'Dive Site'}
-                  </h3>
-                  {popupSite.country && (
-                    <p className="text-[8.5px] sm:text-[9.5px] font-medium text-cyan-400 flex items-center gap-1 mt-0.5 truncate">
-                      <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="shrink-0">
-                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
-                        <circle cx="12" cy="9" r="2.5" />
-                      </svg>
-                      <span className="truncate">{popupSite.country}</span>
-                    </p>
-                  )}
-                </div>
-
+              {/* 1. Resident Creature & Dive Photo with Dynamic Badge & Floating Close Button */}
+              <div className="w-full h-24 xs:h-28 sm:h-32 bg-[#021426] overflow-hidden relative group">
+                {/* Floating Close Button */}
                 <button
                   type="button"
                   onClick={(e) => {
@@ -1333,15 +1319,12 @@ export default function InteractiveDiveMap({
                     prevLocationIdRef.current = null
                     onLocationSelectRef.current?.(null)
                   }}
-                  className="text-white/60 hover:text-white w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition cursor-pointer text-[10px] sm:text-xs font-bold shrink-0"
+                  className="absolute top-2 right-2 z-20 text-white/80 hover:text-white w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center rounded-full bg-black/60 hover:bg-black/90 backdrop-blur-md transition cursor-pointer text-[10px] sm:text-xs font-bold border border-white/20 shadow-md"
                   aria-label="Close"
                 >
                   ✕
                 </button>
-              </div>
 
-              {/* 2. Resident Creature & Dive Photo with Dynamic Badge */}
-              <div className="w-full h-20 xs:h-24 sm:h-28 bg-[#021426] overflow-hidden relative group">
                 <img
                   key={popupSite.id}
                   src={creature?.image || getDiveSiteImage(popupSite.id, popupSite)}
@@ -1349,7 +1332,7 @@ export default function InteractiveDiveMap({
                   className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
                   loading="lazy"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#00192e] via-transparent to-black/30 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#00192e] via-transparent to-black/40 pointer-events-none" />
 
                 {/* Creature Badge */}
                 {creature?.creatureName && (
@@ -1362,31 +1345,18 @@ export default function InteractiveDiveMap({
                 )}
               </div>
 
-              {/* 3. Marine Life & Ecological Info */}
-              <div className="px-2.5 sm:px-3 py-2 space-y-1 bg-[#00192e]/60 border-t border-white/5 text-left">
-                {creature?.species && (
-                  <div>
-                    <span className="block text-[7.5px] sm:text-[8px] font-extrabold uppercase tracking-widest text-cyan-400/80">
-                      SPECIES / HABITAT
-                    </span>
-                    <p className="text-[9.5px] sm:text-[10.5px] font-medium text-white truncate">
-                      {creature.species}
-                    </p>
-                  </div>
-                )}
-
-                <div className="flex items-center justify-between gap-1.5 pt-0.5 border-t border-white/5">
-                  <span className="text-[8px] sm:text-[8.5px] font-extrabold uppercase tracking-widest text-white/50">
-                    DIVE TYPE
-                  </span>
-                  <span className="text-[9.5px] sm:text-[10.5px] font-semibold text-slate-200 truncate max-w-[120px] text-right">
-                    {popupSite.types || 'Reef, Ocean'}
-                  </span>
-                </div>
-
-                {creature?.description && (
-                  <p className="text-[8.5px] sm:text-[9.5px] text-slate-300/80 line-clamp-2 leading-tight pt-0.5">
-                    {creature.description}
+              {/* 2. Place Name & Country at Bottom */}
+              <div className="px-2.5 sm:px-3 py-2 bg-[#00192e]/95 text-left">
+                <h3 className="font-heading font-bold text-xs sm:text-sm text-white leading-tight truncate">
+                  {popupSite.title || popupSite.name || 'Dive Site'}
+                </h3>
+                {popupSite.country && (
+                  <p className="text-[8.5px] sm:text-[9.5px] font-medium text-cyan-400 flex items-center gap-1 mt-0.5 truncate">
+                    <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="shrink-0">
+                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
+                      <circle cx="12" cy="9" r="2.5" />
+                    </svg>
+                    <span className="truncate">{popupSite.country}</span>
                   </p>
                 )}
               </div>
