@@ -265,36 +265,23 @@ export default function Home() {
               <StaggerItem key={i} className="w-[220px] xs:w-[240px] shrink-0 sm:w-auto snap-center h-full">
                 <div
                   onClick={() => {
-                    navigate('/gallery')
+                    navigate('/book-us')
                     window.scrollTo({ top: 0, behavior: 'smooth' })
                   }}
                   className="h-full group cursor-pointer relative mt-6 sm:mt-10 flex flex-col pointer-events-auto"
                 >
 
-                  {/* Floating transparent PNG image centered with respect to bg panel - positioned lower on desktop and mobile */}
+                  {/* Floating transparent PNG image centered with respect to bg panel */}
                   {item.img ? (
                     <motion.div
                       animate={{ y: [0, -6, 0] }}
                       transition={{ duration: 3.2 + (i * 0.4), repeat: Infinity, ease: 'easeInOut' }}
-                      className={`absolute top-0 xs:top-1 ${
-                        i === 0 || i === 2 ? 'sm:top-1 lg:top-2' : i === 3 ? 'sm:-top-4 lg:-top-5' : 'sm:-top-6 lg:-top-8'
-                      } inset-x-0 mx-auto w-full flex items-center justify-center z-20 pointer-events-none px-1 ${
-                        i === 0 // 1st panel - slightly smaller
-                          ? 'max-w-[155px] xs:max-w-[175px] sm:max-w-[245px] lg:max-w-[265px] h-[130px] xs:h-[145px] sm:h-[215px] lg:h-[240px]'
-                          : i === 1 // 2nd panel - original size
-                          ? 'max-w-[170px] xs:max-w-[190px] sm:max-w-[270px] lg:max-w-[290px] h-[140px] xs:h-[160px] sm:h-[240px] lg:h-[270px]'
-                          : i === 2 // 3rd panel - slightly smaller
-                          ? 'max-w-[145px] xs:max-w-[165px] sm:max-w-[230px] lg:max-w-[250px] h-[120px] xs:h-[135px] sm:h-[200px] lg:h-[225px]'
-                          : // 4th panel - slightly smaller
-                            'max-w-[155px] xs:max-w-[175px] sm:max-w-[245px] lg:max-w-[265px] h-[130px] xs:h-[145px] sm:h-[215px] lg:h-[240px]'
-                      }`}
+                      className="absolute -top-8 xs:-top-10 sm:-top-14 lg:-top-16 inset-x-0 mx-auto w-full flex items-center justify-center z-20 pointer-events-none px-2 h-[160px] xs:h-[180px] sm:h-[260px] lg:h-[290px]"
                     >
                       <img
                         src={item.img}
                         alt={item.t}
-                        className={`w-full h-full max-w-full max-h-full object-contain drop-shadow-[0_15px_30px_rgba(0,0,0,0.8)] transition-all duration-500 ${
-                          i === 1 ? 'scale-95' : i === 2 ? 'scale-85' : 'scale-90'
-                        }`}
+                        className="w-full h-full max-w-full max-h-full object-contain drop-shadow-[0_15px_30px_rgba(0,0,0,0.8)]"
                       />
                     </motion.div>
                   ) : null}
@@ -332,72 +319,6 @@ export default function Home() {
                           </svg>
                         </div>
                       </div>
-                    </div>
-                  </div>
-                </div>
-              </StaggerItem>
-            ))}
-          </StaggerGrid>
-        </div>
-      </section>
-
-      {/* 7. TESTIMONIALS (COMMUNITY VOICES) */}
-      <section id="testimonials-section" className="relative py-12 sm:py-32 pointer-events-auto">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionReveal className="text-center max-w-2xl mx-auto mb-8 sm:mb-12">
-            <span className="text-[#FFCD00] font-bold tracking-widest uppercase text-xs mb-3 block drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
-              Community Voices
-            </span>
-            <h2
-              className="font-heading text-3xl sm:text-5xl font-bold text-white drop-shadow-[0_8px_24px_rgba(0,0,0,0.95)]"
-              style={{ textShadow: '0 4px 20px rgba(0,0,0,0.95), 0 2px 8px rgba(0,0,0,0.9)' }}
-            >
-              What Our Divers Say
-            </h2>
-            <p
-              className="mt-4 text-white/90 drop-shadow-[0_4px_12px_rgba(0,0,0,0.95)] text-justify"
-              style={{ textShadow: '0 2px 10px rgba(0,0,0,0.9), 0 1px 4px rgba(0,0,0,0.85)' }}
-            >
-              Don't just take our word for it.<br />Hear from the community of ocean lovers who have dived with us.
-            </p>
-            <div className="mt-6">
-              <button
-                type="button"
-                onClick={() => setShowReviewModal(true)}
-                className="inline-flex items-center gap-2 rounded-full bg-white/15 backdrop-blur-xl border border-white/30 text-white font-bold text-xs uppercase tracking-widest px-6 py-3 transition-all duration-300 hover:scale-105 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] shadow-[0_4px_16px_rgba(0,0,0,0.6)] cursor-pointer"
-              >
-                <span>+ Write a Review</span>
-              </button>
-            </div>
-          </SectionReveal>
-
-          <StaggerGrid className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none pb-4 gap-3 md:grid md:grid-cols-3 md:gap-8 items-stretch md:overflow-visible px-1">
-            {approvedReviews.slice(0, 3).map((t, i) => (
-              <StaggerItem key={t.id || i} className="w-[210px] xs:w-[230px] shrink-0 md:w-auto snap-center h-full">
-                <div className="h-full flex flex-col justify-between bg-white/10 backdrop-blur-2xl rounded-2xl sm:rounded-3xl p-3.5 sm:p-8 border border-white/20 shadow-[0_8px_24px_rgba(0,0,0,0.25)] hover:bg-white/15 hover:border-white/40 hover:-translate-y-2 hover:shadow-[0_12px_32px_rgba(0,0,0,0.35)] transition-all duration-500">
-                  <div>
-                    <div className="flex gap-0.5 sm:gap-1 mb-2 sm:mb-6">
-                      {[...Array(t.rating || 5)].map((_, j) => (
-                        <svg key={j} className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-[#FFCD00]" fill="currentColor" viewBox="0 0 20 20">
-                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                        </svg>
-                      ))}
-                    </div>
-                    <p className="text-white/95 font-medium mb-3 sm:mb-8 text-xs sm:text-base leading-relaxed text-justify line-clamp-4 sm:line-clamp-none">
-                      "{t.text}"
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2.5 sm:gap-4 mt-auto">
-                    <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-full overflow-hidden border border-white/30 shrink-0 shadow-md">
-                      <SafeImage src={t.image} alt={t.name} className="w-full h-full object-cover" />
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-white text-xs sm:text-sm tracking-wide truncate max-w-[120px] sm:max-w-none">
-                        {t.name}
-                      </h4>
-                      <span className="text-[10px] sm:text-xs text-[#FFCD00] font-medium block truncate max-w-[120px] sm:max-w-none">
-                        {t.role}
-                      </span>
                     </div>
                   </div>
                 </div>
@@ -466,17 +387,17 @@ export default function Home() {
             ].map((item, i) => (
               <StaggerItem key={i} className="w-[62vw] min-w-[215px] max-w-[270px] aspect-square sm:w-auto sm:aspect-auto shrink-0 snap-center h-full">
                 <div
-                  onClick={() => {
-                    if (i === 3) {
-                      const el = document.getElementById('customize-dive-section')
-                      if (el) {
-                        el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-                        return
-                      }
+                  onClick={i === 3 ? () => {
+                    const el = document.getElementById('customize-dive-section')
+                    if (el) {
+                      el.scrollIntoView({ behavior: 'smooth', block: 'start' })
                     }
-                    navigate('/contact')
-                  }}
-                  className="group relative h-full w-full rounded-2xl sm:rounded-[28px] lg:rounded-[32px] bg-[#00172b]/40 backdrop-blur-2xl border border-white/20 p-3 sm:p-5 lg:p-6 shadow-[0_8px_30px_rgba(0,0,0,0.3)] transition-all duration-500 hover:-translate-y-3 hover:bg-[#00172b]/60 hover:border-[#00AEC7] hover:shadow-[0_12px_40px_rgba(0,174,199,0.25)] flex flex-col justify-between cursor-pointer"
+                  } : undefined}
+                  className={`group relative h-full w-full rounded-2xl sm:rounded-[28px] lg:rounded-[32px] bg-[#00172b]/40 backdrop-blur-2xl border border-white/20 p-3 sm:p-5 lg:p-6 shadow-[0_8px_30px_rgba(0,0,0,0.3)] transition-all duration-500 hover:bg-[#00172b]/60 flex flex-col justify-between ${
+                    i === 3
+                      ? 'cursor-pointer hover:-translate-y-3 hover:border-[#00AEC7] hover:shadow-[0_12px_40px_rgba(0,174,199,0.25)]'
+                      : 'cursor-default'
+                  }`}
                 >
                   <div className="flex flex-col flex-1">
                     {/* Top Bar: Icon Box */}
@@ -549,6 +470,72 @@ export default function Home() {
 
       {/* 8. THE DIVE VILLAGE GALLERY CAROUSEL */}
       <GalleryPreview />
+
+      {/* 9. TESTIMONIALS (COMMUNITY VOICES) */}
+      <section id="testimonials-section" className="relative py-12 sm:py-32 pointer-events-auto">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionReveal className="text-center max-w-2xl mx-auto mb-8 sm:mb-12">
+            <span className="text-[#FFCD00] font-bold tracking-widest uppercase text-xs mb-3 block drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
+              Community Voices
+            </span>
+            <h2
+              className="font-heading text-3xl sm:text-5xl font-bold text-white drop-shadow-[0_8px_24px_rgba(0,0,0,0.95)]"
+              style={{ textShadow: '0 4px 20px rgba(0,0,0,0.95), 0 2px 8px rgba(0,0,0,0.9)' }}
+            >
+              What Our Divers Say
+            </h2>
+            <p
+              className="mt-4 text-white/90 drop-shadow-[0_4px_12px_rgba(0,0,0,0.95)] text-justify"
+              style={{ textShadow: '0 2px 10px rgba(0,0,0,0.9), 0 1px 4px rgba(0,0,0,0.85)' }}
+            >
+              Don't just take our word for it.<br />Hear from the community of ocean lovers who have dived with us.
+            </p>
+            <div className="mt-6">
+              <button
+                type="button"
+                onClick={() => setShowReviewModal(true)}
+                className="inline-flex items-center gap-2 rounded-full bg-white/15 backdrop-blur-xl border border-white/30 text-white font-bold text-xs uppercase tracking-widest px-6 py-3 transition-all duration-300 hover:scale-105 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] shadow-[0_4px_16px_rgba(0,0,0,0.6)] cursor-pointer"
+              >
+                <span>+ Write a Review</span>
+              </button>
+            </div>
+          </SectionReveal>
+
+          <StaggerGrid className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none pb-4 gap-3 md:grid md:grid-cols-3 md:gap-8 items-stretch md:overflow-visible px-1">
+            {approvedReviews.slice(0, 3).map((t, i) => (
+              <StaggerItem key={t.id || i} className="w-[210px] xs:w-[230px] shrink-0 md:w-auto snap-center h-full">
+                <div className="h-full flex flex-col justify-between bg-white/10 backdrop-blur-2xl rounded-2xl sm:rounded-3xl p-3.5 sm:p-8 border border-white/20 shadow-[0_8px_24px_rgba(0,0,0,0.25)] hover:bg-white/15 hover:border-white/40 hover:-translate-y-2 hover:shadow-[0_12px_32px_rgba(0,0,0,0.35)] transition-all duration-500">
+                  <div>
+                    <div className="flex gap-0.5 sm:gap-1 mb-2 sm:mb-6">
+                      {[...Array(t.rating || 5)].map((_, j) => (
+                        <svg key={j} className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-[#FFCD00]" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                      ))}
+                    </div>
+                    <p className="text-white/95 font-medium mb-3 sm:mb-8 text-xs sm:text-base leading-relaxed text-justify line-clamp-4 sm:line-clamp-none">
+                      "{t.text}"
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2.5 sm:gap-4 mt-auto">
+                    <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-full overflow-hidden border border-white/30 shrink-0 shadow-md">
+                      <SafeImage src={t.image} alt={t.name} className="w-full h-full object-cover" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-white text-xs sm:text-sm tracking-wide truncate max-w-[120px] sm:max-w-none">
+                        {t.name}
+                      </h4>
+                      <span className="text-[10px] sm:text-xs text-[#FFCD00] font-medium block truncate max-w-[120px] sm:max-w-none">
+                        {t.role}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </StaggerItem>
+            ))}
+          </StaggerGrid>
+        </div>
+      </section>
 
       {/* REVIEW MODAL */}
       {typeof document !== 'undefined' && createPortal(

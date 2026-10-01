@@ -10,6 +10,7 @@ import { useReviews } from '../contexts/ReviewsContext'
 import divingVidLocal from '../assets/Diving(1).mp4'
 import aboutVidLocal from '../assets/about.mp4'
 import jellyfishVideoLocal from '../assets/jelly fish.mp4'
+import nightDiveVideo from '../assets/Night Dive.mp4'
 
 const divingVid = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790244035/dive-village/ui-videos/diving_1_mp4.mp4'
 const aboutVid = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790244047/dive-village/ui-videos/about_mp4.mp4'

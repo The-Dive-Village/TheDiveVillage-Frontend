@@ -94,6 +94,16 @@ import vidFreeDiving02 from '../assets/Gallery/FreeDiving02.mp4'
 import vidSurfingLocal from '../assets/Gallery/surfing.mp4'
 import vidGallery1Local from '../assets/Gallery/gallery1.mp4'
 
+// New Service Videos
+import vidNewScubaDiver from '../assets/New Service Vids/Scuba Diver.mp4'
+import vidNewOpenWater from '../assets/New Service Vids/OpenWater.MP4'
+import vidNewOWAdvanced from '../assets/New Service Vids/OW+Advanced.mp4'
+import vidNewEFRRescue from '../assets/New Service Vids/EFR+Rescue.mp4'
+import vidNewEFRRescueDiveMaster from '../assets/New Service Vids/EFR+Rescue+DiveMaster.mp4'
+import vidNewEFRRescueDM from '../assets/New Service Vids/EFR+Rescue+DM.mp4'
+import vidOceanExplorerLocal from '../assets/Gallery/oceanexplorer.mp4'
+import vidReefExplorerLocal from '../assets/Gallery/reefexplorer.MP4'
+
 // Migrated Cloudinary Video URLs
 const vidTryDive = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243902/dive-village/gallery-videos/try_dive_mp4.mp4' || vidTryDiveLocal
 const vidDSDLite = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243223/dive-village/gallery-videos/dsd_lite_mp4.mp4' || vidDSDLiteLocal
@@ -117,7 +127,7 @@ const vidBuoyancy = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v179024210
 const vidProjectAware = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243488/dive-village/gallery-videos/projectaware_mp4.mp4' || vidProjectAwareLocal
 const vidRay = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243515/dive-village/gallery-videos/ray_mp4.mp4' || vidRayLocal
 const vidRay1 = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243533/dive-village/gallery-videos/ray1_mp4.mp4' || vidRay1Local
-const vidNightDive = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243508/dive-village/hero-360/bpjuqk54webpdtghzbxk.mp4'
+const vidNightDive = vidNightDiveLocal
 const vidNitrox = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790242447/dive-village/gallery-videos/nitrox_mp4.mp4' || vidNitroxLocal
 const vidJellyfish = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790242324/dive-village/gallery-videos/jellyfish_mp4.mp4' || vidJellyfishLocal
 const vidBoat = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790242073/dive-village/gallery-videos/boat_mp4.mp4' || vidBoatLocal
@@ -135,7 +145,7 @@ const vidProCourse2 = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243
 const vidSurfing = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790240878/dive-village/gallery-videos/surfing_mp4.mp4' || vidSurfingLocal
 const vidGallery1 = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790240872/dive-village/gallery-videos/gallery1_mp4.mp4' || vidGallery1Local
 
-const vidNightFast = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243508/dive-village/hero-360/bpjuqk54webpdtghzbxk.mp4'
+const vidNightFast = vidNightDiveLocal
 const vidCombo1 = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790242027/dive-village/hero-360/duskamhque0kugdulev7.mp4'
 const vidHero1 = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790247900/dive-village/hero-360/axaamnvtycndb5dabkow.mp4'
 
@@ -201,7 +211,7 @@ export const SERVICES_DATA = [
     title: 'Reef Explorer',
     short_desc: 'Guided reef snorkeling for beginners.',
     long_desc: 'Perfect shallow-water snorkel trip to see colorful reef fish, corals, and safe lagoon sites.',
-    video: vidReefplant,
+    video: vidReefExplorerLocal,
     image: imgPhoto86451,
     highlights: 'Total Time: 1–1.5 hrs | Suitable for all ages',
     days_min: '', days_max: '', min_age: ''
@@ -211,7 +221,7 @@ export const SERVICES_DATA = [
     title: 'Ocean Explorer',
     short_desc: 'Snorkel further into the blue.',
     long_desc: 'Explore deeper reef areas, spot turtles and bigger marine life, with guided safety.',
-    video: vidTurtlefish,
+    video: vidOceanExplorerLocal,
     image: imgPhoto86454,
     highlights: 'Total Time: 1.5–2 hrs | Includes equipment & guide',
     days_min: '', days_max: '', min_age: ''
@@ -233,7 +243,7 @@ export const SERVICES_DATA = [
     title: 'Scuba Diver',
     short_desc: 'Entry-level certification.',
     long_desc: 'The first step towards scuba certification for beginners with limited time. The certification will enable you to dive up to 12m under professional supervision. Upgrade to open water diver anytime by completing the remaining training sections. Includes theory, confined water skill development and 2 open water dives up to 12 meters.',
-    video: vidScuba1,
+    video: vidNewScubaDiver,
     image: imgScuba1Jpg,
     highlights: 'Duration: 1–2 days | Credit toward Open Water',
     days_min: 1, days_max: 2, min_age: 10
@@ -243,7 +253,7 @@ export const SERVICES_DATA = [
     title: 'Open Water Diver',
     short_desc: 'The world’s most popular scuba certification.',
     long_desc: 'Learn essential dive theory, skills, and complete 4 open water dives. This certification lets you dive up to 18m without professional supervision.',
-    video: vidSnorkelling3,
+    video: vidNewOpenWater,
     image: imgCertCourses,
     highlights: 'Duration: 3–4 days | Certification to 18m',
     days_min: 3, days_max: 4, min_age: 10
@@ -509,7 +519,7 @@ export const SERVICES_DATA = [
     title: 'OW + Advanced',
     short_desc: 'Bundle Open Water and Advanced courses.',
     long_desc: 'Go from beginner to advanced diver in one comprehensive adventure.',
-    video: vidHeroFast,
+    video: vidNewOWAdvanced,
     image: imgPhoto86738,
     highlights: 'Duration: 5–7 days | Max Depth: 30m',
     days_min: 5, days_max: 7, min_age: ''
@@ -519,7 +529,7 @@ export const SERVICES_DATA = [
     title: 'EFR + Rescue Diver',
     short_desc: 'Bundle emergency first response with rescue training.',
     long_desc: 'Learn life-saving first aid techniques then apply them directly to aquatic rescue scenarios.',
-    video: vidHeroOptimized,
+    video: vidNewEFRRescue,
     image: imgCrownOfThorns,
     highlights: 'Duration: 4–5 days | Prerequisite: Advanced Open Water',
     days_min: 4, days_max: 5, min_age: 12
@@ -541,7 +551,7 @@ export const SERVICES_DATA = [
     title: 'EFR + Rescue + Divemaster',
     short_desc: 'Complete pro-level bundle.',
     long_desc: 'Progress from EFR to Rescue Diver, then Divemaster.',
-    video: vidProCourse1,
+    video: vidNewEFRRescueDiveMaster,
     image: imgPhoto86742,
     highlights: 'Duration: 24–31 days | Excludes crewpak & professional fees',
     days_min: 24, days_max: 31, min_age: 18
@@ -551,7 +561,7 @@ export const SERVICES_DATA = [
     title: 'EFR + Rescue + DM (prereqs)',
     short_desc: 'Accelerated path with prerequisites.',
     long_desc: 'Skip prior modules and move into Divemaster.',
-    video: vidProCourseSpecial,
+    video: vidNewEFRRescueDM,
     image: imgPhoto86760,
     highlights: 'Duration: varies | Excludes crewpak & professional fees',
     days_min: '', days_max: '', min_age: 18

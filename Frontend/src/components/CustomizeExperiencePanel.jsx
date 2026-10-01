@@ -10,6 +10,8 @@ const CUSTOM_ACTIVITIES = [
   { id: 'surfing', name: 'Surfing' },
   { id: 'sightseeing', name: 'Local Sightseeing' },
   { id: 'snorkeling', name: 'Snorkeling' },
+  { id: 'camping_camper', name: 'Camping / Camper' },
+  { id: 'liveaboard', name: 'Liveaboard' },
 ]
 
 export default function CustomizeExperiencePanel({ className = '', images = PANEL_IMAGES }) {
@@ -33,21 +35,27 @@ export default function CustomizeExperiencePanel({ className = '', images = PANE
   }, [images])
 
   const toggleActivity = (id) => {
-    setSelectedActivities((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-    )
+    setSelectedActivities((prev) => {
+      const next = prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+      const selectedNames = CUSTOM_ACTIVITIES.filter((a) => next.includes(a.id)).map((a) => a.name)
+
+      setCustomText((currText) => {
+        const lines = currText ? currText.split('\n').filter((line) => !line.startsWith('Selected Activities:')) : []
+        const extraText = lines.join('\n').trim()
+
+        if (selectedNames.length > 0) {
+          const actHeader = `Selected Activities: ${selectedNames.join(', ')}`
+          return extraText ? `${actHeader}\n\n${extraText}` : actHeader
+        }
+        return extraText
+      })
+
+      return next
+    })
   }
 
   const handleContactUs = () => {
-    const selectedNames = CUSTOM_ACTIVITIES.filter((a) => selectedActivities.includes(a.id)).map((a) => a.name)
-    const parts = []
-    if (selectedNames.length > 0) {
-      parts.push(`Selected Activities: ${selectedNames.join(', ')}`)
-    }
-    if (customText.trim()) {
-      parts.push(`Custom Details: ${customText.trim()}`)
-    }
-    const fullMessage = parts.join('\n\n')
+    const fullMessage = customText.trim()
 
     const searchParams = new URLSearchParams()
     if (fullMessage) {
@@ -72,7 +80,7 @@ export default function CustomizeExperiencePanel({ className = '', images = PANE
   }
 
   return (
-    <div className={`relative overflow-hidden rounded-[36px] sm:rounded-[44px] shadow-[0_20px_60px_rgba(0,0,0,0.8)] w-full min-h-[460px] lg:min-h-[520px] flex flex-col justify-center text-white ${className}`}>
+    <div className={`relative overflow-hidden rounded-[36px] sm:rounded-[44px] shadow-[0_20px_60px_rgba(0,0,0,0.8)] w-full min-h-[480px] lg:min-h-[560px] flex flex-col justify-center text-white ${className}`}>
       {/* Base Layer: Previous image stays solid extending fully to both ends */}
       {images[prevIndex] && (
         <img
@@ -143,18 +151,18 @@ export default function CustomizeExperiencePanel({ className = '', images = PANE
             </div>
           </div>
 
-          {/* Right Column: Translucent Glass Box */}
-          <div className="w-full lg:w-[440px] flex flex-col gap-4 shrink-0 bg-white/10 backdrop-blur-2xl p-6 sm:p-8 rounded-[28px] border border-white/20 shadow-2xl">
+          {/* Right Column: Translucent Glass Box (Expanded Length & Height) */}
+          <div className="w-full lg:w-[480px] xl:w-[540px] flex flex-col gap-4 shrink-0 bg-white/10 backdrop-blur-2xl p-6 sm:p-8 lg:p-9 rounded-[32px] border border-white/20 shadow-2xl">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-white/90 mb-2">
+              <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-white/90 mb-2.5">
                 Custom Requests & Details
               </label>
               <textarea
-                rows={3}
+                rows={5}
                 value={customText}
                 onChange={(e) => setCustomText(e.target.value)}
-                placeholder="E.g., 3-day scuba package with sunset surfing & local food tour..."
-                className="w-full rounded-2xl bg-white/10 border border-white/20 p-4 text-xs sm:text-sm text-white placeholder-white/55 outline-none focus:border-[#FFCD00] focus:ring-1 focus:ring-[#FFCD00]/50 transition resize-none leading-relaxed"
+                placeholder="E.g., 3-day scuba package with sunset surfing, camping & local food experience..."
+                className="w-full min-h-[140px] sm:min-h-[160px] rounded-2xl bg-white/10 border border-white/20 p-4 sm:p-5 text-xs sm:text-sm text-white placeholder-white/55 outline-none focus:border-[#FFCD00] focus:ring-1 focus:ring-[#FFCD00]/50 transition resize-none leading-relaxed"
               />
             </div>
 
@@ -163,7 +171,7 @@ export default function CustomizeExperiencePanel({ className = '', images = PANE
               onClick={handleContactUs}
               className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-white/15 backdrop-blur-xl border border-white/30 text-white font-heading font-bold text-xs sm:text-sm uppercase tracking-wider py-4 px-6 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] transition-all duration-300 hover:scale-105 active:scale-95 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] hover:shadow-[0_12px_40px_rgba(255,205,0,0.5)] cursor-pointer"
             >
-              <span>Contact Us</span>
+              <span>Continue</span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M5 12h14M12 5l7 7-7 7" />
               </svg>

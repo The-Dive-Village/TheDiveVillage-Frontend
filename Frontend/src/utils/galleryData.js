@@ -33,6 +33,8 @@ const EXCLUDED_FILES = new Set([
   'Turtle Flyinnn.mp4',
   'merch 5.mp4',
   'nitrox.mp4',
+  'oceanexplorer.mp4',
+  'reefexplorer.MP4',
 ])
 
 export const GALLERY_CATEGORIES = [
@@ -70,7 +72,9 @@ const GALLERY_METADATA_MAP = {
   'Free Diving 1.mov': { title: 'Freediving Single-Breath Journey', category: 'freediving' },
   'Free Diving 1.mp4': { title: 'Freediving Single-Breath Journey', category: 'freediving' },
   'Free Diving.jpg': { title: 'Freediving Ocean Depths', category: 'freediving' },
-  'Free Diving.png': { title: 'FreeDiving', category: 'freediving' },
+  'Free Diving.png': { title: 'Free Diving', category: 'freediving' },
+  'FreeDiving01.mp4': { title: 'Wreck Dive', category: 'scuba' },
+  'FreeDiving02.mp4': { title: 'Free Diving', category: 'freediving' },
   'Freedivingfun.mp4': { title: 'Freediving Fun & Practice', category: 'freediving' },
   'Introductory Programs.png': { title: 'Introductory Scuba Discovery', category: 'scuba' },
   'Jellyfish.mp4': { title: 'Moon Jellyfish', category: 'marine' },
@@ -134,7 +138,7 @@ const GALLERY_METADATA_MAP = {
   'Snorkelling3.mp4': { title: 'Whale Shark', category: 'marine' },
   'Snorkelling4.mp4': { title: 'Whale Shark', category: 'marine' },
   'Stay.jpg': { title: 'Tropical Sunset & Resort Stays', category: 'scenery' },
-  'Stays.mp4': { title: 'Village Stays & Island Calm', category: 'scenery' },
+  'Stays.mp4': { title: 'Roadtrip by the beach', category: 'scenery' },
   'Thorny Oyster.jpg': { title: 'Thorny Oyster', category: 'marine' },
   'Travel.mp4': { title: 'Dive Boat Transfer & Island Ride', category: 'scenery' },
   'Try Dive.mp4': { title: 'Schooling Anthias & Damselfish', category: 'marine' },
@@ -149,7 +153,7 @@ const GALLERY_METADATA_MAP = {
   'bush.mp4': { title: 'Soft Coral & Bush Coral Garden', category: 'marine' },
   'diving12.mp4': { title: '12-Dive Island Safari', category: 'scuba' },
   'free diving .mp4': { title: 'Freediving Depth Exploration', category: 'freediving' },
-  'free diving 3.mp4': { title: 'FreeDiving', category: 'freediving' },
+  'free diving 3.mp4': { title: 'Free Diving', category: 'freediving' },
   'gallery1.mp4': { title: 'Safari', category: 'scenery' },
   'lionfish.MP4': { title: 'LionFish', category: 'marine' },
   'merch 5.mp4': { title: 'Dive Village Gear Showcase', category: 'scenery' },

@@ -89,7 +89,9 @@ export function getOrCreateHeroVideoElement(src = HERO_VIDEO_SRC, playbackRate =
   }
 
   const video = document.createElement('video')
-  video.crossOrigin = 'anonymous'
+  if (src && (src.startsWith('http://') || src.startsWith('https://')) && !src.includes(window.location.host)) {
+    video.crossOrigin = 'anonymous'
+  }
   video.muted = true
   video.defaultMuted = true
   video.volume = 0

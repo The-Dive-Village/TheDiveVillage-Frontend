@@ -9,7 +9,7 @@ import divingFileLocal from '../assets/Diving(1).mp4'
 const divingFile = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790244035/dive-village/ui-videos/diving_1_mp4.mp4'
 const bookFile = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790242027/dive-village/hero-360/duskamhque0kugdulev7.mp4'
 const turtleVideo = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790242000/dive-village/hero-360/hhu28v7vfmdtbb8lwxan.mp4'
-const nightDiveVideo = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243508/dive-village/hero-360/bpjuqk54webpdtghzbxk.mp4'
+import nightDiveVideo from '../assets/Night Dive.mp4'
 import underwaterAudio from '../assets/Underwater.mp3'
 import { setHeroVideoReady, getOrCreateHeroVideoElement, setHeroWebGLReady } from '../utils/mediaReadyManager'
 
@@ -47,7 +47,9 @@ function useDirectVideoTexture(src, playbackRate = 0.5, priority = false) {
     } else {
       const domContainer = getOrCreateDomVideoContainer()
       video = document.createElement('video')
-      video.crossOrigin = 'anonymous'
+      if (src && (src.startsWith('http://') || src.startsWith('https://')) && !src.includes(window.location.host)) {
+        video.crossOrigin = 'anonymous'
+      }
       video.src = src
       video.muted = true
       video.defaultMuted = true
@@ -68,7 +70,7 @@ function useDirectVideoTexture(src, playbackRate = 0.5, priority = false) {
     const checkReadiness = () => {
       if (!isMounted) return false
       return (
-        video.readyState >= 3 &&
+        video.readyState >= 2 &&
         video.videoWidth > 0 &&
         video.videoHeight > 0
       )
@@ -101,7 +103,6 @@ function useDirectVideoTexture(src, playbackRate = 0.5, priority = false) {
       if (checkReadiness()) {
         if (!vidTexture) {
           vidTexture = new THREE.VideoTexture(video)
-          vidTexture.update = () => { } // Disable Three.js per-frame auto-update so requestVideoFrameCallback controls needsUpdate
           vidTexture.colorSpace = THREE.SRGBColorSpace
           vidTexture.minFilter = THREE.LinearFilter
           vidTexture.magFilter = THREE.LinearFilter
@@ -227,9 +228,10 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
-  // Light mode: primary 360 video smoothly paced (0.45x). Dark mode (Night Dive): default speed (1.0x).
+  // Light mode on Home: priority singleton. Dark mode (Night Dive): dynamic local 360 video element (1.0x).
   const primaryPlaybackRate = isNightDive ? 1.0 : 0.45
-  const { texture, hasNewFrameRef: hasNewFrame1, lastTimeRef: lastTime1 } = useDirectVideoTexture(videoSrc, primaryPlaybackRate, true)
+  const isHeroSingleton = !isNightDive && isHome
+  const { texture, hasNewFrameRef: hasNewFrame1, lastTimeRef: lastTime1 } = useDirectVideoTexture(videoSrc, primaryPlaybackRate, isHeroSingleton)
   // Secondary videos are strictly lazy-loaded only when user scrolls or needs them ON DESKTOP
   const { texture: texture2, hasNewFrameRef: hasNewFrame2, lastTimeRef: lastTime2 } = useDirectVideoTexture(!isMobile && isHome && !isNightDive && loadSecondary ? bookFile : null, 0.5, false)
   const { texture: texture3, hasNewFrameRef: hasNewFrame3, lastTimeRef: lastTime3 } = useDirectVideoTexture(!isMobile && isHome && !isNightDive && loadSecondary ? turtleVideo : null, 0.5, false)
@@ -376,14 +378,12 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
 
   useFrame((state, delta) => {
     if (meshRef.current) {
-      // 1. Frame-driven texture 1 update (checks currentTime advancement to guarantee updates even if offscreen callback throttled)
+      // 1. Frame-driven texture 1 update
       if (texture && texture.image) {
         const vid1 = texture.image
-        if (hasNewFrame1.current || vid1.currentTime !== lastTime1.current) {
-          lastTime1.current = vid1.currentTime
-          hasNewFrame1.current = false
+        if (!vid1.paused && vid1.readyState >= 2) {
           texture.needsUpdate = true
-          if (!hasRenderedInitialFrameRef.current && vid1.readyState >= 2 && vid1.videoWidth > 0) {
+          if (!hasRenderedInitialFrameRef.current && vid1.videoWidth > 0) {
             hasRenderedInitialFrameRef.current = true
             setHeroWebGLReady(true)
           }
