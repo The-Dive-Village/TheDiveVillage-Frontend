@@ -49,8 +49,8 @@ function FlippingProductTag() {
   return (
     <div className="relative h-full flex flex-col items-center justify-center select-none pointer-events-none py-2 sm:py-4">
       {/* Hanging Cord */}
-      <div className="w-0.5 h-3 sm:h-5 lg:h-6 bg-gradient-to-b from-white/40 via-[#FFCD00] to-white/60 shadow-sm mb-[-2px] relative z-20 shrink-0">
-        <div className="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-[#FFCD00] -top-1 -left-[2px] sm:-left-[3px] absolute shadow-sm" />
+      <div className="w-0.5 h-3 sm:h-5 lg:h-6 bg-white/90 shadow-[0_0_6px_rgba(255,255,255,0.7)] mb-[-2px] relative z-20 shrink-0">
+        <div className="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-white -top-1 -left-[2px] sm:-left-[3px] absolute shadow-[0_0_6px_rgba(255,255,255,0.9)]" />
       </div>
 
       {/* 3D Perspective Container matched to exact 447x864 image aspect ratio */}
