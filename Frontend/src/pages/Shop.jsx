@@ -121,11 +121,11 @@ export default function Shop() {
 
       {/* 1. HERO BANNER */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-12">
-        <div className="relative rounded-[24px] sm:rounded-[36px] lg:rounded-[40px] overflow-hidden bg-[#001428] shadow-lift border border-white/10 w-full aspect-[2170/725] flex items-center justify-end">
+        <div className="relative rounded-[24px] sm:rounded-[36px] lg:rounded-[40px] overflow-hidden bg-[#001428] shadow-lift border border-white/10 w-full aspect-[1774/887] flex items-center justify-end">
           <img
             src={bannerImg}
             alt="Merchandise Banner"
-            className="w-full h-full object-contain sm:object-cover object-center pointer-events-none block"
+            className="w-full h-full object-cover object-center pointer-events-none block"
           />
 
           {/* Right Column: 3D Flipping Product Tag */}

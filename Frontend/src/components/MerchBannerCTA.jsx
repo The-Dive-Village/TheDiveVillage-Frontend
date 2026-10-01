@@ -17,12 +17,12 @@ export default function MerchBannerCTA({ className = '' }) {
     <div className={`w-full ${className}`}>
       <div
         onClick={handleClick}
-        className="group relative rounded-[24px] sm:rounded-[36px] lg:rounded-[40px] overflow-hidden bg-[#001428] shadow-lift border border-white/10 w-full aspect-[2170/725] flex items-center justify-end cursor-pointer transition-all duration-300 hover:scale-[1.008] hover:border-white/30"
+        className="group relative rounded-[24px] sm:rounded-[36px] lg:rounded-[40px] overflow-hidden bg-[#001428] shadow-lift border border-white/10 w-full aspect-[1774/887] flex items-center justify-end cursor-pointer transition-all duration-300 hover:scale-[1.008] hover:border-white/30"
       >
         <img
           src={bannerImg}
           alt="Merchandise Banner"
-          className="w-full h-full object-contain sm:object-cover object-center pointer-events-none block"
+          className="w-full h-full object-cover object-center pointer-events-none block"
         />
 
         {/* Left Side Bottom: View More Button */}
