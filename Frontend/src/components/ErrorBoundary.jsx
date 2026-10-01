@@ -31,8 +31,12 @@ export default class ErrorBoundary extends React.Component {
 
       return (
         <div className="min-h-[50vh] flex flex-col items-center justify-center p-6 text-center text-white bg-navy/90 backdrop-blur-md rounded-3xl m-4 border border-white/20 shadow-2xl">
-          <div className="w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center mb-4 text-accent text-2xl font-bold">
-            🤿
+          <div className="w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center mb-4 text-accent">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="8" x2="12" y2="12"/>
+              <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
           </div>
           <h2 className="font-heading text-2xl sm:text-3xl font-bold text-white mb-2">
             Something went off course underwater

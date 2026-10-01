@@ -30,13 +30,13 @@ export default function CommandPalette({ isOpen, onClose }) {
 
     // 1. Pages & Fast Navigation
     list.push(
-      { id: 'page-home', type: 'page', title: 'Home Page', subtitle: 'Welcome to The Dive Village', url: '/', icon: '🏠', category: 'Pages' },
-      { id: 'page-book', type: 'page', title: 'Book A Dive / Course', subtitle: 'Interactive 3D Globe Booking Wizard', url: '/book-us', icon: '🌍', category: 'Pages' },
-      { id: 'page-services', type: 'page', title: 'Services & Expeditions', subtitle: 'Scuba Diving, Freediving, Surfing', url: '/services', icon: '🤿', category: 'Pages' },
-      { id: 'page-shop', type: 'page', title: 'Merchandise & Shop', subtitle: 'Apparel, Dry Bags, Rashguards & Gear', url: '/shop', icon: '🛍️', category: 'Pages' },
-      { id: 'page-gallery', type: 'page', title: 'Visual Gallery & Lightbox', subtitle: 'Underwater wildlife photos & videos', url: '/gallery', icon: '🖼️', category: 'Pages' },
-      { id: 'page-about', type: 'page', title: 'About Our Story', subtitle: 'Our instructors, safety philosophy & mission', url: '/about', icon: '🌊', category: 'Pages' },
-      { id: 'page-contact', type: 'page', title: 'Contact Us', subtitle: 'Get in touch with dive masters & team', url: '/contact', icon: '📞', category: 'Pages' }
+      { id: 'page-home', type: 'page', title: 'Home Page', subtitle: 'Welcome to The Dive Village', url: '/', iconKey: 'home', category: 'Pages' },
+      { id: 'page-book', type: 'page', title: 'Book A Dive / Course', subtitle: 'Interactive 3D Globe Booking Wizard', url: '/book-us', iconKey: 'globe', category: 'Pages' },
+      { id: 'page-services', type: 'page', title: 'Services & Expeditions', subtitle: 'Scuba Diving, Freediving, Surfing', url: '/services', iconKey: 'services', category: 'Pages' },
+      { id: 'page-shop', type: 'page', title: 'Shop & Merchandise', subtitle: 'Apparel, Dry Bags, Rashguards & Gear', url: '/shop', iconKey: 'shop', category: 'Pages' },
+      { id: 'page-gallery', type: 'page', title: 'Visual Gallery & Lightbox', subtitle: 'Underwater wildlife photos & videos', url: '/gallery', iconKey: 'gallery', category: 'Pages' },
+      { id: 'page-about', type: 'page', title: 'About Our Story', subtitle: 'Our instructors, safety philosophy & mission', url: '/about', iconKey: 'about', category: 'Pages' },
+      { id: 'page-contact', type: 'page', title: 'Contact Us', subtitle: 'Get in touch with dive masters & team', url: '/contact', iconKey: 'contact', category: 'Pages' }
     )
 
     // 2. Courses
@@ -47,7 +47,7 @@ export default function CommandPalette({ isOpen, onClose }) {
         title: c.name,
         subtitle: `Min. Age: ${c.minAge} yrs • ${c.category || 'Certification'}`,
         url: `/book-us?program=${encodeURIComponent(c.id)}`,
-        icon: '🎓',
+        iconKey: 'course',
         category: 'Courses',
         badge: `${c.minAge}+ yrs`,
       })
@@ -61,7 +61,7 @@ export default function CommandPalette({ isOpen, onClose }) {
         title: p.title,
         subtitle: `${p.category || 'Official Gear'}`,
         url: `/product/${p.id}`,
-        icon: '👕',
+        iconKey: 'product',
         category: 'Shop Gear',
         image: p.image || p.images?.[0],
       })
@@ -75,7 +75,7 @@ export default function CommandPalette({ isOpen, onClose }) {
         title: `${c.name} Dive Expeditions`,
         subtitle: `Explore world-class dive sites across ${c.name}`,
         url: `/book-us`,
-        icon: '📍',
+        iconKey: 'location',
         category: 'Dive Sites',
       })
     })
@@ -88,7 +88,7 @@ export default function CommandPalette({ isOpen, onClose }) {
         title: g.title,
         subtitle: `Underwater photo collection • ${g.category}`,
         url: `/gallery`,
-        icon: '📸',
+        iconKey: 'gallery',
         category: 'Gallery',
       })
     })
@@ -255,11 +255,11 @@ export default function CommandPalette({ isOpen, onClose }) {
                     }`}
                   >
                     <div className="flex items-center gap-3 min-w-0">
-                      <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-lg shrink-0 overflow-hidden">
+                      <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center shrink-0 overflow-hidden">
                         {item.image ? (
                           <img src={item.image} alt="" className="w-full h-full object-cover" />
                         ) : (
-                          <span>{item.icon}</span>
+                          <ItemIcon type={item.type} iconKey={item.iconKey} />
                         )}
                       </div>
                       <div className="min-w-0">
@@ -307,5 +307,82 @@ export default function CommandPalette({ isOpen, onClose }) {
         </motion.div>
       </div>
     </AnimatePresence>
+  )
+}
+
+function ItemIcon({ type, iconKey }) {
+  if (type === 'course' || iconKey === 'course') {
+    return (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-cyan-300">
+        <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+        <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+      </svg>
+    )
+  }
+  if (type === 'product' || iconKey === 'product' || iconKey === 'shop') {
+    return (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-300">
+        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <path d="M16 10a4 4 0 0 1-8 0"/>
+      </svg>
+    )
+  }
+  if (type === 'location' || iconKey === 'location') {
+    return (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-300">
+        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+        <circle cx="12" cy="10" r="3"/>
+      </svg>
+    )
+  }
+  if (type === 'gallery' || iconKey === 'gallery') {
+    return (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sky-300">
+        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+        <circle cx="8.5" cy="8.5" r="1.5"/>
+        <polyline points="21 15 16 10 5 21"/>
+      </svg>
+    )
+  }
+  if (iconKey === 'home') {
+    return (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-cyan-300">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+        <polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
+    )
+  }
+  if (iconKey === 'globe') {
+    return (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-cyan-300">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="2" y1="12" x2="22" y2="12"/>
+        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+      </svg>
+    )
+  }
+  if (iconKey === 'services') {
+    return (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-cyan-300">
+        <circle cx="12" cy="5" r="3"/>
+        <line x1="12" y1="22" x2="12" y2="8"/>
+        <path d="M5 12H2a10 10 0 0 0 20 0h-3"/>
+      </svg>
+    )
+  }
+  if (iconKey === 'about') {
+    return (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-cyan-300">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="16" x2="12" y2="12"/>
+        <line x1="12" y1="8" x2="12.01" y2="8"/>
+      </svg>
+    )
+  }
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-cyan-300">
+      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+    </svg>
   )
 }

@@ -107,7 +107,10 @@ export default function ServiceDetail() {
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="bg-white rounded-2xl p-6 shadow-sm border border-navy/5">
                   <h4 className="text-sm font-bold text-navy mb-4 flex items-center gap-2">
-                    <span className="text-green-500">✅</span> Included
+                    <span className="w-5 h-5 rounded-full bg-green-100 text-green-600 flex items-center justify-center shrink-0">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    </span>
+                    Included
                   </h4>
                   <ul className="space-y-3">
                     <li className="text-sm font-medium text-navy/70 flex items-center gap-2">Premium Dive Equipment</li>
@@ -118,7 +121,10 @@ export default function ServiceDetail() {
                 </div>
                 <div className="bg-[#F0F2F5] rounded-2xl p-6 border border-navy/5">
                   <h4 className="text-sm font-bold text-navy mb-4 flex items-center gap-2">
-                    <span className="text-red-400">❌</span> Excluded
+                    <span className="w-5 h-5 rounded-full bg-red-100 text-red-500 flex items-center justify-center shrink-0">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </span>
+                    Excluded
                   </h4>
                   <ul className="space-y-3">
                     <li className="text-sm font-medium text-navy/70 flex items-center gap-2">Flights & Accommodation</li>

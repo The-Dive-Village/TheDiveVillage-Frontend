@@ -786,8 +786,9 @@ export default function BookUs() {
                         />
 
                         {dateError && (
-                          <p className="mt-1 text-[10px] sm:text-xs font-bold text-red-500 flex items-center gap-1">
-                            <span>⚠️</span> {dateError}
+                          <p className="mt-1 text-[10px] sm:text-xs font-bold text-red-500 flex items-center gap-1.5">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                            <span>{dateError}</span>
                           </p>
                         )}
                       </div>
@@ -893,7 +894,7 @@ export default function BookUs() {
                             {/* Before age is entered */}
                             {p.age === '' && (
                               <div className="rounded-lg sm:rounded-2xl bg-navy/[0.03] border border-navy/10 p-2.5 sm:p-4 text-[10px] sm:text-xs font-medium text-navy/70 flex items-center gap-2">
-                                <span className="text-xs sm:text-sm">ℹ️</span>
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-navy/50"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
                                 <span>Enter age to see available courses.</span>
                               </div>
                             )}
@@ -901,7 +902,7 @@ export default function BookUs() {
                             {/* Invalid age notice */}
                             {p.age !== '' && !isAgeValid && (
                               <div className="rounded-lg sm:rounded-2xl bg-red-50 border border-red-200 p-2.5 sm:p-4 text-[10px] sm:text-xs font-medium text-red-600 flex items-start gap-2">
-                                <span className="text-xs sm:text-sm">⚠️</span>
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-red-600 mt-0.5"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
                                 <div>
                                   <span className="font-bold block mb-0.5">
                                     {ageNum < 8 ? 'Minimum Age Requirement (8 Years)' : 'Maximum Age Limit (110 Years)'}
@@ -1213,7 +1214,7 @@ export default function BookUs() {
               {/* Inline Step Error Message */}
               {stepError && (
                 <div className="mt-3 p-2.5 sm:p-3.5 rounded-lg sm:rounded-2xl bg-red-50 border border-red-200 text-red-600 text-[11px] sm:text-xs font-bold flex items-center gap-2">
-                  <span>⚠️</span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-red-600"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
                   <span>{stepError}</span>
                 </div>
               )}

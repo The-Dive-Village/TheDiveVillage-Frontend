@@ -71,8 +71,12 @@ export default function MiniCartDrawer({ isOpen, onClose }) {
             <div className="flex-1 overflow-y-auto p-4 space-y-3.5 scrollbar-thin scrollbar-thumb-white/20">
               {items.length === 0 ? (
                 <div className="py-20 text-center flex flex-col items-center justify-center">
-                  <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center text-3xl mb-4">
-                    🛍️
+                  <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center text-white/60 mb-4">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                      <line x1="3" y1="6" x2="21" y2="6"/>
+                      <path d="M16 10a4 4 0 0 1-8 0"/>
+                    </svg>
                   </div>
                   <h4 className="font-heading text-base font-bold text-white mb-1">Your cart is empty</h4>
                   <p className="text-xs text-white/60 max-w-xs mb-6">
@@ -100,11 +104,15 @@ export default function MiniCartDrawer({ isOpen, onClose }) {
                       key={item.id || item.inventoryId || idx}
                       className="flex items-center gap-3.5 p-3 rounded-2xl bg-white/5 border border-white/10 hover:border-white/20 transition"
                     >
-                      <div className="w-16 h-16 rounded-xl bg-navy/40 overflow-hidden shrink-0 border border-white/10">
+                      <div className="w-16 h-16 rounded-xl bg-navy/40 overflow-hidden shrink-0 border border-white/10 flex items-center justify-center">
                         {itemImg ? (
                           <img src={itemImg} alt="" className="w-full h-full object-cover" />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-lg">🤿</div>
+                          <div className="text-white/40">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                            </svg>
+                          </div>
                         )}
                       </div>
 

@@ -167,8 +167,11 @@ export default function Dashboard() {
           </div>
         ) : requests.length === 0 ? (
           <div className="rounded-2xl bg-slate-50/50 border border-dashed border-gray-200 p-8 sm:p-12 text-center space-y-4">
-            <div className="w-16 h-16 rounded-full bg-white border border-gray-200 flex items-center justify-center mx-auto text-2xl shadow-xs">
-              🌊
+            <div className="w-16 h-16 rounded-full bg-white border border-gray-200 flex items-center justify-center mx-auto text-slate-400 shadow-xs">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+              </svg>
             </div>
             <div>
               <h4 className="text-base font-bold text-slate-900">No Booking Requests or Enquiries yet</h4>

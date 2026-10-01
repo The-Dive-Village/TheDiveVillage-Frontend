@@ -639,7 +639,7 @@ export default function ProductDetail() {
                 <h3 className="font-heading text-2xl font-bold text-navy mb-2">Universal Sizing Chart</h3>
                 <div className="bg-[#F0F2F5] border border-navy/10 rounded-2xl p-4 mb-4">
                   <p className="text-xs sm:text-sm text-navy/80 leading-relaxed font-medium">
-                    ✨ <strong>One Size Fits Most (Adaptive Stretch):</strong> Crafted from 4-way ultra-stretch performance fabric. Choose <strong>(S-M)</strong> for sizes S to M or <strong>(L-XXL)</strong> for sizes L to XXL.
+                    <strong>One Size Fits Most (Adaptive Stretch):</strong> Crafted from 4-way ultra-stretch performance fabric. Choose <strong>(S-M)</strong> for sizes S to M or <strong>(L-XXL)</strong> for sizes L to XXL.
                   </p>
                 </div>
               </div>
