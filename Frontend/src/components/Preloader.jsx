@@ -110,8 +110,8 @@ export default function Preloader({ onComplete }) {
 
   useEffect(() => {
     const startTime = performance.now()
-    const baseTargetDuration = 6000 // Extended relaxed duration (~6.0s)
-    const maxSafetyTimeout = 8500 // Safety cap ensuring user is never held too long
+    const baseTargetDuration = 2000 // Extended relaxed duration (~2.0s)
+    const maxSafetyTimeout = 3000 // Safety cap ensuring user is never held too long
     let animationFrameId
     let completed = false
 

@@ -12,6 +12,7 @@ const routeLoaders = {
   },
   '/about': () => import('../pages/About'),
   '/services': () => import('../pages/Services'),
+  '/our-services': () => import('../pages/Services'),
   '/gallery': () => import('../pages/Gallery'),
   '/shop': () => import('../pages/Shop'),
   '/contact': () => import('../pages/Contact'),
@@ -19,7 +20,14 @@ const routeLoaders = {
   '/signup': () => import('../pages/Signup'),
   '/cart': () => import('../pages/Cart'),
   '/wishlist': () => import('../pages/Wishlist'),
-  '/checkout': () => import('../pages/Checkout')
+  '/checkout': () => import('../pages/Checkout'),
+  '/courses': () => import('../pages/AllCourses'),
+  '/courses/scuba': () => import('../pages/Scuba'),
+  '/courses/snorkeling': () => import('../pages/Snorkeling'),
+  '/courses/surfing': () => import('../pages/Surfing'),
+  '/scuba-diving': () => import('../pages/Scuba'),
+  '/snorkeling': () => import('../pages/Snorkeling'),
+  '/freediving': () => import('../pages/Surfing')
 }
 
 const prefetchedRoutes = new Set()

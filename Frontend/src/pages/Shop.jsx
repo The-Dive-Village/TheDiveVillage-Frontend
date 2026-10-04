@@ -10,12 +10,14 @@ import Button from '../components/Button'
 import SEOHead from '../components/SEOHead'
 import CustomerReviews from '../components/CustomerReviews'
 import { triggerHaptic, triggerSuccessHaptic } from '../utils/haptics'
-import picture3 from '../assets/Picture3.png'
-import bannerImg from '../assets/banner.png'
+import picture3 from '../assets/Picture3.webp'
+import bannerImg from '../assets/Media/Products/banner.webp'
 import divingVidLocal from '../assets/Diving(1).mp4'
+import pop1Local from '../assets/Media/Products/pop1.webp'
+import pop2Local from '../assets/Media/Products/pop2.webp'
 const divingVid = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790244035/dive-village/ui-videos/diving_1_mp4.mp4'
-const pop1 = 'https://res.cloudinary.com/bbgt5nk7/image/upload/v1790244009/dive-village/products/qqpya5ppncnjorf4csbf.jpg'
-const pop2 = 'https://res.cloudinary.com/bbgt5nk7/image/upload/v1790244010/dive-village/products/zueb8bj6rg6iiit2wfqw.jpg'
+const pop1 = pop1Local
+const pop2 = pop2Local
 
 const CATEGORIES = [
   { key: 'all', label: 'All Merchandise' },
@@ -80,16 +82,21 @@ export default function Shop() {
   }
 
   const filteredProducts = useMemo(() => {
+    if (!Array.isArray(productsList)) return []
     return productsList.filter((product) => {
+      if (!product) return false
       const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory
+      const titleOrName = (product.title || product.name || '')
+      const desc = (product.description || '')
+      const query = (searchQuery || '').toLowerCase()
       const matchesSearch =
-        (product.title || product.name).toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.description.toLowerCase().includes(searchQuery.toLowerCase())
+        titleOrName.toLowerCase().includes(query) ||
+        desc.toLowerCase().includes(query)
       return matchesCategory && matchesSearch
     }).sort((a, b) => {
-      if (sortBy === 'price-low') return a.price - b.price
-      if (sortBy === 'price-high') return b.price - a.price
-      if (sortBy === 'rating') return (b.rating || 5) - (a.rating || 5)
+      if (sortBy === 'price-low') return (Number(a?.price) || 0) - (Number(b?.price) || 0)
+      if (sortBy === 'price-high') return (Number(b?.price) || 0) - (Number(a?.price) || 0)
+      if (sortBy === 'rating') return (Number(b?.rating) || 5) - (Number(a?.rating) || 5)
       return 0
     })
   }, [productsList, selectedCategory, searchQuery, sortBy])
@@ -125,11 +132,17 @@ export default function Shop() {
           <img
             src={bannerImg}
             alt="Merchandise Banner"
-            className="w-full h-full object-contain object-right sm:object-[60%_center] translate-x-2 sm:translate-x-6 lg:translate-x-8 pointer-events-none block"
+            className="w-full h-full object-cover object-center pointer-events-none block"
           />
 
           {/* Left Side Blue Gradient Overlay */}
-          <div className="absolute inset-y-0 left-0 w-3/5 sm:w-1/2 bg-gradient-to-r from-[#001428]/90 via-[#002244]/65 to-transparent pointer-events-none z-10" />
+          <div
+            className="absolute inset-y-0 left-0 w-[45%] sm:w-[38%] lg:w-[32%] pointer-events-none z-10"
+            style={{
+              background:
+                'linear-gradient(to right, #003865 0%, rgba(0, 56, 101, 0.96) 20%, rgba(0, 56, 101, 0.82) 42%, rgba(0, 56, 101, 0.58) 64%, rgba(0, 56, 101, 0.28) 82%, rgba(0, 56, 101, 0.08) 93%, transparent 100%)',
+            }}
+          />
 
           {/* Left Side Typography: MADE FOR ALL BODY TYPES */}
           <div className="absolute left-5 xs:left-7 sm:left-10 lg:left-14 top-0 bottom-0 flex flex-col justify-center z-20 pointer-events-none max-w-xs sm:max-w-md">
@@ -319,18 +332,21 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
         }
       }
       el.addEventListener('load', handleLoad)
+      return () => {
+        active = false
+        if (el) {
+          el.removeEventListener('load', handleLoad)
+        }
+      }
     }
     const fallbackTimer = setTimeout(() => {
       if (active) setIsLoaded(true)
     }, 300)
     return () => {
       active = false
-      if (el) {
-        el.removeEventListener('load', () => setIsLoaded(true))
-      }
       clearTimeout(fallbackTimer)
     }
-  }, [product.glb])
+  }, [product?.glb])
 
   const show3D = isHovered
 
@@ -377,8 +393,8 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
                   max-camera-orbit="auto 75deg auto"
                   interaction-prompt="none"
                   environment-image="neutral"
-                  exposure={product.id === 'product-dive-cap' || product.glb?.toLowerCase().includes('cap') ? '2.5' : '1.35'}
-                  shadow-intensity={product.id === 'product-dive-cap' || product.glb?.toLowerCase().includes('cap') ? '0.08' : '0.4'}
+                  exposure={product.id === 'product-dive-cap' || (typeof product.glb === 'string' && product.glb.toLowerCase().includes('cap')) ? '2.5' : '1.35'}
+                  shadow-intensity={product.id === 'product-dive-cap' || (typeof product.glb === 'string' && product.glb.toLowerCase().includes('cap')) ? '0.08' : '0.4'}
                   shadow-softness="0.9"
                   tone-mapping="commerce"
                   bounds="tight"
@@ -440,23 +456,23 @@ function FlippingProductTag() {
   return (
     <div className="relative h-full flex flex-col items-center justify-center select-none pointer-events-none py-2 sm:py-4">
       {/* Hanging Cord */}
-      <div className="w-0.5 h-3 sm:h-5 lg:h-6 bg-white/90 shadow-[0_0_6px_rgba(255,255,255,0.7)] mb-[-2px] relative z-20 shrink-0">
+      <div className="w-0.5 h-2.5 sm:h-3.5 lg:h-4 bg-white/90 shadow-[0_0_6px_rgba(255,255,255,0.7)] mb-[-2px] relative z-20 shrink-0">
         <div className="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-white -top-1 -left-[2px] sm:-left-[3px] absolute shadow-[0_0_6px_rgba(255,255,255,0.9)]" />
       </div>
 
       {/* 3D Perspective Container matched to exact 447x864 image aspect ratio */}
-      <div className="perspective-1000 h-[calc(100%-12px)] sm:h-[calc(100%-20px)] max-h-[140px] sm:max-h-[200px] lg:max-h-[240px] aspect-[447/864] relative">
+      <div className="perspective-1000 h-[105px] xs:h-[125px] sm:h-[160px] lg:h-[195px] aspect-[447/864] relative">
         <motion.div
-          animate={{ rotateY: -360 }}
+          animate={{ rotateY: [0, -360] }}
           transition={{
             duration: 18,
             ease: 'linear',
-            repeat: Number.POSITIVE_INFINITY,
+            repeat: Infinity,
           }}
           className="w-full h-full preserve-3d relative rounded-xl sm:rounded-2xl shadow-[0_15px_35px_rgba(0,0,0,0.4)]"
           style={{ transformStyle: 'preserve-3d' }}
         >
-          {/* FRONT SIDE (pop1.jpeg) */}
+          {/* FRONT SIDE (pop1.webp) */}
           <div
             className="absolute inset-0 w-full h-full rounded-xl sm:rounded-2xl overflow-hidden backface-hidden bg-transparent"
             style={{ backfaceVisibility: 'hidden' }}
@@ -468,7 +484,7 @@ function FlippingProductTag() {
             />
           </div>
 
-          {/* BACK SIDE (pop2.jpeg) */}
+          {/* BACK SIDE (pop2.webp) */}
           <div
             className="absolute inset-0 w-full h-full rounded-xl sm:rounded-2xl overflow-hidden backface-hidden bg-transparent"
             style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}

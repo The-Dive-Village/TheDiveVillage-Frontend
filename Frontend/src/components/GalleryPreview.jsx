@@ -13,7 +13,7 @@ export default function GalleryPreview() {
   const [isHovered, setIsHovered] = useState(false)
   const [itemsList] = useState(GALLERY_ITEMS)
 
-  const previewItems = itemsList.slice(0, 16)
+  const previewItems = itemsList.filter(item => item.type === 'image').slice(0, 10)
 
   const goToGallery = () => navigate('/gallery')
 

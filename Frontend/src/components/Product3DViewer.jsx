@@ -145,7 +145,10 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
   }, [src, scriptLoaded, isCap])
 
   return (
-    <div className="relative w-full h-full min-h-[300px] sm:min-h-[340px] bg-gradient-to-b from-[#FFFFFF] via-[#F8FAFC] to-[#EDF2F7] rounded-[28px] overflow-hidden flex items-center justify-center select-none">
+    <div 
+      className="relative w-full h-full min-h-[300px] sm:min-h-[340px] bg-gradient-to-b from-[#FFFFFF] via-[#F8FAFC] to-[#EDF2F7] rounded-[28px] overflow-hidden flex items-center justify-center select-none"
+      style={{ contentVisibility: 'auto', containIntrinsicSize: '100% 340px' }}
+    >
       <model-viewer
         ref={modelRef}
         src={src}

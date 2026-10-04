@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router'
-import footerLogoImg from '../assets/footer logo.png'
+import footerLogoImg from '../assets/footer logo.webp'
 import ViberQRModal from './ViberQRModal'
 
 const QUICK = [

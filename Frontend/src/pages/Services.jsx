@@ -3,19 +3,12 @@ import { Link, useNavigate, useSearchParams, useLocation } from 'react-router'
 import { motion, useReducedMotion } from 'framer-motion'
 import Button from '../components/Button'
 import SafeImage from '../components/SafeImage'
+import LazyVideo from '../components/LazyVideo'
 import SEOHead from '../components/SEOHead'
 import MerchBannerCTA from '../components/MerchBannerCTA'
 import { IMAGES, CAROUSEL_IMAGES } from '../utils/images'
 
 import { CATEGORIES, SERVICES_DATA } from '../data/servicesData'
-
-const getVideoPoster = (videoSrc) => {
-  if (!videoSrc || typeof videoSrc !== 'string') return undefined
-  if (videoSrc.includes('cloudinary.com')) {
-    return videoSrc.replace(/\.(mp4|MP4|mov|MOV|webm)$/i, '.jpg')
-  }
-  return undefined
-}
 
 export default function Services() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -131,30 +124,18 @@ export default function Services() {
                   viewport={{ once: true, margin: "-50px" }}
                   transition={{ delay: (i % 3) * 0.05 }}
                   onClick={() => navigate(`/services/${service.id}`)}
-                  onMouseEnter={(e) => e.currentTarget.querySelector('video')?.play().catch(() => {})}
-                  onMouseLeave={(e) => {
-                    const vid = e.currentTarget.querySelector('video')
-                    if (vid) {
-                      vid.pause()
-                      vid.currentTime = 0
-                    }
-                  }}
                   className="group rounded-2xl sm:rounded-[32px] bg-white border border-navy/5 shadow-sm hover:shadow-float transition duration-300 flex flex-col justify-between cursor-pointer overflow-hidden relative"
                 >
                   <div className="relative h-40 xs:h-44 sm:h-56 w-full overflow-hidden bg-navy/10 shrink-0">
                     {service.video ? (
-                      <video
-                        src={`${service.video}#t=0.001`}
-                        poster={getVideoPoster(service.video)}
-                        preload="auto"
-                        loop
-                        muted
-                        playsInline
-                        onLoadedMetadata={(e) => {
-                          e.currentTarget.currentTime = 0.001
-                        }}
+                      <LazyVideo
+                        src={service.video}
+                        poster={service.image}
+                        autoPlay={true}
+                        loop={true}
+                        muted={true}
+                        playsInline={true}
                         className="absolute inset-0 w-full h-full object-cover object-center transition duration-700 group-hover:scale-105"
-                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                       />
                     ) : (
                       <SafeImage
@@ -164,8 +145,8 @@ export default function Services() {
                         imgClassName="w-full h-full object-cover object-center"
                       />
                     )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/35 to-transparent pointer-events-none" />
-                    <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-5 right-3">
+                    <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/35 to-transparent pointer-events-none z-10" />
+                    <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-5 right-3 z-20">
                       <h3 className="font-heading text-sm xs:text-base sm:text-xl font-bold text-white leading-tight line-clamp-2">{service.title}</h3>
                     </div>
                   </div>

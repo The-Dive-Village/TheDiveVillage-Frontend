@@ -13,3 +13,9 @@ node_modules/
 # Vercel & build
 .vercel
 dist/
+
+# Large Media Files
+*.mp4
+*.glb
+*.mov
+*.mp3

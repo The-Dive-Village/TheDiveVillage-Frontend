@@ -55,7 +55,11 @@ export default function LazyVideo({
   }, [isInView, autoPlay, src])
 
   return (
-    <div ref={containerRef} className={`relative overflow-hidden ${className}`}>
+    <div 
+      ref={containerRef} 
+      className={`relative overflow-hidden ${className}`}
+      style={{ contentVisibility: 'auto', containIntrinsicSize: '100% 100%' }}
+    >
       {isInView && (
         <video
           ref={videoRef}

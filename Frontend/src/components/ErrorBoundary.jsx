@@ -44,6 +44,14 @@ export default class ErrorBoundary extends React.Component {
           <p className="font-body text-white/70 max-w-md text-sm mb-6">
             We ran into an unexpected issue rendering this section. You can try refreshing the page or navigating back.
           </p>
+          {this.state.error && (
+            <div className="mb-6 p-3 rounded-xl bg-red-950/80 border border-red-500/40 text-left text-xs text-red-200 max-w-xl max-h-40 overflow-auto font-mono">
+              <p className="font-bold mb-1">{this.state.error.toString()}</p>
+              {this.state.error.stack && (
+                <pre className="text-[10px] opacity-80 whitespace-pre-wrap">{this.state.error.stack}</pre>
+              )}
+            </div>
+          )}
           <div className="flex gap-4">
             <button
               onClick={this.handleReload}

@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router'
 import { motion } from 'framer-motion'
-import bannerImg from '../assets/banner.png'
+import bannerImg from '../assets/Media/Products/banner.webp'
 
 const pop1 = 'https://res.cloudinary.com/bbgt5nk7/image/upload/v1790244009/dive-village/products/qqpya5ppncnjorf4csbf.jpg'
 const pop2 = 'https://res.cloudinary.com/bbgt5nk7/image/upload/v1790244010/dive-village/products/zueb8bj6rg6iiit2wfqw.jpg'
@@ -49,12 +49,12 @@ function FlippingProductTag() {
   return (
     <div className="relative h-full flex flex-col items-center justify-center select-none pointer-events-none py-2 sm:py-4">
       {/* Hanging Cord */}
-      <div className="w-0.5 h-3 sm:h-5 lg:h-6 bg-white/90 shadow-[0_0_6px_rgba(255,255,255,0.7)] mb-[-2px] relative z-20 shrink-0">
+      <div className="w-0.5 h-2.5 sm:h-3.5 lg:h-4 bg-white/90 shadow-[0_0_6px_rgba(255,255,255,0.7)] mb-[-2px] relative z-20 shrink-0">
         <div className="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-white -top-1 -left-[2px] sm:-left-[3px] absolute shadow-[0_0_6px_rgba(255,255,255,0.9)]" />
       </div>
 
       {/* 3D Perspective Container matched to exact 447x864 image aspect ratio */}
-      <div className="perspective-1000 h-[calc(100%-12px)] sm:h-[calc(100%-20px)] max-h-[180px] sm:max-h-[260px] lg:max-h-[330px] aspect-[447/864] relative">
+      <div className="perspective-1000 h-[110px] xs:h-[135px] sm:h-[175px] lg:h-[220px] aspect-[447/864] relative">
         <motion.div
           animate={{ rotateY: -360 }}
           transition={{
@@ -65,7 +65,7 @@ function FlippingProductTag() {
           className="w-full h-full preserve-3d relative rounded-xl sm:rounded-2xl shadow-[0_15px_35px_rgba(0,0,0,0.4)]"
           style={{ transformStyle: 'preserve-3d' }}
         >
-          {/* FRONT SIDE (pop1.jpeg) */}
+          {/* FRONT SIDE (pop1.webp) */}
           <div
             className="absolute inset-0 w-full h-full rounded-xl sm:rounded-2xl overflow-hidden backface-hidden bg-transparent"
             style={{ backfaceVisibility: 'hidden' }}
@@ -77,7 +77,7 @@ function FlippingProductTag() {
             />
           </div>
 
-          {/* BACK SIDE (pop2.jpeg) */}
+          {/* BACK SIDE (pop2.webp) */}
           <div
             className="absolute inset-0 w-full h-full rounded-xl sm:rounded-2xl overflow-hidden backface-hidden bg-transparent"
             style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}

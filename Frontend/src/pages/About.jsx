@@ -8,7 +8,7 @@ import MerchBannerCTA from '../components/MerchBannerCTA'
 import { CAROUSEL_IMAGES } from '../utils/images'
 import { useReviews } from '../contexts/ReviewsContext'
 import divingVidLocal from '../assets/Diving(1).mp4'
-import aboutVidLocal from '../assets/about.mp4'
+import aboutVidLocal from '../assets/Media/Background/About.mp4'
 import jellyfishVideoLocal from '../assets/jelly fish.mp4'
 
 const nightDiveVideo = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790845672/dive-village/ui-videos/night_dive_mp4.mp4'
@@ -18,8 +18,8 @@ const jellyfishVideo = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v179024
 import useNightDive from '../hooks/useNightDive'
 
 import zero2HeroImg from '../assets/Gallery/zero2hero.jpg'
-import introProgImg from '../assets/Gallery/Introductory Programs.png'
-import freeDivingImg from '../assets/Gallery/Free Diving.png'
+import introProgImg from '../assets/Media/Services Thumbnails/Introductory Programs.webp'
+import freeDivingImg from '../assets/Media/Services Thumbnails/Free Diving.webp'
 import flexibleFunImg from '../assets/Gallery/Flexible Fun Dives.png'
 
 const SAFETY_PROMISES = [

@@ -8,19 +8,19 @@ import SectionReveal, { StaggerGrid, StaggerItem } from '../components/SectionRe
 import SEOHead from '../components/SEOHead'
 import { IMAGES, CAROUSEL_IMAGES, PANEL_IMAGES } from '../utils/images'
 import { useReviews } from '../contexts/ReviewsContext'
-import img1 from '../assets/1.png'
-import img2 from '../assets/2.png'
-import img3 from '../assets/3.png'
-import img4 from '../assets/4.png'
+import img1 from '../assets/Media/The Ocean Welcomes All/1.webp'
+import img2 from '../assets/Media/The Ocean Welcomes All/2.webp'
+import img3 from '../assets/Media/The Ocean Welcomes All/3.webp'
+import img4 from '../assets/Media/The Ocean Welcomes All/4.webp'
 import travelVid from '../assets/Gallery/boat.mp4'
-import stayImg from '../assets/Gallery/Stay.jpg'
-import foodImg from '../assets/Gallery/food.jpg'
-import itineraryVid from '../assets/Gallery/gallery1.mp4'
-import imgIntroductoryPrograms from '../assets/Gallery/Introductory Programs.png'
-import imgGuidedSnorkeling from '../assets/Gallery/Snorkeling.png'
-import imgCertifiedCourses from '../assets/Gallery/Certified Courses.jpg'
-import imgFreeDiving from '../assets/Gallery/Free Diving.png'
-import imgFlexibleFunDives from '../assets/Gallery/Flexible Fun Dives.png'
+import stayImg from '../assets/Media/Airport to Airport/Stay.webp'
+import foodImg from '../assets/Media/Airport to Airport/food.webp'
+import itineraryVid from '../assets/Media/Airport to Airport/gallery1.mp4'
+import imgIntroductoryPrograms from '../assets/Media/Services Thumbnails/Introductory Programs.webp'
+import imgGuidedSnorkeling from '../assets/Media/Services Thumbnails/Snorkeling.webp'
+import imgCertifiedCourses from '../assets/Media/Services Thumbnails/Certified Courses.webp'
+import imgFreeDiving from '../assets/Media/Services Thumbnails/Free Diving.webp'
+import imgFlexibleFunDives from '../assets/Media/Services Thumbnails/Flexible Fun Dives.webp'
 
 import ProgramsPreview from '../components/ProgramsPreview'
 import GalleryPreview from '../components/GalleryPreview'
@@ -67,7 +67,7 @@ const HIGHLIGHTS_DATA = [
     title: 'Flexible Fun Dives',
     desc: 'Every single experience is one step deeper into the world of the ocean.',
     image: imgFlexibleFunDives,
-    link: '/services?category=fundives',
+    link: '/services/combo-fundives',
     btnText: 'Explore'
   },
 ]
@@ -336,7 +336,7 @@ export default function Home() {
       </section>
 
       {/* 6. AIRPORT TO AIRPORT - HOSPITALITY */}
-      <section className="relative py-12 sm:py-32 text-white pointer-events-auto">
+      <section id="airport-to-airport-section" className="relative py-12 sm:py-32 text-white pointer-events-auto">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionReveal className="text-center mb-8 sm:mb-16 max-w-3xl mx-auto">
             <h2 className="font-heading text-3xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.4)] mb-4">
@@ -669,7 +669,7 @@ export default function Home() {
       )}
 
       {/* CLOSING CTA WITH CAROUSEL */}
-      <section className="py-16 sm:py-24 bg-transparent pointer-events-auto">
+      <section id="closing-cta-section" className="py-16 sm:py-24 bg-transparent pointer-events-auto">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionReveal>
             <AutoCarousel images={ADVENTURE_CALM_IMAGES} />

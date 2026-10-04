@@ -1,6 +1,6 @@
 // Curated Gallery & High-Res Diving Photos from assets/Gallery
 import p1 from '../assets/Gallery/5.jpg'
-import p2 from '../assets/Gallery/Blue Lincka.jpg'
+import p2 from '../assets/Media/Extras for Gallery/Blue Lincka.webp'
 import p3 from '../assets/Gallery/Photo00086574.jpg'
 import p4 from '../assets/Gallery/Photo00086587.jpg'
 import p6 from '../assets/Gallery/Photo00086738.jpg'
@@ -11,9 +11,9 @@ import p10 from '../assets/Gallery/Photo00086771.jpg'
 import p11 from '../assets/Gallery/Photo00086776.jpg'
 import p12 from '../assets/Gallery/Photo00086787.jpg'
 
-export const PANEL_IMAGES = [p1, p2, p3, p4, p6, p7, p8, p9, p10, p11, p12]
-
-export const CAROUSEL_IMAGES = [p1, p2, p3, p4, p6, p7]
+const panelModules = import.meta.glob('../assets/Media/Panels/*.*', { eager: true, import: 'default' })
+export const PANEL_IMAGES = Object.values(panelModules)
+export const CAROUSEL_IMAGES = PANEL_IMAGES.slice(0, 6)
 
 /** Verified high-resolution diving photography */
 export const IMAGES = {

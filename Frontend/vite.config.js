@@ -71,9 +71,56 @@ function missingAssetFallbackPlugin() {
   }
 }
 
+import { VitePWA } from 'vite-plugin-pwa'
+
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [missingAssetFallbackPlugin(), react()],
+  plugins: [
+    missingAssetFallbackPlugin(), 
+    react(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      includeAssets: ['favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
+      manifest: {
+        name: 'The Dive Village',
+        short_name: 'DiveVillage',
+        description: 'Scuba Diving & Ocean Exploration',
+        theme_color: '#001e3d',
+        background_color: '#001e3d',
+        icons: [
+          {
+            src: '/pwa-192x192.png',
+            sizes: '192x192',
+            type: 'image/png'
+          },
+          {
+            src: '/pwa-512x512.png',
+            sizes: '512x512',
+            type: 'image/png'
+          }
+        ]
+      },
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2,webp}'],
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/res\.cloudinary\.com\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'cloudinary-images',
+              expiration: {
+                maxEntries: 100,
+                maxAgeSeconds: 60 * 60 * 24 * 30 // 30 Days
+              },
+              cacheableResponse: {
+                statuses: [0, 200]
+              }
+            }
+          }
+        ]
+      }
+    })
+  ],
   assetsInclude: [
     '**/*.mp3',
     '**/*.mpeg',

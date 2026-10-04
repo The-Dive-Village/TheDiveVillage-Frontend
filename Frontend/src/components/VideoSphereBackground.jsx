@@ -1,15 +1,19 @@
 import { useState, useEffect, Suspense, useRef } from 'react'
 import { motion } from 'framer-motion'
-import { Canvas, useFrame } from '@react-three/fiber'
+import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
 import { useLocation } from 'react-router'
-const videoFile = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790248244/dive-village/hero-360/cj9jvkh5j6sozf2fhf0x.mp4'
-import divingFileLocal from '../assets/Diving(1).mp4'
-const divingFile = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790244035/dive-village/ui-videos/diving_1_mp4.mp4'
-const bookFile = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790242027/dive-village/hero-360/duskamhque0kugdulev7.mp4'
-const turtleVideo = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790242000/dive-village/hero-360/hhu28v7vfmdtbb8lwxan.mp4'
-const nightDiveVideo = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790845672/dive-village/ui-videos/night_dive_mp4.mp4'
+import clownfishVideo from '../assets/Media/Background/ClownFish.mp4'
+import barracudaVideo from '../assets/Media/Background/Barracuda.mp4'
+import turtleBgVideo from '../assets/Media/Background/Turtle.mp4'
+import nightDiveVideoLocal from '../assets/Media/Background/Night Dive.mp4'
+
+const videoFile = clownfishVideo
+const bookFile = barracudaVideo
+const turtleVideo = turtleBgVideo
+const nightDiveVideo = nightDiveVideoLocal
+
 import underwaterAudio from '../assets/Underwater.mp3'
 import { setHeroVideoReady, getOrCreateHeroVideoElement, setHeroWebGLReady } from '../utils/mediaReadyManager'
 
@@ -208,6 +212,7 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
   const isHome = location.pathname === '/'
   const isAbout = location.pathname === '/about'
   const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth < 640)
+  const { camera } = useThree()
 
   const INITIAL_YAW = Math.PI / 2.65 - (Math.PI * 1.1)
   const INITIAL_PITCH = isAbout ? -(Math.PI / 6) : (Math.PI / 17.1)
@@ -229,7 +234,7 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
   }, [])
 
   // Light mode on Home: priority singleton. Dark mode (Night Dive): dynamic local 360 video element (1.0x).
-  const primaryPlaybackRate = isNightDive ? 1.0 : 0.45
+  const primaryPlaybackRate = isNightDive ? 1.0 : 0.08
   const isHeroSingleton = !isNightDive && isHome
   const { texture, hasNewFrameRef: hasNewFrame1, lastTimeRef: lastTime1 } = useDirectVideoTexture(!isNightDive ? videoSrc : null, primaryPlaybackRate, isHeroSingleton)
   // Secondary videos are strictly lazy-loaded only when user scrolls or needs them ON DESKTOP
@@ -262,11 +267,13 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
 
       const aboutEl = document.getElementById('about-section')
       const programsEl = document.getElementById('programs-section')
-      const diveSectionEl = document.getElementById('who-can-dive-section')
-      const testimonialsEl = document.getElementById('testimonials-section')
-
+      
       const customizeEl = document.getElementById('customize-dive-section') || document.getElementById('customize-section')
+      const diveSectionEl = document.getElementById('who-can-dive-section')
+      const airportEl = document.getElementById('airport-to-airport-section')
       const galleryEl = document.getElementById('gallery-section') || document.getElementById('gallery')
+      const testimonialsEl = document.getElementById('testimonials-section')
+      const closingCtaEl = document.getElementById('closing-cta-section')
 
       if (isHome) {
         if (!loadSecondary && scrollY > 150) {
@@ -274,58 +281,32 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
         }
 
         const triggerThreshold = window.innerHeight * 0.8
-        const isCustomizeInView = customizeEl && customizeEl.getBoundingClientRect().top < triggerThreshold
-        const isGalleryInView = galleryEl && galleryEl.getBoundingClientRect().top < triggerThreshold
+        
+        // Helper to check if an element is currently spanning the viewport
+        const isElementInView = (el) => el && el.getBoundingClientRect().top < triggerThreshold
 
-        if (isCustomizeInView || isGalleryInView) {
-          // When Customize Dive Experience or Dive Gallery comes into view, transition back to the first video (Hero(1).mp4)
+        if (isElementInView(closingCtaEl)) {
+          // "Come for the Adventure panel" -> Clownfish (Video 1)
           targetOpacity2.current = 0
           targetOpacity3.current = 0
+        } else if (isElementInView(galleryEl) || isElementInView(testimonialsEl)) {
+          // "Gallery to Reviews" -> Turtle (Video 3)
+          targetOpacity2.current = 0
+          targetOpacity3.current = 1
+        } else if (isElementInView(diveSectionEl) || isElementInView(airportEl)) {
+          // "Ocean Welcomes All to Airport to airport" -> Barracuda (Video 2)
+          targetOpacity2.current = 1
+          targetOpacity3.current = 0
         } else {
-          if (diveSectionEl) {
-            const diveRect = diveSectionEl.getBoundingClientRect()
-            // Automatically blend 2nd video when reaching Who Can Dive section
-            targetOpacity2.current = diveRect.top < triggerThreshold ? 1 : 0
-          }
-
-          if (testimonialsEl) {
-            const testRect = testimonialsEl.getBoundingClientRect()
-            // Automatically blend 3rd video when reaching Testimonials section
-            targetOpacity3.current = testRect.top < triggerThreshold ? 1 : 0
-          }
+          // "Beginning till Customize Dive" -> Clownfish (Video 1)
+          targetOpacity2.current = 0
+          targetOpacity3.current = 0
         }
       }
 
-      if (!aboutEl || !programsEl) {
-        const maxScroll = document.documentElement.scrollHeight - window.innerHeight
-        const scrollProgress = maxScroll > 0 ? scrollY / maxScroll : 0
-        targetRotation.current.y = INITIAL_YAW
-        targetRotation.current.x = INITIAL_PITCH + scrollProgress * (Math.PI * 2)
-        return
-      }
-
-      const aboutRect = aboutEl.getBoundingClientRect()
-      const programsRect = programsEl.getBoundingClientRect()
-
-      const aboutTop = scrollY + aboutRect.top
-      const programsTop = scrollY + programsRect.top
-
-      if (scrollY < aboutTop) {
-        const progress = aboutTop > 0 ? scrollY / aboutTop : 0
-        targetRotation.current.y = INITIAL_YAW
-        targetRotation.current.x = INITIAL_PITCH + progress * (Math.PI / 8)
-      } else if (scrollY >= aboutTop && scrollY < programsTop) {
-        targetRotation.current.x = INITIAL_PITCH + (Math.PI / 8)
-        const distance = programsTop - aboutTop
-        const progress = distance > 0 ? (scrollY - aboutTop) / distance : 0
-        targetRotation.current.y = INITIAL_YAW + progress * (Math.PI / 1.5)
-      } else {
-        targetRotation.current.y = INITIAL_YAW + Math.PI / 1.5
-        const maxScroll = document.documentElement.scrollHeight - window.innerHeight
-        const distanceRemaining = maxScroll - programsTop
-        const progress = distanceRemaining > 0 ? (scrollY - programsTop) / distanceRemaining : 1
-        targetRotation.current.x = INITIAL_PITCH + (Math.PI / 8) + progress * (Math.PI / 16)
-      }
+      // Ensure rotation does not change on scroll
+      targetRotation.current.y = INITIAL_YAW
+      targetRotation.current.x = INITIAL_PITCH
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
@@ -448,14 +429,23 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
 
       if (!isMobile && meshRef2.current && meshRef2.current.material && isHome) {
         meshRef2.current.rotation.y = meshRef.current.rotation.y - (Math.PI / 2.5)
-        meshRef2.current.rotation.x = meshRef.current.rotation.x - (Math.PI / 1.68)
+        meshRef2.current.rotation.x = meshRef.current.rotation.x - (Math.PI / 6)
         meshRef2.current.material.opacity += (targetOpacity2.current - meshRef2.current.material.opacity) * delta * 2.5
       }
 
       if (!isMobile && meshRef3.current && meshRef3.current.material && isHome) {
         meshRef3.current.rotation.y = meshRef.current.rotation.y + (Math.PI * 1.45)
-        meshRef3.current.rotation.x = meshRef.current.rotation.x - (Math.PI * 1.1)
+        meshRef3.current.rotation.x = meshRef.current.rotation.x - (Math.PI / 3)
         meshRef3.current.material.opacity += (targetOpacity3.current - meshRef3.current.material.opacity) * delta * 2.5
+      }
+
+      if (camera && isHome) {
+        const baseFov = 85
+        const targetFov = baseFov + (targetOpacity3.current * 15) // Zoom out when Turtle plays
+        if (Math.abs(camera.fov - targetFov) > 0.1) {
+          camera.fov += (targetFov - camera.fov) * delta * 2.5
+          camera.updateProjectionMatrix()
+        }
       }
     }
   })
@@ -492,6 +482,13 @@ export default function VideoSphereBackground() {
   const audioRef = useRef(null)
   const isMutedRef = useRef(isMuted)
   const nightVideoRef = useRef(null)
+  const [isVisible, setIsVisible] = useState(true)
+
+  useEffect(() => {
+    const handleVisibility = () => setIsVisible(!document.hidden)
+    window.addEventListener('visibilitychange', handleVisibility)
+    return () => window.removeEventListener('visibilitychange', handleVisibility)
+  }, [])
 
   useEffect(() => {
     isMutedRef.current = isMuted
@@ -712,6 +709,7 @@ export default function VideoSphereBackground() {
           />
           <div style={{ width: '100%', height: '100%' }}>
             <Canvas
+              frameloop={isVisible ? 'always' : 'never'}
               dpr={[1, 1.5]}
               camera={{ position: [0, 0, 0.1], fov: 85 }}
               gl={{ powerPreference: 'high-performance', antialias: false }}

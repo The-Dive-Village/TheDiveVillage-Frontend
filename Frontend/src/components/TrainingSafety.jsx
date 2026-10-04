@@ -2,8 +2,8 @@ import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 
 import zero2HeroImg from '../assets/Gallery/zero2hero.jpg'
-import introProgImg from '../assets/Gallery/Introductory Programs.png'
-import freeDivingImg from '../assets/Gallery/Free Diving.png'
+import introProgImg from '../assets/Media/Services Thumbnails/Introductory Programs.webp'
+import freeDivingImg from '../assets/Media/Services Thumbnails/Free Diving.webp'
 import flexibleFunImg from '../assets/Gallery/Flexible Fun Dives.png'
 
 const SAFETY_PROMISES = [
