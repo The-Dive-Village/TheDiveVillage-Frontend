@@ -102,15 +102,24 @@ export function getOrCreateHeroVideoElement(src = HERO_VIDEO_SRC, playbackRate =
   video.loop = true
   video.autoplay = true
   video.preload = 'auto'
-  video.playbackRate = playbackRate
   video.setAttribute('fetchpriority', 'high')
   video.src = src
+
+  const applyRate = () => {
+    try {
+      if (video.readyState >= 1) {
+        video.playbackRate = playbackRate
+      }
+    } catch (e) {}
+  }
+  video.addEventListener('loadedmetadata', applyRate)
+  if (video.readyState >= 1) applyRate()
 
   container.appendChild(video)
   warmHeroVideo = video
 
   const evaluateReadiness = () => {
-    if (video.readyState >= 3 && video.videoWidth > 0 && video.videoHeight > 0) {
+    if (video.readyState >= 2 && video.videoWidth > 0 && video.videoHeight > 0) {
       setHeroVideoReady(true)
     }
   }

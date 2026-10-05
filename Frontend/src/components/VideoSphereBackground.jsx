@@ -4,18 +4,13 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
 import { useLocation } from 'react-router'
-import clownfishVideo from '../assets/Media/Background/ClownFish.mp4'
-import barracudaVideo from '../assets/Media/Background/Barracuda.mp4'
-import turtleBgVideo from '../assets/Media/Background/Turtle.mp4'
-import nightDiveVideoLocal from '../assets/Media/Background/Night Dive.mp4'
-
 import underwaterAudio from '../assets/Underwater.mp3'
 import { setHeroVideoReady, getOrCreateHeroVideoElement, setHeroWebGLReady, HERO_VIDEO_SRC } from '../utils/mediaReadyManager'
 
-const videoFile = HERO_VIDEO_SRC || clownfishVideo
-const bookFile = barracudaVideo
-const turtleVideo = turtleBgVideo
-const nightDiveVideo = nightDiveVideoLocal
+const videoFile = HERO_VIDEO_SRC || 'https://res.cloudinary.com/qvbunv8y/video/upload/v1790248244/dive-village/hero-360/cj9jvkh5j6sozf2fhf0x.mp4'
+const bookFile = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1790247900/dive-village/hero-360/axaamnvtycndb5dabkow.mp4'
+const turtleVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1790243508/dive-village/hero-360/bpjuqk54webpdtghzbxk.mp4'
+const nightDiveVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1790242027/dive-village/hero-360/duskamhque0kugdulev7.mp4'
 
 function getOrCreateDomVideoContainer() {
   let container = document.getElementById('hero-360-video-dom-root')
@@ -71,6 +66,21 @@ function useDirectVideoTexture(src, playbackRate = 0.5, priority = false) {
 
     if (!video) return
 
+    const applyPlaybackRate = () => {
+      try {
+        if (video.readyState >= 1) {
+          video.playbackRate = playbackRate
+        }
+      } catch (e) {}
+    }
+
+    vidTexture = new THREE.VideoTexture(video)
+    vidTexture.colorSpace = THREE.SRGBColorSpace
+    vidTexture.minFilter = THREE.LinearFilter
+    vidTexture.magFilter = THREE.LinearFilter
+    vidTexture.generateMipmaps = false
+    setTexture(vidTexture)
+
     const checkReadiness = () => {
       if (!isMounted) return false
       return (
@@ -101,30 +111,21 @@ function useDirectVideoTexture(src, playbackRate = 0.5, priority = false) {
         }
       }
     }
+    registerFrameCallback()
 
     const tryActivateTexture = () => {
       if (!isMounted) return
+      applyPlaybackRate()
       if (checkReadiness()) {
-        if (!vidTexture) {
-          vidTexture = new THREE.VideoTexture(video)
-          vidTexture.colorSpace = THREE.SRGBColorSpace
-          vidTexture.minFilter = THREE.LinearFilter
-          vidTexture.magFilter = THREE.LinearFilter
-          vidTexture.generateMipmaps = false
-          if (isMounted) {
-            setTexture(vidTexture)
-          }
-          registerFrameCallback()
-        }
         hasNewFrameRef.current = true
-        vidTexture.needsUpdate = true
+        if (vidTexture) vidTexture.needsUpdate = true
         if (priority) setHeroVideoReady(true)
       }
     }
 
     const startPlayback = () => {
       if (!isMounted) return
-      video.playbackRate = playbackRate
+      applyPlaybackRate()
       tryActivateTexture()
       if (video.paused) {
         const playPromise = video.play()
@@ -132,7 +133,7 @@ function useDirectVideoTexture(src, playbackRate = 0.5, priority = false) {
           playPromise
             .then(() => {
               if (isMounted) {
-                video.playbackRate = playbackRate
+                applyPlaybackRate()
                 tryActivateTexture()
               }
             })
@@ -142,6 +143,8 @@ function useDirectVideoTexture(src, playbackRate = 0.5, priority = false) {
         }
       }
     }
+
+    if (video.readyState >= 1) applyPlaybackRate()
 
     const handleEvent = () => {
       if (!isMounted) return
@@ -237,7 +240,7 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
   // Light mode on Home: priority singleton. Dark mode (Night Dive): dynamic local 360 video element (1.0x).
   const primaryPlaybackRate = isNightDive ? 1.0 : 0.45
   const isHeroSingleton = !isNightDive && isHome
-  const { texture, hasNewFrameRef: hasNewFrame1, lastTimeRef: lastTime1 } = useDirectVideoTexture(!isNightDive ? videoFile : null, primaryPlaybackRate, isHeroSingleton)
+  const { texture, hasNewFrameRef: hasNewFrame1, lastTimeRef: lastTime1 } = useDirectVideoTexture(!isNightDive ? (videoSrc || videoFile) : null, primaryPlaybackRate, isHeroSingleton)
   // Secondary videos are strictly lazy-loaded only when user scrolls or needs them ON DESKTOP
   const { texture: texture2, hasNewFrameRef: hasNewFrame2, lastTimeRef: lastTime2 } = useDirectVideoTexture(!isMobile && isHome && !isNightDive && loadSecondary ? bookFile : null, 0.5, false)
   const { texture: texture3, hasNewFrameRef: hasNewFrame3, lastTimeRef: lastTime3 } = useDirectVideoTexture(!isMobile && isHome && !isNightDive && loadSecondary ? turtleVideo : null, 0.5, false)
@@ -363,8 +366,8 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
       // 1. Frame-driven texture 1 update (strictly on new presented frames)
       if (texture && texture.image) {
         const vid1 = texture.image
-        if (!vid1.paused && vid1.readyState >= 2 && vid1.videoWidth > 0) {
-          if (hasNewFrame1.current || vid1.currentTime !== lastTime1.current) {
+        if (vid1.readyState >= 2 && vid1.videoWidth > 0) {
+          if (hasNewFrame1.current || vid1.currentTime !== lastTime1.current || !hasRenderedInitialFrameRef.current) {
             lastTime1.current = vid1.currentTime
             hasNewFrame1.current = false
             texture.needsUpdate = true
@@ -696,9 +699,9 @@ export default function VideoSphereBackground() {
           <div style={{ width: '100%', height: '100%' }}>
             <Canvas
               frameloop={shouldRenderCanvas ? 'always' : 'never'}
-              dpr={[1, 1.5]}
+              dpr={[1, 2]}
               camera={{ position: [0, 0, 0.1], fov: 85 }}
-              gl={{ powerPreference: 'high-performance', antialias: false }}
+              gl={{ powerPreference: 'high-performance', antialias: true }}
               onCreated={({ gl, scene }) => {
                 scene.background = new THREE.Color('#001e3d')
                 gl.domElement.addEventListener('webglcontextlost', (e) => {
