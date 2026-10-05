@@ -103,7 +103,12 @@ export default defineConfig({
       workbox: {
         maximumFileSizeToCacheInBytes: 15 * 1024 * 1024,
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2,webp}'],
+        navigateFallbackDenylist: [/^\/assets\/.*\.(mp4|webm|mov|mp3|ogg)$/i],
         runtimeCaching: [
+          {
+            urlPattern: /\.(?:mp4|webm|mov|mp3|ogg)$/i,
+            handler: 'NetworkOnly',
+          },
           {
             urlPattern: /^https:\/\/res\.cloudinary\.com\/.*/i,
             handler: 'CacheFirst',
@@ -114,7 +119,7 @@ export default defineConfig({
                 maxAgeSeconds: 60 * 60 * 24 * 30 // 30 Days
               },
               cacheableResponse: {
-                statuses: [0, 200]
+                statuses: [0, 200, 206]
               }
             }
           }
