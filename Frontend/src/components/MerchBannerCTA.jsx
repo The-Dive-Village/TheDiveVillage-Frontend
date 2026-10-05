@@ -2,8 +2,8 @@ import { useNavigate } from 'react-router'
 import { motion } from 'framer-motion'
 import bannerImg from '../assets/Media/Products/banner.webp'
 
-const pop1 = 'https://res.cloudinary.com/bbgt5nk7/image/upload/v1790244009/dive-village/products/qqpya5ppncnjorf4csbf.jpg'
-const pop2 = 'https://res.cloudinary.com/bbgt5nk7/image/upload/v1790244010/dive-village/products/zueb8bj6rg6iiit2wfqw.jpg'
+import pop1 from '../assets/Media/Products/pop1.webp'
+import pop2 from '../assets/Media/Products/pop2.webp'
 
 export default function MerchBannerCTA({ className = '' }) {
   const navigate = useNavigate()
@@ -17,7 +17,7 @@ export default function MerchBannerCTA({ className = '' }) {
     <div className={`w-full ${className}`}>
       <div
         onClick={handleClick}
-        className="group relative rounded-[24px] sm:rounded-[36px] lg:rounded-[40px] overflow-hidden bg-[#001428] shadow-lift border border-white/10 w-full aspect-[1774/887] flex items-center justify-end cursor-pointer transition-all duration-300 hover:scale-[1.008] hover:border-white/30"
+        className="group relative rounded-[24px] sm:rounded-[36px] lg:rounded-[40px] overflow-hidden bg-[#001428] shadow-lift border border-white/10 w-full h-[190px] xs:h-[230px] sm:h-[280px] lg:h-[450px] flex items-center justify-end cursor-pointer transition-all duration-300 hover:scale-[1.008] hover:border-white/30"
       >
         <img
           src={bannerImg}
@@ -25,11 +25,24 @@ export default function MerchBannerCTA({ className = '' }) {
           className="w-full h-full object-cover object-center pointer-events-none block"
         />
 
-        {/* Left Side Bottom: View More Button */}
-        <div className="absolute left-3.5 xs:left-5 sm:left-8 lg:left-12 bottom-3 xs:bottom-4 sm:bottom-6 lg:bottom-8 z-20 pointer-events-none">
-          <div className="inline-flex items-center gap-1.5 sm:gap-2.5 rounded-full bg-[#FFCD00] text-[#001e3d] px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-bold tracking-wide shadow-[0_4px_20px_rgba(255,205,0,0.45)] transition-all duration-300 group-hover:bg-white group-hover:scale-105">
-            <span>View More</span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-1">
+        {/* Left Side Blue Gradient Overlay */}
+        <div
+          className="absolute inset-y-0 left-0 w-[55%] sm:w-[48%] lg:w-[42%] pointer-events-none z-10"
+          style={{
+            background:
+              'linear-gradient(to right, #003865 0%, rgba(0, 56, 101, 0.96) 20%, rgba(0, 56, 101, 0.82) 42%, rgba(0, 56, 101, 0.58) 64%, rgba(0, 56, 101, 0.28) 82%, rgba(0, 56, 101, 0.08) 93%, transparent 100%)',
+          }}
+        />
+
+        {/* Left Side Typography and Button */}
+        <div className="absolute left-4 xs:left-7 sm:left-10 lg:left-14 top-0 bottom-0 flex flex-col justify-center z-20 pointer-events-none w-[60%] xs:w-[55%] sm:max-w-md pr-2">
+          <h2 className="font-heading text-base xs:text-lg sm:text-3xl lg:text-5xl font-black text-white uppercase tracking-tight leading-[1.05] drop-shadow-[0_4px_16px_rgba(0,0,0,0.8)] text-left sm:text-justify sm:[text-align-last:justify] mb-2 sm:mb-6">
+            MADE TO FIT<br />
+            <span className="text-[#FFCD00] block mt-0.5 sm:mt-0">ALL BODY TYPES</span>
+          </h2>
+          <div className="inline-flex w-max items-center gap-1.5 sm:gap-2.5 rounded-full bg-[#FFCD00] text-[#001e3d] px-3 py-1.5 xs:px-4 xs:py-2 sm:px-6 sm:py-3 text-[10px] xs:text-xs sm:text-sm font-bold tracking-wide shadow-[0_4px_20px_rgba(255,205,0,0.45)] transition-all duration-300 group-hover:bg-white group-hover:scale-105 pointer-events-auto">
+            <span>Shop Now</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-1 sm:w-3.5 sm:h-3.5">
               <path d="M5 12h14" />
               <path d="m12 5 7 7-7 7" />
             </svg>

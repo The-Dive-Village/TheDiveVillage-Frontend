@@ -145,10 +145,10 @@ export default function Shop() {
           />
 
           {/* Left Side Typography: MADE FOR ALL BODY TYPES */}
-          <div className="absolute left-5 xs:left-7 sm:left-10 lg:left-14 top-0 bottom-0 flex flex-col justify-center z-20 pointer-events-none max-w-xs sm:max-w-md">
-            <h2 className="font-heading text-lg xs:text-xl sm:text-3xl lg:text-5xl font-black text-white uppercase tracking-tight leading-[1.05] drop-shadow-[0_4px_16px_rgba(0,0,0,0.8)] text-justify [text-align-last:justify]">
+          <div className="absolute left-4 xs:left-7 sm:left-10 lg:left-14 top-0 bottom-0 flex flex-col justify-center z-20 pointer-events-none w-[60%] xs:w-[55%] sm:max-w-md pr-2">
+            <h2 className="font-heading text-base xs:text-lg sm:text-3xl lg:text-5xl font-black text-white uppercase tracking-tight leading-[1.05] drop-shadow-[0_4px_16px_rgba(0,0,0,0.8)] text-left sm:text-justify sm:[text-align-last:justify] mb-2 sm:mb-6">
               MADE TO FIT<br />
-              <span className="text-[#FFCD00]">ALL BODY TYPES</span>
+              <span className="text-[#FFCD00] block mt-0.5 sm:mt-0">ALL BODY TYPES</span>
             </h2>
           </div>
 
