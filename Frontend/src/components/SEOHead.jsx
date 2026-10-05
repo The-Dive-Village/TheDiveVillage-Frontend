@@ -5,7 +5,7 @@ export default function SEOHead({
   description = 'Experience world-class scuba diving certifications, guided freediving excursions, and premium ocean apparel with certified professional divemasters at The Dive Village.',
   keywords = 'scuba diving, freediving, scuba certification, diving courses, dive center, dive gear, underwater exploration, ocean apparel, dive village',
   canonicalUrl = 'https://thedivevillage.co',
-  ogImage = '/src/assets/Logo.webp',
+  ogImage = '/src/assets/Logo.png',
   ogType = 'website'
 }) {
   useEffect(() => {

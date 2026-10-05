@@ -1,5 +1,5 @@
 import { Link } from 'react-router'
-import LogoImg from '../assets/Logo.webp'
+import LogoImg from '../assets/Logo.png'
 
 export default function Logo({ className = '', compact = false, light = false }) {
   return (
