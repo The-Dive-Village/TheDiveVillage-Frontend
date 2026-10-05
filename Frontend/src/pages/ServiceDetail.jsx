@@ -65,6 +65,15 @@ export default function ServiceDetail() {
       <div className="relative w-full min-h-[60vh] sm:min-h-[75vh] bg-navy overflow-hidden flex flex-col justify-end pt-32 pb-24 sm:pb-36">
         {service.video ? (
           <video
+            ref={(el) => {
+              if (el) {
+                el.muted = true
+                el.defaultMuted = true
+                el.setAttribute('muted', '')
+                el.setAttribute('playsinline', '')
+                el.play().catch(() => {})
+              }
+            }}
             src={service.video}
             poster={service.image}
             autoPlay

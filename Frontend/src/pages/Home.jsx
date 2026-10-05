@@ -12,7 +12,7 @@ import img1 from '../assets/Media/The Ocean Welcomes All/1.webp'
 import img2 from '../assets/Media/The Ocean Welcomes All/2.webp'
 import img3 from '../assets/Media/The Ocean Welcomes All/3.webp'
 import img4 from '../assets/Media/The Ocean Welcomes All/4.webp'
-import travelVid from '../assets/Gallery/boat.mp4'
+import travelVid from '../assets/Media/Airport to Airport/travel.mp4'
 import stayImg from '../assets/Media/Airport to Airport/Stay.webp'
 import foodImg from '../assets/Media/Airport to Airport/food.webp'
 import itineraryVid from '../assets/Media/Airport to Airport/gallery1.mp4'
@@ -283,7 +283,11 @@ export default function Home() {
                     <motion.div
                       animate={{ y: [0, -6, 0] }}
                       transition={{ duration: 3.2 + (i * 0.4), repeat: Infinity, ease: 'easeInOut' }}
-                      className="absolute -top-8 xs:-top-10 sm:-top-14 lg:-top-16 inset-x-0 mx-auto w-full flex items-center justify-center z-20 pointer-events-none px-2 h-[160px] xs:h-[180px] sm:h-[260px] lg:h-[290px]"
+                      className={`absolute inset-x-0 mx-auto w-full flex items-center justify-center z-20 pointer-events-none px-2 h-[150px] xs:h-[170px] sm:h-[240px] lg:h-[270px] ${
+                        i === 1
+                          ? '-top-2 xs:-top-1 sm:-top-2 lg:top-0'
+                          : 'top-2 xs:top-4 sm:top-6 lg:top-8'
+                      }`}
                     >
                       <img
                         src={item.img}
@@ -654,7 +658,7 @@ export default function Home() {
                     <div className="pt-2 flex justify-center w-full">
                       <button
                         type="submit"
-                        className="w-auto min-w-[160px] xs:min-w-[180px] px-6 sm:px-8 py-2.5 sm:py-3 rounded-full bg-[#FFCD00] text-[#001e3d] font-bold text-xs sm:text-sm uppercase tracking-wider transition hover:brightness-110 hover:scale-105 shadow-lg cursor-pointer"
+                        className="w-auto min-w-[160px] xs:min-w-[180px] px-6 sm:px-8 py-2.5 sm:py-3 rounded-full bg-navy text-white hover:bg-[#FFCD00] hover:text-[#001e3d] font-bold text-xs sm:text-sm uppercase tracking-wider transition hover:scale-105 border border-navy/30 shadow-lg cursor-pointer"
                       >
                         Submit Review
                       </button>
@@ -933,7 +937,7 @@ function InteractiveHighlights() {
                   <button
                     type="button"
                     onClick={(e) => handleNavigate(e, current.link)}
-                    className="w-full py-1.5 xs:py-2 sm:py-3 px-2.5 sm:px-5 rounded-full bg-white/15 backdrop-blur-xl border border-white/30 text-white font-bold text-[9px] xs:text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-300 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] hover:shadow-[0_8px_30px_rgba(255,205,0,0.5)] shadow-lg pointer-events-auto cursor-pointer relative z-30 flex items-center justify-center gap-1.5 sm:gap-2 group/btn"
+                    className="w-full py-1.5 xs:py-2 sm:py-3 px-2.5 sm:px-5 rounded-full bg-white/15 backdrop-blur-xl border border-white/30 text-white font-bold text-[9px] xs:text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-300 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] shadow-lg pointer-events-auto cursor-pointer relative z-30 flex items-center justify-center gap-1.5 sm:gap-2 group/btn"
                   >
                     <span>{current.btnText || 'Explore'}</span>
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="sm:w-3.5 sm:h-3.5 transition-transform duration-300 group-hover/btn:translate-x-1">
@@ -1016,14 +1020,14 @@ function AutoCarousel({ images, showContent = true }) {
             <div className="flex flex-wrap items-center gap-4">
               <Link
                 to="/book-us"
-                className="inline-flex items-center gap-2 rounded-full bg-white/15 backdrop-blur-xl border border-white/30 px-7 py-3.5 font-body text-xs sm:text-sm tracking-wider font-bold text-white uppercase shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] transition-all duration-300 hover:scale-105 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] hover:shadow-[0_12px_40px_rgba(255,205,0,0.5)] cursor-pointer"
+                className="inline-flex items-center gap-2 rounded-full bg-white/15 backdrop-blur-xl border border-white/30 px-7 py-3.5 font-body text-xs sm:text-sm tracking-wider font-bold text-white uppercase shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] transition-all duration-300 hover:scale-105 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] cursor-pointer"
               >
                 <span>Book Your Dive</span>
                 <ArrowIcon />
               </Link>
               <Link
                 to="/gallery"
-                className="inline-flex items-center gap-2 rounded-full bg-white/15 backdrop-blur-xl border border-white/30 px-7 py-3.5 font-body text-xs sm:text-sm tracking-wider font-bold text-white uppercase shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] transition-all duration-300 hover:scale-105 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] hover:shadow-[0_12px_40px_rgba(255,205,0,0.5)] cursor-pointer"
+                className="inline-flex items-center gap-2 rounded-full bg-white/15 backdrop-blur-xl border border-white/30 px-7 py-3.5 font-body text-xs sm:text-sm tracking-wider font-bold text-white uppercase shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] transition-all duration-300 hover:scale-105 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] cursor-pointer"
               >
                 <span>View Gallery</span>
                 <ArrowIcon />

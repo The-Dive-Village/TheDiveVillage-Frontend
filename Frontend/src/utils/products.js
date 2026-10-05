@@ -265,32 +265,5 @@ export const SHOP_PRODUCTS = [
     stockStatus: 'In Stock',
     rating: 4.8,
     reviewCount: 19,
-  },
-  {
-    id: 'product-wet-suit',
-    title: 'Professional Diving Wet Suit',
-    name: 'Wet Suit',
-    price: 7999,
-    oldPrice: 9999,
-    image: imgWetSuitLocal,
-    images: [imgWetSuitFrontLocal, imgWetSuitBackLocal, imgWetSuitLocal],
-    imageLabels: ['Front', 'Back', 'Lookbook'],
-    glb: glbWetSuit,
-    category: 'Skin Wear',
-    description: 'Premium neoprene wetsuit engineered for optimal thermal insulation, hydrodynamic flexibility, and full-body protection during ocean dives.',
-    features: [
-      'Thermal Neoprene Insulation: High-density micro-cell neoprene retains core body warmth during deep, cold ocean dives.',
-      'Anatomical 3D Cut: Pre-shaped contoured panels offer natural flexibility and comfortable unrestricted swimming motion.',
-      'Abrasion-Resistant Reinforced Panels: High-friction zones on knees and shoulders engineered to withstand scuba gear contact.',
-      'Heavy-Duty Back Zip with Extended Pull Leash: Saltwater-resistant zipper designed for smooth closure and easy self-donning.'
-    ],
-    sizes: ['(S-M)', '(L-XXL)'],
-    colors: [
-      { name: 'Black', hex: '#000000' }
-    ],
-    stock: 22,
-    stockStatus: 'In Stock',
-    rating: 5.0,
-    reviewCount: 38,
   }
 ]

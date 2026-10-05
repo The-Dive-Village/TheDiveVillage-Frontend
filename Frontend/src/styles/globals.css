@@ -637,25 +637,13 @@ a.bg-navy {
   color: #ffffff;
 }
 
-/* Hover state only: vibrant yellow with dark navy text */
-button:not([data-no-glass]):not(.switch__input):not(.faq-box-btn):hover,
-a.btn:hover,
-.btn:hover,
+/* Glass and specialized button hover states */
 button.glass-btn:hover,
 a.glass-btn:hover,
-.btn-primary:hover,
-button.bg-accent:hover,
-a.bg-accent:hover,
-button.bg-navy:hover,
-a.bg-navy:hover,
-button.bg-black:hover,
-a.bg-black:hover,
-.night-dive button.bg-accent:hover,
-.night-dive a.bg-accent:hover {
+.btn-primary:hover {
   background-color: #FFCD00 !important;
   color: #001e3d !important;
   border-color: #FFCD00 !important;
-  box-shadow: 0 10px 30px rgba(255, 205, 0, 0.4) !important;
 }
 
 /* FAQ Box Neutral Accordion Styles */

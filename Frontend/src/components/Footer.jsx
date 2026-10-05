@@ -130,7 +130,7 @@ export default function Footer() {
                 Contact
               </h3>
               <div className="mt-3 sm:mt-4 flex flex-1 flex-col justify-between space-y-2 sm:space-y-0">
-                {/* Social Media Vertical List with Icon and Name beside it */}
+                {/* Social Media Vertical List */}
                 <ul className="flex flex-1 flex-col justify-between space-y-2 sm:space-y-0">
                   {SOCIALS.map((s) => (
                     <li key={s.label}>
@@ -139,11 +139,8 @@ export default function Footer() {
                         onClick={(e) => handleSocialClick(s, e)}
                         target={s.to.startsWith('http') ? '_blank' : '_self'}
                         rel={s.to.startsWith('http') ? 'noopener noreferrer' : undefined}
-                        className="group inline-flex items-center gap-2.5 text-xs sm:text-sm text-white/80 hover:text-accent transition duration-200"
+                        className="group inline-flex items-center text-xs sm:text-sm text-white/80 hover:text-accent transition duration-200"
                       >
-                        <span className="w-6 h-6 rounded-full bg-white/10 group-hover:bg-[#FFCD00] text-white/80 group-hover:text-[#001e3d] flex items-center justify-center transition-all duration-200 border border-white/15 group-hover:border-[#FFCD00] shadow-sm [&>svg]:w-3.5 [&>svg]:h-3.5 shrink-0">
-                          {s.icon}
-                        </span>
                         <span className="font-medium group-hover:text-accent transition-colors whitespace-nowrap">
                           {s.label}
                         </span>

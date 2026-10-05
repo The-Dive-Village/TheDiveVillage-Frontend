@@ -16,6 +16,11 @@ export default function LazyVideo({
   const [isInView, setIsInView] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)
 
+  // Reset loaded state whenever src changes
+  useEffect(() => {
+    setIsLoaded(false)
+  }, [src])
+
   useEffect(() => {
     const el = containerRef.current
     if (!el || typeof IntersectionObserver === 'undefined') {
@@ -44,15 +49,34 @@ export default function LazyVideo({
 
   // Actively start video playback whenever in view or src changes
   useEffect(() => {
-    if (isInView && videoRef.current && autoPlay) {
-      videoRef.current.muted = true
-      videoRef.current.defaultMuted = true
-      const p = videoRef.current.play()
-      if (p !== undefined) {
-        p.catch(() => {})
+    const video = videoRef.current
+    if (isInView && video && autoPlay) {
+      video.muted = true
+      video.defaultMuted = true
+      video.setAttribute('muted', '')
+      video.setAttribute('playsinline', '')
+
+      const attemptPlay = () => {
+        if (video.readyState >= 2 || video.currentTime > 0) {
+          setIsLoaded(true)
+        }
+        const p = video.play()
+        if (p !== undefined) {
+          p.then(() => setIsLoaded(true)).catch(() => {})
+        }
       }
+
+      attemptPlay()
     }
   }, [isInView, autoPlay, src])
+
+  const handleMediaReady = (e) => {
+    setIsLoaded(true)
+    if (autoPlay && e.currentTarget) {
+      e.currentTarget.muted = true
+      e.currentTarget.play().catch(() => {})
+    }
+  }
 
   return (
     <div 
@@ -60,7 +84,7 @@ export default function LazyVideo({
       className={`relative overflow-hidden ${className}`}
       style={{ contentVisibility: 'auto', containIntrinsicSize: '100% 100%' }}
     >
-      {isInView && (
+      {isInView && src && (
         <video
           ref={videoRef}
           src={src}
@@ -72,17 +96,15 @@ export default function LazyVideo({
           playsInline={playsInline}
           controls={controls}
           preload="auto"
-          onLoadedMetadata={() => setIsLoaded(true)}
-          onLoadedData={(e) => {
-            setIsLoaded(true)
-            if (autoPlay) e.currentTarget.play().catch(() => {})
-          }}
-          onCanPlay={(e) => {
-            setIsLoaded(true)
-            if (autoPlay) e.currentTarget.play().catch(() => {})
+          onLoadedMetadata={handleMediaReady}
+          onLoadedData={handleMediaReady}
+          onCanPlay={handleMediaReady}
+          onPlaying={() => setIsLoaded(true)}
+          onTimeUpdate={(e) => {
+            if (e.currentTarget.currentTime > 0) setIsLoaded(true)
           }}
           className={`w-full h-full object-cover transition-opacity duration-300 ${
-            isLoaded || !poster ? 'opacity-100' : 'opacity-0'
+            isLoaded || !poster ? 'opacity-100 relative z-10' : 'opacity-0 relative z-0'
           }`}
           {...props}
         />
@@ -91,7 +113,7 @@ export default function LazyVideo({
         <img
           src={poster}
           alt=""
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover z-0"
         />
       )}
     </div>

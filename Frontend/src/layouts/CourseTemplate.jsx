@@ -34,6 +34,15 @@ export default function CourseTemplate({
         <div className="absolute inset-0 z-0">
           {heroVideo ? (
             <video
+              ref={(el) => {
+                if (el) {
+                  el.muted = true
+                  el.defaultMuted = true
+                  el.setAttribute('muted', '')
+                  el.setAttribute('playsinline', '')
+                  el.play().catch(() => {})
+                }
+              }}
               src={heroVideo}
               autoPlay
               loop

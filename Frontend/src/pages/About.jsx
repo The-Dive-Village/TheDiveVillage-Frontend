@@ -17,17 +17,17 @@ const aboutVid = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790244047/d
 const jellyfishVideo = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790244064/dive-village/ui-videos/jelly_fish_mp4.mp4'
 import useNightDive from '../hooks/useNightDive'
 
-import zero2HeroImg from '../assets/Gallery/zero2hero.jpg'
+import certifiedCoursesImg from '../assets/Media/Services Thumbnails/Certified Courses.webp'
 import introProgImg from '../assets/Media/Services Thumbnails/Introductory Programs.webp'
 import freeDivingImg from '../assets/Media/Services Thumbnails/Free Diving.webp'
-import flexibleFunImg from '../assets/Gallery/Flexible Fun Dives.png'
+import flexibleFunDivesImg from '../assets/Media/Services Thumbnails/Flexible Fun Dives.webp'
 
 const SAFETY_PROMISES = [
   {
     num: '01',
     title: 'Globally Certified Instructors',
     desc: 'Globally certified instructors and professional guides dedicated to your safety and growth.',
-    image: zero2HeroImg,
+    image: certifiedCoursesImg,
   },
   {
     num: '02',
@@ -45,7 +45,7 @@ const SAFETY_PROMISES = [
     num: '04',
     title: 'Emergency-Ready Staff',
     desc: 'Emergency-ready, rescue-trained staff equipped with complete safety protocols on every dive.',
-    image: flexibleFunImg,
+    image: flexibleFunDivesImg,
   },
 ]
 
@@ -179,7 +179,7 @@ export default function About() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="h-full rounded-2xl sm:rounded-[32px] bg-white/10 backdrop-blur-2xl text-white p-6 sm:p-10 shadow-2xl transition-all duration-500 border border-white/20 hover:border-[#FFCD00]/60 hover:bg-white/15 hover:shadow-[0_20px_50px_rgba(255,205,0,0.2)] flex flex-col justify-between"
+            className="h-full rounded-2xl sm:rounded-[32px] bg-white/10 backdrop-blur-2xl text-white p-6 sm:p-10 shadow-2xl transition-all duration-500 border border-white/20 hover:border-[#FFCD00]/60 hover:bg-white/15 flex flex-col justify-between"
           >
             <div>
               <div className="flex items-center justify-between mb-4 sm:mb-6">
@@ -209,7 +209,7 @@ export default function About() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.8, ease: "easeOut", delay: 0.15 }}
-            className="h-full rounded-2xl sm:rounded-[32px] bg-white/10 backdrop-blur-2xl text-white p-6 sm:p-10 shadow-2xl transition-all duration-500 border border-white/20 hover:border-[#FFCD00]/60 hover:bg-white/15 hover:shadow-[0_20px_50px_rgba(255,205,0,0.2)] flex flex-col justify-between"
+            className="h-full rounded-2xl sm:rounded-[32px] bg-white/10 backdrop-blur-2xl text-white p-6 sm:p-10 shadow-2xl transition-all duration-500 border border-white/20 hover:border-[#FFCD00]/60 hover:bg-white/15 flex flex-col justify-between"
           >
             <div>
               <div className="flex items-center justify-between mb-4 sm:mb-6">

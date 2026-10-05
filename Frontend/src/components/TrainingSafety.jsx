@@ -1,16 +1,16 @@
 import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 
-import zero2HeroImg from '../assets/Gallery/zero2hero.jpg'
+import certifiedCoursesImg from '../assets/Media/Services Thumbnails/Certified Courses.webp'
 import introProgImg from '../assets/Media/Services Thumbnails/Introductory Programs.webp'
 import freeDivingImg from '../assets/Media/Services Thumbnails/Free Diving.webp'
-import flexibleFunImg from '../assets/Gallery/Flexible Fun Dives.png'
+import flexibleFunDivesImg from '../assets/Media/Services Thumbnails/Flexible Fun Dives.webp'
 
 const SAFETY_PROMISES = [
   {
     title: 'Globally Certified Instructors',
     desc: 'Professional guides trained to handle any situation with calm and expertise.',
-    image: zero2HeroImg,
+    image: certifiedCoursesImg,
   },
   {
     title: 'Personalized Training',
@@ -25,7 +25,7 @@ const SAFETY_PROMISES = [
   {
     title: 'Emergency-Ready Staff',
     desc: 'Rescue-trained professionals prepared for any scenario on the water.',
-    image: flexibleFunImg,
+    image: flexibleFunDivesImg,
   },
 ]
 

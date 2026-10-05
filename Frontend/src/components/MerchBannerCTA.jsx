@@ -40,7 +40,7 @@ export default function MerchBannerCTA({ className = '' }) {
             MADE TO FIT<br />
             <span className="text-[#FFCD00] block mt-0.5 sm:mt-0">ALL BODY TYPES</span>
           </h2>
-          <div className="inline-flex w-max items-center gap-1.5 sm:gap-2.5 rounded-full bg-[#FFCD00] text-[#001e3d] px-3 py-1.5 xs:px-4 xs:py-2 sm:px-6 sm:py-3 text-[10px] xs:text-xs sm:text-sm font-bold tracking-wide shadow-[0_4px_20px_rgba(255,205,0,0.45)] transition-all duration-300 group-hover:bg-white group-hover:scale-105 pointer-events-auto">
+          <div className="inline-flex w-max items-center gap-1.5 sm:gap-2.5 rounded-full bg-[#00223D] text-white px-3 py-1.5 xs:px-4 xs:py-2 sm:px-6 sm:py-3 text-[10px] xs:text-xs sm:text-sm font-bold tracking-wide transition-all duration-300 group-hover:bg-[#FFCD00] group-hover:text-[#001e3d] group-hover:scale-105 pointer-events-auto border border-white/20 shadow-md">
             <span>Shop Now</span>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-1 sm:w-3.5 sm:h-3.5">
               <path d="M5 12h14" />

@@ -238,23 +238,38 @@ export default function ProductDetail() {
                 <p className="text-xs text-white/70">Cart Updated</p>
                 <p className="text-sm font-bold">{toastMessage}</p>
               </div>
-              <Link to="/cart" className="ml-3 rounded-full bg-accent px-3.5 py-1.5 text-xs font-bold text-navy hover:bg-white transition">
+              <Link to="/cart" className="ml-3 rounded-full bg-white/10 text-white hover:bg-[#FFCD00] hover:text-[#001e3d] px-3.5 py-1.5 text-xs font-bold transition border border-white/20">
                 View Cart
               </Link>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Breadcrumb Navigation */}
-        <nav className="flex items-center gap-2 text-xs font-bold text-navy/60 mb-8 overflow-x-auto whitespace-nowrap">
-          <Link to="/" className="hover:text-navy transition">Home</Link>
-          <span>/</span>
-          <Link to="/shop" className="hover:text-navy transition">Merchandise Store</Link>
-          <span>/</span>
-          <span className="text-accent">{product.category}</span>
-          <span>/</span>
-          <span className="text-navy truncate max-w-xs">{product.title}</span>
-        </nav>
+        {/* Back Button & Breadcrumb Navigation Header */}
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
+          <button
+            type="button"
+            onClick={() => navigate('/shop')}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-navy/5 text-navy hover:bg-[#FFCD00] hover:text-[#001e3d] hover:border-[#FFCD00] text-xs sm:text-sm font-bold transition-all duration-200 cursor-pointer border border-navy/15 shadow-sm active:scale-95 shrink-0"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M19 12H5" />
+              <path d="m12 19-7-7 7-7" />
+            </svg>
+            <span>Back to Store</span>
+          </button>
+
+          {/* Breadcrumb Navigation */}
+          <nav className="flex items-center gap-2 text-xs font-bold text-navy/60 overflow-x-auto whitespace-nowrap">
+            <Link to="/" className="hover:text-navy transition">Home</Link>
+            <span>/</span>
+            <Link to="/shop" className="hover:text-navy transition">Merchandise Store</Link>
+            <span>/</span>
+            <span className="text-navy/80">{product.category}</span>
+            <span>/</span>
+            <span className="text-navy truncate max-w-xs">{product.title}</span>
+          </nav>
+        </div>
 
         {/* Main Product Details Split */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 mb-20 items-start">
@@ -537,7 +552,7 @@ export default function ProductDetail() {
 
                 <button
                   onClick={handleBuyNow}
-                  className="w-full sm:w-44 lg:w-48 bg-[#FFCD00] hover:bg-navy hover:text-white active:scale-[0.98] text-navy font-bold py-3.5 sm:py-4 px-5 rounded-full transition shadow-md flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer shrink-0"
+                  className="w-full sm:w-44 lg:w-48 bg-navy hover:bg-[#FFCD00] hover:text-[#001e3d] active:scale-[0.98] text-white font-bold py-3.5 sm:py-4 px-5 rounded-full transition border border-navy shadow-md flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer shrink-0"
                 >
                   Buy Now →
                 </button>
@@ -853,15 +868,17 @@ export default function ProductDetail() {
                 </div>
               </div>
 
-              {/* Center Floating Content Container */}
-              <div className="relative flex-1 min-h-[300px] sm:min-h-[420px] max-h-[62vh] overflow-hidden bg-[#F8FAFC] flex items-center justify-center p-4 sm:p-8">
-                <img
-                  src={floatingImage}
-                  alt={product.title}
-                  className="max-h-full max-w-full object-contain transition-transform duration-300 select-none drop-shadow-md"
-                  style={{ transform: `scale(${floatingZoom})` }}
-                  draggable={false}
-                />
+              {/* Center Floating Content Container (Strict FIT bounds) */}
+              <div className="relative w-full h-[55vh] sm:h-[62vh] min-h-[300px] bg-[#F8FAFC] flex items-center justify-center p-3 sm:p-6 overflow-hidden">
+                <div className="w-full h-full flex items-center justify-center overflow-hidden">
+                  <img
+                    src={floatingImage}
+                    alt={product.title}
+                    className="max-h-full max-w-full w-auto h-auto object-contain transition-transform duration-300 select-none drop-shadow-md"
+                    style={{ transform: `scale(${floatingZoom})` }}
+                    draggable={false}
+                  />
+                </div>
               </div>
 
               {/* Bottom Thumbnail Switcher if multiple images exist */}
