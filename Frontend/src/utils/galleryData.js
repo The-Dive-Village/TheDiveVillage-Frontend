@@ -1,7 +1,4 @@
 const extrasModules = import.meta.glob('../assets/Media/Extras for Gallery/*.*', { eager: true, import: 'default' })
-const servicesModules = import.meta.glob('../assets/Media/Services/*.*', { eager: true, import: 'default' })
-const thumbnailsModules = import.meta.glob('../assets/Media/Services Thumbnails/*.*', { eager: true, import: 'default' })
-const airportModules = import.meta.glob('../assets/Media/Airport to Airport/*.*', { eager: true, import: 'default' })
 
 const videoExtensions = new Set(['mp4', 'mov', 'webm', 'ogg', 'm4v', 'MP4'])
 
@@ -36,17 +33,9 @@ function mapModules(modules, defaultCategory) {
 }
 
 const extrasItems = mapModules(extrasModules, 'marine')
-const servicesItems = mapModules(servicesModules, 'scuba')
-const thumbnailsItems = mapModules(thumbnailsModules, 'scuba')
-const airportItems = mapModules(airportModules, 'scenery')
 
-// Combine exactly in the requested order:
-// Extras for gallery -> Services -> Services thumbnails -> Airport to Airport
 export const GALLERY_ITEMS = [
   ...extrasItems,
-  ...servicesItems,
-  ...thumbnailsItems,
-  ...airportItems
 ]
   .sort((a, b) => {
     if (a.type === 'video' && b.type === 'image') return -1
