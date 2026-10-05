@@ -732,12 +732,31 @@ function InteractiveHighlights() {
   const cardWidth = Math.floor((containerWidth - (Math.ceil(cardsToShow) - 1) * cardGap) / cardsToShow)
   const singleSetWidth = itemsInSet * (cardWidth + cardGap)
 
-  // Smooth 60/120fps Animation Loop with Momentum & Auto-scroll (Zero React Re-render Overhead)
+  // Smooth 60/120fps Animation Loop with Momentum & Auto-scroll (only when in viewport)
   useEffect(() => {
-    let animationFrameId
+    let animationFrameId = null
+    let isVisible = false
     const autoSpeed = 1.35 // pixels per frame
 
+    const startLoop = () => {
+      if (!animationFrameId && isVisible) {
+        animationFrameId = requestAnimationFrame(step)
+      }
+    }
+
+    const stopLoop = () => {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId)
+        animationFrameId = null
+      }
+    }
+
     const step = () => {
+      if (!isVisible) {
+        animationFrameId = null
+        return
+      }
+
       if (!isDraggingRef.current) {
         if (Math.abs(velocityRef.current) > 0.08) {
           scrollPosRef.current -= velocityRef.current
@@ -759,8 +778,28 @@ function InteractiveHighlights() {
       animationFrameId = requestAnimationFrame(step)
     }
 
-    animationFrameId = requestAnimationFrame(step)
-    return () => cancelAnimationFrame(animationFrameId)
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          isVisible = entry.isIntersecting
+          if (isVisible) {
+            startLoop()
+          } else {
+            stopLoop()
+          }
+        })
+      },
+      { threshold: 0.05, rootMargin: '100px 0px' }
+    )
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current)
+    }
+
+    return () => {
+      stopLoop()
+      observer.disconnect()
+    }
   }, [singleSetWidth])
 
   const handlePointerDown = (e) => {
@@ -958,20 +997,67 @@ function InteractiveHighlights() {
 function AutoCarousel({ images, showContent = true }) {
   const [index, setIndex] = useState(0)
   const [prevIndex, setPrevIndex] = useState(0)
+  const containerRef = useRef(null)
 
   useEffect(() => {
     if (!images || images.length === 0) return
-    const timer = setInterval(() => {
-      setIndex((curr) => {
-        setPrevIndex(curr)
-        return (curr + 1) % images.length
-      })
-    }, 3200)
-    return () => clearInterval(timer)
+    let timer = null
+    let isVisible = false
+
+    const startTimer = () => {
+      if (!timer && isVisible && !document.hidden) {
+        timer = setInterval(() => {
+          setIndex((curr) => {
+            setPrevIndex(curr)
+            return (curr + 1) % images.length
+          })
+        }, 3200)
+      }
+    }
+
+    const stopTimer = () => {
+      if (timer) {
+        clearInterval(timer)
+        timer = null
+      }
+    }
+
+    const handleVisibility = () => {
+      if (document.hidden) {
+        stopTimer()
+      } else if (isVisible) {
+        startTimer()
+      }
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          isVisible = entry.isIntersecting
+          if (isVisible) {
+            startTimer()
+          } else {
+            stopTimer()
+          }
+        })
+      },
+      { threshold: 0.1 }
+    )
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current)
+    }
+    document.addEventListener('visibilitychange', handleVisibility)
+
+    return () => {
+      stopTimer()
+      observer.disconnect()
+      document.removeEventListener('visibilitychange', handleVisibility)
+    }
   }, [images])
 
   return (
-    <div className="relative overflow-hidden rounded-[32px] sm:rounded-[40px] shadow-[0_20px_60px_rgba(0,0,0,0.8)] w-full h-[420px] lg:h-[480px] bg-[#001e3d] border border-white/20">
+    <div ref={containerRef} className="relative overflow-hidden rounded-[32px] sm:rounded-[40px] shadow-[0_20px_60px_rgba(0,0,0,0.8)] w-full h-[420px] lg:h-[480px] bg-[#001e3d] border border-white/20">
       {/* Base Layer: Previous image stays 100% solid underneath so background is NEVER visible during transition */}
       {images[prevIndex] && (
         <img

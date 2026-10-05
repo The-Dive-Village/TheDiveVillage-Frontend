@@ -253,67 +253,64 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
   }, [texture3])
 
   useEffect(() => {
+    let scrollRafId = null
+
     const handleScroll = () => {
-      const isMobileScreen = typeof window !== 'undefined' && window.innerWidth < 640
-      if (isMobileScreen) {
-        // Keep 360 video background completely static on mobile during scroll
+      if (scrollRafId) return
+      scrollRafId = requestAnimationFrame(() => {
+        scrollRafId = null
+        const isMobileScreen = typeof window !== 'undefined' && window.innerWidth < 640
+        if (isMobileScreen) {
+          targetRotation.current.y = INITIAL_YAW
+          targetRotation.current.x = INITIAL_PITCH
+          targetOpacity2.current = 0
+          targetOpacity3.current = 0
+          return
+        }
+
+        const scrollY = window.scrollY
+
+        if (isHome) {
+          if (!loadSecondary && scrollY > 150) {
+            setLoadSecondary(true)
+          }
+
+          const triggerThreshold = window.innerHeight * 0.8
+          const isElementInView = (el) => el && el.getBoundingClientRect().top < triggerThreshold
+
+          const diveSectionEl = document.getElementById('who-can-dive-section')
+          const airportEl = document.getElementById('airport-to-airport-section')
+          const galleryEl = document.getElementById('gallery-section') || document.getElementById('gallery')
+          const testimonialsEl = document.getElementById('testimonials-section')
+          const closingCtaEl = document.getElementById('closing-cta-section')
+
+          if (isElementInView(closingCtaEl)) {
+            targetOpacity2.current = 0
+            targetOpacity3.current = 0
+          } else if (isElementInView(galleryEl) || isElementInView(testimonialsEl)) {
+            targetOpacity2.current = 0
+            targetOpacity3.current = 1
+          } else if (isElementInView(diveSectionEl) || isElementInView(airportEl)) {
+            targetOpacity2.current = 1
+            targetOpacity3.current = 0
+          } else {
+            targetOpacity2.current = 0
+            targetOpacity3.current = 0
+          }
+        }
+
         targetRotation.current.y = INITIAL_YAW
         targetRotation.current.x = INITIAL_PITCH
-        targetOpacity2.current = 0
-        targetOpacity3.current = 0
-        return
-      }
-
-      const scrollY = window.scrollY
-
-      const aboutEl = document.getElementById('about-section')
-      const programsEl = document.getElementById('programs-section')
-      
-      const customizeEl = document.getElementById('customize-dive-section') || document.getElementById('customize-section')
-      const diveSectionEl = document.getElementById('who-can-dive-section')
-      const airportEl = document.getElementById('airport-to-airport-section')
-      const galleryEl = document.getElementById('gallery-section') || document.getElementById('gallery')
-      const testimonialsEl = document.getElementById('testimonials-section')
-      const closingCtaEl = document.getElementById('closing-cta-section')
-
-      if (isHome) {
-        if (!loadSecondary && scrollY > 150) {
-          setLoadSecondary(true)
-        }
-
-        const triggerThreshold = window.innerHeight * 0.8
-        
-        // Helper to check if an element is currently spanning the viewport
-        const isElementInView = (el) => el && el.getBoundingClientRect().top < triggerThreshold
-
-        if (isElementInView(closingCtaEl)) {
-          // "Come for the Adventure panel" -> Clownfish (Video 1)
-          targetOpacity2.current = 0
-          targetOpacity3.current = 0
-        } else if (isElementInView(galleryEl) || isElementInView(testimonialsEl)) {
-          // "Gallery to Reviews" -> Turtle (Video 3)
-          targetOpacity2.current = 0
-          targetOpacity3.current = 1
-        } else if (isElementInView(diveSectionEl) || isElementInView(airportEl)) {
-          // "Ocean Welcomes All to Airport to airport" -> Barracuda (Video 2)
-          targetOpacity2.current = 1
-          targetOpacity3.current = 0
-        } else {
-          // "Beginning till Customize Dive" -> Clownfish (Video 1)
-          targetOpacity2.current = 0
-          targetOpacity3.current = 0
-        }
-      }
-
-      // Ensure rotation does not change on scroll
-      targetRotation.current.y = INITIAL_YAW
-      targetRotation.current.x = INITIAL_PITCH
+      })
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
     handleScroll()
 
-    return () => window.removeEventListener('scroll', handleScroll)
+    return () => {
+      if (scrollRafId) cancelAnimationFrame(scrollRafId)
+      window.removeEventListener('scroll', handleScroll)
+    }
   }, [isAbout, isHome, loadSecondary, INITIAL_PITCH, INITIAL_YAW])
 
   // --- DRAG LOGIC ---
@@ -322,16 +319,6 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
   const dragOffset = useRef({ x: 0, y: 0 })
 
   useEffect(() => {
-    const onPointerDown = (e) => {
-      // Disable body pointer dragging on mobile so scrolling gestures don't rotate the 360 sphere
-      if (window.innerWidth < 640) return
-      if (e.target.closest('button, a, input, textarea, select, [role="button"], .joystick-container')) {
-        return
-      }
-      isDragging.current = true
-      previousPointer.current = { x: e.clientX, y: e.clientY }
-    }
-
     const onPointerMove = (e) => {
       if (!isDragging.current) return
       const dx = e.clientX - previousPointer.current.x
@@ -343,12 +330,24 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
 
     const onPointerUp = () => {
       isDragging.current = false
+      window.removeEventListener('pointermove', onPointerMove)
+      window.removeEventListener('pointerup', onPointerUp)
+      window.removeEventListener('pointercancel', onPointerUp)
+    }
+
+    const onPointerDown = (e) => {
+      if (window.innerWidth < 640) return
+      if (e.target.closest('button, a, input, textarea, select, [role="button"], .joystick-container')) {
+        return
+      }
+      isDragging.current = true
+      previousPointer.current = { x: e.clientX, y: e.clientY }
+      window.addEventListener('pointermove', onPointerMove, { passive: true })
+      window.addEventListener('pointerup', onPointerUp)
+      window.addEventListener('pointercancel', onPointerUp)
     }
 
     window.addEventListener('pointerdown', onPointerDown)
-    window.addEventListener('pointermove', onPointerMove, { passive: true })
-    window.addEventListener('pointerup', onPointerUp)
-    window.addEventListener('pointercancel', onPointerUp)
 
     return () => {
       window.removeEventListener('pointerdown', onPointerDown)
@@ -542,27 +541,13 @@ export default function VideoSphereBackground() {
     const validUnlockEvents = [
       'click',
       'pointerdown',
-      'pointerup',
-      'pointermove',
-      'mousedown',
-      'mouseup',
-      'mousemove',
       'touchstart',
-      'touchend',
-      'touchmove',
       'keydown',
-      'scroll',
-      'wheel',
-      'focus',
-      'visibilitychange',
-      'pageshow',
     ]
 
     const removeUnlockListeners = () => {
       validUnlockEvents.forEach((evt) => {
-        window.removeEventListener(evt, handleFirstInteraction, true)
-        document.removeEventListener(evt, handleFirstInteraction, true)
-        document.body?.removeEventListener(evt, handleFirstInteraction, true)
+        window.removeEventListener(evt, handleFirstInteraction)
       })
     }
 
@@ -591,11 +576,9 @@ export default function VideoSphereBackground() {
       // 1. Immediate trigger on load
       startAudio()
 
-      // 2. Comprehensive unlock listeners covering any mouse move, touch, key, or scroll
+      // 2. Focused one-time unlock listeners
       validUnlockEvents.forEach((evt) => {
-        window.addEventListener(evt, handleFirstInteraction, { passive: true, capture: true })
-        document.addEventListener(evt, handleFirstInteraction, { passive: true, capture: true })
-        document.body?.addEventListener(evt, handleFirstInteraction, { passive: true, capture: true })
+        window.addEventListener(evt, handleFirstInteraction, { passive: true, once: true })
       })
 
       // 3. Staggered retries for when audio finishes buffering
@@ -647,6 +630,8 @@ export default function VideoSphereBackground() {
   if (!mounted) return null // Prevent SSR/hydration mismatches if any
 
   const isAbout = location.pathname === '/about'
+  const isSpherePage = location.pathname === '/' || isAbout
+  const shouldRenderCanvas = isVisible && isSpherePage && !isNightDive
   const currentVideo = isNightDive ? nightDiveVideo : (isAbout ? bookFile : videoFile)
 
   const isHiddenJoystickPath =
@@ -710,7 +695,7 @@ export default function VideoSphereBackground() {
           />
           <div style={{ width: '100%', height: '100%' }}>
             <Canvas
-              frameloop={isVisible ? 'always' : 'never'}
+              frameloop={shouldRenderCanvas ? 'always' : 'never'}
               dpr={[1, 1.5]}
               camera={{ position: [0, 0, 0.1], fov: 85 }}
               gl={{ powerPreference: 'high-performance', antialias: false }}

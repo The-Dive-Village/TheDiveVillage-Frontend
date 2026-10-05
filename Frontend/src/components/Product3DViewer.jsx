@@ -4,12 +4,41 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
   const [scriptLoaded, setScriptLoaded] = useState(false)
   const [autoRotate, setAutoRotate] = useState(true)
   const modelRef = useRef(null)
+  const containerRef = useRef(null)
 
   const isCap = Boolean(
     (src && src.toLowerCase().includes('cap')) ||
     (alt && alt.toLowerCase().includes('cap')) ||
     productId === 'product-dive-cap'
   )
+
+  useEffect(() => {
+    const el = containerRef.current
+    if (!el || typeof IntersectionObserver === 'undefined') return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          setAutoRotate(entry.isIntersecting && !document.hidden)
+        })
+      },
+      { threshold: 0.1 }
+    )
+
+    const handleVisibility = () => {
+      if (document.hidden) {
+        setAutoRotate(false)
+      }
+    }
+
+    observer.observe(el)
+    document.addEventListener('visibilitychange', handleVisibility)
+
+    return () => {
+      observer.disconnect()
+      document.removeEventListener('visibilitychange', handleVisibility)
+    }
+  }, [])
 
   useEffect(() => {
     if (typeof window !== 'undefined' && !customElements.get('model-viewer')) {
@@ -146,6 +175,7 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
 
   return (
     <div 
+      ref={containerRef}
       className="relative w-full h-full min-h-[300px] sm:min-h-[340px] bg-gradient-to-b from-[#FFFFFF] via-[#F8FAFC] to-[#EDF2F7] rounded-[28px] overflow-hidden flex items-center justify-center select-none"
       style={{ contentVisibility: 'auto', containIntrinsicSize: '100% 340px' }}
     >

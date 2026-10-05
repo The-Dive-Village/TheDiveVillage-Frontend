@@ -1,7 +1,7 @@
 import CourseTemplate from '../layouts/CourseTemplate'
 import SEOHead from '../components/SEOHead'
 import { IMAGES, FEATURED_EXPERIENCES } from '../utils/images'
-const turtleSnorkelVideo = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243826/dive-village/gallery-videos/snorkelling2_mp4.mp4'
+const turtleSnorkelVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1790243826/dive-village/gallery-videos/snorkelling2_mp4.mp4'
 
 export default function Snorkeling() {
   const tours = [

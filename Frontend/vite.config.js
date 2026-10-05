@@ -108,7 +108,7 @@ export default defineConfig({
             urlPattern: /^https:\/\/res\.cloudinary\.com\/.*/i,
             handler: 'CacheFirst',
             options: {
-              cacheName: 'cloudinary-images',
+              cacheName: 'cloudinary-media-qvbunv8y',
               expiration: {
                 maxEntries: 100,
                 maxAgeSeconds: 60 * 60 * 24 * 30 // 30 Days

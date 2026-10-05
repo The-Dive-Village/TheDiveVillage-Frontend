@@ -17,9 +17,10 @@ export default function GalleryPreview() {
 
   const goToGallery = () => navigate('/gallery')
 
-  // Auto scroll from left to right using smooth requestAnimationFrame
+  // Auto scroll from left to right using smooth requestAnimationFrame only when visible
   useEffect(() => {
     let animId
+    let isVisible = false
     let lastTime = performance.now()
     let cachedThirdWidth = scrollContainerRef.current ? scrollContainerRef.current.scrollWidth / 3 : 1000
 
@@ -30,7 +31,26 @@ export default function GalleryPreview() {
     }
     window.addEventListener('resize', handleResize, { passive: true })
 
+    const startLoop = () => {
+      if (!animId && isVisible) {
+        lastTime = performance.now()
+        animId = requestAnimationFrame(loop)
+      }
+    }
+
+    const stopLoop = () => {
+      if (animId) {
+        cancelAnimationFrame(animId)
+        animId = null
+      }
+    }
+
     const loop = (currentTime) => {
+      if (!isVisible) {
+        animId = null
+        return
+      }
+
       const delta = (currentTime - lastTime) / 1000
       lastTime = currentTime
 
@@ -44,9 +64,27 @@ export default function GalleryPreview() {
       animId = requestAnimationFrame(loop)
     }
 
-    animId = requestAnimationFrame(loop)
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          isVisible = entry.isIntersecting
+          if (isVisible) {
+            startLoop()
+          } else {
+            stopLoop()
+          }
+        })
+      },
+      { threshold: 0.05, rootMargin: '100px 0px' }
+    )
+
+    if (scrollContainerRef.current) {
+      observer.observe(scrollContainerRef.current)
+    }
+
     return () => {
-      cancelAnimationFrame(animId)
+      stopLoop()
+      observer.disconnect()
       window.removeEventListener('resize', handleResize)
     }
   }, [isHovered])

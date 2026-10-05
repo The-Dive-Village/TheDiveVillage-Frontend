@@ -49,18 +49,37 @@ export function prefetchRoute(path) {
   }
 }
 
-// Automatically warm up all routes immediately for zero page navigation delay
+// Automatically warm up primary routes progressively during browser idle time
 export function initIdlePrefetching() {
   if (typeof window === 'undefined') return
 
-  const warmAll = () => {
-    Object.keys(routeLoaders).forEach((path) => prefetchRoute(path))
+  const priorityRoutes = ['/about', '/services', '/shop', '/gallery']
+  let queueIndex = 0
+
+  const scheduleNext = () => {
+    if (queueIndex >= priorityRoutes.length) return
+    const route = priorityRoutes[queueIndex++]
+    prefetchRoute(route)
+
+    if (typeof window.requestIdleCallback === 'function') {
+      window.requestIdleCallback(scheduleNext, { timeout: 3000 })
+    } else {
+      setTimeout(scheduleNext, 1200)
+    }
+  }
+
+  // Defer idle warming until well after initial render and hero video ready
+  const startIdleWarm = () => {
+    if (typeof window.requestIdleCallback === 'function') {
+      window.requestIdleCallback(scheduleNext, { timeout: 4000 })
+    } else {
+      setTimeout(scheduleNext, 2500)
+    }
   }
 
   if (document.readyState === 'complete') {
-    warmAll()
+    startIdleWarm()
   } else {
-    window.addEventListener('load', warmAll, { once: true })
-    setTimeout(warmAll, 300)
+    window.addEventListener('load', startIdleWarm, { once: true })
   }
 }

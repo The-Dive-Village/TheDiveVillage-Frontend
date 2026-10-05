@@ -2,7 +2,7 @@ import CourseTemplate from '../layouts/CourseTemplate'
 import SEOHead from '../components/SEOHead'
 import { IMAGES, FEATURED_EXPERIENCES } from '../utils/images'
 import scubaDiveVideoLocal from '../assets/Gallery/Scuba3.MP4'
-const scubaDiveVideo = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790243630/dive-village/gallery-videos/scuba3_mp4.mp4' || scubaDiveVideoLocal
+const scubaDiveVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1790243630/dive-village/gallery-videos/scuba3_mp4.mp4' || scubaDiveVideoLocal
 
 export default function Scuba() {
   const tours = [

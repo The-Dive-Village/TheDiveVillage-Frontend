@@ -15,7 +15,7 @@ import bannerImg from '../assets/Media/Products/banner.webp'
 import divingVidLocal from '../assets/Diving(1).mp4'
 import pop1Local from '../assets/Media/Products/pop1.webp'
 import pop2Local from '../assets/Media/Products/pop2.webp'
-const divingVid = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790244035/dive-village/ui-videos/diving_1_mp4.mp4'
+const divingVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1790244035/dive-village/ui-videos/diving_1_mp4.mp4'
 const pop1 = pop1Local
 const pop2 = pop2Local
 

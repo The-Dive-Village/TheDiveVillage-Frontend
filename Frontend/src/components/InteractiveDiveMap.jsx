@@ -91,8 +91,8 @@ export default function InteractiveDiveMap({
   const [isLoaded, setIsLoaded] = useState(false)
   const [popupSite, setPopupSite] = useState(null)
   const [isPopupOpen, setIsPopupOpen] = useState(false)
-  const [hoveredPinTooltip, setHoveredPinTooltip] = useState(null)
 
+  const tooltipRef = useRef(null)
   const popupRef = useRef(null)
   const popupSiteRef = useRef(null)
   const isPopupOpenRef = useRef(false)
@@ -698,9 +698,14 @@ export default function InteractiveDiveMap({
 
         // Interaction handlers
         handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas)
+        let lastHoverCheckTime = 0
 
         handler.setInputAction((movement) => {
           lastInteractionTimeRef.current = Date.now()
+          const now = performance.now()
+          if (now - lastHoverCheckTime < 30) return
+          lastHoverCheckTime = now
+
           const pickedObjects = viewer.scene.drillPick(movement.endPosition, 3)
           let isPointer = false
           let foundHover = null
@@ -760,7 +765,40 @@ export default function InteractiveDiveMap({
             }
           }
           viewer.scene.canvas.style.cursor = isPointer ? 'pointer' : 'default'
-          setHoveredPinTooltip(foundHover)
+
+          const tEl = tooltipRef.current
+          if (tEl) {
+            if (!foundHover || isPopupOpenRef.current) {
+              tEl.style.display = 'none'
+            } else {
+              tEl.style.display = 'block'
+              const containerWidth = containerRef.current ? containerRef.current.clientWidth : 400
+              const leftPos = Math.min(Math.max(12, foundHover.x + 14), containerWidth - 230)
+              const topPos = Math.max(12, foundHover.y - 75)
+              tEl.style.left = `${leftPos}px`
+              tEl.style.top = `${topPos}px`
+
+              const titleEl = tEl.querySelector('.tooltip-title')
+              const subtitleEl = tEl.querySelector('.tooltip-subtitle')
+              const detailsEl = tEl.querySelector('.tooltip-details')
+              const depthEl = tEl.querySelector('.tooltip-depth')
+              const visEl = tEl.querySelector('.tooltip-vis')
+
+              if (titleEl) titleEl.textContent = foundHover.title || ''
+              if (subtitleEl) {
+                subtitleEl.textContent = foundHover.type === 'padi' ? 'Dive Site • Click to inspect' : 'Country • Click to explore'
+              }
+              if (detailsEl) {
+                if (foundHover.type === 'padi') {
+                  detailsEl.style.display = 'flex'
+                  if (depthEl) depthEl.textContent = foundHover.depth || '12m - 30m'
+                  if (visEl) visEl.textContent = foundHover.visibility || '20m - 40m'
+                } else {
+                  detailsEl.style.display = 'none'
+                }
+              }
+            }
+          }
         }, Cesium.ScreenSpaceEventType.MOUSE_MOVE)
 
         handler.setInputAction((click) => {
@@ -1343,38 +1381,28 @@ export default function InteractiveDiveMap({
         })()}
       </div>
 
-      {/* Desktop Hover Pin Preview Tooltip */}
-      {hoveredPinTooltip && !isPopupOpen && (
-        <div
-          className="pointer-events-none absolute z-30 transition-all duration-150 hidden md:block"
-          style={{
-            left: `${Math.min(Math.max(12, hoveredPinTooltip.x + 14), (containerRef.current?.clientWidth || 400) - 220)}px`,
-            top: `${Math.max(12, hoveredPinTooltip.y - 75)}px`,
-          }}
-        >
-          <div className="bg-[#00192e]/95 backdrop-blur-xl border border-cyan-400/40 rounded-xl p-2.5 shadow-[0_8px_30px_rgba(0,0,0,0.7)] text-white max-w-[220px]">
-            <div className="flex items-center gap-2">
-              <span className="w-5 h-5 rounded-full bg-cyan-400/20 flex items-center justify-center text-cyan-300 shrink-0">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              </span>
-              <div className="min-w-0 flex-1">
-                <h4 className="font-heading text-xs font-bold text-white truncate leading-tight">
-                  {hoveredPinTooltip.title}
-                </h4>
-                <span className="text-[9px] font-semibold text-cyan-300 block uppercase tracking-wider">
-                  {hoveredPinTooltip.type === 'padi' ? 'Dive Site • Click to inspect' : 'Country • Click to explore'}
-                </span>
-              </div>
+      {/* Desktop Hover Pin Preview Tooltip (Direct DOM element driven for 0 React re-renders) */}
+      <div
+        ref={tooltipRef}
+        className="pointer-events-none absolute z-30 transition-transform duration-75 hidden md:block"
+        style={{ display: 'none', top: 0, left: 0 }}
+      >
+        <div className="bg-[#00192e]/95 backdrop-blur-xl border border-cyan-400/40 rounded-xl p-2.5 shadow-[0_8px_30px_rgba(0,0,0,0.7)] text-white max-w-[220px]">
+          <div className="flex items-center gap-2">
+            <span className="w-5 h-5 rounded-full bg-cyan-400/20 flex items-center justify-center text-cyan-300 shrink-0">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </span>
+            <div className="min-w-0 flex-1">
+              <h4 className="tooltip-title font-heading text-xs font-bold text-white truncate leading-tight"></h4>
+              <span className="tooltip-subtitle text-[9px] font-semibold text-cyan-300 block uppercase tracking-wider"></span>
             </div>
-            {hoveredPinTooltip.type === 'padi' && (
-              <div className="mt-2 pt-1.5 border-t border-white/10 flex items-center justify-between text-[9.5px] text-white/80">
-                <span>Depth: <strong className="text-amber-300">{hoveredPinTooltip.depth}</strong></span>
-                <span>Vis: <strong className="text-cyan-300">{hoveredPinTooltip.visibility}</strong></span>
-              </div>
-            )}
+          </div>
+          <div className="tooltip-details mt-2 pt-1.5 border-t border-white/10 flex items-center justify-between text-[9.5px] text-white/80">
+            <span>Depth: <strong className="tooltip-depth text-amber-300"></strong></span>
+            <span>Vis: <strong className="tooltip-vis text-cyan-300"></strong></span>
           </div>
         </div>
-      )}
+      </div>
 
       {/* Joystick Overlay */}
       <GlobeJoystick viewerRef={viewerRef} />

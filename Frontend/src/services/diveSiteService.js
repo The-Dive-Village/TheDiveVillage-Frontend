@@ -19,12 +19,39 @@ export const normalizeCountryKey = (countryName) => {
     .replace(/^-|-$/g, '')
 }
 
+let indexedIdMap = null
+let indexedCountryMap = null
+
 /**
  * Lazy load full PADI dive site dataset on demand (cached after first request).
  */
 export const loadDiveSiteData = async () => {
   if (!diveSiteDataPromise) {
-    diveSiteDataPromise = import('../data/padiDiveSites.json').then((module) => module.default || module)
+    diveSiteDataPromise = import('../data/padiDiveSites.json').then((module) => {
+      const data = module.default || module
+      // Build O(1) fast lookup index maps once
+      const idMap = new Map()
+      const countryMap = new Map()
+      const locMap = data.locationsByCountry || {}
+
+      for (const [countryKey, list] of Object.entries(locMap)) {
+        if (Array.isArray(list)) {
+          const normKey = normalizeCountryKey(countryKey)
+          if (!countryMap.has(normKey)) {
+            countryMap.set(normKey, list)
+          }
+          for (let i = 0; i < list.length; i++) {
+            const loc = list[i]
+            if (loc && loc.id) {
+              idMap.set(String(loc.id), loc)
+            }
+          }
+        }
+      }
+      indexedIdMap = idMap
+      indexedCountryMap = countryMap
+      return data
+    })
   }
   return diveSiteDataPromise
 }
@@ -38,27 +65,21 @@ export const getCountries = () => countryList || []
 export const getLocationsByCountry = async (country) => {
   if (!country) return []
   const data = await loadDiveSiteData()
-  const locMap = data.locationsByCountry || {}
   const targetKey = normalizeCountryKey(country)
-
-  if (locMap[country]) return locMap[country]
-  for (const k of Object.keys(locMap)) {
-    if (normalizeCountryKey(k) === targetKey) {
-      return locMap[k]
-    }
+  if (indexedCountryMap && indexedCountryMap.has(targetKey)) {
+    return indexedCountryMap.get(targetKey)
   }
+  const locMap = data.locationsByCountry || {}
+  if (locMap[country]) return locMap[country]
   return []
 }
 
 export const getLocationById = async (id) => {
   if (!id) return null
-  const data = await loadDiveSiteData()
+  await loadDiveSiteData()
   const strId = String(id)
-  const countries = data.countries || countryList || []
-  for (const c of countries) {
-    const list = data.locationsByCountry?.[c] || []
-    const found = list.find((loc) => String(loc.id) === strId)
-    if (found) return found
+  if (indexedIdMap && indexedIdMap.has(strId)) {
+    return indexedIdMap.get(strId)
   }
   return null
 }
