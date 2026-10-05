@@ -9,13 +9,13 @@ import barracudaVideo from '../assets/Media/Background/Barracuda.mp4'
 import turtleBgVideo from '../assets/Media/Background/Turtle.mp4'
 import nightDiveVideoLocal from '../assets/Media/Background/Night Dive.mp4'
 
-const videoFile = clownfishVideo
+import underwaterAudio from '../assets/Underwater.mp3'
+import { setHeroVideoReady, getOrCreateHeroVideoElement, setHeroWebGLReady, HERO_VIDEO_SRC } from '../utils/mediaReadyManager'
+
+const videoFile = HERO_VIDEO_SRC || clownfishVideo
 const bookFile = barracudaVideo
 const turtleVideo = turtleBgVideo
 const nightDiveVideo = nightDiveVideoLocal
-
-import underwaterAudio from '../assets/Underwater.mp3'
-import { setHeroVideoReady, getOrCreateHeroVideoElement, setHeroWebGLReady } from '../utils/mediaReadyManager'
 
 function getOrCreateDomVideoContainer() {
   let container = document.getElementById('hero-360-video-dom-root')

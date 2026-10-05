@@ -4,7 +4,7 @@
  * with the application Preloader to guarantee a zero-gap, instant handoff.
  */
 
-const HERO_VIDEO_SRC = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1790248244/dive-village/hero-360/cj9jvkh5j6sozf2fhf0x.mp4'
+export const HERO_VIDEO_SRC = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1790248244/dive-village/hero-360/cj9jvkh5j6sozf2fhf0x.mp4'
 
 let isHeroVideoReady = false
 let isHeroWebGLReady = false
