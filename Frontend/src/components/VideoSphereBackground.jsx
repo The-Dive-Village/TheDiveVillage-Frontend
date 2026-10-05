@@ -237,7 +237,7 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
   // Light mode on Home: priority singleton. Dark mode (Night Dive): dynamic local 360 video element (1.0x).
   const primaryPlaybackRate = isNightDive ? 1.0 : 0.45
   const isHeroSingleton = !isNightDive && isHome
-  const { texture, hasNewFrameRef: hasNewFrame1, lastTimeRef: lastTime1 } = useDirectVideoTexture(!isNightDive ? videoSrc : null, primaryPlaybackRate, isHeroSingleton)
+  const { texture, hasNewFrameRef: hasNewFrame1, lastTimeRef: lastTime1 } = useDirectVideoTexture(!isNightDive ? videoFile : null, primaryPlaybackRate, isHeroSingleton)
   // Secondary videos are strictly lazy-loaded only when user scrolls or needs them ON DESKTOP
   const { texture: texture2, hasNewFrameRef: hasNewFrame2, lastTimeRef: lastTime2 } = useDirectVideoTexture(!isMobile && isHome && !isNightDive && loadSecondary ? bookFile : null, 0.5, false)
   const { texture: texture3, hasNewFrameRef: hasNewFrame3, lastTimeRef: lastTime3 } = useDirectVideoTexture(!isMobile && isHome && !isNightDive && loadSecondary ? turtleVideo : null, 0.5, false)
