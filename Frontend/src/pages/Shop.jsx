@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from 'react'
+import { useState, useEffect, useMemo, useRef, useDeferredValue } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { motion, AnimatePresence } from 'framer-motion'
 import { SHOP_PRODUCTS } from '../utils/products'
@@ -33,6 +33,7 @@ export default function Shop() {
   const [productsList, setProductsList] = useState(SHOP_PRODUCTS)
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
+  const deferredSearchQuery = useDeferredValue(searchQuery)
   const [sortBy, setSortBy] = useState('featured')
   const [addedToast, setAddedToast] = useState(null)
   const { addItem, itemCount } = useCart()
@@ -88,7 +89,7 @@ export default function Shop() {
       const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory
       const titleOrName = (product.title || product.name || '')
       const desc = (product.description || '')
-      const query = (searchQuery || '').toLowerCase()
+      const query = (deferredSearchQuery || '').toLowerCase()
       const matchesSearch =
         titleOrName.toLowerCase().includes(query) ||
         desc.toLowerCase().includes(query)
@@ -99,7 +100,7 @@ export default function Shop() {
       if (sortBy === 'rating') return (Number(b?.rating) || 5) - (Number(a?.rating) || 5)
       return 0
     })
-  }, [productsList, selectedCategory, searchQuery, sortBy])
+  }, [productsList, selectedCategory, deferredSearchQuery, sortBy])
 
   return (
     <div className="bg-[#FAFAFA] min-h-screen text-navy font-body pt-24 sm:pt-32 pb-24 overflow-x-hidden">

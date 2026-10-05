@@ -395,10 +395,10 @@ export default function InteractiveDiveMap({
           resizeObserver.observe(containerRef.current)
         }
 
-        const dpr = Math.min(window.devicePixelRatio || 1, 2)
+        const dpr = window.devicePixelRatio || 1
         const isMobile = window.innerWidth < 768
 
-        // Capped device pixel ratio for smooth performance without blur
+        // Adaptive resolution scaling: Crisp high-DPI on desktop (up to 1.75x), lightweight on mobile (up to 1.25x)
         viewer.resolutionScale = isMobile ? Math.min(dpr, 1.25) : Math.min(dpr, 1.75)
 
         // Tune base imagery layer
@@ -616,30 +616,6 @@ export default function InteractiveDiveMap({
                     orientation: {
                       heading: viewer.camera.heading,
                       pitch: viewer.camera.pitch,
-                      roll: 0.0
-                    }
-                  })
-                }
-              }
-              // World-scale view camera restoration (altitude >= 8,000,000m)
-              // When camera returns to global scale, restore initial world framing (heading: 0, pitch: -90 deg, roll: 0)
-              if (
-                carto.height >= 8000000 &&
-                !selectedCountryRef.current &&
-                !isProgrammaticFlightRef.current &&
-                !isUserInteractingRef.current
-              ) {
-                const targetPitch = Cesium.Math.toRadians(-90)
-                const diffHeading = Math.abs(viewer.camera.heading)
-                const diffPitch = Math.abs(viewer.camera.pitch - targetPitch)
-                const diffRoll = Math.abs(viewer.camera.roll)
-
-                if (diffHeading > 0.03 || diffPitch > 0.03 || diffRoll > 0.01) {
-                  viewer.camera.setView({
-                    destination: Cesium.Cartesian3.fromDegrees(80.0, 15.0, carto.height),
-                    orientation: {
-                      heading: 0.0,
-                      pitch: targetPitch,
                       roll: 0.0
                     }
                   })

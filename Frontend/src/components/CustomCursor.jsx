@@ -45,13 +45,15 @@ export default function CustomCursor() {
 
         if (isOverNormalCursor || isHidden) {
           cursorRef.current.style.opacity = '0'
+          cursorRef.current.style.visibility = 'hidden'
         } else {
           cursorRef.current.style.opacity = '1'
+          cursorRef.current.style.visibility = 'visible'
         }
       }
 
       const now = performance.now()
-      if (now - lastCheckTime > 30 && latestX >= 0 && latestY >= 0) {
+      if (now - lastCheckTime >= 16.6 && latestX >= 0 && latestY >= 0) {
         lastCheckTime = now
         const elUnderPoint = document.elementFromPoint(latestX, latestY) || currentTarget
         if (elUnderPoint) {
@@ -79,6 +81,15 @@ export default function CustomCursor() {
       if (isHidden) {
         isHidden = false
       }
+
+      // 0ms Instant Response: check hover state directly from mouse event target
+      if (e.target) {
+        const hovering = checkInteractive(e.target)
+        if (hovering !== isHoveringInteractive) {
+          isHoveringInteractive = hovering
+          setIsHovering(hovering)
+        }
+      }
     }
 
     const onScroll = () => {
@@ -95,6 +106,7 @@ export default function CustomCursor() {
       isHidden = true
       if (cursorRef.current) {
         cursorRef.current.style.opacity = '0'
+        cursorRef.current.style.visibility = 'hidden'
       }
       setIsHovering(false)
     }
@@ -103,12 +115,14 @@ export default function CustomCursor() {
       isHidden = false
       if (cursorRef.current) {
         cursorRef.current.style.opacity = '1'
+        cursorRef.current.style.visibility = 'visible'
       }
     }
 
     const onFocusIn = (e) => {
       if (checkNormalCursor(e.target) && cursorRef.current) {
         cursorRef.current.style.opacity = '0'
+        cursorRef.current.style.visibility = 'hidden'
       }
     }
 
@@ -166,7 +180,7 @@ export default function CustomCursor() {
       style={{
         transform: 'translate3d(-100px, -100px, 0)',
         opacity: 0,
-        transition: 'opacity 0.08s ease-out',
+        visibility: 'hidden',
       }}
     >
       {/* Night Dive Mode Underwater Flashlight Beam & Spotlight Aura (Subtle reduced halo) */}
