@@ -1,6 +1,6 @@
 /**
- * Geographic Centroids for all PADI Coastal Countries
- * Used for rendering country badges on the 3D globe.
+ * Curated Geographic Centroids for All 115 Verified Diving Countries
+ * Positioned accurately on the country territory.
  */
 export const COUNTRY_CENTROIDS = [
   {
@@ -24,49 +24,14 @@ export const COUNTRY_CENTROIDS = [
     "lat": -25.2744
   },
   {
-    "name": "Austria",
-    "lon": 14.5501,
-    "lat": 47.5162
-  },
-  {
-    "name": "Azerbaijan",
-    "lon": 47.5769,
-    "lat": 40.1431
-  },
-  {
-    "name": "Belgium",
-    "lon": 4.4699,
-    "lat": 50.5039
-  },
-  {
-    "name": "Benin",
-    "lon": 2.3158,
-    "lat": 9.3077
-  },
-  {
-    "name": "Czech Republic",
-    "lon": 15.4730,
-    "lat": 49.8175
-  },
-  {
     "name": "El Salvador",
     "lon": -88.8965,
     "lat": 13.7942
   },
   {
-    "name": "Hungary",
-    "lon": 19.5033,
-    "lat": 47.1625
-  },
-  {
     "name": "Latvia",
     "lon": 24.6032,
     "lat": 56.8796
-  },
-  {
-    "name": "Poland",
-    "lon": 19.1451,
-    "lat": 51.9194
   },
   {
     "name": "Serbia",
@@ -75,8 +40,8 @@ export const COUNTRY_CENTROIDS = [
   },
   {
     "name": "Slovakia",
-    "lon": 19.6990,
-    "lat": 48.6690
+    "lon": 19.699,
+    "lat": 48.669
   },
   {
     "name": "Switzerland",
@@ -242,11 +207,6 @@ export const COUNTRY_CENTROIDS = [
     "name": "French Polynesia",
     "lon": -149.4068,
     "lat": -17.6797
-  },
-  {
-    "name": "Germany",
-    "lon": 10.4515,
-    "lat": 51.1657
   },
   {
     "name": "Gibraltar",
@@ -618,4 +578,4 @@ export const COUNTRY_CENTROIDS = [
     "lon": -16.769,
     "lat": 32.7052
   }
-]
+];

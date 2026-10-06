@@ -16,14 +16,14 @@ const createSitePinSvg = () => {
     <svg width="44" height="52" viewBox="0 0 44 52" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <filter id="badgeShadow" x="-30%" y="-30%" width="160%" height="160%">
-          <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000000" flood-opacity="0.8"/>
-          <feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#00E5FF" flood-opacity="0.55"/>
+          <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.7"/>
+          <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#00E5FF" flood-opacity="0.6"/>
         </filter>
       </defs>
       
       <g transform="translate(8, 6)" filter="url(#badgeShadow)">
         <path d="M14 2C8.477 2 4 6.477 4 12c0 8 10 18 10 18s10-10 10-18c0-5.523-4.477-10-10-10z" fill="#00E5FF" stroke="#ffffff" stroke-width="2"/>
-        <polygon points="14,6.5 16,11 20.5,11.5 17,15 18,19.5 14,17 10,19.5 11,15 7.5,11.5 12,11" fill="#00223D"/>
+        <polygon points="14,6.5 16,11 20.5,11.5 17,15 18,19.5 14,17 10,19.5 11,15 7.5,11.5 12,11" fill="#ffffff"/>
       </g>
     </svg>
   `)
@@ -253,7 +253,6 @@ export default function InteractiveDiveMap({
       return { centerLon, centerLat, targetAltitude, validLocs }
     }
 
-    // Fallback to centroid if zero dive sites in dataset array
     const centroid = COUNTRY_CENTROIDS.find((c) => normalizeCountryKey(c.name) === cKey)
     if (centroid) {
       return {
@@ -452,22 +451,14 @@ export default function InteractiveDiveMap({
         viewer.scene.screenSpaceCameraController.inertiaTranslate = 0.85
         viewer.scene.screenSpaceCameraController.inertiaZoom = 0.8
 
-        // Full camera events: enable Pinch, Wheel, and Drag for unrestricted zooming and rotation
+        // Strict gesture controller: ONLY PINCH ZOOMS. LEFT_DRAG ROTATES GLOBE. NO WHEEL/RIGHT_DRAG ZOOM.
         viewer.scene.screenSpaceCameraController.zoomEventTypes = [
-          Cesium.CameraEventType.RIGHT_DRAG,
-          Cesium.CameraEventType.WHEEL,
           Cesium.CameraEventType.PINCH
         ]
         viewer.scene.screenSpaceCameraController.rotateEventTypes = [
           Cesium.CameraEventType.LEFT_DRAG
         ]
-        viewer.scene.screenSpaceCameraController.tiltEventTypes = [
-          Cesium.CameraEventType.MIDDLE_DRAG,
-          {
-            eventType: Cesium.CameraEventType.LEFT_DRAG,
-            modifier: Cesium.KeyboardEventModifier.CTRL
-          }
-        ]
+        viewer.scene.screenSpaceCameraController.tiltEventTypes = []
 
         // Adaptive SSE for 60fps interaction
         const handleMoveStart = () => {
@@ -589,37 +580,22 @@ export default function InteractiveDiveMap({
             if (popupRef.current) popupRef.current.style.display = 'none'
           }
 
-          // 2. Idle world rotation
-          if (
-            selectedCountryRef.current ||
-            isProgrammaticFlightRef.current ||
-            isUserInteractingRef.current
-          ) {
-            return
-          }
-          if (Date.now() - lastInteractionTimeRef.current > 3500) {
-            viewer.camera.rotate(Cesium.Cartesian3.UNIT_Z, -0.00025)
-          }
-
-          // 3. Camera bounds & initial world-view camera restoration
+          // 2. Camera altitude floor and explicit roll normalization without destination corruption
           if (viewer.camera && viewer.camera.positionCartographic) {
             const carto = viewer.camera.positionCartographic
             if (carto) {
-              // Safety altitude floor
               if (carto.height < 15000) {
                 viewer.camera.position = Cesium.Cartesian3.fromRadians(carto.longitude, carto.latitude, 15000)
               }
-              // High-altitude camera normalization (roll safety)
-              if (carto.height > 2000000) {
-                if (Math.abs(viewer.camera.roll) > 0.01) {
-                  viewer.camera.setView({
-                    orientation: {
-                      heading: viewer.camera.heading,
-                      pitch: viewer.camera.pitch,
-                      roll: 0.0
-                    }
-                  })
-                }
+              if (Math.abs(viewer.camera.roll) > 0.01) {
+                viewer.camera.setView({
+                  destination: Cesium.Cartesian3.fromRadians(carto.longitude, carto.latitude, carto.height),
+                  orientation: {
+                    heading: viewer.camera.heading,
+                    pitch: viewer.camera.pitch,
+                    roll: 0.0
+                  }
+                })
               }
             }
           }
@@ -641,7 +617,7 @@ export default function InteractiveDiveMap({
           }
         } catch {}
 
-        // Initial view setup
+        // Initial view setup (India global overview on mount only)
         viewer.camera.setView({
           destination: Cesium.Cartesian3.fromDegrees(80.0, 15.0, 11500000),
           orientation: {
@@ -651,7 +627,7 @@ export default function InteractiveDiveMap({
           }
         })
 
-        // Add Country Billboard Pins & Labels in a single batched event
+        // Add Country Billboard Pins & Labels for all verified diving countries
         viewer.entities.suspendEvents()
         try {
           COUNTRY_CENTROIDS.forEach((country) => {
@@ -663,25 +639,21 @@ export default function InteractiveDiveMap({
               show: true,
               billboard: {
                 image: createSitePinSvg(),
-                width: 38,
-                height: 46,
+                width: 34,
+                height: 42,
                 verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
                 eyeOffset: new Cesium.Cartesian3(0, 0, -50),
-                scaleByDistance: new Cesium.NearFarScalar(1.0e6, 1.0, 1.8e7, 0.48),
-                translucencyByDistance: new Cesium.NearFarScalar(1.0e6, 1.0, 2.0e7, 0.8)
+                scaleByDistance: new Cesium.NearFarScalar(1.0e6, 0.9, 1.8e7, 0.38)
               },
               label: {
                 text: country.name,
-                font: 'bold 11px Outfit, Inter, system-ui, sans-serif',
+                font: '600 11px Outfit, Inter, system-ui, sans-serif',
                 fillColor: Cesium.Color.WHITE,
-                outlineColor: Cesium.Color.fromCssColorString('#00223D'),
-                outlineWidth: 3,
-                style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+                style: Cesium.LabelStyle.FILL,
                 verticalOrigin: Cesium.VerticalOrigin.TOP,
                 pixelOffset: new Cesium.Cartesian2(0, 4),
-                scaleByDistance: new Cesium.NearFarScalar(1.0e6, 1.0, 1.8e7, 0.5),
-                translucencyByDistance: new Cesium.NearFarScalar(1.0e6, 1.0, 2.0e7, 0.8),
-                distanceDisplayCondition: new Cesium.DistanceDisplayCondition(100000, 20000000)
+                scaleByDistance: new Cesium.NearFarScalar(1.0e6, 0.95, 4.0e6, 0.6),
+                distanceDisplayCondition: new Cesium.DistanceDisplayCondition(50000, 3500000)
               },
               properties: {
                 countryName: country.name,
@@ -889,21 +861,57 @@ export default function InteractiveDiveMap({
           const minDist = currentViewer.scene.screenSpaceCameraController.minimumZoomDistance || 15000
           const maxDist = currentViewer.scene.screenSpaceCameraController.maximumZoomDistance || 25000000
 
-          // Smooth exponential zoom factor based on altitude
-          const zoomFactor = Math.min(Math.max(height * 0.002, 500), 500000)
-          const zoomAmount = e.deltaY * zoomFactor
+          lastInteractionTimeRef.current = Date.now()
 
-          if (zoomAmount < 0) {
-            const maxAllowedZoomIn = Math.max(0, height - minDist)
-            const actualZoom = Math.min(Math.abs(zoomAmount), maxAllowedZoomIn)
-            if (actualZoom > 0) camera.zoomIn(actualZoom)
-          } else if (zoomAmount > 0) {
-            const maxAllowedZoomOut = Math.max(0, maxDist - height)
-            const actualZoom = Math.min(zoomAmount, maxAllowedZoomOut)
-            if (actualZoom > 0) camera.zoomOut(actualZoom)
+          // -----------------------------------------------------------------
+          // 1. PINCH GESTURE ON TOUCHPAD / TRACKPAD: THE ONLY ZOOM GESTURE
+          // Trackpad pinch in / out dispatches wheel events with e.ctrlKey === true.
+          // -----------------------------------------------------------------
+          if (e.ctrlKey) {
+            const zoomFactor = Math.min(Math.max(height * 0.003, 1000), 350000)
+            const zoomAmount = e.deltaY * zoomFactor
+
+            if (zoomAmount < 0) {
+              // Pinch Inward -> Zoom IN
+              const maxAllowedZoomIn = Math.max(0, height - minDist)
+              const actualZoom = Math.min(Math.abs(zoomAmount), maxAllowedZoomIn)
+              if (actualZoom > 0) camera.zoomIn(actualZoom)
+            } else if (zoomAmount > 0) {
+              // Pinch Outward -> Zoom OUT
+              const maxAllowedZoomOut = Math.max(0, maxDist - height)
+              const actualZoom = Math.min(zoomAmount, maxAllowedZoomOut)
+              if (actualZoom > 0) camera.zoomOut(actualZoom)
+            }
+            return
           }
 
-          lastInteractionTimeRef.current = Date.now()
+          // -----------------------------------------------------------------
+          // 2. MOUSE WHEEL: STRICTLY DO NOT ZOOM (PART 18 & PART 20)
+          // -----------------------------------------------------------------
+          const isClassicMouseWheel = Math.abs(e.deltaX) === 0 && Number.isInteger(e.deltaY) && Math.abs(e.deltaY) >= 80
+          if (isClassicMouseWheel) {
+            return
+          }
+
+          // -----------------------------------------------------------------
+          // 3. TOUCHPAD TWO-FINGER SWIPE: ROTATE GLOBE (NO ZOOM ALLOWED)
+          // Finger moves LEFT  -> Globe moves LEFT
+          // Finger moves RIGHT -> Globe moves RIGHT
+          // Finger moves UP    -> Globe moves UP
+          // Finger moves DOWN  -> Globe moves DOWN
+          // -----------------------------------------------------------------
+          const rotateFactor = Math.min(Math.max(height / 5000000000, 0.0003), 0.0025)
+
+          const moveX = e.deltaX
+          const moveY = e.deltaY
+
+          if (Math.abs(moveX) > 0.5) {
+            camera.rotate(Cesium.Cartesian3.UNIT_Z, -moveX * rotateFactor)
+          }
+
+          if (Math.abs(moveY) > 0.5) {
+            camera.rotate(camera.right, moveY * rotateFactor)
+          }
         }
 
         // Two-Finger Touch Pinch-To-Zoom & Pan (Mobile / Tablet)
@@ -1098,14 +1106,13 @@ export default function InteractiveDiveMap({
         }
       }
       idsToRemove.forEach((id) => viewer.entities.removeById(id))
-
-      // B. Keep all 123 persistent country pins visible and highlight active country badge
+      // B. Manage country pins visibility: show active country when selected, or all when in world overview
       COUNTRY_CENTROIDS.forEach((c) => {
         const cKey = normalizeCountryKey(c.name)
         const countryEntity = viewer.entities.getById(`country-${cKey}`)
         if (countryEntity) {
           const isActive = canonicalSelectedCountryKey && cKey === canonicalSelectedCountryKey
-          countryEntity.show = true
+          countryEntity.show = !canonicalSelectedCountryKey || isActive
           if (countryEntity.label) {
             countryEntity.label.fillColor = isActive
               ? Cesium.Color.fromCssColorString('#FFCD00')
@@ -1114,9 +1121,18 @@ export default function InteractiveDiveMap({
         }
       })
 
-      // C. When country is selected, add all validated PADI dive location markers (NO TEXT LABELS)
+      // C. When country is selected, add all validated dive location markers with billboards and labels
       if (canonicalSelectedCountryKey) {
         validLocs.forEach((loc) => {
+          const lat = Number(loc.latitude)
+          const lon = Number(loc.longitude)
+          if (!isFinite(lat) || !isFinite(lon) || lat < -90 || lat > 90 || lon < -180 || lon > 180) {
+            return
+          }
+          if (loc.isActualDiveSite === false || loc.isWaterLocation === false) {
+            return
+          }
+
           const isSel = selLoc && String(selLoc.id) === String(loc.id)
           const isDimmed = hasSelection && !isSel
           const displayName = getLocationDisplayName(loc)
@@ -1127,11 +1143,11 @@ export default function InteractiveDiveMap({
             position: Cesium.Cartesian3.fromDegrees(Number(loc.longitude), Number(loc.latitude)),
             billboard: {
               image: createPadiPinSvg(isSel, isDimmed),
-              width: isSel ? 48 : 38,
-              height: isSel ? 56 : 46,
+              width: isSel ? 46 : 34,
+              height: isSel ? 54 : 42,
               verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
               eyeOffset: new Cesium.Cartesian3(0, 0, isSel ? -250 : -80),
-              scaleByDistance: new Cesium.NearFarScalar(2.0e4, 1.0, 1.2e7, 0.5),
+              scaleByDistance: new Cesium.NearFarScalar(2.0e4, 1.0, 1.2e7, 0.45),
               translucencyByDistance: new Cesium.NearFarScalar(2.0e4, 1.0, 1.5e7, 0.85)
             },
             properties: {
@@ -1200,7 +1216,7 @@ export default function InteractiveDiveMap({
             lastFramedCountryKeyRef.current = countryKey
           }
         }
-      } else {
+      } else if (countryChanged) {
         flyToGlobalOverview()
         lastFramedCountryKeyRef.current = null
       }
@@ -1224,12 +1240,12 @@ export default function InteractiveDiveMap({
       if (entity) {
         const isSel = selectedLocation && String(selectedLocation.id) === String(loc.id)
         const isDimmed = hasSelection && !isSel
-        if (entity.billboard) {
-          entity.billboard.image = createPadiPinSvg(isSel, isDimmed)
-          entity.billboard.width = isSel ? 48 : 38
-          entity.billboard.height = isSel ? 56 : 46
-          entity.billboard.eyeOffset = new window.Cesium.Cartesian3(0, 0, isSel ? -250 : -80)
-        }
+          if (entity.billboard) {
+            entity.billboard.image = createPadiPinSvg(isSel, isDimmed)
+            entity.billboard.width = isSel ? 46 : 34
+            entity.billboard.height = isSel ? 54 : 42
+            entity.billboard.eyeOffset = new window.Cesium.Cartesian3(0, 0, isSel ? -250 : -80)
+          }
       }
     })
 
