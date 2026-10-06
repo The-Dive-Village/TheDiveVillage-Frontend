@@ -7,17 +7,10 @@ import { useLocation } from 'react-router'
 import underwaterAudio from '../assets/Underwater.mp3'
 import { setHeroVideoReady, getOrCreateHeroVideoElement, setHeroWebGLReady, HERO_VIDEO_SRC } from '../utils/mediaReadyManager'
 
-<<<<<<< HEAD
 const videoFile = HERO_VIDEO_SRC || 'https://res.cloudinary.com/qvbunv8y/video/upload/v1790248244/dive-village/hero-360/cj9jvkh5j6sozf2fhf0x.mp4'
 const bookFile = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1790247900/dive-village/hero-360/axaamnvtycndb5dabkow.mp4'
 const turtleVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1790243508/dive-village/hero-360/bpjuqk54webpdtghzbxk.mp4'
 const nightDiveVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1790242027/dive-village/hero-360/duskamhque0kugdulev7.mp4'
-=======
-const videoFile = HERO_VIDEO_SRC || clownfishVideo
-const bookFile = 'https://res.cloudinary.com/qvbunv8y/video/upload/v2/dive-village/hero-360/duskamhque0kugdulev7.mp4?v=2' || barracudaVideo
-const turtleVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/v2/dive-village/gallery-videos/turtle_anna_mp4.mp4?v=2' || turtleBgVideo
-const nightDiveVideo = nightDiveVideoLocal
->>>>>>> 50701669b12f56d273c23aa619d8aa4d1ac2cfb1
 
 function getOrCreateDomVideoContainer() {
   let container = document.getElementById('hero-360-video-dom-root')
@@ -308,12 +301,12 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
             targetOpacity3.current = 0
           } else if (isElementInView(galleryEl) || isElementInView(testimonialsEl)) {
             // 3. After Airport to Airport (Gallery & Testimonials) -> Barracuda
-            targetOpacity2.current = 1
-            targetOpacity3.current = 0
-          } else if (isElementInView(customizeSectionEl) || isElementInView(diveSectionEl) || isElementInView(airportEl)) {
-            // 2. From after Customize Your Dive panel up to the end of Airport to Airport -> Turtle
             targetOpacity2.current = 0
             targetOpacity3.current = 1
+          } else if (isElementInView(customizeSectionEl) || isElementInView(diveSectionEl) || isElementInView(airportEl)) {
+            // 2. From after Customize Your Dive panel up to the end of Airport to Airport -> Turtle
+            targetOpacity2.current = 1
+            targetOpacity3.current = 0
           } else {
             // 1. Beginning until Customize Your Dive -> Clownfish
             targetOpacity2.current = 0
@@ -452,29 +445,20 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
       if (!isMobile && meshRef2.current && meshRef2.current.material && isHome) {
         // Video 2: Turtle orientation
         meshRef2.current.rotation.y = meshRef.current.rotation.y + (Math.PI * 1.45)
-        meshRef2.current.rotation.x = meshRef.current.rotation.x - (Math.PI / 3)
+        meshRef2.current.rotation.x = meshRef.current.rotation.x - (Math.PI / 7)
         meshRef2.current.material.opacity += (targetOpacity2.current - meshRef2.current.material.opacity) * delta * 2.5
       }
 
       if (!isMobile && meshRef3.current && meshRef3.current.material && isHome) {
-<<<<<<< HEAD
         // Video 3: Barracuda orientation
         meshRef3.current.rotation.y = meshRef.current.rotation.y - (Math.PI / 2.5)
         meshRef3.current.rotation.x = meshRef.current.rotation.x - (Math.PI / 6)
-=======
-        meshRef3.current.rotation.y = meshRef.current.rotation.y + (Math.PI * 1.45)
-        meshRef3.current.rotation.x = meshRef.current.rotation.x - (Math.PI / 7)
->>>>>>> 50701669b12f56d273c23aa619d8aa4d1ac2cfb1
         meshRef3.current.material.opacity += (targetOpacity3.current - meshRef3.current.material.opacity) * delta * 2.5
       }
 
       if (camera && isHome) {
         const baseFov = 85
-<<<<<<< HEAD
-        const targetFov = baseFov + (targetOpacity2.current * 15) // Zoom out when Turtle plays (Video 2)
-=======
-        const targetFov = baseFov + (targetOpacity3.current * 30) // Zoom out wider & focus lower when Turtle plays
->>>>>>> 50701669b12f56d273c23aa619d8aa4d1ac2cfb1
+        const targetFov = baseFov + (targetOpacity2.current * 30) // Zoom out wider & focus lower when Turtle plays (Video 2)
         if (Math.abs(camera.fov - targetFov) > 0.1) {
           camera.fov += (targetFov - camera.fov) * delta * 2.5
           camera.updateProjectionMatrix()
