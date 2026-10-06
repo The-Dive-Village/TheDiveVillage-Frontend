@@ -13,7 +13,7 @@ import jellyfishVideoLocal from '../assets/jelly fish.mp4'
 
 const nightDiveVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1790845672/dive-village/ui-videos/night_dive_mp4.mp4'
 const divingVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1790244035/dive-village/ui-videos/diving_1_mp4.mp4'
-const aboutVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1790244047/dive-village/ui-videos/about_mp4.mp4'
+const aboutVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v2/dive-village/ui-videos/about_mp4.mp4?v=2' || aboutVidLocal
 const jellyfishVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1790244064/dive-village/ui-videos/jelly_fish_mp4.mp4'
 import useNightDive from '../hooks/useNightDive'
 

@@ -4,7 +4,9 @@
  * with the application Preloader to guarantee a zero-gap, instant handoff.
  */
 
-export const HERO_VIDEO_SRC = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1790248244/dive-village/hero-360/cj9jvkh5j6sozf2fhf0x.mp4'
+import clownfishVideo from '../assets/Media/Background/ClownFish.mp4'
+
+export const HERO_VIDEO_SRC = 'https://res.cloudinary.com/qvbunv8y/video/upload/v2/dive-village/hero-360/cj9jvkh5j6sozf2fhf0x.mp4?v=2' || clownfishVideo
 
 let isHeroVideoReady = false
 let isHeroWebGLReady = false
@@ -72,7 +74,7 @@ export function getIsHeroFullyReady() {
  * Gets or initializes the singleton hero video DOM element.
  * Eagerly buffers the 3840x1920 stream from millisecond zero.
  */
-export function getOrCreateHeroVideoElement(src = HERO_VIDEO_SRC, playbackRate = 0.45) {
+export function getOrCreateHeroVideoElement(src = HERO_VIDEO_SRC, playbackRate = 0.5) {
   if (typeof window === 'undefined') return null
 
   if (warmHeroVideo && warmHeroVideo.src === src) {
@@ -127,7 +129,7 @@ export function getOrCreateHeroVideoElement(src = HERO_VIDEO_SRC, playbackRate =
   const handleNetworkStall = () => {
     // If waiting or stalled, attempt resume without resetting or recreating the video
     if (video.paused && video.readyState >= 2) {
-      video.play().catch(() => {})
+      video.play().catch(() => { })
     }
   }
 

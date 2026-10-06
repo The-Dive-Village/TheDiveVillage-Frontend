@@ -76,6 +76,36 @@ export default function ProductDetail() {
   const [floatingImage, setFloatingImage] = useState(null)
   const [floatingZoom, setFloatingZoom] = useState(1)
 
+  const thumbsRef = useRef(null)
+  const [canScrollUp, setCanScrollUp] = useState(false)
+  const [canScrollDown, setCanScrollDown] = useState(false)
+
+  const checkThumbScroll = () => {
+    if (!thumbsRef.current) return
+    const { scrollTop, scrollHeight, clientHeight } = thumbsRef.current
+    setCanScrollUp(scrollTop > 5)
+    setCanScrollDown(scrollTop + clientHeight < scrollHeight - 5)
+  }
+
+  const scrollThumbs = (direction) => {
+    triggerHaptic(6)
+    if (thumbsRef.current) {
+      const scrollAmount = direction === 'up' ? -180 : 180
+      thumbsRef.current.scrollBy({ top: scrollAmount, behavior: 'smooth' })
+    }
+  }
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      checkThumbScroll()
+    }, 150)
+    window.addEventListener('resize', checkThumbScroll)
+    return () => {
+      clearTimeout(timer)
+      window.removeEventListener('resize', checkThumbScroll)
+    }
+  }, [mediaItems, activeMedia])
+
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') setFloatingImage(null)
@@ -245,20 +275,8 @@ export default function ProductDetail() {
           )}
         </AnimatePresence>
 
-        {/* Back Button & Breadcrumb Navigation Header */}
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
-          <button
-            type="button"
-            onClick={() => navigate('/shop')}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-navy/5 text-navy hover:bg-[#FFCD00] hover:text-[#001e3d] hover:border-[#FFCD00] text-xs sm:text-sm font-bold transition-all duration-200 cursor-pointer border border-navy/15 shadow-sm active:scale-95 shrink-0"
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M19 12H5" />
-              <path d="m12 19-7-7 7-7" />
-            </svg>
-            <span>Back to Store</span>
-          </button>
-
+        {/* Breadcrumb Navigation Header */}
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
           {/* Breadcrumb Navigation */}
           <nav className="flex items-center gap-2 text-xs font-bold text-navy/60 overflow-x-auto whitespace-nowrap">
             <Link to="/" className="hover:text-navy transition">Home</Link>
@@ -277,44 +295,109 @@ export default function ProductDetail() {
           {/* Left Column: Integrated Multi-Media Showcase (Photos + Video + 3D Model) */}
           <div className="lg:col-span-6 flex flex-col gap-6">
             <div className="flex gap-4 flex-col-reverse sm:flex-row items-start">
-              {/* Thumbnail Selectors */}
-              <div className="flex sm:flex-col gap-3 overflow-x-auto sm:overflow-visible shrink-0 max-w-full pb-2 sm:pb-0 scrollbar-none">
-                {mediaItems.map((item, i) => (
-                  <div key={item.id || i} className="flex flex-col items-center gap-1 shrink-0">
+              {/* Thumbnail Selectors with Smooth Scroll & Up/Down Arrow Controls */}
+              <div className="relative flex flex-col items-center shrink-0 w-full sm:w-auto h-auto sm:h-[600px] lg:h-[660px]">
+                {/* Desktop Top Arrow Button */}
+                {canScrollUp && (
+                  <button
+                    type="button"
+                    onClick={() => scrollThumbs('up')}
+                    aria-label="Scroll up thumbnails"
+                    title="Scroll up"
+                    className="hidden sm:flex absolute -top-4.5 z-30 w-8 h-8 rounded-full bg-navy text-white shadow-lg items-center justify-center hover:bg-[#FFCD00] hover:text-[#001e3d] transition-all duration-200 cursor-pointer active:scale-90 border border-white/20 animate-pulse"
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="m18 15-6-6-6 6"/>
+                    </svg>
+                  </button>
+                )}
+
+                {/* Top Subtle Gradient Fade when scrollable up */}
+                {canScrollUp && (
+                  <div className="hidden sm:block absolute top-0 left-0 right-0 h-6 bg-gradient-to-b from-[#FAFAFA] to-transparent z-10 pointer-events-none rounded-t-xl" />
+                )}
+
+                {/* Thumbnails Container */}
+                <div
+                  ref={thumbsRef}
+                  onScroll={checkThumbScroll}
+                  className="flex sm:flex-col gap-3 overflow-x-auto sm:overflow-y-auto shrink-0 max-w-full sm:max-w-none w-full sm:w-auto h-full max-h-full pb-2 sm:pb-2 scrollbar-none py-1 scroll-smooth"
+                >
+                  {/* Back Arrow Button */}
+                  <div className="flex flex-col items-center gap-1 shrink-0">
                     <button
-                      onClick={() => {
-                        triggerHaptic(8)
-                        setActiveMedia(item)
-                      }}
-                      className={`flex-shrink-0 w-16 h-20 sm:w-18 sm:h-22 rounded-2xl overflow-hidden border-2 transition relative cursor-pointer ${
-                        activeMedia?.id === item.id || activeMedia?.src === item.src
-                          ? 'border-navy shadow-md ring-2 ring-navy/20'
-                          : 'border-transparent hover:border-navy/30 bg-[#F0F2F5]'
-                      }`}
+                      type="button"
+                      onClick={() => navigate('/shop')}
+                      aria-label="Back to store"
+                      title="Back to store"
+                      className="flex-shrink-0 w-16 h-16 sm:w-18 sm:h-18 rounded-2xl bg-navy/5 text-navy hover:bg-[#FFCD00] hover:text-[#001e3d] hover:border-[#FFCD00] border-2 border-navy/15 shadow-sm flex items-center justify-center transition-all duration-200 cursor-pointer active:scale-95"
                     >
-                      {item.type === 'image' ? (
-                        <img src={item.src} alt={item.label} className="w-full h-full object-cover bg-white" />
-                      ) : item.type === 'video' ? (
-                        <div className="relative w-full h-full bg-black flex items-center justify-center">
-                          <video src={item.src} className="w-full h-full object-cover opacity-70 pointer-events-none" muted />
-                          <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-                            <span className="w-6 h-6 rounded-full bg-accent text-navy flex items-center justify-center text-xs font-bold shadow-sm">
-                              ▶
-                            </span>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="relative w-full h-full bg-[#001E36] flex flex-col items-center justify-center text-[#FFCD00] p-1 border border-[#FFCD00]/30 shadow-inner">
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" /><polyline points="3.27 6.96 12 12.01 20.73 6.96" /><line x1="12" y1="22.08" x2="12" y2="12" /></svg>
-                          <span className="text-[8px] font-bold tracking-wider uppercase text-white mt-1">3D MODEL</span>
-                        </div>
-                      )}
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M19 12H5" />
+                        <path d="m12 19-7-7 7-7" />
+                      </svg>
                     </button>
-                    <span className="text-[10px] font-bold text-navy/80 tracking-tight text-center max-w-[72px] leading-tight">
-                      {item.label}
-                    </span>
+                    <span className="text-[10px] font-bold text-navy/70 tracking-tight text-center">Back</span>
                   </div>
-                ))}
+
+                  {/* Media Item Thumbnails */}
+                  {mediaItems.map((item, i) => (
+                    <div key={item.id || i} className="flex flex-col items-center gap-1 shrink-0">
+                      <button
+                        onClick={() => {
+                          triggerHaptic(8)
+                          setActiveMedia(item)
+                        }}
+                        className={`flex-shrink-0 w-16 h-20 sm:w-18 sm:h-22 rounded-2xl overflow-hidden border-2 transition relative cursor-pointer ${
+                          activeMedia?.id === item.id || activeMedia?.src === item.src
+                            ? 'border-navy shadow-md ring-2 ring-navy/20'
+                            : 'border-transparent hover:border-navy/30 bg-[#F0F2F5]'
+                        }`}
+                      >
+                        {item.type === 'image' ? (
+                          <img src={item.src} alt={item.label} className="w-full h-full object-cover bg-white" />
+                        ) : item.type === 'video' ? (
+                          <div className="relative w-full h-full bg-black flex items-center justify-center">
+                            <video src={item.src} className="w-full h-full object-cover opacity-70 pointer-events-none" muted />
+                            <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                              <span className="w-6 h-6 rounded-full bg-accent text-navy flex items-center justify-center text-xs font-bold shadow-sm">
+                                ▶
+                              </span>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="relative w-full h-full bg-[#001E36] flex flex-col items-center justify-center text-[#FFCD00] p-1 border border-[#FFCD00]/30 shadow-inner">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" /><polyline points="3.27 6.96 12 12.01 20.73 6.96" /><line x1="12" y1="22.08" x2="12" y2="12" /></svg>
+                            <span className="text-[8px] font-bold tracking-wider uppercase text-white mt-1">3D MODEL</span>
+                          </div>
+                        )}
+                      </button>
+                      <span className="text-[10px] font-bold text-navy/80 tracking-tight text-center max-w-[72px] leading-tight">
+                        {item.label}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Bottom Subtle Gradient Fade when scrollable down */}
+                {canScrollDown && (
+                  <div className="hidden sm:block absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-[#FAFAFA] to-transparent z-10 pointer-events-none rounded-b-xl" />
+                )}
+
+                {/* Desktop Bottom Arrow Button */}
+                {canScrollDown && (
+                  <button
+                    type="button"
+                    onClick={() => scrollThumbs('down')}
+                    aria-label="Scroll down thumbnails"
+                    title="Scroll down for more views"
+                    className="hidden sm:flex absolute -bottom-4.5 z-30 w-8 h-8 rounded-full bg-navy text-white shadow-lg items-center justify-center hover:bg-[#FFCD00] hover:text-[#001e3d] transition-all duration-200 cursor-pointer active:scale-90 border border-white/20 animate-bounce"
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="m6 9 6 6 6-6"/>
+                    </svg>
+                  </button>
+                )}
               </div>
 
               {/* Main Product Card Media Display with Touch Swipe & Zoom Support */}
@@ -322,7 +405,7 @@ export default function ProductDetail() {
                 <div 
                   onTouchStart={activeMedia?.type !== 'glb' ? handleMediaTouchStart : undefined}
                   onTouchEnd={activeMedia?.type !== 'glb' ? handleMediaTouchEnd : undefined}
-                  className="w-full rounded-[28px] overflow-hidden bg-white border border-navy/10 aspect-square sm:aspect-[4/4] max-h-[460px] relative shadow-card group"
+                  className="w-full rounded-[28px] overflow-hidden bg-white border border-navy/10 h-[480px] xs:h-[520px] sm:h-[600px] lg:h-[660px] relative shadow-card group"
                 >
                   {activeMedia?.type === 'glb' ? (
                     <Product3DViewer src={activeMedia.src} alt={product.title} productId={product.id} />
