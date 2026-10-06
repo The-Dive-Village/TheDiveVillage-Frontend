@@ -13,8 +13,8 @@ import underwaterAudio from '../assets/Underwater.mp3'
 import { setHeroVideoReady, getOrCreateHeroVideoElement, setHeroWebGLReady, HERO_VIDEO_SRC } from '../utils/mediaReadyManager'
 
 const videoFile = HERO_VIDEO_SRC || clownfishVideo
-const bookFile = barracudaVideo
-const turtleVideo = turtleBgVideo
+const bookFile = 'https://res.cloudinary.com/qvbunv8y/video/upload/v2/dive-village/hero-360/duskamhque0kugdulev7.mp4?v=2' || barracudaVideo
+const turtleVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/v2/dive-village/gallery-videos/turtle_anna_mp4.mp4?v=2' || turtleBgVideo
 const nightDiveVideo = nightDiveVideoLocal
 
 function getOrCreateDomVideoContainer() {
@@ -234,8 +234,8 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
-  // Light mode on Home: priority singleton. Dark mode (Night Dive): dynamic local 360 video element (1.0x).
-  const primaryPlaybackRate = 1.0
+  // Light mode on Home: priority singleton. Dark mode (Night Dive): dynamic local 360 video element (0.5x).
+  const primaryPlaybackRate = 0.5
   const isHeroSingleton = !isNightDive && isHome
   const { texture, hasNewFrameRef: hasNewFrame1, lastTimeRef: lastTime1 } = useDirectVideoTexture(!isNightDive ? videoFile : null, primaryPlaybackRate, isHeroSingleton)
   // Secondary videos are strictly lazy-loaded only when user scrolls or needs them ON DESKTOP
@@ -275,25 +275,35 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
             setLoadSecondary(true)
           }
 
-          const triggerThreshold = window.innerHeight * 0.8
-          const isElementInView = (el) => el && el.getBoundingClientRect().top < triggerThreshold
+          const triggerThreshold = window.innerHeight * 0.65
+          const isElementInView = (el) => {
+            if (!el) return false
+            const rect = el.getBoundingClientRect()
+            return rect.top < triggerThreshold && rect.bottom > 0
+          }
 
+          const customizeSectionEl = document.getElementById('customize-dive-section')
           const diveSectionEl = document.getElementById('who-can-dive-section')
           const airportEl = document.getElementById('airport-to-airport-section')
           const galleryEl = document.getElementById('gallery-section') || document.getElementById('gallery')
           const testimonialsEl = document.getElementById('testimonials-section')
+          const customerReviewsEl = document.getElementById('customer-reviews')
           const closingCtaEl = document.getElementById('closing-cta-section')
 
-          if (isElementInView(closingCtaEl)) {
+          if (isElementInView(customerReviewsEl) || isElementInView(closingCtaEl)) {
+            // 4. Lastly (Review Section & Closing CTA) -> Clownfish
             targetOpacity2.current = 0
             targetOpacity3.current = 0
           } else if (isElementInView(galleryEl) || isElementInView(testimonialsEl)) {
-            targetOpacity2.current = 0
-            targetOpacity3.current = 1
-          } else if (isElementInView(diveSectionEl) || isElementInView(airportEl)) {
+            // 3. After Airport to Airport (Gallery & Testimonials) -> Barracuda
             targetOpacity2.current = 1
             targetOpacity3.current = 0
+          } else if (isElementInView(customizeSectionEl) || isElementInView(diveSectionEl) || isElementInView(airportEl)) {
+            // 2. From after Customize Your Dive panel up to the end of Airport to Airport -> Turtle
+            targetOpacity2.current = 0
+            targetOpacity3.current = 1
           } else {
+            // 1. Beginning until Customize Your Dive -> Clownfish
             targetOpacity2.current = 0
             targetOpacity3.current = 0
           }
@@ -435,13 +445,13 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
 
       if (!isMobile && meshRef3.current && meshRef3.current.material && isHome) {
         meshRef3.current.rotation.y = meshRef.current.rotation.y + (Math.PI * 1.45)
-        meshRef3.current.rotation.x = meshRef.current.rotation.x - (Math.PI / 3)
+        meshRef3.current.rotation.x = meshRef.current.rotation.x - (Math.PI / 7)
         meshRef3.current.material.opacity += (targetOpacity3.current - meshRef3.current.material.opacity) * delta * 2.5
       }
 
       if (camera && isHome) {
         const baseFov = 85
-        const targetFov = baseFov + (targetOpacity3.current * 15) // Zoom out when Turtle plays
+        const targetFov = baseFov + (targetOpacity3.current * 30) // Zoom out wider & focus lower when Turtle plays
         if (Math.abs(camera.fov - targetFov) > 0.1) {
           camera.fov += (targetFov - camera.fov) * delta * 2.5
           camera.updateProjectionMatrix()
