@@ -13,7 +13,7 @@ import underwaterAudio from '../assets/Audio.mp3'
 import { setHeroVideoReady, getOrCreateHeroVideoElement, setHeroWebGLReady, HERO_VIDEO_SRC } from '../utils/mediaReadyManager'
 
 const videoFile = HERO_VIDEO_SRC || clownfishVideo
-const bookFile = 'https://res.cloudinary.com/qvbunv8y/video/upload/v2/dive-village/hero-360/duskamhque0kugdulev7.mp4?v=2' || barracudaVideo
+const bookFile = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791381034/dive-village/hero-360/baracuda_mp4.mp4' || barracudaVideo
 const turtleVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/v2/dive-village/gallery-videos/turtle_anna_mp4.mp4?v=2' || turtleBgVideo
 const nightDiveVideo = nightDiveVideoLocal
 
