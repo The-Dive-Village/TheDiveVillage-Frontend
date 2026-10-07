@@ -7,8 +7,10 @@ import { useLocation } from 'react-router'
 import underwaterAudio from '../assets/Underwater.mp3'
 import { setHeroVideoReady, getOrCreateHeroVideoElement, setHeroWebGLReady, HERO_VIDEO_SRC } from '../utils/mediaReadyManager'
 
+import barracudaVideo from '../assets/Media/Background/baracuda.mp4'
+
 const videoFile = HERO_VIDEO_SRC || 'https://res.cloudinary.com/qvbunv8y/video/upload/v1790248244/dive-village/hero-360/cj9jvkh5j6sozf2fhf0x.mp4'
-const bookFile = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1790247900/dive-village/hero-360/axaamnvtycndb5dabkow.mp4'
+const barracudaVideoFile = barracudaVideo
 const turtleVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1790243508/dive-village/hero-360/bpjuqk54webpdtghzbxk.mp4'
 const nightDiveVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1790242027/dive-village/hero-360/duskamhque0kugdulev7.mp4'
 
@@ -268,7 +270,7 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
   const isHeroSingleton = !isNightDive && isHome
   const { texture, hasNewFrameRef: hasNewFrame1, lastTimeRef: lastTime1 } = useDirectVideoTexture(!isNightDive ? (videoSrc || videoFile) : null, primaryPlaybackRate, isHeroSingleton)
   // Secondary videos are strictly lazy-loaded only when user scrolls or needs them ON DESKTOP
-  const { texture: texture2, hasNewFrameRef: hasNewFrame2, lastTimeRef: lastTime2 } = useDirectVideoTexture(!isMobile && isHome && !isNightDive && loadSecondary ? bookFile : null, 0.5, false)
+  const { texture: texture2, hasNewFrameRef: hasNewFrame2, lastTimeRef: lastTime2 } = useDirectVideoTexture(!isMobile && isHome && !isNightDive && loadSecondary ? barracudaVideoFile : null, 0.5, false)
   const { texture: texture3, hasNewFrameRef: hasNewFrame3, lastTimeRef: lastTime3 } = useDirectVideoTexture(!isMobile && isHome && !isNightDive && loadSecondary ? turtleVideo : null, 0.5, false)
 
   // Flip turtle video texture horizontally so it displays correctly on the sphere
@@ -671,7 +673,7 @@ export default function VideoSphereBackground() {
   const isAbout = location.pathname === '/about'
   const isSpherePage = location.pathname === '/' || isAbout
   const shouldRenderCanvas = isVisible && isSpherePage && !isNightDive
-  const currentVideo = isNightDive ? nightDiveVideo : (isAbout ? bookFile : videoFile)
+  const currentVideo = isNightDive ? nightDiveVideo : (isAbout ? barracudaVideoFile : videoFile)
 
   const isHiddenJoystickPath =
     location.pathname.startsWith('/gallery') ||
