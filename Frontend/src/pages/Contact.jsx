@@ -8,12 +8,14 @@ const compiledNightDiveVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload
 const bookVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/v2/dive-village/hero-360/duskamhque0kugdulev7.mp4?v=2'
 const divingVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1790244035/dive-village/ui-videos/diving_1_mp4.mp4'
 import useNightDive from '../hooks/useNightDive'
+import { useVideoPlaybackRate } from '../hooks/useVideoPlaybackRate'
 import SEOHead from '../components/SEOHead'
 import MerchBannerCTA from '../components/MerchBannerCTA'
 import api from '../services/api'
 
 export default function Contact() {
   const isNightDive = useNightDive()
+  const bgVideoRef = useVideoPlaybackRate(0.7)
   const [searchParams] = useSearchParams()
   const location = useLocation()
 
@@ -119,13 +121,13 @@ export default function Contact() {
           }}
         >
           <video
+            ref={bgVideoRef}
             key={isNightDive ? 'night-compiled' : 'day-book'}
             src={isNightDive ? compiledNightDiveVideo : bookVideo}
             autoPlay
             loop
             muted
             playsInline
-            onPlay={(e) => { e.currentTarget.playbackRate = 0.7 }}
             className="w-full h-full object-cover scale-135 sm:scale-145 lg:scale-155 origin-center transition-all duration-700"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-[#001428]/65 via-[#001428]/25 to-transparent pointer-events-none" />

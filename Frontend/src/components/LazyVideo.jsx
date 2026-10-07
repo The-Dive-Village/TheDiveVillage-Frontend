@@ -9,12 +9,49 @@ export default function LazyVideo({
   muted = true,
   playsInline = true,
   controls = false,
+  playbackRate,
   ...props
 }) {
   const videoRef = useRef(null)
   const containerRef = useRef(null)
   const [isInView, setIsInView] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)
+
+  // Enforce playbackRate if specified
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video || playbackRate === undefined) return
+
+    const applyRate = () => {
+      try {
+        video.defaultPlaybackRate = playbackRate
+        if (video.playbackRate !== playbackRate) {
+          video.playbackRate = playbackRate
+        }
+      } catch (e) {}
+    }
+
+    applyRate()
+
+    const events = [
+      'loadstart',
+      'loadedmetadata',
+      'loadeddata',
+      'canplay',
+      'canplaythrough',
+      'play',
+      'playing',
+      'ratechange',
+      'timeupdate',
+      'seeking',
+      'seeked'
+    ]
+
+    events.forEach((evt) => video.addEventListener(evt, applyRate))
+    return () => {
+      events.forEach((evt) => video.removeEventListener(evt, applyRate))
+    }
+  }, [playbackRate, isInView, src])
 
   // Reset loaded state whenever src changes
   useEffect(() => {

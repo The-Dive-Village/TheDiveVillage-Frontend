@@ -23,6 +23,7 @@ import PhoneInput from 'react-phone-number-input'
 const turtleAnnaVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1790243911/dive-village/gallery-videos/turtle_anna_mp4.mp4'
 const compiledNightDiveVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1790845672/dive-village/ui-videos/night_dive_mp4.mp4'
 import useNightDive from '../hooks/useNightDive'
+import { useVideoPlaybackRate } from '../hooks/useVideoPlaybackRate'
 
 // Direct Activity / Contact-Only Experiences (no course selection, skip directly to Stage 4)
 export const DIRECT_ACTIVITY_EXPERIENCES = new Set([
@@ -54,6 +55,7 @@ export const PROGRAMS_CATALOG = COURSE_CATALOG
 
 export default function BookUs() {
   const isNightDive = useNightDive()
+  const bgVideoRef = useVideoPlaybackRate(0.7)
   const [searchParams] = useSearchParams()
   const initialProgram = searchParams.get('program') || ''
 
@@ -589,13 +591,13 @@ export default function BookUs() {
           }}
         >
           <video
+            ref={bgVideoRef}
             key={isNightDive ? 'night-compiled' : 'day-turtle'}
             src={isNightDive ? compiledNightDiveVideo : turtleAnnaVideo}
             autoPlay
             loop
             muted
             playsInline
-            onPlay={(e) => { e.currentTarget.playbackRate = 0.7 }}
             className="w-full h-full object-cover scale-110 origin-center transition-all duration-700"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-[#001428]/65 via-[#001428]/25 to-transparent pointer-events-none" />

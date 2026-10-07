@@ -17,7 +17,7 @@ export default function GalleryPreview() {
 
   const goToGallery = () => navigate('/gallery')
 
-  // Auto scroll from left to right using smooth requestAnimationFrame only when visible
+  // Auto scroll from right to left using smooth requestAnimationFrame only when visible
   useEffect(() => {
     let animId
     let isVisible = false
@@ -55,9 +55,9 @@ export default function GalleryPreview() {
       lastTime = currentTime
 
       if (!isDragging.current && !isHovered && scrollContainerRef.current) {
-        // Shift smoothly at ~60px/s
-        scrollContainerRef.current.scrollLeft -= 60 * delta
-        if (scrollContainerRef.current.scrollLeft <= 5) {
+        // Shift smoothly at ~60px/s from right to left
+        scrollContainerRef.current.scrollLeft += 60 * delta
+        if (scrollContainerRef.current.scrollLeft >= cachedThirdWidth * 2) {
           scrollContainerRef.current.scrollLeft = cachedThirdWidth
         }
       }

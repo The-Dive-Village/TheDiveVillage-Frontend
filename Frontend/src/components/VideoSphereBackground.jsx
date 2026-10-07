@@ -60,6 +60,7 @@ function useDirectVideoTexture(src, playbackRate = 0.5, priority = false) {
       video.loop = true
       video.autoplay = true
       video.preload = 'auto'
+      video.defaultPlaybackRate = playbackRate
       video.playbackRate = playbackRate
       domContainer.appendChild(video)
     }
@@ -68,11 +69,33 @@ function useDirectVideoTexture(src, playbackRate = 0.5, priority = false) {
 
     const applyPlaybackRate = () => {
       try {
-        if (video.readyState >= 1) {
-          video.playbackRate = playbackRate
+        if (video) {
+          video.defaultPlaybackRate = playbackRate
+          if (video.playbackRate !== playbackRate) {
+            video.playbackRate = playbackRate
+          }
         }
       } catch (e) {}
     }
+
+    const rateEvents = [
+      'loadstart',
+      'loadedmetadata',
+      'loadeddata',
+      'canplay',
+      'canplaythrough',
+      'playing',
+      'play',
+      'ratechange',
+      'timeupdate',
+      'seeking',
+      'seeked'
+    ]
+
+    rateEvents.forEach((evt) => {
+      video.addEventListener(evt, applyPlaybackRate)
+    })
+    applyPlaybackRate()
 
     vidTexture = new THREE.VideoTexture(video)
     vidTexture.colorSpace = THREE.SRGBColorSpace
@@ -189,6 +212,9 @@ function useDirectVideoTexture(src, playbackRate = 0.5, priority = false) {
       mediaEvents.forEach((evt) => {
         video.removeEventListener(evt, handleEvent)
       })
+      rateEvents.forEach((evt) => {
+        video.removeEventListener(evt, applyPlaybackRate)
+      })
       if (!priority) {
         video.pause()
         video.removeAttribute('src')
@@ -242,20 +268,18 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
   const isHeroSingleton = !isNightDive && isHome
   const { texture, hasNewFrameRef: hasNewFrame1, lastTimeRef: lastTime1 } = useDirectVideoTexture(!isNightDive ? (videoSrc || videoFile) : null, primaryPlaybackRate, isHeroSingleton)
   // Secondary videos are strictly lazy-loaded only when user scrolls or needs them ON DESKTOP
-  // Video 2: Turtle (The Ocean Welcomes All -> Airport to Airport)
-  const { texture: texture2, hasNewFrameRef: hasNewFrame2, lastTimeRef: lastTime2 } = useDirectVideoTexture(!isMobile && isHome && !isNightDive && loadSecondary ? turtleVideo : null, 0.5, false)
-  // Video 3: Barracuda (Dive Gallery -> Testimonials / What Our Divers Say)
-  const { texture: texture3, hasNewFrameRef: hasNewFrame3, lastTimeRef: lastTime3 } = useDirectVideoTexture(!isMobile && isHome && !isNightDive && loadSecondary ? bookFile : null, 0.5, false)
+  const { texture: texture2, hasNewFrameRef: hasNewFrame2, lastTimeRef: lastTime2 } = useDirectVideoTexture(!isMobile && isHome && !isNightDive && loadSecondary ? bookFile : null, 0.5, false)
+  const { texture: texture3, hasNewFrameRef: hasNewFrame3, lastTimeRef: lastTime3 } = useDirectVideoTexture(!isMobile && isHome && !isNightDive && loadSecondary ? turtleVideo : null, 0.5, false)
 
   // Flip turtle video texture horizontally so it displays correctly on the sphere
   useEffect(() => {
-    if (texture2) {
-      texture2.wrapS = THREE.RepeatWrapping
-      texture2.repeat.x = -1
-      texture2.offset.x = 1
-      texture2.needsUpdate = true
+    if (texture3) {
+      texture3.wrapS = THREE.RepeatWrapping
+      texture3.repeat.x = -1
+      texture3.offset.x = 1
+      texture3.needsUpdate = true
     }
-  }, [texture2])
+  }, [texture3])
 
   useEffect(() => {
     let scrollRafId = null
@@ -296,19 +320,19 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
           const closingCtaEl = document.getElementById('closing-cta-section')
 
           if (isElementInView(customerReviewsEl) || isElementInView(closingCtaEl)) {
-            // 4. Lastly (Review Section & Closing CTA) -> Clownfish
+            // 4. Last Section (Customer Reviews & Closing CTA) -> Revert to Clownfish
             targetOpacity2.current = 0
             targetOpacity3.current = 0
           } else if (isElementInView(galleryEl) || isElementInView(testimonialsEl)) {
-            // 3. After Airport to Airport (Gallery & Testimonials) -> Barracuda
+            // 3. Third Video (Gallery & Testimonials) -> Turtle
             targetOpacity2.current = 0
             targetOpacity3.current = 1
           } else if (isElementInView(customizeSectionEl) || isElementInView(diveSectionEl) || isElementInView(airportEl)) {
-            // 2. From after Customize Your Dive panel up to the end of Airport to Airport -> Turtle
+            // 2. Second Video (Customize Your Dive up to Airport to Airport) -> Barracuda
             targetOpacity2.current = 1
             targetOpacity3.current = 0
           } else {
-            // 1. Beginning until Customize Your Dive -> Clownfish
+            // 1. First Video (Top Hero until Customize Your Dive) -> Clownfish
             targetOpacity2.current = 0
             targetOpacity3.current = 0
           }
@@ -443,22 +467,20 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
       meshRef.current.rotation.x += (finalTargetX - meshRef.current.rotation.x) * delta * 5
 
       if (!isMobile && meshRef2.current && meshRef2.current.material && isHome) {
-        // Video 2: Turtle orientation
-        meshRef2.current.rotation.y = meshRef.current.rotation.y + (Math.PI * 1.45)
-        meshRef2.current.rotation.x = meshRef.current.rotation.x - (Math.PI / 7)
+        meshRef2.current.rotation.y = meshRef.current.rotation.y - (Math.PI / 2.5)
+        meshRef2.current.rotation.x = meshRef.current.rotation.x - (Math.PI / 6)
         meshRef2.current.material.opacity += (targetOpacity2.current - meshRef2.current.material.opacity) * delta * 2.5
       }
 
       if (!isMobile && meshRef3.current && meshRef3.current.material && isHome) {
-        // Video 3: Barracuda orientation
-        meshRef3.current.rotation.y = meshRef.current.rotation.y - (Math.PI / 2.5)
-        meshRef3.current.rotation.x = meshRef.current.rotation.x - (Math.PI / 6)
+        meshRef3.current.rotation.y = meshRef.current.rotation.y + (Math.PI * 1.45)
+        meshRef3.current.rotation.x = meshRef.current.rotation.x - (Math.PI / 3)
         meshRef3.current.material.opacity += (targetOpacity3.current - meshRef3.current.material.opacity) * delta * 2.5
       }
 
       if (camera && isHome) {
         const baseFov = 85
-        const targetFov = baseFov + (targetOpacity2.current * 30) // Zoom out wider & focus lower when Turtle plays (Video 2)
+        const targetFov = baseFov + (targetOpacity3.current * 15) // Zoom out when Turtle plays
         if (Math.abs(camera.fov - targetFov) > 0.1) {
           camera.fov += (targetFov - camera.fov) * delta * 2.5
           camera.updateProjectionMatrix()

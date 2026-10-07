@@ -78,6 +78,7 @@ export function getOrCreateHeroVideoElement(src = HERO_VIDEO_SRC, playbackRate =
   if (typeof window === 'undefined') return null
 
   if (warmHeroVideo && warmHeroVideo.src === src) {
+    warmHeroVideo.defaultPlaybackRate = playbackRate
     warmHeroVideo.playbackRate = playbackRate
     return warmHeroVideo
   }
@@ -105,17 +106,34 @@ export function getOrCreateHeroVideoElement(src = HERO_VIDEO_SRC, playbackRate =
   video.autoplay = true
   video.preload = 'auto'
   video.setAttribute('fetchpriority', 'high')
+  video.defaultPlaybackRate = playbackRate
+  video.playbackRate = playbackRate
   video.src = src
 
   const applyRate = () => {
     try {
-      if (video.readyState >= 1) {
+      video.defaultPlaybackRate = playbackRate
+      if (video.playbackRate !== playbackRate) {
         video.playbackRate = playbackRate
       }
     } catch (e) {}
   }
-  video.addEventListener('loadedmetadata', applyRate)
-  if (video.readyState >= 1) applyRate()
+  
+  const rateEvents = [
+    'loadstart',
+    'loadedmetadata',
+    'loadeddata',
+    'canplay',
+    'canplaythrough',
+    'playing',
+    'play',
+    'ratechange',
+    'timeupdate',
+    'seeking',
+    'seeked'
+  ]
+  rateEvents.forEach((evt) => video.addEventListener(evt, applyRate))
+  applyRate()
 
   container.appendChild(video)
   warmHeroVideo = video

@@ -759,12 +759,12 @@ function InteractiveHighlights() {
 
       if (!isDraggingRef.current) {
         if (Math.abs(velocityRef.current) > 0.08) {
-          scrollPosRef.current -= velocityRef.current
+          scrollPosRef.current += velocityRef.current
           velocityRef.current *= 0.94 // Natural friction deceleration
         } else {
           velocityRef.current = 0
           if (!isHoveredRef.current) {
-            scrollPosRef.current -= autoSpeed
+            scrollPosRef.current += autoSpeed
           }
         }
       }

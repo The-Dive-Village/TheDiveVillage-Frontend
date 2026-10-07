@@ -44,11 +44,39 @@ function useDirectVideoTexture(src) {
     video.loop = true
     video.autoplay = true
     video.preload = 'auto'
+    video.defaultPlaybackRate = 0.45
     video.playbackRate = 0.45
     video.setAttribute('fetchpriority', 'high')
     
     domContainer.appendChild(video)
     videoRef.current = video
+
+    const applyPlaybackRate = () => {
+      try {
+        if (videoRef.current) {
+          videoRef.current.defaultPlaybackRate = 0.45
+          if (videoRef.current.playbackRate !== 0.45) {
+            videoRef.current.playbackRate = 0.45
+          }
+        }
+      } catch (e) {}
+    }
+
+    const rateEvents = [
+      'loadstart',
+      'loadedmetadata',
+      'loadeddata',
+      'canplay',
+      'canplaythrough',
+      'playing',
+      'play',
+      'ratechange',
+      'timeupdate',
+      'seeking',
+      'seeked'
+    ]
+    rateEvents.forEach((evt) => video.addEventListener(evt, applyPlaybackRate))
+    applyPlaybackRate()
 
     const checkReadiness = () => {
       if (!isMounted) return false
