@@ -295,13 +295,13 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
             targetOpacity2.current = 0
             targetOpacity3.current = 0
           } else if (isElementInView(galleryEl) || isElementInView(testimonialsEl)) {
-            // 3. After Airport to Airport (Gallery & Testimonials) -> Barracuda
-            targetOpacity2.current = 1
-            targetOpacity3.current = 0
-          } else if (isElementInView(customizeSectionEl) || isElementInView(diveSectionEl) || isElementInView(airportEl)) {
-            // 2. From after Customize Your Dive panel up to the end of Airport to Airport -> Turtle
+            // 3. After Airport to Airport (Gallery & Testimonials) -> Turtle
             targetOpacity2.current = 0
             targetOpacity3.current = 1
+          } else if (isElementInView(customizeSectionEl) || isElementInView(diveSectionEl) || isElementInView(airportEl)) {
+            // 2. From after Customize Your Dive panel up to the end of Airport to Airport -> Barracuda
+            targetOpacity2.current = 1
+            targetOpacity3.current = 0
           } else {
             // 1. Beginning until Customize Your Dive -> Clownfish
             targetOpacity2.current = 0
@@ -451,7 +451,7 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
 
       if (camera && isHome) {
         const baseFov = 85
-        const targetFov = baseFov + (targetOpacity3.current * 30) // Zoom out wider & focus lower when Turtle plays
+        const targetFov = baseFov + (targetOpacity2.current * 30) // Zoom out wider when Barracuda plays
         if (Math.abs(camera.fov - targetFov) > 0.1) {
           camera.fov += (targetFov - camera.fov) * delta * 2.5
           camera.updateProjectionMatrix()
