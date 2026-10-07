@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { useAuth } from '../hooks/useAuth'
 import { firebaseAuth } from '../services/firebase'
-import barracudaVideo from '../assets/Media/Background/baracuda.mp4'
+import vid2 from '../assets/2.mp4'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -81,21 +81,11 @@ export default function Login() {
       {/* Left side - Background Video (hidden on mobile) */}
       <div className="hidden lg:block lg:w-[60%] xl:w-[62%] shrink-0 relative bg-white overflow-hidden">
         <video
-          ref={(el) => {
-            if (el) {
-              el.muted = true
-              el.defaultMuted = true
-              el.setAttribute('muted', '')
-              el.setAttribute('playsinline', '')
-              el.play().catch(() => {})
-            }
-          }}
-          src={barracudaVideo ? (barracudaVideo.includes('%') ? barracudaVideo : encodeURI(barracudaVideo)) : barracudaVideo}
+          src={vid2}
           autoPlay
           loop
           muted
           playsInline
-          preload="auto"
           className="absolute inset-0 w-full h-full object-cover scale-105 opacity-85"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/20 to-transparent pointer-events-none" />

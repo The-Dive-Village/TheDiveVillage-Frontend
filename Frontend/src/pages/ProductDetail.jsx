@@ -323,6 +323,23 @@ export default function ProductDetail() {
                   onScroll={checkThumbScroll}
                   className="flex sm:flex-col gap-3 overflow-x-auto sm:overflow-y-auto shrink-0 max-w-full sm:max-w-none w-full sm:w-auto h-full max-h-full pb-2 sm:pb-2 scrollbar-none py-1 scroll-smooth"
                 >
+                  {/* Back Arrow Button */}
+                  <div className="flex flex-col items-center gap-1 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => navigate('/shop')}
+                      aria-label="Back to store"
+                      title="Back to store"
+                      className="flex-shrink-0 w-16 h-16 sm:w-18 sm:h-18 rounded-2xl bg-navy/5 text-navy hover:bg-[#FFCD00] hover:text-[#001e3d] hover:border-[#FFCD00] border-2 border-navy/15 shadow-sm flex items-center justify-center transition-all duration-200 cursor-pointer active:scale-95"
+                    >
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M19 12H5" />
+                        <path d="m12 19-7-7 7-7" />
+                      </svg>
+                    </button>
+                    <span className="text-[10px] font-bold text-navy/70 tracking-tight text-center">Back</span>
+                  </div>
+
                   {/* Media Item Thumbnails */}
                   {mediaItems.map((item, i) => (
                     <div key={item.id || i} className="flex flex-col items-center gap-1 shrink-0">
@@ -360,23 +377,6 @@ export default function ProductDetail() {
                       </span>
                     </div>
                   ))}
-
-                  {/* Back Arrow Button under last thumbnail */}
-                  <div className="flex flex-col items-center gap-1 shrink-0 mt-2">
-                    <button
-                      type="button"
-                      onClick={() => navigate('/shop')}
-                      aria-label="Back to store"
-                      title="Back to store"
-                      className="flex-shrink-0 w-16 h-16 sm:w-18 sm:h-18 rounded-2xl bg-navy/5 text-navy hover:bg-[#FFCD00] hover:text-[#001e3d] hover:border-[#FFCD00] border-2 border-navy/15 shadow-sm flex items-center justify-center transition-all duration-200 cursor-pointer active:scale-95"
-                    >
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M19 12H5" />
-                        <path d="m12 19-7-7 7-7" />
-                      </svg>
-                    </button>
-                    <span className="text-[10px] font-bold text-navy/70 tracking-tight text-center">Back</span>
-                  </div>
                 </div>
 
                 {/* Bottom Subtle Gradient Fade when scrollable down */}

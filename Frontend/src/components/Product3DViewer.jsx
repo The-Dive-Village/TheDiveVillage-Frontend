@@ -173,8 +173,6 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
     }
   }, [src, scriptLoaded, isCap])
 
-  const modelSrc = typeof src === 'string' ? (src.startsWith('http') ? src : encodeURI(src)) : src
-
   return (
     <div 
       ref={containerRef}
@@ -183,7 +181,7 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
     >
       <model-viewer
         ref={modelRef}
-        src={modelSrc}
+        src={src}
         alt={alt}
         auto-rotate={autoRotate ? true : undefined}
         rotation-per-second="35deg"

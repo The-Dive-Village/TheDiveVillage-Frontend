@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import cursorVideoLocal from '../assets/cursor.webm'
-const cursorVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791192015/dive-village/ui-videos/cursor_webm.webm'
+const cursorVideo = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790244012/dive-village/ui-videos/cursor_webm.webm'
+import cursorPng from '../assets/cursor.png'
+import cursorHoverPng from '../assets/cursor hover.png'
 import useNightDive from '../hooks/useNightDive'
 
 export default function CustomCursor() {
@@ -214,19 +216,25 @@ export default function CustomCursor() {
                 : 'drop-shadow(0 2px 8px rgba(0, 30, 61, 0.25))'),
         }}
       >
-        <video
-          ref={videoRef}
-          src={videoError ? cursorVideoLocal : cursorVideo}
-          autoPlay
-          loop
-          muted
-          playsInline
-          crossOrigin="anonymous"
-          onError={() => {
-            if (!videoError) setVideoError(true)
-          }}
-          className="w-16 sm:w-20 h-auto object-contain pointer-events-none select-none"
-        />
+        {!videoError ? (
+          <video
+            ref={videoRef}
+            src={cursorVideo}
+            autoPlay
+            loop
+            muted
+            playsInline
+            crossOrigin="anonymous"
+            onError={() => setVideoError(true)}
+            className="w-16 sm:w-20 h-auto object-contain pointer-events-none select-none"
+          />
+        ) : (
+          <img
+            src={isHovering ? cursorHoverPng : cursorPng}
+            alt="Scuba Diver Cursor"
+            className="w-16 sm:w-20 h-auto object-contain pointer-events-none select-none"
+          />
+        )}
       </div>
     </div>
   )

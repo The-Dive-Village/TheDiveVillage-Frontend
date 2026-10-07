@@ -80,7 +80,6 @@ import vidProjectAware from '../assets/Media/Services/Project AWARE.mp4'
 import vidDeepDiver from '../assets/Media/Services/DeepDiver.mp4'
 import vidWreckDiver from '../assets/Media/Services/Wreck Diver.mp4'
 import vidNightDiver from '../assets/Media/Services/Night Diver.mp4'
-import vidNightDive from '../assets/Media/Background/Night Dive.mp4'
 import vidNitrox from '../assets/Media/Services/Enriched Air Nitrox.mp4'
 import vidFunDive from '../assets/Media/Services/Fun Dive.mp4'
 import vidDSDOpenWater from '../assets/Media/Services/Discover Scuba Dive + Open Water.mp4'
@@ -1079,7 +1078,7 @@ export const FUN_DIVES_PACKAGES = [
     tag: 'Specialty',
     short_desc: 'Experience the reef after dark.',
     long_desc: 'Guided night dive spotting nocturnal marine life.',
-    video: vidNightDive,
+    video: vidNightDiver,
     image: extVaricose,
     highlights: 'Prerequisites: Open Water Diver',
     badge: 'Night Dive',

@@ -9,7 +9,6 @@ export default function LazyVideo({
   muted = true,
   playsInline = true,
   controls = false,
-  playbackRate,
   ...props
 }) {
   const videoRef = useRef(null)
@@ -17,48 +16,10 @@ export default function LazyVideo({
   const [isInView, setIsInView] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)
 
-  const safeSrc = src ? (src.startsWith('data:') || src.includes('%') ? src : encodeURI(src)) : ''
-
-  // Enforce playbackRate if specified
-  useEffect(() => {
-    const video = videoRef.current
-    if (!video || playbackRate === undefined) return
-
-    const applyRate = () => {
-      try {
-        video.defaultPlaybackRate = playbackRate
-        if (video.playbackRate !== playbackRate) {
-          video.playbackRate = playbackRate
-        }
-      } catch (e) {}
-    }
-
-    applyRate()
-
-    const events = [
-      'loadstart',
-      'loadedmetadata',
-      'loadeddata',
-      'canplay',
-      'canplaythrough',
-      'play',
-      'playing',
-      'ratechange',
-      'timeupdate',
-      'seeking',
-      'seeked'
-    ]
-
-    events.forEach((evt) => video.addEventListener(evt, applyRate))
-    return () => {
-      events.forEach((evt) => video.removeEventListener(evt, applyRate))
-    }
-  }, [playbackRate, isInView, safeSrc])
-
   // Reset loaded state whenever src changes
   useEffect(() => {
     setIsLoaded(false)
-  }, [safeSrc])
+  }, [src])
 
   useEffect(() => {
     const el = containerRef.current
@@ -95,24 +56,19 @@ export default function LazyVideo({
       video.setAttribute('muted', '')
       video.setAttribute('playsinline', '')
 
-      const timer = setTimeout(() => {
-        setIsLoaded(true)
-      }, 300)
-
       const attemptPlay = () => {
         if (video.readyState >= 2 || video.currentTime > 0) {
           setIsLoaded(true)
         }
         const p = video.play()
         if (p !== undefined) {
-          p.then(() => setIsLoaded(true)).catch(() => setIsLoaded(true))
+          p.then(() => setIsLoaded(true)).catch(() => {})
         }
       }
 
       attemptPlay()
-      return () => clearTimeout(timer)
     }
-  }, [isInView, autoPlay, safeSrc])
+  }, [isInView, autoPlay, src])
 
   const handleMediaReady = (e) => {
     setIsLoaded(true)
@@ -128,10 +84,10 @@ export default function LazyVideo({
       className={`relative overflow-hidden ${className}`}
       style={{ contentVisibility: 'auto', containIntrinsicSize: '100% 100%' }}
     >
-      {isInView && safeSrc && (
+      {isInView && src && (
         <video
           ref={videoRef}
-          src={safeSrc}
+          src={src}
           poster={poster}
           autoPlay={autoPlay}
           loop={loop}
@@ -144,7 +100,6 @@ export default function LazyVideo({
           onLoadedData={handleMediaReady}
           onCanPlay={handleMediaReady}
           onPlaying={() => setIsLoaded(true)}
-          onError={() => setIsLoaded(true)}
           onTimeUpdate={(e) => {
             if (e.currentTarget.currentTime > 0) setIsLoaded(true)
           }}
@@ -164,5 +119,4 @@ export default function LazyVideo({
     </div>
   )
 }
-
 

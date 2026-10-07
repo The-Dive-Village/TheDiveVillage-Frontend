@@ -16,7 +16,6 @@ const divingVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1790244035/
 const aboutVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v2/dive-village/ui-videos/about_mp4.mp4?v=2' || aboutVidLocal
 const jellyfishVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1790244064/dive-village/ui-videos/jelly_fish_mp4.mp4'
 import useNightDive from '../hooks/useNightDive'
-import { useVideoPlaybackRate } from '../hooks/useVideoPlaybackRate'
 
 import certifiedCoursesImg from '../assets/Media/Services Thumbnails/Certified Courses.webp'
 import introProgImg from '../assets/Media/Services Thumbnails/Introductory Programs.webp'
@@ -104,7 +103,6 @@ const wordVariants = {
 export default function About() {
   const reduce = useReducedMotion()
   const isNightDive = useNightDive()
-  const bgVideoRef = useVideoPlaybackRate(0.7)
   const { approvedReviews } = useReviews()
   const reviewsToDisplay = approvedReviews && approvedReviews.length > 0 ? approvedReviews.slice(0, 3) : TESTIMONIALS
 
@@ -120,13 +118,13 @@ export default function About() {
       {/* FULL-SCREEN VIDEO BACKGROUND (DYNAMIC FOR NIGHT DIVE ACROSS ENTIRE PAGE) */}
       <div className="fixed inset-0 w-full h-full z-0 pointer-events-none overflow-hidden">
         <video
-          ref={bgVideoRef}
           key={isNightDive ? 'night-dive-bg' : 'day-diving-bg'}
           src={isNightDive ? nightDiveVideo : divingVid}
           autoPlay
           loop
           muted
           playsInline
+          onPlay={(e) => { e.currentTarget.playbackRate = 0.7 }}
           className="w-full h-full object-cover transition-opacity duration-700 opacity-95 sm:opacity-100"
         />
         <div className={`absolute inset-0 transition-colors duration-700 ${

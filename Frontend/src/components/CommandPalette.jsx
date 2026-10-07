@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { useNavigate } from 'react-router'
 import { motion, AnimatePresence } from 'framer-motion'
-import { COURSE_CATALOG, getCourseDisplayName } from '../utils/courseEligibility'
+import { COURSE_CATALOG } from '../utils/courseEligibility'
 import { SHOP_PRODUCTS } from '../utils/products'
 import { COUNTRY_CENTROIDS } from '../data/countryCentroids'
 import { GALLERY_ITEMS } from '../utils/galleryData'
@@ -44,7 +44,7 @@ export default function CommandPalette({ isOpen, onClose }) {
       list.push({
         id: `course-${c.id}`,
         type: 'course',
-        title: getCourseDisplayName(c.name),
+        title: c.name,
         subtitle: `Min. Age: ${c.minAge} yrs • ${c.category || 'Certification'}`,
         url: `/book-us?program=${encodeURIComponent(c.id)}`,
         iconKey: 'course',

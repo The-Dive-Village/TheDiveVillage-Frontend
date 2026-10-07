@@ -1,4 +1,4 @@
-import countryList from '../data/verifiedCountries.json'
+import countryList from '../data/padiCountries.json'
 
 let diveSiteDataPromise = null
 
@@ -23,11 +23,11 @@ let indexedIdMap = null
 let indexedCountryMap = null
 
 /**
- * Lazy load authoritative verified dive site dataset on demand (cached after first request).
+ * Lazy load full PADI dive site dataset on demand (cached after first request).
  */
 export const loadDiveSiteData = async () => {
   if (!diveSiteDataPromise) {
-    diveSiteDataPromise = import('../data/verifiedDiveSites.json').then((module) => {
+    diveSiteDataPromise = import('../data/padiDiveSites.json').then((module) => {
       const data = module.default || module
       // Build O(1) fast lookup index maps once
       const idMap = new Map()
@@ -57,8 +57,8 @@ export const loadDiveSiteData = async () => {
 }
 
 /**
- * TDV Verified Dive Site Service
- * Provides access strictly to verified actual dive sites physically in water.
+ * PADI Coastal Dive Site Service
+ * Provides access to verified coastal and ocean dive sites across coastal countries.
  */
 export const getCountries = () => countryList || []
 
@@ -101,7 +101,7 @@ export const getLocationDisplayName = (location) => {
   return 'Dive Site'
 }
 
-export const getTotalLocationsCount = () => 4302
+export const getTotalLocationsCount = () => 4868
 
 export const diveSiteService = {
   getCountries,

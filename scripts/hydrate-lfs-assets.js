@@ -140,7 +140,7 @@ async function main() {
 
   for (const filePath of files) {
     const ext = path.extname(filePath).toLowerCase()
-    if (!['.mp4', '.mov', '.webm', '.png', '.jpg', '.jpeg', '.glb'].includes(ext)) continue
+    if (!['.mp4', '.mov', '.webm', '.png', '.jpg', '.jpeg'].includes(ext)) continue
 
     const relPath = path.relative(assetsDir, filePath)
     const stats = fs.statSync(filePath)
