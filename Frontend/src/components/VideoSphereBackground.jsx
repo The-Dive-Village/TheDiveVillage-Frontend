@@ -666,7 +666,7 @@ export default function VideoSphereBackground() {
       <audio ref={audioRef} src={underwaterAudio} loop autoPlay preload="auto" playsInline />
       <div className="fixed inset-0 -z-10 pointer-events-none">
         <div
-          className="h-full w-full overflow-hidden"
+          className="h-full w-full overflow-hidden relative"
           style={{
             background: 'radial-gradient(circle at center, #003865 0%, #001e3d 55%, #000e1c 100%)'
           }}
@@ -703,7 +703,7 @@ export default function VideoSphereBackground() {
               backfaceVisibility: 'hidden',
             }}
           />
-          <div style={{ width: '100%', height: '100%' }}>
+          <div style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0, zIndex: 1 }}>
             <Canvas
               frameloop={shouldRenderCanvas ? 'always' : 'never'}
               dpr={[1, 1.5]}

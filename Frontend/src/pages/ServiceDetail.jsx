@@ -52,19 +52,25 @@ export default function ServiceDetail() {
     ? service.highlights.split('|').map(item => item.trim()).filter(Boolean)
     : []
 
+  const activeHeroVideo = (isFunDivesCombo && selectedFunPackage?.video) ? selectedFunPackage.video : service.video
+  const activeHeroImage = (isFunDivesCombo && selectedFunPackage?.image) ? selectedFunPackage.image : service.image
+  const activeHeroTitle = (isFunDivesCombo && selectedFunPackage?.title) ? `${selectedFunPackage.title} Package` : service.title
+  const activeHeroDesc = (isFunDivesCombo && selectedFunPackage?.short_desc) ? selectedFunPackage.short_desc : service.short_desc
+
   return (
     <div className="bg-[#FAFAFA] min-h-screen text-navy font-body overflow-x-hidden" style={{ textShadow: 'none' }}>
       <SEOHead
-        title={`${service.title} | The Dive Village Services`}
-        description={service.short_desc || service.long_desc}
+        title={`${activeHeroTitle} | The Dive Village Services`}
+        description={activeHeroDesc || service.long_desc}
         keywords="scuba diving, fun dives, diving packages, andaman dive village"
         canonicalUrl={`https://thedivevillage.com/services/${service.id}`}
       />
       
       {/* 1. HERO BANNER */}
       <div className="relative w-full min-h-[60vh] sm:min-h-[75vh] bg-navy overflow-hidden flex flex-col justify-end pt-32 pb-24 sm:pb-36">
-        {service.video ? (
+        {activeHeroVideo ? (
           <video
+            key={activeHeroVideo}
             ref={(el) => {
               if (el) {
                 el.muted = true
@@ -74,19 +80,20 @@ export default function ServiceDetail() {
                 el.play().catch(() => {})
               }
             }}
-            src={service.video}
-            poster={service.image}
+            src={activeHeroVideo}
+            poster={activeHeroImage}
             autoPlay
             loop
             muted
             playsInline
             preload="auto"
-            className="absolute inset-0 w-full h-full object-cover opacity-100"
+            className="absolute inset-0 w-full h-full object-cover opacity-100 transition-opacity duration-500"
           />
         ) : (
           <SafeImage
-            src={service.image}
-            alt={service.title}
+            key={activeHeroImage}
+            src={activeHeroImage}
+            alt={activeHeroTitle}
             className="absolute inset-0 w-full h-full object-cover opacity-100"
           />
         )}
@@ -96,6 +103,7 @@ export default function ServiceDetail() {
         
         <div className="relative z-20 w-full px-6 sm:px-12 lg:px-24 max-w-7xl mx-auto">
           <motion.div
+            key={activeHeroTitle}
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -114,10 +122,10 @@ export default function ServiceDetail() {
             </div>
 
             <h1 className="font-heading text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-white leading-none mb-4 drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)]">
-              {service.title}
+              {activeHeroTitle}
             </h1>
             <p className="max-w-2xl text-lg sm:text-xl font-medium text-white/90 leading-relaxed drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
-              {service.short_desc}
+              {activeHeroDesc}
             </p>
 
             {/* Quick Badges in Hero */}

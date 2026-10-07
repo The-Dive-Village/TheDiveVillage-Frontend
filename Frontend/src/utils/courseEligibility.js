@@ -3,6 +3,51 @@
  * Source of truth: TDV_Course_MinAge_Certifications.xlsx
  */
 
+// 10 Exact Experience Options
+export const EXPERIENCE_OPTIONS = [
+  'Scuba Diving',
+  'Snorkeling',
+  'FreeDiving',
+  'Surfing',
+  'Canyoneering',
+  'Safari',
+  'Trekking',
+  'Local Sightseeing',
+  'Camping / Camper',
+  'Liveaboard',
+]
+
+// Direct activities that skip participant cert & course eligibility stages
+export const DIRECT_ACTIVITIES = [
+  'Canyoneering',
+  'Safari',
+  'Trekking',
+  'Local Sightseeing',
+  'Camping / Camper',
+  'Liveaboard',
+]
+
+/**
+ * Check if an experience is a direct activity.
+ * @param {string} experience
+ * @returns {boolean}
+ */
+export function isDirectActivity(experience) {
+  if (!experience) return false
+  return DIRECT_ACTIVITIES.includes(experience.trim())
+}
+
+/**
+ * Strip leading 'PADI ' from customer-facing course display names while preserving original slugs/IDs.
+ * @param {Object|string} courseOrName
+ * @returns {string}
+ */
+export function getCourseDisplayName(courseOrName) {
+  if (!courseOrName) return ''
+  const name = typeof courseOrName === 'string' ? courseOrName : (courseOrName.name || '')
+  return name.replace(/^PADI\s+/i, '').trim()
+}
+
 // Normalized Certification & Prior Experience Keys
 export const CERTIFICATIONS = {
   TRY_DIVE: 'try_dive',
@@ -41,22 +86,34 @@ export const CERTIFICATION_OPTIONS = [
 ]
 
 /**
- * Get user-selectable certification / experience options available for a given age.
+ * Get user-selectable certification / experience options available for a given age and experience.
  *
  * @param {number|string} age Participant age
- * @returns {Object[]} Available certification/experience options for this age
+ * @param {string} [experience='Scuba Diving'] Active experience
+ * @returns {Object[]} Available certification/experience options
  */
-export function getAvailableCertificationsForAge(age) {
+export function getAvailableCertificationsForAge(age, experience = 'Scuba Diving') {
   const numericAge = parseInt(age, 10)
   if (isNaN(numericAge) || numericAge < 8 || numericAge > 110) return []
+
+  if (experience === 'Snorkeling' || experience === 'Surfing' || isDirectActivity(experience)) {
+    return []
+  }
+
+  if (experience === 'FreeDiving') {
+    return CERTIFICATION_OPTIONS.filter((opt) => opt.id === CERTIFICATIONS.BASIC_FREEDIVER && numericAge >= opt.minAgeToHold)
+  }
+
+  // Scuba Diving certifications (exclude Basic Freediver)
   return CERTIFICATION_OPTIONS.filter((opt) => {
+    if (opt.id === CERTIFICATIONS.BASIC_FREEDIVER) return false
     if (numericAge < opt.minAgeToHold) return false
     if (opt.maxAgeToHold && numericAge > opt.maxAgeToHold) return false
     return true
   })
 }
 
-// Master 44-Course Catalog from TDV_Course_MinAge_Certifications.xlsx
+// Master 44-Course Catalog + Surfing Courses from TDV_Course_MinAge_Certifications.xlsx
 export const COURSE_CATALOG = [
   // 1. Try Dive
   {
@@ -64,6 +121,7 @@ export const COURSE_CATALOG = [
     name: 'Try Dive',
     category: 'Introductory Programs',
     minimumAge: 8,
+    maxAge: null,
     bookingType: 'beginner',
     prerequisites: null,
     certLabel: 'No prior certification required'
@@ -74,6 +132,7 @@ export const COURSE_CATALOG = [
     name: 'DSD Lite',
     category: 'Introductory Programs',
     minimumAge: 10,
+    maxAge: null,
     bookingType: 'beginner',
     prerequisites: null,
     certLabel: 'No prior certification required'
@@ -81,9 +140,10 @@ export const COURSE_CATALOG = [
   // 3. Discover Scuba Dive
   {
     id: 'padi-dsd',
-    name: 'Discover Scuba Dive',
+    name: 'PADI Discover Scuba Dive',
     category: 'Introductory Programs',
     minimumAge: 10,
+    maxAge: null,
     bookingType: 'beginner',
     prerequisites: null,
     certLabel: 'No prior certification required'
@@ -94,14 +154,15 @@ export const COURSE_CATALOG = [
     name: 'Discover Snorkeling',
     category: 'Snorkeling',
     minimumAge: 8,
+    maxAge: null,
     bookingType: 'beginner',
     prerequisites: null,
     certLabel: 'No prior certification required'
   },
-  // 5. Bubblemaker
+  // 5. Bubblemaker (internal slug padi-bubblemaker, display Bubblemaker)
   {
     id: 'padi-bubblemaker',
-    name: 'Bubblemaker',
+    name: 'PADI Bubblemaker',
     category: 'Kids & Family',
     minimumAge: 8,
     maxAge: 10,
@@ -115,6 +176,7 @@ export const COURSE_CATALOG = [
     name: 'Additional Dive after DSD',
     category: 'Introductory Programs',
     minimumAge: 10,
+    maxAge: null,
     bookingType: 'certification_required',
     prerequisites: {
       type: 'SINGLE',
@@ -125,48 +187,43 @@ export const COURSE_CATALOG = [
   // 7. Skin Diver
   {
     id: 'padi-skin-diver',
-    name: 'Skin Diver',
+    name: 'PADI Skin Diver',
     category: 'Snorkeling',
     minimumAge: 8,
-    bookingType: 'certification_required',
-    prerequisites: {
-      type: 'SINGLE',
-      requirement: CERTIFICATIONS.PADI_DSD
-    },
-    certLabel: 'Discover Scuba Dive (DSD)'
+    maxAge: null,
+    bookingType: 'beginner',
+    prerequisites: null,
+    certLabel: 'No prior certification required'
   },
   // 8. Scuba Diver
   {
     id: 'padi-scuba-diver',
-    name: 'Scuba Diver',
+    name: 'PADI Scuba Diver',
     category: 'Certification Courses',
     minimumAge: 10,
-    bookingType: 'certification_required',
-    prerequisites: {
-      type: 'SINGLE',
-      requirement: CERTIFICATIONS.PADI_DSD
-    },
-    certLabel: 'Discover Scuba Dive (DSD)'
+    maxAge: null,
+    bookingType: 'beginner',
+    prerequisites: null,
+    certLabel: 'No prior certification required'
   },
   // 9. Open Water Diver
   {
     id: 'padi-open-water',
-    name: 'Open Water Diver',
+    name: 'PADI Open Water Diver',
     category: 'Certification Courses',
     minimumAge: 10,
-    bookingType: 'certification_required',
-    prerequisites: {
-      type: 'SINGLE',
-      requirement: CERTIFICATIONS.PADI_DSD
-    },
-    certLabel: 'Discover Scuba Dive (DSD)'
+    maxAge: null,
+    bookingType: 'beginner',
+    prerequisites: null,
+    certLabel: 'No prior certification required'
   },
   // 10. Adventure Diver
   {
     id: 'padi-adventure-diver',
-    name: 'Adventure Diver',
+    name: 'PADI Adventure Diver',
     category: 'Continuing Education',
     minimumAge: 10,
+    maxAge: null,
     bookingType: 'certification_required',
     prerequisites: {
       type: 'SINGLE',
@@ -177,15 +234,16 @@ export const COURSE_CATALOG = [
   // 11. Advanced Open Water
   {
     id: 'padi-advanced-ow',
-    name: 'Advanced Open Water',
+    name: 'PADI Advanced Open Water',
     category: 'Continuing Education',
     minimumAge: 12,
+    maxAge: null,
     bookingType: 'certification_required',
     prerequisites: {
-      type: 'AND',
-      requirements: [CERTIFICATIONS.OPEN_WATER, CERTIFICATIONS.PADI_DSD]
+      type: 'SINGLE',
+      requirement: CERTIFICATIONS.OPEN_WATER
     },
-    certLabel: 'Open Water Diver + Discover Scuba Dive'
+    certLabel: 'Open Water Diver'
   },
   // 12. EFR Primary & Secondary Care
   {
@@ -193,19 +251,18 @@ export const COURSE_CATALOG = [
     name: 'EFR Primary & Secondary Care',
     category: 'First Aid & CPR',
     minimumAge: 12,
-    bookingType: 'certification_required',
-    prerequisites: {
-      type: 'AND',
-      requirements: [CERTIFICATIONS.OPEN_WATER, CERTIFICATIONS.PADI_DSD]
-    },
-    certLabel: 'Open Water Diver + Discover Scuba Dive'
+    maxAge: null,
+    bookingType: 'beginner',
+    prerequisites: null,
+    certLabel: 'No prior certification required'
   },
   // 13. Rescue Diver
   {
     id: 'padi-rescue-diver',
-    name: 'Rescue Diver',
+    name: 'PADI Rescue Diver',
     category: 'Continuing Education',
     minimumAge: 12,
+    maxAge: null,
     bookingType: 'certification_required',
     prerequisites: {
       type: 'AND',
@@ -216,9 +273,10 @@ export const COURSE_CATALOG = [
   // 14. Reactivate (with dive)
   {
     id: 'padi-reactivate',
-    name: 'Reactivate (with dive)',
+    name: 'PADI Reactivate (with dive)',
     category: 'Refreshers',
     minimumAge: 10,
+    maxAge: null,
     bookingType: 'certification_required',
     prerequisites: {
       type: 'SINGLE',
@@ -232,6 +290,7 @@ export const COURSE_CATALOG = [
     name: 'Full Refresher (with dive)',
     category: 'Refreshers',
     minimumAge: 10,
+    maxAge: null,
     bookingType: 'certification_required',
     prerequisites: {
       type: 'SINGLE',
@@ -245,6 +304,7 @@ export const COURSE_CATALOG = [
     name: 'Lite Refresher (confined only)',
     category: 'Refreshers',
     minimumAge: 10,
+    maxAge: null,
     bookingType: 'certification_required',
     prerequisites: {
       type: 'SINGLE',
@@ -258,6 +318,7 @@ export const COURSE_CATALOG = [
     name: 'Peak Performance Buoyancy',
     category: 'Specialties',
     minimumAge: 10,
+    maxAge: null,
     bookingType: 'certification_required',
     prerequisites: {
       type: 'SINGLE',
@@ -271,6 +332,7 @@ export const COURSE_CATALOG = [
     name: 'Project AWARE',
     category: 'Conservation',
     minimumAge: 10,
+    maxAge: null,
     bookingType: 'beginner',
     prerequisites: null,
     certLabel: 'No prior certification required'
@@ -281,6 +343,7 @@ export const COURSE_CATALOG = [
     name: 'Deep Diver',
     category: 'Specialties',
     minimumAge: 15,
+    maxAge: null,
     bookingType: 'certification_required',
     prerequisites: {
       type: 'OR',
@@ -294,6 +357,7 @@ export const COURSE_CATALOG = [
     name: 'Wreck Diver',
     category: 'Specialties',
     minimumAge: 15,
+    maxAge: null,
     bookingType: 'certification_required',
     prerequisites: {
       type: 'OR',
@@ -307,6 +371,7 @@ export const COURSE_CATALOG = [
     name: 'Night Diver',
     category: 'Specialties',
     minimumAge: 12,
+    maxAge: null,
     bookingType: 'certification_required',
     prerequisites: {
       type: 'SINGLE',
@@ -320,6 +385,7 @@ export const COURSE_CATALOG = [
     name: 'Enriched Air Nitrox',
     category: 'Specialties',
     minimumAge: 12,
+    maxAge: null,
     bookingType: 'certification_required',
     prerequisites: {
       type: 'SINGLE',
@@ -333,6 +399,7 @@ export const COURSE_CATALOG = [
     name: '1 Dive',
     category: 'Fun Dives',
     minimumAge: 10,
+    maxAge: null,
     bookingType: 'certification_required',
     prerequisites: { type: 'SINGLE', requirement: CERTIFICATIONS.OPEN_WATER },
     certLabel: 'Open Water Diver'
@@ -342,6 +409,7 @@ export const COURSE_CATALOG = [
     name: '2 Dives',
     category: 'Fun Dives',
     minimumAge: 10,
+    maxAge: null,
     bookingType: 'certification_required',
     prerequisites: { type: 'SINGLE', requirement: CERTIFICATIONS.OPEN_WATER },
     certLabel: 'Open Water Diver'
@@ -351,6 +419,7 @@ export const COURSE_CATALOG = [
     name: '4 Dives',
     category: 'Fun Dives',
     minimumAge: 10,
+    maxAge: null,
     bookingType: 'certification_required',
     prerequisites: { type: 'SINGLE', requirement: CERTIFICATIONS.OPEN_WATER },
     certLabel: 'Open Water Diver'
@@ -360,6 +429,7 @@ export const COURSE_CATALOG = [
     name: '6 Dives',
     category: 'Fun Dives',
     minimumAge: 10,
+    maxAge: null,
     bookingType: 'certification_required',
     prerequisites: { type: 'SINGLE', requirement: CERTIFICATIONS.OPEN_WATER },
     certLabel: 'Open Water Diver'
@@ -369,6 +439,7 @@ export const COURSE_CATALOG = [
     name: '8 Dives',
     category: 'Fun Dives',
     minimumAge: 10,
+    maxAge: null,
     bookingType: 'certification_required',
     prerequisites: { type: 'SINGLE', requirement: CERTIFICATIONS.OPEN_WATER },
     certLabel: 'Open Water Diver'
@@ -378,6 +449,7 @@ export const COURSE_CATALOG = [
     name: '10 Dives',
     category: 'Fun Dives',
     minimumAge: 10,
+    maxAge: null,
     bookingType: 'certification_required',
     prerequisites: { type: 'SINGLE', requirement: CERTIFICATIONS.OPEN_WATER },
     certLabel: 'Open Water Diver'
@@ -387,6 +459,7 @@ export const COURSE_CATALOG = [
     name: '12 Dives',
     category: 'Fun Dives',
     minimumAge: 10,
+    maxAge: null,
     bookingType: 'certification_required',
     prerequisites: { type: 'SINGLE', requirement: CERTIFICATIONS.OPEN_WATER },
     certLabel: 'Open Water Diver'
@@ -396,6 +469,7 @@ export const COURSE_CATALOG = [
     name: 'Post 12 (extra 2 dives)',
     category: 'Fun Dives',
     minimumAge: 10,
+    maxAge: null,
     bookingType: 'certification_required',
     prerequisites: { type: 'SINGLE', requirement: CERTIFICATIONS.OPEN_WATER },
     certLabel: 'Open Water Diver'
@@ -405,6 +479,7 @@ export const COURSE_CATALOG = [
     name: 'Night Dive',
     category: 'Fun Dives',
     minimumAge: 12,
+    maxAge: null,
     bookingType: 'certification_required',
     prerequisites: { type: 'SINGLE', requirement: CERTIFICATIONS.OPEN_WATER },
     certLabel: 'Open Water Diver'
@@ -414,6 +489,7 @@ export const COURSE_CATALOG = [
     name: 'Dawn Dive',
     category: 'Fun Dives',
     minimumAge: 10,
+    maxAge: null,
     bookingType: 'certification_required',
     prerequisites: { type: 'SINGLE', requirement: CERTIFICATIONS.OPEN_WATER },
     certLabel: 'Open Water Diver'
@@ -421,9 +497,10 @@ export const COURSE_CATALOG = [
   // 33. DSD + Open Water (Bundled Pathway)
   {
     id: 'padi-dsd-ow-combo',
-    name: 'DSD + Open Water',
+    name: 'PADI DSD + Open Water',
     category: 'Bundled Pathways',
     minimumAge: 10,
+    maxAge: null,
     bookingType: 'pathway',
     prerequisites: null,
     certLabel: 'No prior certification required'
@@ -431,9 +508,10 @@ export const COURSE_CATALOG = [
   // 34. OW + Advanced (Bundled Pathway)
   {
     id: 'padi-ow-aow-combo',
-    name: 'OW + Advanced',
+    name: 'PADI OW + Advanced',
     category: 'Bundled Pathways',
     minimumAge: 12,
+    maxAge: null,
     bookingType: 'pathway',
     prerequisites: null,
     certLabel: 'No prior certification required'
@@ -444,25 +522,27 @@ export const COURSE_CATALOG = [
     name: 'EFR + Rescue Diver',
     category: 'Bundled Pathways',
     minimumAge: 12,
+    maxAge: null,
     bookingType: 'certification_required',
     prerequisites: {
-      type: 'AND',
-      requirements: [CERTIFICATIONS.ADVANCED_OPEN_WATER, CERTIFICATIONS.EFR]
+      type: 'SINGLE',
+      requirement: CERTIFICATIONS.ADVANCED_OPEN_WATER
     },
-    certLabel: 'Advanced Open Water + EFR Primary & Secondary Care'
+    certLabel: 'Advanced Open Water'
   },
   // 36. Divemaster
   {
     id: 'padi-divemaster',
-    name: 'Divemaster',
+    name: 'PADI Divemaster',
     category: 'Professional Track',
     minimumAge: 18,
+    maxAge: null,
     bookingType: 'certification_required',
     prerequisites: {
       type: 'AND',
       requirements: [CERTIFICATIONS.RESCUE_DIVER, CERTIFICATIONS.EFR, CERTIFICATIONS.LOGGED_40_DIVES]
     },
-    certLabel: 'Rescue Diver + EFR + 40 logged dives (Prerequisites)'
+    certLabel: 'Rescue Diver + EFR + 40 logged dives'
   },
   // 37. EFR + Rescue + Divemaster
   {
@@ -470,6 +550,7 @@ export const COURSE_CATALOG = [
     name: 'EFR + Rescue + Divemaster',
     category: 'Professional Track',
     minimumAge: 18,
+    maxAge: null,
     bookingType: 'certification_required',
     prerequisites: {
       type: 'AND',
@@ -480,7 +561,7 @@ export const COURSE_CATALOG = [
         CERTIFICATIONS.LOGGED_40_DIVES
       ]
     },
-    certLabel: 'Advanced Open Water + EFR Primary & Secondary Care + Rescue Diver + EFR + 40 logged dives (Prerequisites)'
+    certLabel: 'Advanced Open Water + EFR + Rescue Diver + 40 logged dives'
   },
   // 38. EFR + Rescue + DM (prereqs)
   {
@@ -488,6 +569,7 @@ export const COURSE_CATALOG = [
     name: 'EFR + Rescue + DM (prereqs)',
     category: 'Professional Track',
     minimumAge: 18,
+    maxAge: null,
     bookingType: 'certification_required',
     prerequisites: {
       type: 'AND',
@@ -505,6 +587,7 @@ export const COURSE_CATALOG = [
     name: 'Zero to Hero (OW to DM)',
     category: 'Professional Track',
     minimumAge: 18,
+    maxAge: null,
     bookingType: 'pathway',
     prerequisites: null,
     certLabel: 'No prior certification required'
@@ -512,9 +595,10 @@ export const COURSE_CATALOG = [
   // 40. Basic Freediver
   {
     id: 'padi-basic-freediver',
-    name: 'Basic Freediver',
+    name: 'PADI Basic Freediver',
     category: 'Freediving',
     minimumAge: 12,
+    maxAge: null,
     bookingType: 'beginner',
     prerequisites: null,
     certLabel: 'No prior certification required'
@@ -522,9 +606,10 @@ export const COURSE_CATALOG = [
   // 41. Freediver
   {
     id: 'padi-freediver',
-    name: 'Freediver',
+    name: 'PADI Freediver',
     category: 'Freediving',
     minimumAge: 15,
+    maxAge: null,
     bookingType: 'certification_required',
     prerequisites: {
       type: 'SINGLE',
@@ -538,6 +623,7 @@ export const COURSE_CATALOG = [
     name: 'Reef Explorer',
     category: 'Snorkeling',
     minimumAge: 8,
+    maxAge: null,
     bookingType: 'beginner',
     prerequisites: null,
     certLabel: 'No prior certification required'
@@ -548,6 +634,7 @@ export const COURSE_CATALOG = [
     name: 'Ocean Explorer',
     category: 'Snorkeling',
     minimumAge: 10,
+    maxAge: null,
     bookingType: 'beginner',
     prerequisites: null,
     certLabel: 'No prior certification required'
@@ -558,12 +645,35 @@ export const COURSE_CATALOG = [
     name: 'Drift Diver',
     category: 'Specialties',
     minimumAge: 12,
+    maxAge: null,
     bookingType: 'certification_required',
     prerequisites: {
       type: 'SINGLE',
       requirement: CERTIFICATIONS.OPEN_WATER
     },
     certLabel: 'Open Water Diver'
+  },
+  // 45. Discover Surfing
+  {
+    id: 'discover-surfing',
+    name: 'Discover Surfing',
+    category: 'Surfing',
+    minimumAge: 8,
+    maxAge: null,
+    bookingType: 'beginner',
+    prerequisites: null,
+    certLabel: 'No prior certification required'
+  },
+  // 46. 3-Day Surf Academy Course
+  {
+    id: '3-day-surf-academy',
+    name: '3-Day Surf Academy Course',
+    category: 'Surfing',
+    minimumAge: 8,
+    maxAge: null,
+    bookingType: 'beginner',
+    prerequisites: null,
+    certLabel: 'No prior certification required'
   }
 ]
 
@@ -623,8 +733,8 @@ export function expandUserCertifications(userCerts) {
  * @returns {boolean} True if prerequisites are satisfied
  */
 export function isPrerequisiteSatisfied(course, hasCert = false, userCerts = []) {
-  // If course has no prerequisites, it is eligible regardless of certification status
-  if (!course.prerequisites) {
+  // Beginner/pathway programs or courses without prerequisites are always eligible
+  if (course.bookingType === 'beginner' || course.bookingType === 'pathway' || !course.prerequisites) {
     return true
   }
 
@@ -680,32 +790,53 @@ export function isCourseEligible(course, age, hasCert = false, userCerts = []) {
 }
 
 /**
- * Get all eligible courses for a participant.
+ * Get all eligible courses for a participant within an experience.
  *
  * @param {number|string} age Participant age
  * @param {boolean} hasCert Whether participant holds prior certifications
  * @param {string[]|string} userCerts Selected certifications
+ * @param {string} [experience='Scuba Diving'] Active experience
  * @returns {Object[]} List of eligible courses
  */
-export function getEligibleCourses(age, hasCert = false, userCerts = []) {
+export function getEligibleCourses(age, hasCert = false, userCerts = [], experience = 'Scuba Diving') {
   const numericAge = parseInt(age, 10)
   if (isNaN(numericAge) || numericAge < 8 || numericAge > 110) {
     return []
   }
 
-  return COURSE_CATALOG.filter((course) => isCourseEligible(course, numericAge, hasCert, userCerts))
+  if (isDirectActivity(experience)) {
+    return []
+  }
+
+  return COURSE_CATALOG.filter((course) => {
+    // Categorical separation by experience
+    if (experience === 'Snorkeling') {
+      if (course.category !== 'Snorkeling') return false
+    } else if (experience === 'FreeDiving') {
+      if (course.category !== 'Freediving') return false
+    } else if (experience === 'Surfing') {
+      if (course.category !== 'Surfing') return false
+    } else if (experience === 'Scuba Diving') {
+      if (['Snorkeling', 'Freediving', 'Surfing'].includes(course.category)) return false
+    } else {
+      return false
+    }
+
+    return isCourseEligible(course, numericAge, hasCert, userCerts)
+  })
 }
 
 /**
- * Get prioritized recommendation list of eligible courses based on diver age and certification history.
+ * Get prioritized recommendation list of eligible courses based on diver age, certification history, and experience.
  *
  * @param {number|string} age Participant age
  * @param {boolean} hasCert Whether participant holds prior certifications
  * @param {string[]|string} userCerts Selected certifications
+ * @param {string} [experience='Scuba Diving'] Active experience
  * @returns {Object[]} List of eligible courses sorted by recommendation priority
  */
-export function getRecommendedCourses(age, hasCert = false, userCerts = []) {
-  const eligible = getEligibleCourses(age, hasCert, userCerts)
+export function getRecommendedCourses(age, hasCert = false, userCerts = [], experience = 'Scuba Diving') {
+  const eligible = getEligibleCourses(age, hasCert, userCerts, experience)
   if (eligible.length === 0) return []
 
   const numericAge = parseInt(age, 10)
@@ -735,6 +866,7 @@ export function getRecommendedCourses(age, hasCert = false, userCerts = []) {
         if (courseId === 'padi-dsd') return 100
         if (courseId === 'dsd-lite') return 95
         if (courseId === 'padi-dsd-ow-combo') return 90
+        if (courseId === 'padi-open-water') return 85
         if (courseId === 'try-dive') return 75
         if (courseId === 'reef-explorer' || courseId === 'ocean-explorer') return 70
         if (courseId === 'discover-snorkeling' || courseId === 'project-aware') return 60
@@ -742,6 +874,7 @@ export function getRecommendedCourses(age, hasCert = false, userCerts = []) {
       } else {
         if (courseId === 'padi-dsd') return 100
         if (courseId === 'dsd-lite') return 95
+        if (courseId === 'padi-open-water') return 92
         if (courseId === 'padi-dsd-ow-combo') return 90
         if (courseId === 'padi-ow-aow-combo') return 88
         if (courseId === 'padi-basic-freediver') return 85
@@ -754,7 +887,6 @@ export function getRecommendedCourses(age, hasCert = false, userCerts = []) {
     }
 
     // 3. Certified Divers (Age 10+)
-    // Divemaster Track (Age 18+ with Rescue + EFR + 40 dives)
     if (
       numericAge >= 18 &&
       certList.includes(CERTIFICATIONS.RESCUE_DIVER) &&
@@ -770,7 +902,6 @@ export function getRecommendedCourses(age, hasCert = false, userCerts = []) {
       return 40
     }
 
-    // Rescue Diver Track (Age 12+ with Advanced OW + EFR)
     if (
       numericAge >= 12 &&
       certList.includes(CERTIFICATIONS.ADVANCED_OPEN_WATER) &&
@@ -785,7 +916,6 @@ export function getRecommendedCourses(age, hasCert = false, userCerts = []) {
       return 40
     }
 
-    // Age 15+ with Adventure Diver or Advanced Open Water (Deep / Wreck Specialties)
     if (
       numericAge >= 15 &&
       (certList.includes(CERTIFICATIONS.ADVENTURE_DIVER) || certList.includes(CERTIFICATIONS.ADVANCED_OPEN_WATER))
@@ -802,7 +932,6 @@ export function getRecommendedCourses(age, hasCert = false, userCerts = []) {
       return 40
     }
 
-    // Age 12+ with Open Water
     if (numericAge >= 12 && certList.includes(CERTIFICATIONS.OPEN_WATER)) {
       if (courseId === 'padi-advanced-ow') return 100
       if (courseId === 'padi-adventure-diver') return 95
@@ -816,7 +945,6 @@ export function getRecommendedCourses(age, hasCert = false, userCerts = []) {
       return 40
     }
 
-    // Age 10-11 with Open Water
     if (certList.includes(CERTIFICATIONS.OPEN_WATER)) {
       if (courseId === 'padi-adventure-diver') return 100
       if (courseId === 'peak-buoyancy') return 92
@@ -825,56 +953,11 @@ export function getRecommendedCourses(age, hasCert = false, userCerts = []) {
       return 40
     }
 
-    // Age 10+ with PADI DSD
-    if (certList.includes(CERTIFICATIONS.PADI_DSD)) {
-      if (courseId === 'padi-open-water') return 100
-      if (courseId === 'padi-scuba-diver') return 95
-      if (courseId === 'add-dive-after-dsd') return 90
-      if (courseId === 'padi-skin-diver') return 85
-      return 40
-    }
-
-    // Skin Diver certification / prior experience
-    if (certList.includes(CERTIFICATIONS.PADI_SKIN_DIVER)) {
-      if (courseId === 'padi-basic-freediver') return 100
-      if (courseId === 'padi-freediver') return 98
-      if (courseId === 'padi-dsd') return 95
-      if (courseId === 'padi-dsd-ow-combo') return 90
-      if (courseId === 'ocean-explorer') return 85
-      if (courseId === 'reef-explorer') return 80
-      if (courseId === 'dsd-lite') return 75
-      if (courseId === 'try-dive') return 70
-      return 40
-    }
-
-    // Basic Freediver certification
     if (certList.includes(CERTIFICATIONS.BASIC_FREEDIVER)) {
       if (courseId === 'padi-freediver') return 100
-      if (courseId === 'padi-dsd') return 90
-      if (courseId === 'padi-dsd-ow-combo') return 85
       return 40
     }
 
-    // Bubblemaker prior experience
-    if (certList.includes(CERTIFICATIONS.PADI_BUBBLEMAKER)) {
-      if (courseId === 'padi-skin-diver') return 100
-      if (courseId === 'reef-explorer') return 95
-      if (courseId === 'try-dive') return 90
-      if (courseId === 'discover-snorkeling') return 85
-      return 40
-    }
-
-    // Try Dive or Reef Explorer prior experience
-    if (certList.includes(CERTIFICATIONS.TRY_DIVE) || certList.includes(CERTIFICATIONS.REEF_EXPLORER)) {
-      if (courseId === 'padi-dsd') return 100
-      if (courseId === 'dsd-lite') return 95
-      if (courseId === 'padi-dsd-ow-combo') return 90
-      if (courseId === 'ocean-explorer') return 85
-      if (courseId === 'padi-basic-freediver') return 80
-      return 40
-    }
-
-    // Catch-all for any other certified configuration
     const reqCert = COURSE_CATALOG.find((c) => c.id === courseId)?.prerequisites
     if (reqCert) return 70
     return 30
@@ -887,11 +970,16 @@ export function getRecommendedCourses(age, hasCert = false, userCerts = []) {
  * Validate participant booking object for integrity before submission.
  *
  * @param {Object} participant Participant data
+ * @param {string} [experience='Scuba Diving'] Active experience
  * @returns {{ valid: boolean, error?: string }}
  */
-export function validateParticipantBooking(participant) {
+export function validateParticipantBooking(participant, experience = 'Scuba Diving') {
   if (!participant) return { valid: false, error: 'Participant data missing.' }
-  
+
+  if (isDirectActivity(experience)) {
+    return { valid: true }
+  }
+
   const age = parseInt(participant.age, 10)
   if (isNaN(age) || age < 8 || age > 110) {
     return { valid: false, error: `Invalid age for ${participant.name || 'participant'}. Age must be between 8 and 110 years.` }
@@ -909,14 +997,20 @@ export function validateParticipantBooking(participant) {
   if (age < course.minimumAge) {
     return {
       valid: false,
-      error: `${participant.name || 'Participant'} (age ${age}) does not meet the minimum age (${course.minimumAge}) for ${course.name}.`
+      error: `${participant.name || 'Participant'} (age ${age}) does not meet the minimum age (${course.minimumAge}) for ${getCourseDisplayName(course)}.`
+    }
+  }
+
+  if (course.maxAge !== null && age > course.maxAge) {
+    return {
+      valid: false,
+      error: `${participant.name || 'Participant'} (age ${age}) exceeds the maximum age (${course.maxAge}) for ${getCourseDisplayName(course)}.`
     }
   }
 
   const hasCert = Boolean(participant.hasCertification)
   const certs = participant.certifications || (participant.experienceLevel ? [participant.experienceLevel] : [])
 
-  // Check if participant claims any certification that is age-inappropriate for them
   for (const certId of certs) {
     const certOpt = CERTIFICATION_OPTIONS.find((c) => c.id === certId)
     if (certOpt && age < certOpt.minAgeToHold) {
@@ -930,7 +1024,7 @@ export function validateParticipantBooking(participant) {
   if (!isPrerequisiteSatisfied(course, hasCert, certs)) {
     return {
       valid: false,
-      error: `${participant.name || 'Participant'} does not satisfy the prerequisite certifications for ${course.name}. Required: ${course.certLabel}.`
+      error: `${participant.name || 'Participant'} does not satisfy the prerequisite certifications for ${getCourseDisplayName(course)}. Required: ${course.certLabel}.`
     }
   }
 
@@ -938,6 +1032,10 @@ export function validateParticipantBooking(participant) {
 }
 
 export default {
+  EXPERIENCE_OPTIONS,
+  DIRECT_ACTIVITIES,
+  isDirectActivity,
+  getCourseDisplayName,
   CERTIFICATIONS,
   CERTIFICATION_OPTIONS,
   COURSE_CATALOG,
@@ -949,3 +1047,4 @@ export default {
   getAvailableCertificationsForAge,
   validateParticipantBooking,
 }
+

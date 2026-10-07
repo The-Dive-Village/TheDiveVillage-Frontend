@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useRef, useDeferredValue } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { motion, AnimatePresence } from 'framer-motion'
-import { SHOP_PRODUCTS } from '../utils/products'
+import { SHOP_PRODUCTS, GROUP_PHOTOS } from '../utils/products'
 import { productService } from '../services/productService'
 import { useCart } from '../hooks/useCart'
 import { useWishlist } from '../hooks/useWishlist'
@@ -277,9 +277,97 @@ export default function Shop() {
         )}
       </section>
 
-      {/* 4. CUSTOMER REVIEWS & SHOWCASE */}
+      {/* 4. GROUP SHOWCASE & COMMUNITY GALLERY */}
+      <GroupGallerySection />
+
+      {/* 5. CUSTOMER REVIEWS & SHOWCASE */}
       <CustomerReviews />
     </div>
+  )
+}
+
+function GroupGallerySection() {
+  const [selectedPhoto, setSelectedPhoto] = useState(null)
+
+  return (
+    <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 border-t border-navy/10 mt-8">
+      <div className="text-center max-w-3xl mx-auto mb-10">
+        <span className="text-xs font-extrabold uppercase tracking-widest text-accent block mb-2">
+          Community & Group Moments
+        </span>
+        <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-navy tracking-tight mb-4">
+          The Dive Village Tribe
+        </h2>
+        <p className="text-navy/70 text-sm sm:text-base leading-relaxed">
+          Behind every dive suit, expedition bag, and rash guard is a vibrant community of divers, ocean lovers, and adventurers exploring the deep blue together.
+        </p>
+      </div>
+
+      {/* Group Photos Masonry / Responsive Grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+        {GROUP_PHOTOS.map((photo, idx) => (
+          <div
+            key={photo.id || idx}
+            onClick={() => {
+              triggerHaptic(8)
+              setSelectedPhoto(photo)
+            }}
+            className="group relative aspect-[4/3] rounded-2xl overflow-hidden bg-slate-100 cursor-pointer shadow-sm hover:shadow-float transition duration-300 border border-navy/5"
+          >
+            <img
+              src={photo.src}
+              alt={photo.title || 'Group Photo'}
+              className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+              loading="lazy"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex items-end p-3">
+              <span className="text-xs font-bold text-white tracking-wide truncate">
+                {photo.title}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Lightbox Modal */}
+      <AnimatePresence>
+        {selectedPhoto && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedPhoto(null)}
+            className="fixed inset-0 z-[9999] bg-black/90 backdrop-blur-md flex items-center justify-center p-4 sm:p-8 cursor-pointer"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative max-w-5xl max-h-[90vh] rounded-3xl overflow-hidden bg-navy border border-white/15 shadow-2xl flex flex-col items-center justify-center p-2"
+            >
+              <button
+                type="button"
+                onClick={() => setSelectedPhoto(null)}
+                className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-black/60 text-white hover:bg-accent hover:text-navy flex items-center justify-center transition cursor-pointer font-bold"
+                aria-label="Close photo"
+              >
+                ✕
+              </button>
+              <img
+                src={selectedPhoto.src}
+                alt={selectedPhoto.title}
+                className="max-h-[80vh] w-auto object-contain rounded-2xl"
+              />
+              <div className="py-3 px-6 text-center">
+                <h4 className="text-base font-bold text-white tracking-wide">{selectedPhoto.title}</h4>
+                <p className="text-xs text-white/60">The Dive Village Group Showcase</p>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </section>
   )
 }
 

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { useAuth } from '../hooks/useAuth'
 import { firebaseAuth } from '../services/firebase'
-import vid2 from '../assets/2.mp4'
+import vidBarracuda from '../assets/Media/Background/Barracuda.mp4'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -81,7 +81,7 @@ export default function Login() {
       {/* Left side - Background Video (hidden on mobile) */}
       <div className="hidden lg:block lg:w-[60%] xl:w-[62%] shrink-0 relative bg-white overflow-hidden">
         <video
-          src={vid2}
+          src={vidBarracuda}
           autoPlay
           loop
           muted

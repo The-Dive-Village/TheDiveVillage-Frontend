@@ -10,6 +10,9 @@ import { bookingService } from '../services/bookingService'
 import {
   COURSE_CATALOG,
   CERTIFICATION_OPTIONS,
+  EXPERIENCE_OPTIONS,
+  isDirectActivity,
+  getCourseDisplayName,
   getEligibleCourses,
   getRecommendedCourses,
   getAvailableCertificationsForAge,
@@ -48,11 +51,12 @@ export default function BookUs() {
     return d.toISOString().split('T')[0]
   }, [])
 
-  // Step 1: Country, Location, Date & Group Size
+  // Step 1: Country, Location, Experience, Date & Group Size
   const [country, setCountry] = useState('')
   const [selectedLocation, setSelectedLocation] = useState(null)
   const [locationId, setLocationId] = useState('')
   const [location, setLocation] = useState('')
+  const [experience, setExperience] = useState('')
   const [date, setDate] = useState('')
   const [dateError, setDateError] = useState('')
   const [stepError, setStepError] = useState('')
@@ -134,6 +138,20 @@ export default function BookUs() {
     setStepError('')
   }
 
+  const handleExperienceChange = (newExp) => {
+    setExperience(newExp)
+    setStepError('')
+    // Reset experience-specific participant state when experience changes
+    setParticipants((prev) =>
+      prev.map((p) => ({
+        ...p,
+        hasCertification: false,
+        certifications: [],
+        selectedProgram: '',
+      }))
+    )
+  }
+
   // Step 2: Participant Info List
   const [participants, setParticipants] = useState([
     {
@@ -177,18 +195,15 @@ export default function BookUs() {
     })
   }, [groupSize])
 
-
   const handleParticipantChange = (index, field, value) => {
     setParticipants((prev) => {
       const updated = [...prev]
       updated[index] = { ...updated[index], [field]: value }
 
-      // If hasCertification is toggled to false, clear selected certifications
       if (field === 'hasCertification' && !value) {
         updated[index].certifications = []
       }
 
-      // Reset selected program and certification state if age, hasCertification, or certifications change
       if (field === 'age' || field === 'hasCertification' || field === 'certifications') {
         const p = updated[index]
         const ageNum = parseInt(p.age, 10)
@@ -197,19 +212,18 @@ export default function BookUs() {
           updated[index].certifications = []
           updated[index].selectedProgram = ''
         } else {
-          // Remove any certifications/experiences that are age-inappropriate for the new age
           const validCertsForAge = (updated[index].certifications || []).filter((certId) => {
             const opt = CERTIFICATION_OPTIONS.find((c) => c.id === certId)
             return opt && ageNum >= opt.minAgeToHold && (!opt.maxAgeToHold || ageNum <= opt.maxAgeToHold)
           })
           updated[index].certifications = validCertsForAge
 
-          const availableCertOpts = getAvailableCertificationsForAge(ageNum)
+          const availableCertOpts = getAvailableCertificationsForAge(ageNum, experience)
           if (availableCertOpts.length === 0) {
             updated[index].hasCertification = false
           }
 
-          const eligible = getRecommendedCourses(p.age, updated[index].hasCertification, updated[index].certifications)
+          const eligible = getRecommendedCourses(p.age, updated[index].hasCertification, updated[index].certifications, experience)
           const isCurrentEligible = eligible.some((course) => course.id === p.selectedProgram)
           if (!isCurrentEligible) {
             updated[index].selectedProgram = ''
@@ -220,22 +234,25 @@ export default function BookUs() {
     })
   }
 
-  const handleToggleCertification = (index, certId) => {
+  // Single-select certification handler for Scuba & FreeDiving
+  const handleSelectCertification = (index, certId) => {
     setParticipants((prev) => {
       const updated = [...prev]
-      const currentCerts = updated[index].certifications || []
-      const newCerts = currentCerts.includes(certId)
-        ? currentCerts.filter((c) => c !== certId)
-        : [...currentCerts, certId]
+      const p = updated[index]
+      const currentCerts = p.certifications || []
+      const isCurrentlySelected = currentCerts.includes(certId)
+
+      // Single select: deselect if clicked again, otherwise select only certId
+      const newCerts = isCurrentlySelected ? [] : [certId]
+      const hasCert = newCerts.length > 0
 
       updated[index] = {
-        ...updated[index],
-        hasCertification: newCerts.length > 0 || updated[index].hasCertification,
-        certifications: newCerts
+        ...p,
+        hasCertification: hasCert,
+        certifications: newCerts,
       }
 
-      const p = updated[index]
-      const eligible = getRecommendedCourses(p.age, p.hasCertification, p.certifications)
+      const eligible = getRecommendedCourses(p.age, hasCert, newCerts, experience)
       const isCurrentEligible = eligible.some((course) => course.id === p.selectedProgram)
       if (!isCurrentEligible) {
         updated[index].selectedProgram = ''
@@ -248,9 +265,13 @@ export default function BookUs() {
     if (currentStep > 1) {
       triggerHaptic(8)
       setStepError('')
-      setCurrentStep((prev) => prev - 1)
+      if (currentStep === 4 && isDirectActivity(experience)) {
+        setCurrentStep(1)
+      } else {
+        setCurrentStep((prev) => prev - 1)
+      }
     }
-  }, [currentStep])
+  }, [currentStep, experience])
 
   const handleNextStep = useCallback(() => {
     if (currentStep === 1) {
@@ -262,6 +283,11 @@ export default function BookUs() {
       if (!locationId && !selectedLocation && !location) {
         triggerErrorHaptic()
         setStepError('Please select a dive location.')
+        return false
+      }
+      if (!experience || experience === 'Select Your Experience') {
+        triggerErrorHaptic()
+        setStepError('Please select an experience.')
         return false
       }
       if (!date || date < cooldownMinDateStr || date > maxDateStr) {
@@ -277,6 +303,13 @@ export default function BookUs() {
       }
       setDateError('')
       setStepError('')
+
+      // Direct activity skips course & participant cert eligibility steps directly to Contact Info (Step 4)
+      if (isDirectActivity(experience)) {
+        triggerHaptic(10)
+        setCurrentStep(4)
+        return true
+      }
     }
     if (currentStep === 2) {
       const hasEmpty = participants.some((p) => !p.name || !p.age)
@@ -288,7 +321,7 @@ export default function BookUs() {
       const hasInvalidAge = participants.some((p) => parseInt(p.age, 10) < 8)
       if (hasInvalidAge) {
         triggerErrorHaptic()
-        setStepError('Minimum age for participating in diving activities is 8 years. Participants under 8 cannot proceed.')
+        setStepError('Minimum age for participating in activities is 8 years. Participants under 8 cannot proceed.')
         return false
       }
       setStepError('')
@@ -301,7 +334,7 @@ export default function BookUs() {
         return false
       }
       for (const p of participants) {
-        const val = validateParticipantBooking(p)
+        const val = validateParticipantBooking(p, experience)
         if (!val.valid) {
           triggerErrorHaptic()
           setStepError(val.error || 'Eligibility validation failed.')
@@ -317,9 +350,9 @@ export default function BookUs() {
       return true
     }
     return true
-  }, [currentStep, country, locationId, selectedLocation, location, date, todayStr, maxDateStr, groupSize, participants])
+  }, [currentStep, country, locationId, selectedLocation, location, experience, date, todayStr, maxDateStr, groupSize, participants])
 
-  // Desktop keyboard step navigation (Enter to advance, Alt + Left Arrow to go back)
+  // Desktop keyboard step navigation
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.target.tagName === 'TEXTAREA' || isCalendarOpen) return
@@ -347,13 +380,15 @@ export default function BookUs() {
       return
     }
 
-    // Pre-submission validation: Confirm every participant satisfies age & prerequisites
-    for (const p of participants) {
-      const validation = validateParticipantBooking(p)
-      if (!validation.valid) {
-        setStepError(validation.error || 'Participant eligibility validation failed.')
-        setCurrentStep(2)
-        return
+    // Pre-submission validation for course-based bookings
+    if (!isDirectActivity(experience)) {
+      for (const p of participants) {
+        const validation = validateParticipantBooking(p, experience)
+        if (!validation.valid) {
+          setStepError(validation.error || 'Participant eligibility validation failed.')
+          setCurrentStep(2)
+          return
+        }
       }
     }
 
@@ -365,13 +400,14 @@ export default function BookUs() {
         country,
         locationId: locationId ? String(locationId) : null,
         location,
+        experience,
         date,
         groupSize: participants.length,
         contactName: contact.name,
         contactEmail: contact.email,
         contactPhone: contact.phone || null,
         specialRequests: contact.requests || null,
-        participants,
+        participants: isDirectActivity(experience) ? [] : participants,
       })
 
       const isSuccess = Boolean(
@@ -391,13 +427,14 @@ export default function BookUs() {
             type: 'Booking Request',
             country,
             location,
+            experience,
             date,
             groupSize: participants.length,
             contactName: contact.name,
             contactEmail: contact.email,
             contactPhone: contact.phone || null,
             specialRequests: contact.requests || null,
-            participants,
+            participants: isDirectActivity(experience) ? [] : participants,
             status: 'Pending Review',
             createdAt: new Date().toISOString(),
           }
@@ -422,6 +459,7 @@ export default function BookUs() {
   }
 
   if (submitted) {
+    const isDirect = isDirectActivity(experience)
     return (
       <div className="bg-[#FAFAFA] flex min-h-[80vh] flex-col items-center justify-center px-4 py-16 text-center">
         <div className="rounded-[40px] bg-white p-10 sm:p-14 shadow-card max-w-xl w-full border border-navy/5">
@@ -430,38 +468,46 @@ export default function BookUs() {
           </div>
           <h2 className="font-heading text-3xl sm:text-4xl font-bold text-navy">Booking Request Received</h2>
           <p className="mt-3 text-navy/70 text-sm leading-relaxed">
-            Thank you <span className="font-bold text-navy">{contact.name}</span>! We've reserved your spot for <span className="font-bold text-navy">{participants.length} participant(s)</span> at <span className="font-bold text-accent">{location}</span>.
+            Thank you <span className="font-bold text-navy">{contact.name}</span>! We've reserved your request for <span className="font-bold text-accent">{experience}</span> at <span className="font-bold text-navy">{location}</span>.
           </p>
 
           <div className="my-8 rounded-3xl bg-[#F0F2F5] p-6 text-left space-y-4 text-xs sm:text-sm">
             <div className="flex justify-between border-b border-navy/10 pb-3">
-              <span className="text-navy/60 font-semibold">Location & Date:</span>
-              <span className="font-bold text-navy">{location} {date ? `(${date})` : ''}</span>
+              <span className="text-navy/60 font-semibold">Experience & Location:</span>
+              <span className="font-bold text-navy">{experience} — {location}</span>
             </div>
-            <div className="space-y-2.5 pt-1">
-              <span className="text-navy/60 font-semibold block">Participants & Selected Programs:</span>
-              {participants.map((p, idx) => {
-                const prog = COURSE_CATALOG.find((pr) => pr.id === p.selectedProgram)
-                const certNames = (p.certifications || [])
-                  .map((id) => CERTIFICATION_OPTIONS.find((c) => c.id === id)?.name)
-                  .filter(Boolean)
-                const certSummary = p.hasCertification
-                  ? (certNames.length ? certNames.join(', ') : 'Certified Diver')
-                  : 'No Prior Certification (Beginner / Pathway)'
+            <div className="flex justify-between border-b border-navy/10 pb-3">
+              <span className="text-navy/60 font-semibold">Date & Group Size:</span>
+              <span className="font-bold text-navy">{formatDateToDDMMYYYY(date)} ({participants.length} Person{participants.length > 1 ? 's' : ''})</span>
+            </div>
 
-                return (
-                  <div key={idx} className="flex justify-between items-center bg-white p-3.5 rounded-2xl border border-navy/5">
-                    <div>
-                      <span className="font-bold text-navy block">{p.name || `Participant ${idx + 1}`}</span>
-                      <span className="text-[11px] text-navy/50">Age: {p.age || 'N/A'} • {certSummary}</span>
+            {!isDirect && (
+              <div className="space-y-2.5 pt-1">
+                <span className="text-navy/60 font-semibold block">Participants & Selected Programs:</span>
+                {participants.map((p, idx) => {
+                  const prog = COURSE_CATALOG.find((pr) => pr.id === p.selectedProgram)
+                  const certNames = (p.certifications || [])
+                    .map((id) => CERTIFICATION_OPTIONS.find((c) => c.id === id)?.name)
+                    .filter(Boolean)
+                  const certSummary = p.hasCertification
+                    ? (certNames.length ? certNames.join(', ') : 'Certified Diver')
+                    : 'No Prior Certification (Beginner / Pathway)'
+
+                  return (
+                    <div key={idx} className="flex justify-between items-center bg-white p-3.5 rounded-2xl border border-navy/5">
+                      <div>
+                        <span className="font-bold text-navy block">{p.name || `Participant ${idx + 1}`}</span>
+                        <span className="text-[11px] text-navy/50">Age: {p.age || 'N/A'} • {certSummary}</span>
+                      </div>
+                      <span className="font-bold text-accent text-xs bg-accent/10 px-3 py-1 rounded-full">
+                        {getCourseDisplayName(prog?.name || 'Selected Course')}
+                      </span>
                     </div>
-                    <span className="font-bold text-accent text-xs bg-accent/10 px-3 py-1 rounded-full">
-                      {prog?.name || 'Selected Course'}
-                    </span>
-                  </div>
-                )
-              })}
-            </div>
+                  )
+                })}
+              </div>
+            )}
+
             <div className="flex justify-between border-t border-navy/10 pt-3 text-xs">
               <span className="text-navy/60 font-semibold">Contact Email & Phone:</span>
               <span className="font-bold text-navy">{contact.email} ({contact.phone || 'N/A'})</span>
@@ -553,45 +599,60 @@ export default function BookUs() {
           <div className="lg:col-span-7 flex flex-col w-full min-w-0 max-w-full mx-auto">
 
             {/* Step Indicator Bar - Mobile Compact Version */}
-            <div className="sm:hidden flex items-center justify-between mb-3.5 bg-white/95 backdrop-blur-xl p-3 rounded-2xl border border-navy/10 shadow-sm w-full min-w-0">
-              <div className="flex items-center gap-2 min-w-0">
-                <div className="w-6 h-6 rounded-full bg-navy text-white text-[11px] font-bold flex items-center justify-center shrink-0 shadow-sm">
-                  {currentStep}
+            {(() => {
+              const isDirect = isDirectActivity(experience)
+              const totalSteps = isDirect ? 2 : 4
+              const displayStep = isDirect ? (currentStep === 4 ? 2 : 1) : currentStep
+              return (
+                <div className="sm:hidden flex items-center justify-between mb-3.5 bg-white/95 backdrop-blur-xl p-3 rounded-2xl border border-navy/10 shadow-sm w-full min-w-0">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <div className="w-6 h-6 rounded-full bg-navy text-white text-[11px] font-bold flex items-center justify-center shrink-0 shadow-sm">
+                      {displayStep}
+                    </div>
+                    <div className="min-w-0">
+                      <span className="text-[9px] uppercase font-bold tracking-wider text-accent block leading-none">
+                        Step {displayStep} of {totalSteps}
+                      </span>
+                      <span className="text-xs font-bold text-navy truncate block mt-0.5">
+                        {currentStep === 1 && 'Location & Experience'}
+                        {currentStep === 2 && 'Participant Details'}
+                        {currentStep === 3 && 'Matching Programs'}
+                        {currentStep === 4 && 'Contact Info'}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    {(isDirect ? [1, 4] : [1, 2, 3, 4]).map((s, idx) => (
+                      <div
+                        key={s}
+                        className={`h-1.5 rounded-full transition-all duration-300 ${
+                          currentStep === s
+                            ? 'w-5 bg-navy'
+                            : currentStep > s
+                            ? 'w-2 bg-emerald-500'
+                            : 'w-2 bg-navy/20'
+                        }`}
+                      />
+                    ))}
+                  </div>
                 </div>
-                <div className="min-w-0">
-                  <span className="text-[9px] uppercase font-bold tracking-wider text-accent block leading-none">Step {currentStep} of 4</span>
-                  <span className="text-xs font-bold text-navy truncate block mt-0.5">
-                    {currentStep === 1 && 'Location & Group'}
-                    {currentStep === 2 && 'Participant Details'}
-                    {currentStep === 3 && 'Matching Programs'}
-                    {currentStep === 4 && 'Contact Info'}
-                  </span>
-                </div>
-              </div>
-              <div className="flex items-center gap-1.5 shrink-0">
-                {[1, 2, 3, 4].map((s) => (
-                  <div
-                    key={s}
-                    className={`h-1.5 rounded-full transition-all duration-300 ${
-                      currentStep === s
-                        ? 'w-5 bg-navy'
-                        : currentStep > s
-                        ? 'w-2 bg-emerald-500'
-                        : 'w-2 bg-navy/20'
-                    }`}
-                  />
-                ))}
-              </div>
-            </div>
+              )
+            })()}
 
             {/* Step Indicator Bar - Desktop Full Version */}
             <div className="hidden sm:flex items-center justify-between mb-8 bg-white/90 backdrop-blur-xl p-5 rounded-3xl border border-navy/10 shadow-sm overflow-x-auto scrollbar-none">
-              {[
-                { num: 1, title: 'Location & Group' },
-                { num: 2, title: 'Participant Details' },
-                { num: 3, title: 'Matching Programs' },
-                { num: 4, title: 'Contact Info' },
-              ].map((s) => (
+              {(isDirectActivity(experience)
+                ? [
+                    { num: 1, title: 'Location & Experience' },
+                    { num: 4, title: 'Contact Info' },
+                  ]
+                : [
+                    { num: 1, title: 'Location & Experience' },
+                    { num: 2, title: 'Participant Details' },
+                    { num: 3, title: 'Matching Programs' },
+                    { num: 4, title: 'Contact Info' },
+                  ]
+              ).map((s, idx, arr) => (
                 <div key={s.num} className="flex items-center gap-2.5 shrink-0">
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${currentStep === s.num
                     ? 'bg-navy text-white shadow-md ring-2 ring-navy/20'
@@ -599,12 +660,12 @@ export default function BookUs() {
                       ? 'bg-emerald-500 text-white'
                       : 'bg-[#F0F2F5] text-navy/50'
                     }`}>
-                    {currentStep > s.num ? '✓' : s.num}
+                    {currentStep > s.num ? '✓' : idx + 1}
                   </div>
                   <span className={`text-xs font-bold whitespace-nowrap ${currentStep === s.num ? 'text-navy font-bold' : 'text-navy/40'}`}>
                     {s.title}
                   </span>
-                  {s.num < 4 && <span className="text-navy/20 text-xs mx-1">→</span>}
+                  {idx < arr.length - 1 && <span className="text-navy/20 text-xs mx-1">→</span>}
                 </div>
               ))}
             </div>
@@ -612,13 +673,15 @@ export default function BookUs() {
             <form onSubmit={handleSubmit} className="flex-1 flex flex-col bg-white p-3.5 xs:p-5 sm:p-10 rounded-2xl sm:rounded-[36px] border border-navy/5 shadow-card w-full min-w-0 max-w-full min-h-[560px] sm:min-h-[620px] justify-between">
               <div className="flex-1 space-y-3.5 sm:space-y-6">
 
-                {/* STEP 1: Location & Group Size */}
+                {/* STEP 1: Location, Experience & Date */}
                 {currentStep === 1 && (
                   <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="space-y-3.5 sm:space-y-6">
                     <div>
-                      <span className="text-[9px] sm:text-xs font-bold uppercase tracking-widest text-accent mb-0.5 block">Step 1 of 4</span>
-                      <h3 className="font-heading text-lg sm:text-3xl font-bold text-navy">Location & Group Size</h3>
-                      <p className="text-[10px] sm:text-xs text-navy/60 mt-0.5">Where and when would you like to dive?</p>
+                      <span className="text-[9px] sm:text-xs font-bold uppercase tracking-widest text-accent mb-0.5 block">
+                        Step 1 of {isDirectActivity(experience) ? 2 : 4}
+                      </span>
+                      <h3 className="font-heading text-lg sm:text-3xl font-bold text-navy">Location & Experience</h3>
+                      <p className="text-[10px] sm:text-xs text-navy/60 mt-0.5">Where, what, and when would you like to book?</p>
                     </div>
 
                     {/* 1. SELECT DIVE COUNTRY */}
@@ -693,7 +756,6 @@ export default function BookUs() {
                       return (
                         <div className="rounded-xl sm:rounded-3xl bg-white border border-navy/10 p-2.5 sm:p-4 shadow-sm space-y-2 sm:space-y-3 transition-all">
                           <div className="flex gap-2.5 sm:gap-3.5 items-center">
-                            {/* Creature & Dive Thumbnail */}
                             {creature?.image && (
                               <div className="w-10 h-10 sm:w-16 sm:h-16 rounded-lg sm:rounded-2xl overflow-hidden bg-navy/10 shrink-0 border border-navy/10 relative group">
                                 <img
@@ -730,7 +792,6 @@ export default function BookUs() {
                             </div>
                           </div>
 
-                          {/* Species & Habitat description */}
                           {creature?.species && (
                             <div className="pt-1 sm:pt-2 border-t border-navy/5 flex items-center justify-between text-[9px] sm:text-[11px]">
                               <span className="text-navy/50 font-bold uppercase text-[7px] sm:text-[9px]">Marine Life:</span>
@@ -741,7 +802,38 @@ export default function BookUs() {
                       )
                     })()}
 
-                    {/* 4. PREFERRED DATE & NUMBER OF PEOPLE */}
+                    {/* 4. SELECT YOUR EXPERIENCE (MUST APPEAR BEFORE PREFERRED DATE & NUMBER OF PERSONS) */}
+                    <div>
+                      <label className="mb-1 sm:mb-2 block text-[9px] sm:text-xs font-bold text-navy/70 uppercase tracking-wider">
+                        Select Your Experience
+                      </label>
+                      <div className="relative">
+                        <select
+                          value={experience}
+                          onChange={(e) => handleExperienceChange(e.target.value)}
+                          required
+                          className={`w-full rounded-lg sm:rounded-2xl bg-[#F0F2F5] px-3 py-2 sm:px-5 sm:py-4 pr-8 sm:pr-10 text-[11px] sm:text-sm font-semibold sm:font-bold outline-none focus:ring-2 focus:ring-accent/50 transition cursor-pointer appearance-none ${
+                            !experience ? 'text-navy/40' : 'text-navy'
+                          }`}
+                        >
+                          <option value="" disabled>
+                            Select Your Experience
+                          </option>
+                          {EXPERIENCE_OPTIONS.map((exp) => (
+                            <option key={exp} value={exp} className="text-navy font-semibold">
+                              {exp}
+                            </option>
+                          ))}
+                        </select>
+                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 sm:pr-4 text-navy/60">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="sm:w-4 sm:h-4">
+                            <polyline points="6 9 12 15 18 9" />
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 5. PREFERRED DATE & NUMBER OF PEOPLE */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6">
                       <div className="relative">
                         <label className="mb-1 sm:mb-2 block text-[9px] sm:text-xs font-bold text-navy/70 uppercase tracking-wider">
@@ -765,7 +857,6 @@ export default function BookUs() {
                           </svg>
                         </button>
 
-                        {/* Compact Two-Month Calendar Popover */}
                         <CompactTwoMonthCalendarPopover
                           isOpen={isCalendarOpen}
                           onClose={() => setIsCalendarOpen(false)}
@@ -795,7 +886,7 @@ export default function BookUs() {
 
                       <div>
                         <label className="mb-1 sm:mb-2 block text-[9px] sm:text-xs font-bold text-navy/70 uppercase tracking-wider">
-                          Number of People
+                          Number of Persons
                         </label>
                         <input
                           type="text"
@@ -832,15 +923,15 @@ export default function BookUs() {
                     <div>
                       <span className="text-[9px] sm:text-xs font-bold uppercase tracking-widest text-accent mb-0.5 block">Step 2 of 4</span>
                       <h3 className="font-heading text-lg sm:text-3xl font-bold text-navy">Participant Details</h3>
-                      <p className="text-[10px] sm:text-xs text-navy/60 mt-0.5">Enter age and prior scuba certification level for each person to unlock eligible programs.</p>
+                      <p className="text-[10px] sm:text-xs text-navy/60 mt-0.5">Enter age and prior certification level for each person for {experience}.</p>
                     </div>
 
                     <div data-lenis-prevent className="space-y-3 sm:space-y-6 max-h-[500px] sm:max-h-[550px] overflow-y-auto overscroll-contain pr-1">
                       {participants.map((p, idx) => {
                         const ageNum = parseInt(p.age, 10)
                         const isAgeValid = !isNaN(ageNum) && ageNum >= 8 && ageNum <= 110
-                        const eligibleCourses = isAgeValid ? getEligibleCourses(p.age, p.hasCertification, p.certifications) : []
-                        const availableCertOptions = getAvailableCertificationsForAge(p.age)
+                        const eligibleCourses = isAgeValid ? getEligibleCourses(p.age, p.hasCertification, p.certifications, experience) : []
+                        const availableCertOptions = getAvailableCertificationsForAge(p.age, experience)
 
                         return (
                           <div key={p.id} className="rounded-xl sm:rounded-3xl bg-[#FAFAFA] border border-navy/10 p-3 sm:p-6 space-y-2.5 sm:space-y-5">
@@ -895,7 +986,7 @@ export default function BookUs() {
                             {p.age === '' && (
                               <div className="rounded-lg sm:rounded-2xl bg-navy/[0.03] border border-navy/10 p-2.5 sm:p-4 text-[10px] sm:text-xs font-medium text-navy/70 flex items-center gap-2">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-navy/50"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-                                <span>Enter age to see available courses.</span>
+                                <span>Enter age to see available programs.</span>
                               </div>
                             )}
 
@@ -909,7 +1000,7 @@ export default function BookUs() {
                                   </span>
                                   <span>
                                     {ageNum < 8
-                                      ? 'The minimum age for any diving activity is 8 years old.'
+                                      ? 'The minimum age for participating in activities is 8 years old.'
                                       : 'Please enter a valid age up to 110 years.'}
                                   </span>
                                 </div>
@@ -923,7 +1014,7 @@ export default function BookUs() {
                                   <>
                                     <div>
                                       <label className="mb-1.5 block text-[9px] sm:text-xs font-bold text-navy/80 uppercase tracking-wider">
-                                        Do you already have a diving certification?
+                                        Do you already have a certification?
                                       </label>
                                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                                         <button
@@ -937,7 +1028,7 @@ export default function BookUs() {
                                           <div>
                                             <span className="font-bold text-[11px] sm:text-sm block">No, I don't have a certification</span>
                                             <span className={`text-[9px] sm:text-[11px] block mt-0.5 ${!p.hasCertification ? 'text-white/70' : 'text-navy/50'}`}>
-                                              {ageNum < 10 ? 'Introductory & Snorkeling options' : 'Beginner & Discover Scuba options'}
+                                              {ageNum < 10 ? 'Introductory & Beginner options' : 'Beginner & Entry Level options'}
                                             </span>
                                           </div>
                                           <div className={`w-3.5 h-3.5 sm:w-5 sm:h-5 rounded-full border flex items-center justify-center shrink-0 ${!p.hasCertification ? 'border-white bg-white text-navy' : 'border-navy/20'
@@ -959,7 +1050,7 @@ export default function BookUs() {
                                               {ageNum < 10 ? 'Yes, I have prior experience' : 'Yes, I have a certification'}
                                             </span>
                                             <span className={`text-[9px] sm:text-[11px] block mt-0.5 ${p.hasCertification ? 'text-white/70' : 'text-navy/50'}`}>
-                                              {ageNum < 10 ? 'Select completed youth programs' : 'Advanced, Specialities & Fun Dives'}
+                                              {ageNum < 10 ? 'Select completed youth programs' : 'Advanced, Specialties & Continuing Ed'}
                                             </span>
                                           </div>
                                           <div className={`w-3.5 h-3.5 sm:w-5 sm:h-5 rounded-full border flex items-center justify-center shrink-0 ${p.hasCertification ? 'border-white bg-white text-navy' : 'border-navy/20'
@@ -970,13 +1061,11 @@ export default function BookUs() {
                                       </div>
                                     </div>
 
-                                    {/* If Certified: Options */}
+                                    {/* If Certified: Options (SINGLE SELECT) */}
                                     {p.hasCertification && (
                                       <div className="space-y-1.5 pt-1">
                                         <label className="block text-[9px] sm:text-xs font-bold text-navy/80 uppercase tracking-wider">
-                                          {ageNum < 10
-                                            ? 'Which program(s) have you previously completed?'
-                                            : 'Which certification(s) do you currently have?'}
+                                          Which certification do you currently have? (Select one)
                                         </label>
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-2">
                                           {availableCertOptions.map((opt) => {
@@ -985,14 +1074,14 @@ export default function BookUs() {
                                               <button
                                                 key={opt.id}
                                                 type="button"
-                                                onClick={() => handleToggleCertification(idx, opt.id)}
+                                                onClick={() => handleSelectCertification(idx, opt.id)}
                                                 className={`p-2 sm:p-3 rounded-lg border text-left text-[10px] sm:text-xs font-semibold sm:font-bold transition flex items-center justify-between gap-1.5 ${isSelected
                                                   ? 'bg-navy text-white border-navy shadow-sm'
                                                   : 'bg-white text-navy/80 border-navy/10 hover:border-navy/30 hover:bg-navy/[0.02]'
                                                   }`}
                                               >
                                                 <span className="truncate">{opt.name}</span>
-                                                <span className={`w-3 h-3 sm:w-4 sm:h-4 rounded-md border flex items-center justify-center shrink-0 text-[8px] sm:text-[10px] ${isSelected ? 'bg-white text-navy border-white font-bold' : 'border-navy/20'
+                                                <span className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full border flex items-center justify-center shrink-0 text-[8px] sm:text-[10px] ${isSelected ? 'bg-white text-navy border-white font-bold' : 'border-navy/20'
                                                   }`}>
                                                   {isSelected ? '✓' : ''}
                                                 </span>
@@ -1010,9 +1099,7 @@ export default function BookUs() {
                                   <div className="flex items-center gap-1.5 sm:gap-2">
                                     <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-500 shrink-0 animate-pulse" />
                                     <span>
-                                      {!p.hasCertification
-                                        ? `${eligibleCourses.length} course(s) unlocked for age ${p.age}`
-                                        : `${eligibleCourses.length} course(s) unlocked for age ${p.age}`}
+                                      {eligibleCourses.length} course(s) unlocked for age {p.age}
                                     </span>
                                   </div>
                                   <span className="font-bold text-[9px] sm:text-[11px] uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-emerald-500/15">
@@ -1034,12 +1121,12 @@ export default function BookUs() {
                     <div>
                       <span className="text-[9px] sm:text-xs font-bold uppercase tracking-widest text-accent mb-0.5 block">Step 3 of 4</span>
                       <h3 className="font-heading text-lg sm:text-3xl font-bold text-navy">Eligible Programs & Courses</h3>
-                      <p className="text-[10px] sm:text-xs text-navy/60 mt-0.5">Select a program for each person.</p>
+                      <p className="text-[10px] sm:text-xs text-navy/60 mt-0.5">Select a program for each person for {experience}.</p>
                     </div>
 
                     <div data-lenis-prevent className="space-y-3.5 sm:space-y-8 max-h-[500px] sm:max-h-[550px] overflow-y-auto overscroll-contain pr-1">
                       {participants.map((p, idx) => {
-                        const eligible = getRecommendedCourses(p.age, p.hasCertification, p.certifications)
+                        const eligible = getRecommendedCourses(p.age, p.hasCertification, p.certifications, experience)
                         const certNames = (p.certifications || [])
                           .map((id) => CERTIFICATION_OPTIONS.find((c) => c.id === id)?.name)
                           .filter(Boolean)
@@ -1065,7 +1152,7 @@ export default function BookUs() {
 
                             {eligible.length === 0 ? (
                               <div className="rounded-lg sm:rounded-2xl bg-navy/[0.04] border border-navy/10 p-3 sm:p-4 text-[10px] sm:text-xs font-medium text-navy/80 flex items-start gap-2">
-                                <span>Minimum age for any diving activity is 8 years.</span>
+                                <span>No eligible programs found for this age and experience level.</span>
                               </div>
                             ) : (
                               <div className="space-y-2.5">
@@ -1089,7 +1176,7 @@ export default function BookUs() {
                                     <option value="" disabled>Select an eligible course...</option>
                                     {eligible.map((prog) => (
                                       <option key={prog.id} value={prog.id}>
-                                        {prog.name} [{prog.category}] (Age {prog.minimumAge}+) — {prog.certLabel}
+                                        {getCourseDisplayName(prog.name)} [{prog.category}] (Age {prog.minimumAge}+) — {prog.certLabel}
                                       </option>
                                     ))}
                                   </select>
@@ -1118,7 +1205,7 @@ export default function BookUs() {
                                               {prog.category}
                                             </span>
                                             <h5 className="font-heading font-bold text-[11px] sm:text-base leading-snug">
-                                              {prog.name}
+                                              {getCourseDisplayName(prog.name)}
                                             </h5>
                                           </div>
                                           <div className={`w-3.5 h-3.5 sm:w-5 sm:h-5 rounded-full border shrink-0 flex items-center justify-center mt-0.5 ${isSelected ? 'border-white bg-white text-navy' : 'border-navy/20 bg-transparent'
@@ -1154,7 +1241,9 @@ export default function BookUs() {
                 {currentStep === 4 && (
                   <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="space-y-3.5 sm:space-y-6">
                     <div>
-                      <span className="text-[9px] sm:text-xs font-bold uppercase tracking-widest text-accent mb-0.5 block">Step 4 of 4</span>
+                      <span className="text-[9px] sm:text-xs font-bold uppercase tracking-widest text-accent mb-0.5 block">
+                        Step {isDirectActivity(experience) ? 2 : 4} of {isDirectActivity(experience) ? 2 : 4}
+                      </span>
                       <h3 className="font-heading text-lg sm:text-3xl font-bold text-navy">Contact & Booking Details</h3>
                       <p className="text-[10px] sm:text-xs text-navy/60 mt-0.5">Please provide your contact information to finalize the booking request.</p>
                     </div>

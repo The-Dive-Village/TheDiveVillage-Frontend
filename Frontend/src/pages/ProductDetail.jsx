@@ -295,27 +295,8 @@ export default function ProductDetail() {
           {/* Left Column: Integrated Multi-Media Showcase (Photos + Video + 3D Model) */}
           <div className="lg:col-span-6 flex flex-col gap-6">
             <div className="flex gap-4 flex-col-reverse sm:flex-row items-start">
-              {/* Thumbnail Selectors with Smooth Scroll & Up/Down Arrow Controls */}
+              {/* Thumbnail Selectors with Smooth Scroll & Down Arrow Control */}
               <div className="relative flex flex-col items-center shrink-0 w-full sm:w-auto h-auto sm:h-[600px] lg:h-[660px]">
-                {/* Desktop Top Arrow Button */}
-                {canScrollUp && (
-                  <button
-                    type="button"
-                    onClick={() => scrollThumbs('up')}
-                    aria-label="Scroll up thumbnails"
-                    title="Scroll up"
-                    className="hidden sm:flex absolute -top-4.5 z-30 w-8 h-8 rounded-full bg-navy text-white shadow-lg items-center justify-center hover:bg-[#FFCD00] hover:text-[#001e3d] transition-all duration-200 cursor-pointer active:scale-90 border border-white/20 animate-pulse"
-                  >
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="m18 15-6-6-6 6"/>
-                    </svg>
-                  </button>
-                )}
-
-                {/* Top Subtle Gradient Fade when scrollable up */}
-                {canScrollUp && (
-                  <div className="hidden sm:block absolute top-0 left-0 right-0 h-6 bg-gradient-to-b from-[#FAFAFA] to-transparent z-10 pointer-events-none rounded-t-xl" />
-                )}
 
                 {/* Thumbnails Container */}
                 <div
@@ -323,23 +304,6 @@ export default function ProductDetail() {
                   onScroll={checkThumbScroll}
                   className="flex sm:flex-col gap-3 overflow-x-auto sm:overflow-y-auto shrink-0 max-w-full sm:max-w-none w-full sm:w-auto h-full max-h-full pb-2 sm:pb-2 scrollbar-none py-1 scroll-smooth"
                 >
-                  {/* Back Arrow Button */}
-                  <div className="flex flex-col items-center gap-1 shrink-0">
-                    <button
-                      type="button"
-                      onClick={() => navigate('/shop')}
-                      aria-label="Back to store"
-                      title="Back to store"
-                      className="flex-shrink-0 w-16 h-16 sm:w-18 sm:h-18 rounded-2xl bg-navy/5 text-navy hover:bg-[#FFCD00] hover:text-[#001e3d] hover:border-[#FFCD00] border-2 border-navy/15 shadow-sm flex items-center justify-center transition-all duration-200 cursor-pointer active:scale-95"
-                    >
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M19 12H5" />
-                        <path d="m12 19-7-7 7-7" />
-                      </svg>
-                    </button>
-                    <span className="text-[10px] font-bold text-navy/70 tracking-tight text-center">Back</span>
-                  </div>
-
                   {/* Media Item Thumbnails */}
                   {mediaItems.map((item, i) => (
                     <div key={item.id || i} className="flex flex-col items-center gap-1 shrink-0">
@@ -377,26 +341,45 @@ export default function ProductDetail() {
                       </span>
                     </div>
                   ))}
+
+                  {/* Back Arrow Button Underneath Last Thumbnail */}
+                  <div className="flex flex-col items-center gap-1 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => navigate('/shop')}
+                      aria-label="Back to store"
+                      title="Back to store"
+                      className="flex-shrink-0 w-16 h-16 sm:w-18 sm:h-18 rounded-2xl bg-navy/5 text-navy hover:bg-[#FFCD00] hover:text-[#001e3d] hover:border-[#FFCD00] border-2 border-navy/15 shadow-sm flex items-center justify-center transition-all duration-200 cursor-pointer active:scale-95"
+                    >
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M19 12H5" />
+                        <path d="m12 19-7-7 7-7" />
+                      </svg>
+                    </button>
+                    <span className="text-[10px] font-bold text-navy/70 tracking-tight text-center">Back</span>
+                  </div>
+
+                  {/* Scroll Down Arrow Button Positioned Near Last Thumbnail */}
+                  {canScrollDown && (
+                    <div className="flex flex-col items-center justify-center shrink-0 pt-1">
+                      <button
+                        type="button"
+                        onClick={() => scrollThumbs('down')}
+                        aria-label="Scroll down thumbnails"
+                        title="Scroll down for more views"
+                        className="w-8 h-8 rounded-full bg-navy text-white shadow-lg flex items-center justify-center hover:bg-[#FFCD00] hover:text-[#001e3d] transition-all duration-200 cursor-pointer active:scale-90 border border-white/20 animate-bounce"
+                      >
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="m6 9 6 6 6-6"/>
+                        </svg>
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 {/* Bottom Subtle Gradient Fade when scrollable down */}
                 {canScrollDown && (
-                  <div className="hidden sm:block absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-[#FAFAFA] to-transparent z-10 pointer-events-none rounded-b-xl" />
-                )}
-
-                {/* Desktop Bottom Arrow Button */}
-                {canScrollDown && (
-                  <button
-                    type="button"
-                    onClick={() => scrollThumbs('down')}
-                    aria-label="Scroll down thumbnails"
-                    title="Scroll down for more views"
-                    className="hidden sm:flex absolute -bottom-4.5 z-30 w-8 h-8 rounded-full bg-navy text-white shadow-lg items-center justify-center hover:bg-[#FFCD00] hover:text-[#001e3d] transition-all duration-200 cursor-pointer active:scale-90 border border-white/20 animate-bounce"
-                  >
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="m6 9 6 6 6-6"/>
-                    </svg>
-                  </button>
+                  <div className="hidden sm:block absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-[#FAFAFA] to-transparent z-10 pointer-events-none rounded-b-xl" />
                 )}
               </div>
 
