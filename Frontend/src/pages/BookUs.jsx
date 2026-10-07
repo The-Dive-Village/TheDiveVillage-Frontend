@@ -234,7 +234,7 @@ export default function BookUs() {
     })
   }
 
-  // Single-select certification handler for Scuba & FreeDiving
+  // Multi-select certification handler for Scuba & FreeDiving
   const handleSelectCertification = (index, certId) => {
     setParticipants((prev) => {
       const updated = [...prev]
@@ -242,17 +242,18 @@ export default function BookUs() {
       const currentCerts = p.certifications || []
       const isCurrentlySelected = currentCerts.includes(certId)
 
-      // Single select: deselect if clicked again, otherwise select only certId
-      const newCerts = isCurrentlySelected ? [] : [certId]
-      const hasCert = newCerts.length > 0
+      // Multi-select: toggle clicked certification
+      const newCerts = isCurrentlySelected
+        ? currentCerts.filter((id) => id !== certId)
+        : [...currentCerts, certId]
 
       updated[index] = {
         ...p,
-        hasCertification: hasCert,
+        hasCertification: true,
         certifications: newCerts,
       }
 
-      const eligible = getRecommendedCourses(p.age, hasCert, newCerts, experience)
+      const eligible = getRecommendedCourses(p.age, true, newCerts, experience)
       const isCurrentEligible = eligible.some((course) => course.id === p.selectedProgram)
       if (!isCurrentEligible) {
         updated[index].selectedProgram = ''
@@ -322,6 +323,16 @@ export default function BookUs() {
       if (hasInvalidAge) {
         triggerErrorHaptic()
         setStepError('Minimum age for participating in activities is 8 years. Participants under 8 cannot proceed.')
+        return false
+      }
+      const hasMissingCert = participants.some((p) => {
+        if (!p.hasCertification) return false
+        const available = getAvailableCertificationsForAge(p.age, experience)
+        return available.length > 0 && (!p.certifications || p.certifications.length === 0)
+      })
+      if (hasMissingCert) {
+        triggerErrorHaptic()
+        setStepError('Please select at least one current certification for participants marked as certified.')
         return false
       }
       setStepError('')
@@ -820,7 +831,7 @@ export default function BookUs() {
                             Select Your Experience
                           </option>
                           {EXPERIENCE_OPTIONS.map((exp) => (
-                            <option key={exp} value={exp} className="text-navy font-semibold">
+                            <option key={exp} value={exp}>
                               {exp}
                             </option>
                           ))}
@@ -1061,11 +1072,11 @@ export default function BookUs() {
                                       </div>
                                     </div>
 
-                                    {/* If Certified: Options (SINGLE SELECT) */}
+                                    {/* If Certified: Options (MULTI SELECT) */}
                                     {p.hasCertification && (
                                       <div className="space-y-1.5 pt-1">
                                         <label className="block text-[9px] sm:text-xs font-bold text-navy/80 uppercase tracking-wider">
-                                          Which certification do you currently have? (Select one)
+                                          Which certification(s) do you currently have?
                                         </label>
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-2">
                                           {availableCertOptions.map((opt) => {
@@ -1080,7 +1091,7 @@ export default function BookUs() {
                                                   : 'bg-white text-navy/80 border-navy/10 hover:border-navy/30 hover:bg-navy/[0.02]'
                                                   }`}
                                               >
-                                                <span className="truncate">{opt.name}</span>
+                                                <span className="truncate">{getCourseDisplayName(opt.name)}</span>
                                                 <span className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full border flex items-center justify-center shrink-0 text-[8px] sm:text-[10px] ${isSelected ? 'bg-white text-navy border-white font-bold' : 'border-navy/20'
                                                   }`}>
                                                   {isSelected ? '✓' : ''}
