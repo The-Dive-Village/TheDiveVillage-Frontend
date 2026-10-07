@@ -4,12 +4,13 @@ import footerLogoImg from '../assets/footer logo.png'
 import ViberQRModal from './ViberQRModal'
 
 const QUICK = [
+  { to: '/', label: 'Home' },
   { to: '/about', label: 'About Us' },
+  { to: '/book-us', label: 'Book Us' },
   { to: '/services', label: 'Services' },
   { to: '/gallery', label: 'Gallery' },
   { to: '/shop', label: 'Shop' },
   { to: '/contact', label: 'Contact Us' },
-  { to: '/book-us', label: 'Book Us' },
 ]
 
 const LEGAL = [
@@ -22,7 +23,7 @@ const LEGAL = [
 const SOCIALS = [
   { label: 'Instagram', to: 'https://www.instagram.com/thedivevillage', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg> },
   { label: 'Facebook Messenger', to: 'https://m.me/IamSanjeevbajaj', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3.81l.39-4h-4.2V7a1 1 0 011-1h3z"/></svg> },
-  { label: 'LinkedIn', to: 'https://www.linkedin.com/in/sanjeev-bajaj-caf-sourcing-b6a35b12', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg> },
+  { label: 'LinkedIn', to: 'https://www.linkedin.com/in/sanjeev-bajaj-caf-sourcing-b6a35b12', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg> },
   { label: 'YouTube', to: '#', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22.54 6.42a2.78 2.78 0 00-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 00-1.94 2A29 29 0 001 11.75a29 29 0 00.46 5.33 2.78 2.78 0 001.94 2c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 001.94-2 29 29 0 00.46-5.33 29 29 0 00-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></svg> },
   { label: 'WhatsApp', to: 'https://wa.me/918971001010', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg> },
   {
@@ -90,7 +91,7 @@ export default function Footer() {
           {/* Desktop: 3 Columns on same row (Quick Links, Legal, Contact). Mobile: Quick Links & Legal on top row, Contact below Quick Links */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 sm:gap-8 lg:col-span-9 lg:grid-cols-3 items-stretch">
             <div className="flex flex-col col-start-1 sm:col-auto h-full">
-              <h3 className="font-heading text-xs sm:text-sm font-bold uppercase tracking-wider sm:tracking-widest text-accent">
+              <h3 className="font-heading text-base sm:text-lg font-bold uppercase tracking-wider sm:tracking-widest text-accent">
                 Quick Links
               </h3>
               <ul className="mt-3 sm:mt-4 flex flex-1 flex-col justify-between space-y-2 sm:space-y-0">
@@ -108,7 +109,7 @@ export default function Footer() {
             </div>
 
             <div className="flex flex-col col-start-2 sm:col-auto h-full">
-              <h3 className="font-heading text-xs sm:text-sm font-bold uppercase tracking-wider sm:tracking-widest text-accent">
+              <h3 className="font-heading text-base sm:text-lg font-bold uppercase tracking-wider sm:tracking-widest text-accent">
                 Legal
               </h3>
               <ul className="mt-3 sm:mt-4 flex flex-1 flex-col justify-between space-y-2 sm:space-y-0">
@@ -126,7 +127,7 @@ export default function Footer() {
             </div>
 
             <div className="flex flex-col col-start-1 col-span-2 sm:col-span-1 sm:col-start-auto mt-2 sm:mt-0 h-full">
-              <h3 className="font-heading text-xs sm:text-sm font-bold uppercase tracking-wider sm:tracking-widest text-accent">
+              <h3 className="font-heading text-base sm:text-lg font-bold uppercase tracking-wider sm:tracking-widest text-accent">
                 Contact
               </h3>
               <div className="mt-3 sm:mt-4 flex flex-1 flex-col justify-between space-y-2 sm:space-y-0">

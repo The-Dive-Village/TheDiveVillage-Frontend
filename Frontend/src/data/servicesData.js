@@ -97,6 +97,7 @@ import vidOceanExplorer from '../assets/Media/Services/oceanexplorer.mp4'
 import vidDriftDiver from '../assets/Media/Services/Drift Dive.mp4'
 import vid3DaySurf from '../assets/Media/Services/3 Day Surf Academy Course.mp4'
 import vidDiscoverSurfing from '../assets/Media/Services/discover surfing.mp4'
+import vidCanoneering from '../assets/Media/Services/Other/Canoneering.mp4'
 
 export const CATEGORIES = [
   { key: 'all', label: 'All Services' },
@@ -108,6 +109,7 @@ export const CATEGORIES = [
   { key: 'pro', label: 'Pro Courses' },
   { key: 'freediving', label: 'Freediving' },
   { key: 'surfing', label: 'Surfing' },
+  { key: 'addons', label: 'Add Ons' },
 ]
 
 export const SERVICES_DATA = [
@@ -962,6 +964,24 @@ export const SERVICES_DATA = [
       {
         q: 'Is video analysis included?',
         a: 'Yes, video review sessions and a personalized surf progression log are included.'
+      }
+    ]
+  },
+
+  // 9. Add Ons
+  {
+    id: 'addon-1',
+    category: 'addons',
+    title: 'Canoneering',
+    short_desc: 'An adventurous canoneering experience.',
+    long_desc: 'Explore the rugged terrains, rappel down waterfalls, and navigate through natural canyons in this thrilling canoneering adventure.',
+    video: vidCanoneering,
+    image: imgPhoto86760,
+    highlights: 'Adventurous | Guided Tour',
+    faqs: [
+      {
+        q: 'Do I need prior experience?',
+        a: 'No prior experience is necessary. Our expert guides will provide all the necessary training and equipment.'
       }
     ]
   }

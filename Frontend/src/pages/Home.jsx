@@ -155,7 +155,7 @@ export default function Home() {
             >
               <h1 className="mt-2 sm:mt-5 font-heading text-[3.1rem] xs:text-[3.8rem] sm:text-[4.5rem] md:text-[5.5rem] lg:text-[7rem] font-bold uppercase tracking-tight sm:tracking-normal text-white leading-[0.92] flex flex-col drop-shadow-2xl">
                 <span className="block text-sm xs:text-base sm:text-lg font-bold tracking-[0.2em] mb-2 sm:mb-3 text-white/95">MORE THAN A DESTINATION</span>
-                <span className="block text-white mb-1 sm:mb-2">IT IS A</span>
+                <span className="block text-white mb-1 sm:mb-2">IT'S A</span>
                 <span className="block text-[#FFCD00]">COMMUNITY.</span>
               </h1>
               <div className="mt-3.5 sm:mt-6 h-1 w-16 sm:w-20 bg-[#FFCD00]"></div>
@@ -450,18 +450,12 @@ export default function Home() {
                     </div>
                   </div>
 
-                  {/* Footer: Learn More & Circular Arrow (Desktop Only - Last panel only) */}
+                  {/* Footer: Click to select (Desktop Only - Last panel only) */}
                   {i === 3 && (
-                    <div className="hidden sm:flex items-center justify-between pt-3 border-t border-white/20 text-xs font-bold">
+                    <div className="hidden sm:flex items-center justify-center pt-3 border-t border-white/20 text-xs font-bold">
                       <span className="text-white/90 group-hover:text-[#FFCD00] transition-colors">
-                        Learn more
+                        Click to select
                       </span>
-                      <div className="w-8 h-8 rounded-full border border-[#00AEC7] bg-[#00AEC7]/10 flex items-center justify-center text-[#00AEC7] group-hover:bg-[#FFCD00] group-hover:border-[#FFCD00] group-hover:text-[#001e3d] transition-all duration-300 shadow-sm">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-0.5">
-                          <path d="M5 12h14" />
-                          <path d="m12 5 7 7-7 7" />
-                        </svg>
-                      </div>
                     </div>
                   )}
 
@@ -486,13 +480,13 @@ export default function Home() {
               className="font-heading text-3xl sm:text-5xl font-bold text-white drop-shadow-[0_8px_24px_rgba(0,0,0,0.95)]"
               style={{ textShadow: '0 4px 20px rgba(0,0,0,0.95), 0 2px 8px rgba(0,0,0,0.9)' }}
             >
-              What Our Divers Say
+              Every Dive Has a Story
             </h2>
             <p
-              className="mt-4 text-white/90 drop-shadow-[0_4px_12px_rgba(0,0,0,0.95)] text-justify"
+              className="mt-4 text-white/90 drop-shadow-[0_4px_12px_rgba(0,0,0,0.95)] text-center sm:text-lg"
               style={{ textShadow: '0 2px 10px rgba(0,0,0,0.9), 0 1px 4px rgba(0,0,0,0.85)' }}
             >
-              Don't just take our word for it.<br />Hear from the community of ocean lovers who have dived with us.
+              Real experiences from divers who explored with us.
             </p>
             <div className="mt-6">
               <button
@@ -764,7 +758,7 @@ function InteractiveHighlights() {
         } else {
           velocityRef.current = 0
           if (!isHoveredRef.current) {
-            scrollPosRef.current -= autoSpeed
+            scrollPosRef.current += autoSpeed
           }
         }
       }

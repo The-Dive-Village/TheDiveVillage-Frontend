@@ -55,9 +55,9 @@ export default function GalleryPreview() {
       lastTime = currentTime
 
       if (!isDragging.current && !isHovered && scrollContainerRef.current) {
-        // Shift smoothly at ~60px/s
-        scrollContainerRef.current.scrollLeft -= 60 * delta
-        if (scrollContainerRef.current.scrollLeft <= 5) {
+        // Shift smoothly at ~60px/s (scroll right -> content moves left)
+        scrollContainerRef.current.scrollLeft += 60 * delta
+        if (scrollContainerRef.current.scrollLeft >= cachedThirdWidth * 2) {
           scrollContainerRef.current.scrollLeft = cachedThirdWidth
         }
       }

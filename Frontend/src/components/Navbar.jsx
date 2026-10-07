@@ -75,7 +75,7 @@ export default function Navbar() {
             onMouseEnter={() => prefetchRoute('/')}
             onTouchStart={() => prefetchRoute('/')}
             className={({ isActive }) =>
-              `relative whitespace-nowrap font-body text-[15px] sm:text-[15px] font-bold tracking-wide transition-all duration-300 ${isActive
+              `relative whitespace-nowrap font-body text-[15px] sm:text-[15px] font-bold tracking-wide transition-all duration-300 focus:outline-none focus-visible:outline-none ${isActive
                 ? 'text-[#FFCD00] after:content-[""] after:absolute after:-bottom-1.5 after:left-0 after:w-full after:h-[2.5px] after:bg-[#FFCD00]'
                 : `${textColor} hover:text-[#FFCD00] after:content-[""] after:absolute after:-bottom-1.5 after:left-0 after:w-full after:h-[2.5px] after:bg-[#FFCD00] after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300`
               }`
@@ -88,30 +88,30 @@ export default function Navbar() {
             onMouseEnter={() => prefetchRoute('/book-us')}
             onTouchStart={() => prefetchRoute('/book-us')}
             className={({ isActive }) =>
-              `relative whitespace-nowrap font-body text-[15px] sm:text-[15px] font-bold tracking-wide transition-all duration-300 ${isActive
+              `relative whitespace-nowrap font-body text-[15px] sm:text-[15px] font-bold tracking-wide transition-all duration-300 focus:outline-none focus-visible:outline-none ${isActive
                 ? 'text-[#FFCD00] after:content-[""] after:absolute after:-bottom-1.5 after:left-0 after:w-full after:h-[2.5px] after:bg-[#FFCD00]'
                 : `${textColor} hover:text-[#FFCD00] after:content-[""] after:absolute after:-bottom-1.5 after:left-0 after:w-full after:h-[2.5px] after:bg-[#FFCD00] after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300`
               }`
             }
           >
             Book Us
-            <span className="absolute -top-1 -right-2.5 flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FFCD00] opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#FFCD00]"></span>
-            </span>
           </NavLink>
           <NavLink
             to="/shop"
             onMouseEnter={() => prefetchRoute('/shop')}
             onTouchStart={() => prefetchRoute('/shop')}
             className={({ isActive }) =>
-              `hidden lg:block relative whitespace-nowrap font-body text-[14px] sm:text-[15px] font-bold tracking-wide transition-all duration-300 ${isActive
+              `hidden lg:block relative whitespace-nowrap font-body text-[14px] sm:text-[15px] font-bold tracking-wide transition-all duration-300 focus:outline-none focus-visible:outline-none ${isActive
                 ? 'text-[#FFCD00] after:content-[""] after:absolute after:-bottom-1.5 after:left-0 after:w-full after:h-[2.5px] after:bg-[#FFCD00]'
                 : `${textColor} hover:text-[#FFCD00] after:content-[""] after:absolute after:-bottom-1.5 after:left-0 after:w-full after:h-[2.5px] after:bg-[#FFCD00] after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300`
               }`
             }
           >
             Shop
+            <span className="absolute -top-1 -right-2.5 flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FFCD00] opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#FFCD00]"></span>
+            </span>
           </NavLink>
         </div>
 
@@ -456,8 +456,7 @@ function CallModal({ isOpen, onClose, onOpenViberQr }) {
             {/* Header */}
             <div className="flex items-center justify-between border-b border-navy/10 pb-4 mb-6">
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-navy/60 block">Get in Touch</span>
-                <h3 className="font-heading text-2xl font-bold text-navy">Connect With Us</h3>
+                <h3 className="font-heading text-2xl font-bold text-navy">Get In Touch</h3>
               </div>
               <button
                 type="button"

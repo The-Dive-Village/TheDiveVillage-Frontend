@@ -8,7 +8,7 @@ import { useWishlist } from '../hooks/useWishlist'
 import { useAuth } from '../hooks/useAuth'
 import Button from '../components/Button'
 import SEOHead from '../components/SEOHead'
-import CustomerReviews from '../components/CustomerReviews'
+
 import { triggerHaptic, triggerSuccessHaptic } from '../utils/haptics'
 import picture3 from '../assets/Picture3.webp'
 import bannerImg from '../assets/Media/Products/banner.webp'
@@ -182,7 +182,8 @@ export default function Shop() {
                 triggerHaptic(8)
                 setSortBy(e.target.value)
               }}
-              className="rounded-full border border-navy/15 md:border-white/20 bg-[#F0F2F5] md:bg-[#00223D]/80 px-4 py-2.5 text-xs sm:text-sm font-bold text-navy md:text-white focus:border-accent focus:outline-none transition cursor-pointer"
+              style={{ backgroundPosition: 'right 16px center' }}
+              className="rounded-full border border-navy/15 md:border-white/20 bg-[#F0F2F5] md:bg-[#00223D]/80 pl-4 pr-10 py-2.5 text-xs sm:text-sm font-bold text-navy md:text-white focus:border-navy/15 md:focus:border-white/20 focus:outline-none focus:ring-0 transition cursor-pointer"
             >
               <option value="featured" className="text-navy bg-white md:bg-[#00223D] md:text-white">Featured / Newest</option>
               <option value="price-low" className="text-navy bg-white md:bg-[#00223D] md:text-white">Price: Low to High</option>
@@ -280,8 +281,7 @@ export default function Shop() {
       {/* 4. GROUP SHOWCASE & COMMUNITY GALLERY */}
       <GroupGallerySection />
 
-      {/* 5. CUSTOMER REVIEWS & SHOWCASE */}
-      <CustomerReviews />
+
     </div>
   )
 }
@@ -296,7 +296,7 @@ function GroupGallerySection() {
           Community & Group Moments
         </span>
         <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-navy tracking-tight mb-4">
-          The Dive Village Tribe
+          The Dive Village Community
         </h2>
         <p className="text-navy/70 text-sm sm:text-base leading-relaxed">
           Behind every dive suit, expedition bag, and rash guard is a vibrant community of divers, ocean lovers, and adventurers exploring the deep blue together.
@@ -374,6 +374,7 @@ function GroupGallerySection() {
 function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }) {
   const navigate = useNavigate()
   const [isHovered, setIsHovered] = useState(false)
+  const [hasHovered, setHasHovered] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)
   const [imgLoaded, setImgLoaded] = useState(false)
   const viewerRef = useRef(null)
@@ -435,14 +436,17 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
       active = false
       clearTimeout(fallbackTimer)
     }
-  }, [product?.glb])
+  }, [product?.glb, hasHovered])
 
-  const show3D = isHovered
+  const show3D = isHovered && hasHovered
 
   return (
     <div
       onClick={() => navigate(`/shop/${product.id}`)}
-      onMouseEnter={() => setIsHovered(true)}
+      onMouseEnter={() => {
+        setIsHovered(true)
+        setHasHovered(true)
+      }}
       onMouseLeave={() => setIsHovered(false)}
       className="group rounded-2xl sm:rounded-[32px] bg-white border border-navy/5 p-3 sm:p-6 shadow-card hover:shadow-float transition duration-300 flex flex-col justify-between cursor-pointer relative"
     >
@@ -460,7 +464,7 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
               className={`max-h-full max-w-full object-contain relative z-[1] ${!imgLoaded ? 'opacity-0' : show3D ? 'opacity-0 pointer-events-none' : 'opacity-100'
                 }`}
             />
-            {product.glb && (
+            {product.glb && hasHovered && (
               <div
                 className={`absolute inset-0 w-full h-full z-10 bg-gradient-to-b from-[#FFFFFF] via-[#F8FAFC] to-[#EDF2F7] flex items-center justify-center transition-opacity duration-300 cursor-grab active:cursor-grabbing ${show3D ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
                   }`}
@@ -543,49 +547,53 @@ function programTag(tag) {
 
 function FlippingProductTag() {
   return (
-    <div className="relative h-full flex flex-col items-center justify-center select-none pointer-events-none py-2 sm:py-4">
-      {/* Hanging Cord */}
-      <div className="w-0.5 h-2.5 sm:h-3.5 lg:h-4 bg-white/90 shadow-[0_0_6px_rgba(255,255,255,0.7)] mb-[-2px] relative z-20 shrink-0">
-        <div className="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-white -top-1 -left-[2px] sm:-left-[3px] absolute shadow-[0_0_6px_rgba(255,255,255,0.9)]" />
-      </div>
+    <>
+      <style>
+        {`
+          @keyframes spinY {
+            0% { transform: rotateY(0deg); }
+            100% { transform: rotateY(-360deg); }
+          }
+        `}
+      </style>
+      <div className="relative h-full flex flex-col items-center justify-center select-none py-2 sm:py-4 group cursor-pointer">
+        {/* Hanging Cord */}
+        <div className="w-0.5 h-2.5 sm:h-3.5 lg:h-4 bg-white/90 shadow-[0_0_6px_rgba(255,255,255,0.7)] mb-[-2px] relative z-20 shrink-0 pointer-events-none">
+          <div className="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-white -top-1 -left-[2px] sm:-left-[3px] absolute shadow-[0_0_6px_rgba(255,255,255,0.9)]" />
+        </div>
 
-      {/* 3D Perspective Container matched to exact 447x864 image aspect ratio */}
-      <div className="perspective-1000 h-[105px] xs:h-[125px] sm:h-[160px] lg:h-[195px] aspect-[447/864] relative">
-        <motion.div
-          animate={{ rotateY: [0, -360] }}
-          transition={{
-            duration: 18,
-            ease: 'linear',
-            repeat: Infinity,
-          }}
-          className="w-full h-full preserve-3d relative rounded-xl sm:rounded-2xl shadow-[0_15px_35px_rgba(0,0,0,0.4)]"
-          style={{ transformStyle: 'preserve-3d' }}
-        >
-          {/* FRONT SIDE (pop1.webp) */}
+        {/* 3D Perspective Container matched to exact 447x864 image aspect ratio */}
+        <div className="perspective-1000 h-[105px] xs:h-[125px] sm:h-[160px] lg:h-[195px] aspect-[447/864] relative">
           <div
-            className="absolute inset-0 w-full h-full rounded-xl sm:rounded-2xl overflow-hidden backface-hidden bg-transparent"
-            style={{ backfaceVisibility: 'hidden' }}
+            className="w-full h-full preserve-3d relative rounded-xl sm:rounded-2xl shadow-[0_15px_35px_rgba(0,0,0,0.4)] animate-[spinY_18s_linear_infinite] group-hover:[animation-play-state:paused]"
+            style={{ transformStyle: 'preserve-3d' }}
           >
-            <img
-              src={pop1}
-              alt="Product Tag Front"
-              className="w-full h-full object-fill rounded-xl sm:rounded-2xl"
-            />
-          </div>
+            {/* FRONT SIDE (pop1.webp) */}
+            <div
+              className="absolute inset-0 w-full h-full rounded-xl sm:rounded-2xl overflow-hidden backface-hidden bg-transparent"
+              style={{ backfaceVisibility: 'hidden' }}
+            >
+              <img
+                src={pop1}
+                alt="Product Tag Front"
+                className="w-full h-full object-fill rounded-xl sm:rounded-2xl pointer-events-none"
+              />
+            </div>
 
-          {/* BACK SIDE (pop2.webp) */}
-          <div
-            className="absolute inset-0 w-full h-full rounded-xl sm:rounded-2xl overflow-hidden backface-hidden bg-transparent"
-            style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
-          >
-            <img
-              src={pop2}
-              alt="Product Tag Back"
-              className="w-full h-full object-fill rounded-xl sm:rounded-2xl"
-            />
+            {/* BACK SIDE (pop2.webp) */}
+            <div
+              className="absolute inset-0 w-full h-full rounded-xl sm:rounded-2xl overflow-hidden backface-hidden bg-transparent"
+              style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
+            >
+              <img
+                src={pop2}
+                alt="Product Tag Back"
+                className="w-full h-full object-fill rounded-xl sm:rounded-2xl pointer-events-none"
+              />
+            </div>
           </div>
-        </motion.div>
+        </div>
       </div>
-    </div>
+    </>
   )
 }
