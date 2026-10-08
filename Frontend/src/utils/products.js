@@ -4,81 +4,81 @@ const imgCloudinaryWomensShirtBack = 'https://res.cloudinary.com/qvbunv8y/image/
 
 // 3D GLB Model Imports
 import glbYellowSuit from '../assets/Media/Products/TDV - 3D Product Files/Yellow suit 3d model.glb?url'
-import glbBlackLongSleeve from '../assets/Media/Products/TDV - 3D Product Files/black long-sleeve top 3d model.glb?url'
-import glbCap from '../assets/Media/Products/TDV - 3D Product Files/black rash guard 3d model.glb?url'
-import glbSwimsuit from '../assets/Media/Products/TDV - 3D Product Files/black swimsuit 3d model.glb?url'
-import glbBlackWetsuit from '../assets/Media/Products/TDV - 3D Product Files/black wetsuit 3d model.glb?url'
-import glbLeggings from '../assets/Media/Products/TDV - 3D Product Files/diving leggings 3d model.glb?url'
-import glbWetsuitMale from '../assets/Media/Products/TDV - 3D Product Files/diving wetsuit 3d model male.glb?url'
+const glbBlackLongSleeve = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791441576/TDV-Products/black_long-sleeve_top_3d_model';
+const glbCap = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791441585/TDV-Products/black_rash_guard_3d_model';
+const glbSwimsuit = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791441594/TDV-Products/black_swimsuit_3d_model';
+const glbBlackWetsuit = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791441602/TDV-Products/black_wetsuit_3d_model';
+const glbLeggings = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791441606/TDV-Products/diving_leggings_3d_model';
+const glbWetsuitMale = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791441612/TDV-Products/diving_wetsuit_3d_model_male';
 import glbWetsuit1 from '../assets/Media/Products/TDV - 3D Product Files/diving wetsuit 3d model.glb (1)?url'
-import glbWetsuitDoc from '../assets/Media/Products/TDV - 3D Product Files/diving wetsuit 3d model.glb?url'
-import glbLongSleeveShirt from '../assets/Media/Products/TDV - 3D Product Files/long sleeve shirt 3d model.glb?url'
-import glbSwimShorts from '../assets/Media/Products/TDV - 3D Product Files/swim shorts 3d model.glb?url'
+const glbWetsuitDoc = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791441617/TDV-Products/diving_wetsuit_3d_model';
+const glbLongSleeveShirt = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791441623/TDV-Products/long_sleeve_shirt_3d_model';
+const glbSwimShorts = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791441627/TDV-Products/swim_shorts_3d_model';
 
 // Backpack Assets
-import imgBagFront from '../assets/Media/Products/Backpack/bag front.webp'
-import imgBagBack from '../assets/Media/Products/Backpack/bagback.webp'
-import imgBagIn from '../assets/Media/Products/Backpack/bagin.webp'
-import imgBagOpen1 from '../assets/Media/Products/Backpack/bagopen1.webp'
-import imgBagOpen2 from '../assets/Media/Products/Backpack/bagopen2.webp'
+const imgBagFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441263/TDV-Products/bag_front.webp';
+const imgBagBack = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441264/TDV-Products/bagback.webp';
+const imgBagIn = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441264/TDV-Products/bagin.webp';
+const imgBagOpen1 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441266/TDV-Products/bagopen1.webp';
+const imgBagOpen2 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441267/TDV-Products/bagopen2.webp';
 
 // Bottoms with compression support Assets
-import imgWomensPantsFront from '../assets/Media/Products/Bottoms with compression support/Front.png'
-import imgWomensPantsBack from '../assets/Media/Products/Bottoms with compression support/Back.png'
-import imgWomensPantsModel1 from '../assets/Media/Products/Bottoms with compression support/4M7A5502.jpg'
-import imgWomensPantsModel2 from '../assets/Media/Products/Bottoms with compression support/4M7A5568.jpg'
+const imgWomensPantsFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441287/TDV-Products/Front.png';
+const imgWomensPantsBack = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441285/TDV-Products/Back.png';
+const imgWomensPantsModel1 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441272/TDV-Products/4M7A5502.jpg';
+const imgWomensPantsModel2 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441274/TDV-Products/4M7A5568.jpg';
 import imgWomensPantsModel3 from '../assets/Media/Products/Bottoms with compression support/4M7A6024.jpg'
 
 // Cap Assets
-import imgCapFront from '../assets/Media/Products/Cap/catf.webp'
-import imgCapBack from '../assets/Media/Products/Cap/capb.webp'
+const imgCapFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441289/TDV-Products/catf.webp';
+const imgCapBack = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441288/TDV-Products/capb.webp';
 
 // Full Sleeves Tops - Unisex Assets
-import imgFullSleevesFront from '../assets/Media/Products/Full Sleeves Tops - Unisex/front.png'
-import imgFullSleevesBack from '../assets/Media/Products/Full Sleeves Tops - Unisex/back.png'
-import imgFullSleevesModel1 from '../assets/Media/Products/Full Sleeves Tops - Unisex/4M7A5597.jpg'
-import imgFullSleevesModel2 from '../assets/Media/Products/Full Sleeves Tops - Unisex/4M7A6299.jpg'
+const imgFullSleevesFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441332/TDV-Products/Front.png';
+const imgFullSleevesBack = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441330/TDV-Products/Back.png';
+const imgFullSleevesModel1 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441295/TDV-Products/4M7A5597.jpg';
+const imgFullSleevesModel2 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441302/TDV-Products/4M7A6299.jpg';
 import imgFullSleevesModel3 from '../assets/Media/Products/Full Sleeves Tops - Unisex/4M7A6453.jpg'
 import imgFullSleevesModel4 from '../assets/Media/Products/Full Sleeves Tops - Unisex/4M7A6526.jpg'
 
 // Half Sleeves Tops - Unisex Assets
-import imgHalfSleevesFront from '../assets/Media/Products/Half Sleeves Tops - Unisex/front.png'
-import imgHalfSleevesBack from '../assets/Media/Products/Half Sleeves Tops - Unisex/back.png'
-import imgHalfSleevesModel1 from '../assets/Media/Products/Half Sleeves Tops - Unisex/4M7A5897.jpg'
+const imgHalfSleevesFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441523/TDV-Products/Front.png';
+const imgHalfSleevesBack = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441520/TDV-Products/Back.png';
+const imgHalfSleevesModel1 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441471/TDV-Products/4M7A5897.jpg';
 import imgHalfSleevesModel2 from '../assets/Media/Products/Half Sleeves Tops - Unisex/4M7A6356.jpg'
 import imgHalfSleevesModel3 from '../assets/Media/Products/Half Sleeves Tops - Unisex/4M7A6429.jpg'
 import imgHalfSleevesModel4 from '../assets/Media/Products/Half Sleeves Tops - Unisex/4M7A6544.JPG'
 
 // Shorts - Unisex Assets
-import imgUnisexShortsFront from '../assets/Media/Products/Shorts - Unisex/front.png'
-import imgUnisexShortsBack from '../assets/Media/Products/Shorts - Unisex/back.png'
+const imgUnisexShortsFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441566/TDV-Products/Front.png';
+const imgUnisexShortsBack = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441564/TDV-Products/Back.png';
 import imgUnisexShortsModel1 from '../assets/Media/Products/Shorts - Unisex/4M7A5477.jpg'
 import imgUnisexShortsModel2 from '../assets/Media/Products/Shorts - Unisex/4M7A5614.jpg'
 import imgUnisexShortsModel3 from '../assets/Media/Products/Shorts - Unisex/4M7A5732.jpg'
-import imgUnisexShortsModel4 from '../assets/Media/Products/Shorts - Unisex/4M7A6500.jpg'
+const imgUnisexShortsModel4 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441563/TDV-Products/4M7A6500.jpg';
 
 // Unisex full body skin with front zipper Assets
-import imgSkinSuitFront from '../assets/Media/Products/Unisex full body skin with front zipper/Yellow/front.png'
-import imgSkinSuitBack from '../assets/Media/Products/Unisex full body skin with front zipper/Yellow/back.png'
+const imgSkinSuitFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441718/TDV-Products/Front.png';
+const imgSkinSuitBack = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441716/TDV-Products/Back.png';
 import imgSkinSuitYellow1 from '../assets/Media/Products/Unisex full body skin with front zipper/Yellow/4M7A5420.jpg'
-import imgSkinSuitYellow2 from '../assets/Media/Products/Unisex full body skin with front zipper/Yellow/4M7A5779.jpg'
-import imgSkinSuitYellow3 from '../assets/Media/Products/Unisex full body skin with front zipper/Yellow/4M7A6616.jpg'
-import imgSkinSuitGrey1 from '../assets/Media/Products/Unisex full body skin with front zipper/Grey/4M7A5826.jpg'
-import imgSkinSuitGrey2 from '../assets/Media/Products/Unisex full body skin with front zipper/Grey/4M7A6907.JPG'
+const imgSkinSuitYellow2 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441695/TDV-Products/4M7A5779.jpg';
+const imgSkinSuitYellow3 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441707/TDV-Products/4M7A6616.jpg';
+const imgSkinSuitGrey1 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441654/TDV-Products/4M7A5826.jpg';
+const imgSkinSuitGrey2 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441658/TDV-Products/4M7A6907.jpg';
 
 // Wet Suit - Full Length Assets
-import imgFullWetsuitFront from '../assets/Media/Products/Wet Suit - Full Length/front.jpg'
-import imgFullWetsuitBack from '../assets/Media/Products/Wet Suit - Full Length/back.jpg'
-import imgFullWetsuitModel1 from '../assets/Media/Products/Wet Suit - Full Length/4M7A7097.jpg'
-import imgFullWetsuitModel2 from '../assets/Media/Products/Wet Suit - Full Length/4M7A7149.jpg'
-import imgFullWetsuitModel3 from '../assets/Media/Products/Wet Suit - Full Length/4M7A7125.JPG'
+const imgFullWetsuitFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441742/TDV-Products/Front.jpg';
+const imgFullWetsuitBack = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441741/TDV-Products/Back.jpg';
+const imgFullWetsuitModel1 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441727/TDV-Products/4M7A7097.jpg';
+const imgFullWetsuitModel2 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441740/TDV-Products/4M7A7149.jpg';
+const imgFullWetsuitModel3 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441733/TDV-Products/4M7A7125.jpg';
 
 // Wet Suit - Shortie Assets
-import imgShortieWetsuitFront from '../assets/Media/Products/Wet Suit - Shortie/front.png'
-import imgShortieWetsuitBack from '../assets/Media/Products/Wet Suit - Shortie/back.png'
-import imgShortieWetsuitModel1 from '../assets/Media/Products/Wet Suit - Shortie/4M7A7068.JPG'
-import imgShortieWetsuitModel2 from '../assets/Media/Products/Wet Suit - Shortie/4M7A7089.jpg'
-import imgShortieWetsuitModel3 from '../assets/Media/Products/Wet Suit - Shortie/4M7A7130.jpg'
+const imgShortieWetsuitFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441762/TDV-Products/Front.png';
+const imgShortieWetsuitBack = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441760/TDV-Products/Back.png';
+const imgShortieWetsuitModel1 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441747/TDV-Products/4M7A7068.jpg';
+const imgShortieWetsuitModel2 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441754/TDV-Products/4M7A7089.jpg';
+const imgShortieWetsuitModel3 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441758/TDV-Products/4M7A7130.jpg';
 
 // Women's Shoulder Strap Shortie with all round compression Assets
 import imgWomensStrapFront from "../assets/Media/Products/Women's Shoulder Strap Shortie with all round compression/Front.png"
@@ -88,28 +88,28 @@ import imgWomensStrapModel2 from "../assets/Media/Products/Women's Shoulder Stra
 import imgWomensStrapModel3 from "../assets/Media/Products/Women's Shoulder Strap Shortie with all round compression/4M7A6782.jpg"
 
 // Womens Sweetheart Neck Top Assets
-import imgWomensSweetheartFront from '../assets/Media/Products/Womens Sweetheart Neck Top/front.png'
-import imgWomensSweetheartBack from '../assets/Media/Products/Womens Sweetheart Neck Top/back.png'
-import imgWomensSweetheartModel1 from '../assets/Media/Products/Womens Sweetheart Neck Top/4M7A5652.jpg'
-import imgWomensSweetheartModel2 from '../assets/Media/Products/Womens Sweetheart Neck Top/4M7A5870.jpg'
-import imgWomensSweetheartModel3 from '../assets/Media/Products/Womens Sweetheart Neck Top/4M7A6144.jpg'
+const imgWomensSweetheartFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441823/TDV-Products/Front.png';
+const imgWomensSweetheartBack = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441821/TDV-Products/Back.png';
+const imgWomensSweetheartModel1 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441801/TDV-Products/4M7A5652.jpg';
+const imgWomensSweetheartModel2 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441812/TDV-Products/4M7A5870.jpg';
+const imgWomensSweetheartModel3 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441820/TDV-Products/4M7A6144.jpg';
 
 // Group Photos Assets
-import imgGroup1 from '../assets/Media/Products/Group/4M7A5516.jpg'
+const imgGroup1 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441337/TDV-Products/4M7A5516.jpg';
 import imgGroup2 from '../assets/Media/Products/Group/4M7A5935.jpg'
-import imgGroup3 from '../assets/Media/Products/Group/4M7A6084.jpg'
+const imgGroup3 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441352/TDV-Products/4M7A6084.jpg';
 import imgGroup4 from '../assets/Media/Products/Group/4M7A6085.jpg'
 import imgGroup5 from '../assets/Media/Products/Group/4M7A6095.jpg'
 import imgGroup6 from '../assets/Media/Products/Group/4M7A6124.jpg'
-import imgGroup7 from '../assets/Media/Products/Group/4M7A6133.jpg'
-import imgGroup8 from '../assets/Media/Products/Group/4M7A6629.jpg'
-import imgGroup9 from '../assets/Media/Products/Group/4M7A6666.JPG'
-import imgGroup10 from '../assets/Media/Products/Group/4M7A6732.jpg'
-import imgGroup11 from '../assets/Media/Products/Group/4M7A6910.jpg'
+const imgGroup7 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441407/TDV-Products/4M7A6133.jpg';
+const imgGroup8 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441413/TDV-Products/4M7A6629.jpg';
+const imgGroup9 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441422/TDV-Products/4M7A6666.jpg';
+const imgGroup10 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441430/TDV-Products/4M7A6732.jpg';
+const imgGroup11 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441437/TDV-Products/4M7A6910.jpg';
 import imgGroup12 from '../assets/Media/Products/Group/4M7A6954.jpg'
-import imgGroup13 from '../assets/Media/Products/Group/4M7A6959.jpg'
-import imgGroup14 from '../assets/Media/Products/Group/4M7A6966.jpg'
-import imgGroup15 from '../assets/Media/Products/Group/4M7A6987.jpg'
+const imgGroup13 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441456/TDV-Products/4M7A6959.jpg';
+const imgGroup14 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441460/TDV-Products/4M7A6966.jpg';
+const imgGroup15 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441466/TDV-Products/4M7A6987.jpg';
 
 export const GROUP_PHOTOS = [
   { id: 'g-1', src: imgGroup1, title: 'The Dive Village Squad' },
