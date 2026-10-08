@@ -53,7 +53,7 @@ export default function Login() {
       } else if (code === 'auth/user-disabled' || rawMsg.includes('user-disabled')) {
         friendlyMsg = 'This account has been disabled. Please contact support.'
       } else if (rawMsg) {
-        friendlyMsg = rawMsg.replace(/^Firebase:\s*/i, '').replace(/\s*\([^\)]+\)\.?$/i, '')
+        friendlyMsg = rawMsg.replace(/^Firebase:\s*/i, '').replace(/\s*\([^)]+\)\.?$/i, '')
       }
 
       setError(friendlyMsg)

@@ -487,57 +487,6 @@ export default function BookUs() {
     const isDirect = (!experience && Boolean(selectedAddOn)) || isDirectActivity(experience)
     return (
       <div className="bg-[#FAFAFA] flex min-h-[80vh] flex-col items-center justify-center px-4 py-16 text-center">
-<<<<<<< HEAD
-        <div className="rounded-[40px] bg-white p-10 sm:p-14 shadow-card max-w-xl w-full border border-navy/5">
-          <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
-            <CheckIcon />
-          </div>
-          <h2 className="font-heading text-3xl sm:text-4xl font-bold text-navy">Booking Request Received</h2>
-          <p className="mt-3 text-navy/70 text-sm leading-relaxed">
-            Thank you <span className="font-bold text-navy">{contact.name}</span>! We've reserved your request for <span className="font-bold text-accent">{experience || selectedAddOn}</span> at <span className="font-bold text-navy">{location}</span>.
-          </p>
-
-          <div className="my-8 rounded-3xl bg-[#F0F2F5] p-6 text-left space-y-4 text-xs sm:text-sm">
-            <div className="flex justify-between border-b border-navy/10 pb-3">
-              <span className="text-navy/60 font-semibold">Experience & Location:</span>
-              <span className="font-bold text-navy">{experience || selectedAddOn} — {location}</span>
-            </div>
-            {selectedAddOn && experience && (
-              <div className="flex justify-between border-b border-navy/10 pb-3">
-                <span className="text-navy/60 font-semibold">Add On:</span>
-                <span className="font-bold text-accent">{selectedAddOn}</span>
-              </div>
-            )}
-            <div className="flex justify-between border-b border-navy/10 pb-3">
-              <span className="text-navy/60 font-semibold">Date & Group Size:</span>
-              <span className="font-bold text-navy">{formatDateToDDMMYYYY(date)} ({participants.length} Person{participants.length > 1 ? 's' : ''})</span>
-            </div>
-
-            {!isDirect && (
-              <div className="space-y-2.5 pt-1">
-                <span className="text-navy/60 font-semibold block">Participants & Selected Programs:</span>
-                {participants.map((p, idx) => {
-                  const prog = COURSE_CATALOG.find((pr) => pr.id === p.selectedProgram)
-                  const certNames = (p.certifications || [])
-                    .map((id) => CERTIFICATION_OPTIONS.find((c) => c.id === id)?.name)
-                    .filter(Boolean)
-                  const certSummary = p.hasCertification
-                    ? (certNames.length ? certNames.join(', ') : 'Certified Diver')
-                    : 'No Prior Certification (Beginner / Pathway)'
-
-                  return (
-                    <div key={idx} className="flex justify-between items-center bg-white p-3.5 rounded-2xl border border-navy/5">
-                      <div>
-                        <span className="font-bold text-navy block">{p.name || `Participant ${idx + 1}`}</span>
-                        <span className="text-[11px] text-navy/50">Age: {p.age || 'N/A'} • {certSummary}</span>
-                      </div>
-                      <span className="font-bold text-accent text-xs bg-accent/10 px-3 py-1 rounded-full">
-                        {getCourseDisplayName(prog?.name || 'Selected Course')}
-                      </span>
-                    </div>
-                  )
-                })}
-=======
         <motion.div 
           initial={{ opacity: 0, y: 30, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -562,7 +511,7 @@ export default function BookUs() {
             Great!<br/>We'll get in touch with you.
           </h2>
           <p className="text-navy/70 text-sm sm:text-base leading-relaxed">
-            Thank you <span className="font-bold text-navy">{contact.name}</span>! We've reserved your request for <span className="font-bold text-accent">{experience}</span> at <span className="font-bold text-navy">{location}</span>.
+            Thank you <span className="font-bold text-navy">{contact.name}</span>! We've reserved your request for <span className="font-bold text-accent">{experience || selectedAddOn}</span> at <span className="font-bold text-navy">{location}</span>.
           </p>
 
           <div className="my-10 relative">
@@ -573,12 +522,17 @@ export default function BookUs() {
             <div className="rounded-3xl bg-[#F8F9FA] p-6 text-left space-y-4 text-xs sm:text-sm border border-dashed border-navy/20 relative z-0">
               <div className="flex justify-between items-start border-b border-navy/5 pb-3">
                 <span className="text-navy/50 font-semibold uppercase tracking-wider text-[10px] sm:text-xs">Experience & Location</span>
-                <span className="font-bold text-navy text-right leading-tight max-w-[60%]">{experience} <br/><span className="text-navy/60 font-medium text-[11px] sm:text-xs">{location}</span></span>
+                <span className="font-bold text-navy text-right leading-tight max-w-[60%]">{experience || selectedAddOn} <br/><span className="text-navy/60 font-medium text-[11px] sm:text-xs">{location}</span></span>
               </div>
+              {selectedAddOn && experience && (
+                <div className="flex justify-between items-start border-b border-navy/5 pb-3">
+                  <span className="text-navy/50 font-semibold uppercase tracking-wider text-[10px] sm:text-xs">Add On</span>
+                  <span className="font-bold text-accent text-right leading-tight">{selectedAddOn}</span>
+                </div>
+              )}
               <div className="flex justify-between items-start border-b border-navy/5 pb-3">
                 <span className="text-navy/50 font-semibold uppercase tracking-wider text-[10px] sm:text-xs">Date & Group</span>
                 <span className="font-bold text-navy text-right leading-tight max-w-[60%]">{formatDateToDDMMYYYY(date)} <br/><span className="text-navy/60 font-medium text-[11px] sm:text-xs">{participants.length} Person{participants.length > 1 ? 's' : ''}</span></span>
->>>>>>> b1f540cd570da68eae81bec88721de7ead4ee220
               </div>
 
               {!isDirect && (

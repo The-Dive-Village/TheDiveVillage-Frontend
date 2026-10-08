@@ -31,7 +31,7 @@ export default function Signup() {
       } else if (code === 'auth/weak-password' || rawMsg.includes('weak-password')) {
         friendlyMsg = 'Password should be at least 6 characters long.'
       } else if (rawMsg) {
-        friendlyMsg = rawMsg.replace(/^Firebase:\s*/i, '').replace(/\s*\([^\)]+\)\.?$/i, '')
+        friendlyMsg = rawMsg.replace(/^Firebase:\s*/i, '').replace(/\s*\([^)]+\)\.?$/i, '')
       }
 
       setError(friendlyMsg)
