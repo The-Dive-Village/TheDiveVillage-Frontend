@@ -366,7 +366,7 @@ export default function Home() {
               },
               {
                 title: 'Comfortable Stays',
-                desc: 'Handpicked accommodations for a perfect escape, made easy.',
+                desc: 'Handpicked accommodations for luxury holidays and backpacking alike',
                 img: stayImg,
                 icon: (
                   <svg className="w-4 h-4 sm:w-5 sm:h-5 text-[#00AEC7]" fill="currentColor" viewBox="0 0 24 24">
