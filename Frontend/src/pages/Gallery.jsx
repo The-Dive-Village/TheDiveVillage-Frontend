@@ -283,43 +283,32 @@ export default function Gallery() {
             onTouchStart={handleLightboxTouchStart}
             onTouchEnd={handleLightboxTouchEnd}
           >
-            {/* White, Compact Lightbox View Box */}
+            {/* Dark Blue, Sleek Preview Panel with Reduced Padding */}
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
               transition={{ duration: 0.2 }}
-              className="relative bg-white rounded-3xl shadow-2xl p-4 sm:p-5 max-w-2xl sm:max-w-3xl w-full border border-navy/10 flex flex-col gap-3 select-none"
+              className="relative bg-navy rounded-3xl shadow-2xl p-2.5 sm:p-4 max-w-4xl sm:max-w-5xl lg:max-w-6xl w-full border border-white/15 flex flex-col gap-2 sm:gap-2.5 select-none"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Top Bar: Title, Count, & Close Button */}
-              <div className="flex items-center justify-between gap-3 px-1">
-                <div className="min-w-0 flex items-center gap-2.5">
-                  <h2 className="text-sm sm:text-base font-bold font-heading text-navy truncate">
-                    {currentItem.title}
-                  </h2>
-                  <span className="text-xs font-semibold text-navy/50 tracking-wider shrink-0">
-                    ({selectedMediaIndex + 1}/{filteredItems.length})
-                  </span>
-                </div>
+              {/* Floating Top-Right Close Button */}
+              <button
+                type="button"
+                onClick={() => setSelectedMediaIndex(null)}
+                className="absolute top-2.5 right-2.5 sm:top-3.5 sm:right-3.5 z-30 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/60 hover:bg-[#FFCD00] hover:text-[#001e3d] text-white flex items-center justify-center transition active:scale-90 cursor-pointer font-bold text-xs sm:text-sm border border-white/20 shadow-lg backdrop-blur-md"
+                aria-label="Close Lightbox"
+              >
+                ✕
+              </button>
 
-                <button
-                  type="button"
-                  onClick={() => setSelectedMediaIndex(null)}
-                  className="w-8 h-8 rounded-full bg-navy/5 hover:bg-navy hover:text-white text-navy flex items-center justify-center transition active:scale-90 cursor-pointer shrink-0 font-bold text-sm"
-                  aria-label="Close Lightbox"
-                >
-                  ✕
-                </button>
-              </div>
-
-              {/* Media Display Area with Integrated Nav Arrows */}
-              <div className="relative w-full h-[280px] xs:h-[340px] sm:h-[420px] flex items-center justify-center overflow-hidden rounded-2xl bg-black">
+              {/* Media Display Area with Integrated Nav Arrows (Reduced Height) */}
+              <div className="relative w-full h-[220px] xs:h-[280px] sm:h-[340px] lg:h-[380px] max-h-[46vh] flex items-center justify-center overflow-hidden rounded-2xl bg-black/95">
                 {/* Previous Media Arrow */}
                 <button
                   type="button"
                   onClick={(e) => { e.stopPropagation(); prevMedia() }}
-                  className="absolute left-3 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-white/20 hover:bg-[#FFCD00] hover:text-[#001e3d] text-white transition hover:scale-110 active:scale-90 cursor-pointer shadow-md backdrop-blur-md"
+                  className="absolute left-3 z-20 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-white/15 hover:bg-[#FFCD00] hover:text-[#001e3d] text-white transition hover:scale-110 active:scale-90 cursor-pointer shadow-xl backdrop-blur-md border border-white/15"
                   aria-label="Previous visual"
                 >
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -331,7 +320,7 @@ export default function Gallery() {
                 <button
                   type="button"
                   onClick={(e) => { e.stopPropagation(); nextMedia() }}
-                  className="absolute right-3 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-white/20 hover:bg-[#FFCD00] hover:text-[#001e3d] text-white transition hover:scale-110 active:scale-90 cursor-pointer shadow-md backdrop-blur-md"
+                  className="absolute right-3 z-20 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-white/15 hover:bg-[#FFCD00] hover:text-[#001e3d] text-white transition hover:scale-110 active:scale-90 cursor-pointer shadow-xl backdrop-blur-md border border-white/15"
                   aria-label="Next visual"
                 >
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -358,9 +347,19 @@ export default function Gallery() {
                 )}
               </div>
 
-              {/* Only 10 Thumbnails Visible in a Given Time */}
+              {/* Bottom Title Bar: Bigger Title & Count */}
+              <div className="flex items-center justify-between gap-4 px-1.5 w-full">
+                <h2 className="text-lg xs:text-xl sm:text-2xl md:text-3xl font-heading font-extrabold text-white tracking-wide truncate">
+                  {currentItem.title}
+                </h2>
+                <span className="text-xs sm:text-sm md:text-base font-bold text-[#FFCD00] tracking-wider shrink-0 font-mono bg-white/5 border border-white/10 px-2.5 py-1 rounded-full">
+                  {selectedMediaIndex + 1} / {filteredItems.length}
+                </span>
+              </div>
+
+              {/* Only 10 Thumbnails Visible in a Given Time (Compact & Centered) */}
               {filteredItems.length > 1 && (
-                <div className="flex items-center gap-1.5 sm:gap-2 w-full pt-1">
+                <div className="flex items-center justify-center gap-1.5 sm:gap-2.5 max-w-xl sm:max-w-2xl md:max-w-3xl mx-auto w-full pt-0.5">
                   {filteredItems.length > 10 && (
                     <button
                       type="button"
@@ -369,17 +368,17 @@ export default function Gallery() {
                         setSelectedMediaIndex((prev) => Math.max(0, prev - 10))
                       }}
                       disabled={thumbStartIndex === 0}
-                      className="w-7 h-7 sm:w-8 sm:h-8 shrink-0 rounded-xl bg-navy/5 hover:bg-[#FFCD00] hover:text-[#001e3d] disabled:opacity-20 disabled:pointer-events-none text-navy flex items-center justify-center transition active:scale-90 cursor-pointer font-bold"
+                      className="w-7 h-7 sm:w-8 sm:h-8 shrink-0 rounded-lg bg-white/10 hover:bg-[#FFCD00] hover:text-[#001e3d] disabled:opacity-20 disabled:pointer-events-none text-white flex items-center justify-center transition active:scale-90 cursor-pointer font-bold border border-white/15 shadow-sm text-xs"
                       aria-label="Previous 10 thumbnails"
                       title="Previous 10"
                     >
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                         <path d="M15 19l-7-7 7-7" />
                       </svg>
                     </button>
                   )}
 
-                  {/* 10 Visible Thumbnail Slots */}
+                  {/* 10 Compact Visible Thumbnail Slots */}
                   <div className="grid grid-cols-10 gap-1 sm:gap-1.5 flex-1 min-w-0">
                     {visibleThumbs.map(({ item, index }) => {
                       const isActive = index === selectedMediaIndex
@@ -392,10 +391,10 @@ export default function Gallery() {
                             triggerHaptic(8)
                             setSelectedMediaIndex(index)
                           }}
-                          className={`relative aspect-square w-full rounded-lg sm:rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${
+                          className={`relative aspect-square w-full rounded-md sm:rounded-lg overflow-hidden border-2 transition-all cursor-pointer ${
                             isActive
-                              ? 'border-navy shadow-md ring-2 ring-navy/20 scale-102 opacity-100'
-                              : 'border-transparent opacity-60 hover:opacity-100 hover:border-navy/30 bg-slate-100'
+                              ? 'border-[#FFCD00] shadow-md shadow-[#FFCD00]/20 ring-1 sm:ring-2 ring-[#FFCD00]/40 scale-105 opacity-100'
+                              : 'border-white/15 opacity-50 hover:opacity-100 hover:border-white/40 bg-white/5'
                           }`}
                           title={item.title}
                         >
@@ -407,7 +406,7 @@ export default function Gallery() {
                                 playsInline
                                 className="w-full h-full object-cover pointer-events-none opacity-80"
                               />
-                              <div className="absolute inset-0 bg-black/30 flex items-center justify-center text-white text-[7px] sm:text-[9px]">
+                              <div className="absolute inset-0 bg-black/40 flex items-center justify-center text-white text-[7px] sm:text-[8px]">
                                 ▶
                               </div>
                             </div>
@@ -432,11 +431,11 @@ export default function Gallery() {
                         setSelectedMediaIndex((prev) => Math.min(filteredItems.length - 1, prev + 10))
                       }}
                       disabled={thumbStartIndex + 10 >= filteredItems.length}
-                      className="w-7 h-7 sm:w-8 sm:h-8 shrink-0 rounded-xl bg-navy/5 hover:bg-[#FFCD00] hover:text-[#001e3d] disabled:opacity-20 disabled:pointer-events-none text-navy flex items-center justify-center transition active:scale-90 cursor-pointer font-bold"
+                      className="w-7 h-7 sm:w-8 sm:h-8 shrink-0 rounded-lg bg-white/10 hover:bg-[#FFCD00] hover:text-[#001e3d] disabled:opacity-20 disabled:pointer-events-none text-white flex items-center justify-center transition active:scale-90 cursor-pointer font-bold border border-white/15 shadow-sm text-xs"
                       aria-label="Next 10 thumbnails"
                       title="Next 10"
                     >
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                         <path d="M9 5l7 7-7 7" />
                       </svg>
                     </button>
