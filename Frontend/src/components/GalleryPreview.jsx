@@ -1,3 +1,4 @@
+import LazyVideo from './LazyVideo'
 import { useRef, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router'
 import SectionReveal from './SectionReveal'

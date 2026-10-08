@@ -1,12 +1,12 @@
+import LazyVideo from '../components/LazyVideo'
 import { Link } from 'react-router'
 import { motion, useReducedMotion } from 'framer-motion'
 import { IMAGES } from '../utils/images'
 import Button from '../components/Button'
 
-const scubaVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791432885/TDV-Media/Open_Water_Diver.mp4';
-const snorkelingVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791432859/TDV-Media/Discover_Snorkelling.mp4';
-const freedivingVidLocal = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791432852/TDV-Media/Freediver.mp4';
-const freedivingVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1790240858/dive-village/gallery-videos/free_diving_3_mp4.mp4'
+const scubaVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458719/TDV-Media/Services/Open_Water_Diver.mp4';
+const snorkelingVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458610/TDV-Media/Services/Discover_Snorkelling.mp4';
+const freedivingVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458677/TDV-Media/Services/Freediver.mp4';
 
 export default function AllCourses() {
   const reduce = useReducedMotion()

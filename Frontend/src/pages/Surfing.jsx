@@ -1,7 +1,7 @@
 import CourseTemplate from '../layouts/CourseTemplate'
 import SEOHead from '../components/SEOHead'
 import { IMAGES } from '../utils/images'
-const freediveVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1790242293/dive-village/gallery-videos/free_diving_1_mp4.mp4'
+const freediveVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458677/TDV-Media/Services/Freediver.mp4';
 
 export default function Surfing() {
   const tours = [

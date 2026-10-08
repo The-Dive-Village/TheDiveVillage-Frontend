@@ -4,9 +4,9 @@
  * with the application Preloader to guarantee a zero-gap, instant handoff.
  */
 
-const clownfishVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791432887/TDV-Media/ClownFish.mp4';
+import clownfishVideo from '../assets/Media/Background/ClownFish.mp4'
 
-export const HERO_VIDEO_SRC = 'https://res.cloudinary.com/qvbunv8y/video/upload/v2/dive-village/hero-360/cj9jvkh5j6sozf2fhf0x.mp4?v=2' || clownfishVideo
+export const HERO_VIDEO_SRC = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v2/dive-village/hero-360/cj9jvkh5j6sozf2fhf0x.mp4?v=2' || clownfishVideo
 
 let isHeroVideoReady = false
 let isHeroWebGLReady = false

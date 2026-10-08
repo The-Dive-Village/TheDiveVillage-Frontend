@@ -1,3 +1,4 @@
+import LazyVideo from '../../components/LazyVideo'
 import { useState, useEffect, useCallback } from 'react'
 import SectionReveal from '../../components/SectionReveal'
 import { contentService } from '../../services/contentService'

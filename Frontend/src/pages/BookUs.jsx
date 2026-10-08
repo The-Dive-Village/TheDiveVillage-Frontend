@@ -1,3 +1,4 @@
+import LazyVideo from '../components/LazyVideo'
 import { useState, useEffect, useMemo, useCallback, useRef, lazy, Suspense } from 'react'
 import { useSearchParams } from 'react-router'
 import { motion } from 'framer-motion'
@@ -24,8 +25,8 @@ import {
 import { triggerHaptic, triggerSuccessHaptic, triggerErrorHaptic } from '../utils/haptics'
 import 'react-phone-number-input/style.css'
 import PhoneInput from 'react-phone-number-input'
-const turtleAnnaVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1790243911/dive-village/gallery-videos/turtle_anna_mp4.mp4'
-const compiledNightDiveVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1790845672/dive-village/ui-videos/night_dive_mp4.mp4'
+import turtleAnnaVideo from '../assets/Media/Background/Turtle.mp4'
+import compiledNightDiveVideo from '../assets/Media/Background/Night Dive.mp4'
 import useNightDive from '../hooks/useNightDive'
 
 // Backwards-compatible export alias for any legacy imports

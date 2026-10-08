@@ -1,3 +1,4 @@
+import LazyVideo from '../components/LazyVideo'
 import { Link } from 'react-router'
 import { motion, useReducedMotion } from 'framer-motion'
 import Button from '../components/Button'

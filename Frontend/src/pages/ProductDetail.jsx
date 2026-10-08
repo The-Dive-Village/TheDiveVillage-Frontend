@@ -1,3 +1,4 @@
+import LazyVideo from '../components/LazyVideo'
 import { useParams, Link, useNavigate } from 'react-router'
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'

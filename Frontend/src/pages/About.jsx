@@ -1,3 +1,4 @@
+import LazyVideo from '../components/LazyVideo'
 import { Link } from 'react-router'
 import { motion, useReducedMotion } from 'framer-motion'
 import Button from '../components/Button'
@@ -7,14 +8,9 @@ import SEOHead from '../components/SEOHead'
 import MerchBannerCTA from '../components/MerchBannerCTA'
 import { CAROUSEL_IMAGES } from '../utils/images'
 import { useReviews } from '../contexts/ReviewsContext'
-import divingVidLocal from '../assets/Diving(1).mp4'
-const aboutVidLocal = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791432800/TDV-Media/About.mp4';
-import jellyfishVideoLocal from '../assets/jelly fish.mp4'
-
-const nightDiveVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1790845672/dive-village/ui-videos/night_dive_mp4.mp4'
-const divingVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1790244035/dive-village/ui-videos/diving_1_mp4.mp4'
-const aboutVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v2/dive-village/ui-videos/about_mp4.mp4?v=2' || aboutVidLocal
-const jellyfishVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1790244064/dive-village/ui-videos/jelly_fish_mp4.mp4'
+import aboutVid from '../assets/Media/Background/About.mp4'
+import nightDiveVideo from '../assets/Media/Background/Night Dive.mp4'
+const divingVid = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790244035/dive-village/ui-videos/diving_1_mp4.mp4';
 import useNightDive from '../hooks/useNightDive'
 
 import certifiedCoursesImg from '../assets/Media/Services Thumbnails/Certified Courses.webp'

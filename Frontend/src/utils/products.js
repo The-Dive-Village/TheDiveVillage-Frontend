@@ -397,7 +397,7 @@ export const SHOP_PRODUCTS = [
     image: imgBagFront,
     images: [imgBagFront, imgBagBack, imgBagIn, imgBagOpen1, imgBagOpen2],
     imageLabels: ['Front', 'Back', 'Inside', 'Open Top 1', 'Open Top 2'],
-    glb: glbWetsuit1,
+    glb: null,
     category: 'Accessories',
     description: 'Heavy-duty waterproof gear backpack designed for carrying wetsuits, towels, and dive equipment.',
     features: [
