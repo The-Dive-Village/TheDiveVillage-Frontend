@@ -101,7 +101,7 @@ export const getLocationDisplayName = (location) => {
   return 'Dive Site'
 }
 
-export const getTotalLocationsCount = () => 4868
+export const getTotalLocationsCount = () => 3552
 
 export const diveSiteService = {
   getCountries,

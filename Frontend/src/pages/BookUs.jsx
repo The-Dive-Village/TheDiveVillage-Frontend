@@ -11,11 +11,13 @@ import {
   COURSE_CATALOG,
   CERTIFICATION_OPTIONS,
   EXPERIENCE_OPTIONS,
+  ADD_ON_OPTIONS,
   isDirectActivity,
   getCourseDisplayName,
   getEligibleCourses,
   getRecommendedCourses,
   getAvailableCertificationsForAge,
+  sortCoursesByDifficulty,
   validateParticipantBooking,
 } from '../utils/courseEligibility'
 import { triggerHaptic, triggerSuccessHaptic, triggerErrorHaptic } from '../utils/haptics'
@@ -57,6 +59,7 @@ export default function BookUs() {
   const [locationId, setLocationId] = useState('')
   const [location, setLocation] = useState('')
   const [experience, setExperience] = useState('')
+  const [selectedAddOn, setSelectedAddOn] = useState('')
   const [date, setDate] = useState('')
   const [dateError, setDateError] = useState('')
   const [stepError, setStepError] = useState('')
@@ -150,6 +153,11 @@ export default function BookUs() {
         selectedProgram: '',
       }))
     )
+  }
+
+  const handleAddOnChange = (newAddOn) => {
+    setSelectedAddOn(newAddOn)
+    setStepError('')
   }
 
   // Step 2: Participant Info List
@@ -266,13 +274,14 @@ export default function BookUs() {
     if (currentStep > 1) {
       triggerHaptic(8)
       setStepError('')
-      if (currentStep === 4 && isDirectActivity(experience)) {
+      const isDirect = (!experience && Boolean(selectedAddOn)) || isDirectActivity(experience)
+      if (currentStep === 4 && isDirect) {
         setCurrentStep(1)
       } else {
         setCurrentStep((prev) => prev - 1)
       }
     }
-  }, [currentStep, experience])
+  }, [currentStep, experience, selectedAddOn])
 
   const handleNextStep = useCallback(() => {
     if (currentStep === 1) {
@@ -286,9 +295,9 @@ export default function BookUs() {
         setStepError('Please select a dive location.')
         return false
       }
-      if (!experience || experience === 'Select Your Experience') {
+      if (!experience && !selectedAddOn) {
         triggerErrorHaptic()
-        setStepError('Please select an experience.')
+        setStepError('Please select an experience or add-on.')
         return false
       }
       if (!date || date < cooldownMinDateStr || date > maxDateStr) {
@@ -306,7 +315,8 @@ export default function BookUs() {
       setStepError('')
 
       // Direct activity skips course & participant cert eligibility steps directly to Contact Info (Step 4)
-      if (isDirectActivity(experience)) {
+      const isDirect = (!experience && Boolean(selectedAddOn)) || isDirectActivity(experience)
+      if (isDirect) {
         triggerHaptic(10)
         setCurrentStep(4)
         return true
@@ -361,7 +371,7 @@ export default function BookUs() {
       return true
     }
     return true
-  }, [currentStep, country, locationId, selectedLocation, location, experience, date, todayStr, maxDateStr, groupSize, participants])
+  }, [currentStep, country, locationId, selectedLocation, location, experience, selectedAddOn, date, todayStr, maxDateStr, groupSize, participants])
 
   // Desktop keyboard step navigation
   useEffect(() => {
@@ -391,8 +401,10 @@ export default function BookUs() {
       return
     }
 
+    const isDirect = (!experience && Boolean(selectedAddOn)) || isDirectActivity(experience)
+
     // Pre-submission validation for course-based bookings
-    if (!isDirectActivity(experience)) {
+    if (!isDirect) {
       for (const p of participants) {
         const validation = validateParticipantBooking(p, experience)
         if (!validation.valid) {
@@ -411,14 +423,15 @@ export default function BookUs() {
         country,
         locationId: locationId ? String(locationId) : null,
         location,
-        experience,
+        experience: experience || selectedAddOn,
+        selectedAddOn: selectedAddOn || null,
         date,
         groupSize: participants.length,
         contactName: contact.name,
         contactEmail: contact.email,
         contactPhone: contact.phone || null,
         specialRequests: contact.requests || null,
-        participants: isDirectActivity(experience) ? [] : participants,
+        participants: isDirect ? [] : participants,
       })
 
       const isSuccess = Boolean(
@@ -438,14 +451,15 @@ export default function BookUs() {
             type: 'Booking Request',
             country,
             location,
-            experience,
+            experience: experience || selectedAddOn,
+            selectedAddOn: selectedAddOn || null,
             date,
             groupSize: participants.length,
             contactName: contact.name,
             contactEmail: contact.email,
             contactPhone: contact.phone || null,
             specialRequests: contact.requests || null,
-            participants: isDirectActivity(experience) ? [] : participants,
+            participants: isDirect ? [] : participants,
             status: 'Pending Review',
             createdAt: new Date().toISOString(),
           }
@@ -470,7 +484,7 @@ export default function BookUs() {
   }
 
   if (submitted) {
-    const isDirect = isDirectActivity(experience)
+    const isDirect = (!experience && Boolean(selectedAddOn)) || isDirectActivity(experience)
     return (
       <div className="bg-[#FAFAFA] flex min-h-[80vh] flex-col items-center justify-center px-4 py-16 text-center">
         <div className="rounded-[40px] bg-white p-10 sm:p-14 shadow-card max-w-xl w-full border border-navy/5">
@@ -479,14 +493,20 @@ export default function BookUs() {
           </div>
           <h2 className="font-heading text-3xl sm:text-4xl font-bold text-navy">Booking Request Received</h2>
           <p className="mt-3 text-navy/70 text-sm leading-relaxed">
-            Thank you <span className="font-bold text-navy">{contact.name}</span>! We've reserved your request for <span className="font-bold text-accent">{experience}</span> at <span className="font-bold text-navy">{location}</span>.
+            Thank you <span className="font-bold text-navy">{contact.name}</span>! We've reserved your request for <span className="font-bold text-accent">{experience || selectedAddOn}</span> at <span className="font-bold text-navy">{location}</span>.
           </p>
 
           <div className="my-8 rounded-3xl bg-[#F0F2F5] p-6 text-left space-y-4 text-xs sm:text-sm">
             <div className="flex justify-between border-b border-navy/10 pb-3">
               <span className="text-navy/60 font-semibold">Experience & Location:</span>
-              <span className="font-bold text-navy">{experience} — {location}</span>
+              <span className="font-bold text-navy">{experience || selectedAddOn} — {location}</span>
             </div>
+            {selectedAddOn && experience && (
+              <div className="flex justify-between border-b border-navy/10 pb-3">
+                <span className="text-navy/60 font-semibold">Add On:</span>
+                <span className="font-bold text-accent">{selectedAddOn}</span>
+              </div>
+            )}
             <div className="flex justify-between border-b border-navy/10 pb-3">
               <span className="text-navy/60 font-semibold">Date & Group Size:</span>
               <span className="font-bold text-navy">{formatDateToDDMMYYYY(date)} ({participants.length} Person{participants.length > 1 ? 's' : ''})</span>
@@ -611,7 +631,7 @@ export default function BookUs() {
 
             {/* Step Indicator Bar - Mobile Compact Version */}
             {(() => {
-              const isDirect = isDirectActivity(experience)
+              const isDirect = (!experience && Boolean(selectedAddOn)) || isDirectActivity(experience)
               const totalSteps = isDirect ? 2 : 4
               const displayStep = isDirect ? (currentStep === 4 ? 2 : 1) : currentStep
               return (
@@ -652,7 +672,7 @@ export default function BookUs() {
 
             {/* Step Indicator Bar - Desktop Full Version */}
             <div className="hidden sm:flex items-center justify-between mb-8 bg-white/90 backdrop-blur-xl p-5 rounded-3xl border border-navy/10 shadow-sm overflow-x-auto scrollbar-none">
-              {(isDirectActivity(experience)
+              {(((!experience && Boolean(selectedAddOn)) || isDirectActivity(experience))
                 ? [
                     { num: 1, title: 'Location & Experience' },
                     { num: 4, title: 'Contact Info' },
@@ -689,7 +709,7 @@ export default function BookUs() {
                   <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="space-y-3.5 sm:space-y-6">
                     <div>
                       <span className="text-[9px] sm:text-xs font-bold uppercase tracking-widest text-accent mb-0.5 block">
-                        Step 1 of {isDirectActivity(experience) ? 2 : 4}
+                        Step 1 of {((!experience && Boolean(selectedAddOn)) || isDirectActivity(experience)) ? 2 : 4}
                       </span>
                       <h3 className="font-heading text-lg sm:text-3xl font-bold text-navy">Location & Experience</h3>
                       <p className="text-[10px] sm:text-xs text-navy/60 mt-0.5">Where, what, and when would you like to book?</p>
@@ -813,7 +833,7 @@ export default function BookUs() {
                       )
                     })()}
 
-                    {/* 4. SELECT YOUR EXPERIENCE (MUST APPEAR BEFORE PREFERRED DATE & NUMBER OF PERSONS) */}
+                    {/* 3. SELECT YOUR EXPERIENCE */}
                     <div>
                       <label className="mb-1 sm:mb-2 block text-[9px] sm:text-xs font-bold text-navy/70 uppercase tracking-wider">
                         Select Your Experience
@@ -822,17 +842,46 @@ export default function BookUs() {
                         <select
                           value={experience}
                           onChange={(e) => handleExperienceChange(e.target.value)}
-                          required
                           className={`w-full rounded-lg sm:rounded-2xl bg-[#F0F2F5] px-3 py-2 sm:px-5 sm:py-4 pr-8 sm:pr-10 text-[11px] sm:text-sm font-semibold sm:font-bold outline-none focus:ring-2 focus:ring-accent/50 transition cursor-pointer appearance-none ${
                             !experience ? 'text-navy/40' : 'text-navy'
                           }`}
                         >
-                          <option value="" disabled>
+                          <option value="">
                             Select Your Experience
                           </option>
                           {EXPERIENCE_OPTIONS.map((exp) => (
                             <option key={exp} value={exp}>
                               {exp}
+                            </option>
+                          ))}
+                        </select>
+                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 sm:pr-4 text-navy/60">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="sm:w-4 sm:h-4">
+                            <polyline points="6 9 12 15 18 9" />
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 4. SELECT YOUR ADD ONS */}
+                    <div>
+                      <label className="mb-1 sm:mb-2 block text-[9px] sm:text-xs font-bold text-navy/70 uppercase tracking-wider">
+                        SELECT YOUR ADD ONS
+                      </label>
+                      <div className="relative">
+                        <select
+                          value={selectedAddOn}
+                          onChange={(e) => handleAddOnChange(e.target.value)}
+                          className={`w-full rounded-lg sm:rounded-2xl bg-[#F0F2F5] px-3 py-2 sm:px-5 sm:py-4 pr-8 sm:pr-10 text-[11px] sm:text-sm font-semibold sm:font-bold outline-none focus:ring-2 focus:ring-accent/50 transition cursor-pointer appearance-none ${
+                            !selectedAddOn ? 'text-navy/40' : 'text-navy'
+                          }`}
+                        >
+                          <option value="">
+                            Select Your Add Ons
+                          </option>
+                          {ADD_ON_OPTIONS.map((addOn) => (
+                            <option key={addOn} value={addOn}>
+                              {addOn}
                             </option>
                           ))}
                         </select>
@@ -942,7 +991,9 @@ export default function BookUs() {
                         const ageNum = parseInt(p.age, 10)
                         const isAgeValid = !isNaN(ageNum) && ageNum >= 8 && ageNum <= 110
                         const eligibleCourses = isAgeValid ? getEligibleCourses(p.age, p.hasCertification, p.certifications, experience) : []
-                        const availableCertOptions = getAvailableCertificationsForAge(p.age, experience)
+                        const availableCertOptions = sortCoursesByDifficulty(
+                          getAvailableCertificationsForAge(p.age, experience)
+                        )
 
                         return (
                           <div key={p.id} className="rounded-xl sm:rounded-3xl bg-[#FAFAFA] border border-navy/10 p-3 sm:p-6 space-y-2.5 sm:space-y-5">
@@ -1137,7 +1188,9 @@ export default function BookUs() {
 
                     <div data-lenis-prevent className="space-y-3.5 sm:space-y-8 max-h-[500px] sm:max-h-[550px] overflow-y-auto overscroll-contain pr-1">
                       {participants.map((p, idx) => {
-                        const eligible = getRecommendedCourses(p.age, p.hasCertification, p.certifications, experience)
+                        const eligible = sortCoursesByDifficulty(
+                          getRecommendedCourses(p.age, p.hasCertification, p.certifications, experience)
+                        )
                         const certNames = (p.certifications || [])
                           .map((id) => CERTIFICATION_OPTIONS.find((c) => c.id === id)?.name)
                           .filter(Boolean)
@@ -1253,7 +1306,7 @@ export default function BookUs() {
                   <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="space-y-3.5 sm:space-y-6">
                     <div>
                       <span className="text-[9px] sm:text-xs font-bold uppercase tracking-widest text-accent mb-0.5 block">
-                        Step {isDirectActivity(experience) ? 2 : 4} of {isDirectActivity(experience) ? 2 : 4}
+                        Step {((!experience && Boolean(selectedAddOn)) || isDirectActivity(experience)) ? 2 : 4} of {((!experience && Boolean(selectedAddOn)) || isDirectActivity(experience)) ? 2 : 4}
                       </span>
                       <h3 className="font-heading text-lg sm:text-3xl font-bold text-navy">Contact & Booking Details</h3>
                       <p className="text-[10px] sm:text-xs text-navy/60 mt-0.5">Please provide your contact information to finalize the booking request.</p>

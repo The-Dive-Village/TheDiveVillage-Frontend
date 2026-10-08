@@ -4,11 +4,6 @@
  */
 export const COUNTRY_CENTROIDS = [
   {
-    "name": "Albania",
-    "lon": 20.1683,
-    "lat": 41.1533
-  },
-  {
     "name": "Argentina",
     "lon": -63.6167,
     "lat": -38.4161
@@ -22,66 +17,6 @@ export const COUNTRY_CENTROIDS = [
     "name": "Australia",
     "lon": 133.7751,
     "lat": -25.2744
-  },
-  {
-    "name": "Austria",
-    "lon": 14.5501,
-    "lat": 47.5162
-  },
-  {
-    "name": "Azerbaijan",
-    "lon": 47.5769,
-    "lat": 40.1431
-  },
-  {
-    "name": "Belgium",
-    "lon": 4.4699,
-    "lat": 50.5039
-  },
-  {
-    "name": "Benin",
-    "lon": 2.3158,
-    "lat": 9.3077
-  },
-  {
-    "name": "Czech Republic",
-    "lon": 15.4730,
-    "lat": 49.8175
-  },
-  {
-    "name": "El Salvador",
-    "lon": -88.8965,
-    "lat": 13.7942
-  },
-  {
-    "name": "Hungary",
-    "lon": 19.5033,
-    "lat": 47.1625
-  },
-  {
-    "name": "Latvia",
-    "lon": 24.6032,
-    "lat": 56.8796
-  },
-  {
-    "name": "Poland",
-    "lon": 19.1451,
-    "lat": 51.9194
-  },
-  {
-    "name": "Serbia",
-    "lon": 21.0059,
-    "lat": 44.0165
-  },
-  {
-    "name": "Slovakia",
-    "lon": 19.6990,
-    "lat": 48.6690
-  },
-  {
-    "name": "Switzerland",
-    "lon": 8.2275,
-    "lat": 46.8182
   },
   {
     "name": "Bahamas",
@@ -107,11 +42,6 @@ export const COUNTRY_CENTROIDS = [
     "name": "Brazil",
     "lon": -51.9253,
     "lat": -14.235
-  },
-  {
-    "name": "British Indian Ocean Territory",
-    "lon": 72.9333,
-    "lat": -5.5667
   },
   {
     "name": "British Virgin Islands",
@@ -162,11 +92,6 @@ export const COUNTRY_CENTROIDS = [
     "name": "China",
     "lon": 104.1954,
     "lat": 35.8617
-  },
-  {
-    "name": "Cocos (Keeling) Islands",
-    "lon": 100.1953,
-    "lat": -17.644
   },
   {
     "name": "Colombia",
@@ -249,11 +174,6 @@ export const COUNTRY_CENTROIDS = [
     "lat": 51.1657
   },
   {
-    "name": "Gibraltar",
-    "lon": -5.3529,
-    "lat": 36.1203
-  },
-  {
     "name": "Greece",
     "lon": 21.8243,
     "lat": 39.0742
@@ -299,11 +219,6 @@ export const COUNTRY_CENTROIDS = [
     "lat": 53.4129
   },
   {
-    "name": "Israel",
-    "lon": 34.8516,
-    "lat": 31.0461
-  },
-  {
     "name": "Italy",
     "lon": 12.5674,
     "lat": 41.8719
@@ -334,11 +249,6 @@ export const COUNTRY_CENTROIDS = [
     "lat": 29.3117
   },
   {
-    "name": "Libya",
-    "lon": 13.1707,
-    "lat": 32.9036
-  },
-  {
     "name": "Madagascar",
     "lon": 46.8691,
     "lat": -18.7669
@@ -362,11 +272,6 @@ export const COUNTRY_CENTROIDS = [
     "name": "Mexico",
     "lon": -102.5528,
     "lat": 23.6345
-  },
-  {
-    "name": "Monaco",
-    "lon": 7.4258,
-    "lat": 43.7304
   },
   {
     "name": "Montenegro",
@@ -439,14 +344,14 @@ export const COUNTRY_CENTROIDS = [
     "lat": 18.2109
   },
   {
-    "name": "Qatar",
-    "lon": 51.1839,
-    "lat": 25.3548
-  },
-  {
     "name": "Republic of Mauritius",
     "lon": 57.5522,
     "lat": -20.3484
+  },
+  {
+    "name": "Réunion",
+    "lon": 55.5364,
+    "lat": -21.1151
   },
   {
     "name": "Romania",
@@ -457,11 +362,6 @@ export const COUNTRY_CENTROIDS = [
     "name": "Russia",
     "lon": 105.3188,
     "lat": 61.524
-  },
-  {
-    "name": "Réunion",
-    "lon": 55.5364,
-    "lat": -21.1151
   },
   {
     "name": "Saint Kitts & Nevis",
@@ -497,11 +397,6 @@ export const COUNTRY_CENTROIDS = [
     "name": "Sint Maarten",
     "lon": -63.0548,
     "lat": 18.0425
-  },
-  {
-    "name": "Slovenia",
-    "lon": 14.9955,
-    "lat": 46.1512
   },
   {
     "name": "South Africa",
@@ -599,11 +494,6 @@ export const COUNTRY_CENTROIDS = [
     "lat": 39.8283
   },
   {
-    "name": "Vanuatu",
-    "lon": 166.9592,
-    "lat": -15.3767
-  },
-  {
     "name": "Venezuela",
     "lon": -66.5897,
     "lat": 6.4238
@@ -618,4 +508,4 @@ export const COUNTRY_CENTROIDS = [
     "lon": -16.769,
     "lat": 32.7052
   }
-]
+];

@@ -3,12 +3,16 @@
  * Source of truth: TDV_Course_MinAge_Certifications.xlsx
  */
 
-// 10 Exact Experience Options
+// Main Course-Based Experience Options
 export const EXPERIENCE_OPTIONS = [
   'Scuba Diving',
-  'Snorkeling',
   'FreeDiving',
   'Surfing',
+]
+
+// Add-On Options (Direct activities)
+export const ADD_ON_OPTIONS = [
+  'Snorkeling',
   'Canyoneering',
   'Safari',
   'Trekking',
@@ -19,6 +23,7 @@ export const EXPERIENCE_OPTIONS = [
 
 // Direct activities that skip participant cert & course eligibility stages
 export const DIRECT_ACTIVITIES = [
+  'Snorkeling',
   'Canyoneering',
   'Safari',
   'Trekking',
@@ -34,7 +39,8 @@ export const DIRECT_ACTIVITIES = [
  */
 export function isDirectActivity(experience) {
   if (!experience) return false
-  return DIRECT_ACTIVITIES.includes(experience.trim())
+  const clean = experience.trim().toLowerCase()
+  return DIRECT_ACTIVITIES.some((d) => d.toLowerCase() === clean)
 }
 
 /**
@@ -91,7 +97,8 @@ export function parseProgressionLevel(val) {
   const str = String(val).trim()
   if (str === '' || str.toLowerCase() === 'null' || str.toLowerCase() === 'none') return null
 
-  const match = str.match(/^(\d+)([a-z])?$/i)
+  const clean = str.replace(/^(sl|level)\s*[-:]?\s*/i, '')
+  const match = clean.match(/^(\d+)([a-z])?$/i)
   if (!match) return null
 
   const baseLevel = parseInt(match[1], 10)
@@ -138,6 +145,25 @@ export function compareProgressionLevels(a, b) {
   if (!pA) return 1
   if (!pB) return -1
   return pA.rank - pB.rank
+}
+
+/**
+ * Sort courses or certifications strictly by difficulty / SL progression level.
+ * Order: 1a (0.5), 1, 2, 3, 4, 4a, 4b, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16...
+ * Preserves existing relative order for items with identical difficulty.
+ * Unranked items are placed at the end.
+ * Always returns a new array copy without mutating the input.
+ *
+ * @param {Object[]} items
+ * @returns {Object[]} Sorted copy
+ */
+export function sortCoursesByDifficulty(items) {
+  if (!Array.isArray(items)) return []
+  return [...items].sort((a, b) => {
+    const slA = a?.slNumber !== undefined ? a.slNumber : (a?.difficulty !== undefined ? a.difficulty : a?.sl)
+    const slB = b?.slNumber !== undefined ? b.slNumber : (b?.difficulty !== undefined ? b.difficulty : b?.sl)
+    return compareProgressionLevels(slA, slB)
+  })
 }
 
 /**
@@ -1089,14 +1115,13 @@ export function isCourseEligible(course, age, hasCert = false, userCerts = [], e
     return false
   }
 
-  // For Scuba Diving initial stage (no prior certifications + SL 0):
-  // Include in initial SL 0 recommendation set
+  // For Scuba Diving initial stage (no prior certifications + SL 0 or SL 1):
   const normExp = normalizeExperienceKey(experience || course.experience || course.category)
-  const courseSl = course.slNumber !== undefined ? normalizeProgressionNumber(course.slNumber) : null
+  const courseParsed = parseProgressionLevel(course.slNumber)
   const completedList = Array.isArray(userCerts) ? userCerts : (userCerts ? [userCerts] : [])
   const hasValidCert = Boolean(hasCert) || completedList.length > 0
-  if (normExp === 'scuba' && !hasValidCert && courseSl === 0) {
-    return true
+  if (normExp === 'scuba' && !hasValidCert && courseParsed && (courseParsed.baseLevel === 0 || courseParsed.baseLevel === 1)) {
+    return isPrerequisiteSatisfied(course, hasCert, userCerts)
   }
 
   // Check prerequisites
@@ -1442,10 +1467,10 @@ export function getEligibleCourses(age, hasCert = false, userCerts = [], experie
 
   if (normExp === 'scuba') {
     if (!hasValidCert) {
-      // Uncertified Scuba: strictly SL Number 0
+      // Uncertified Scuba: SL 0 and SL 1 courses
       candidateCourses = expCourses.filter((course) => {
         const cParsed = parseProgressionLevel(course.slNumber)
-        return cParsed && cParsed.baseLevel === 0
+        return cParsed && (cParsed.baseLevel === 0 || cParsed.baseLevel === 1)
       })
     } else {
       // Certified Scuba: Higher difficulty progression rule (recommend ALL courses with difficulty > currentDifficulty)
@@ -1584,10 +1609,11 @@ export function validateParticipantBooking(participant, experience = 'Scuba Divi
     }
   }
 
-  const courseSl = course.slNumber !== undefined ? normalizeProgressionNumber(course.slNumber) : getCourseSlNumber(course, catalog)
-  const isInitialSl0Scuba = normExp === 'scuba' && !hasCert && courseSl === 0
+  const courseParsed = parseProgressionLevel(course.slNumber)
+  const courseBaseLevel = courseParsed ? courseParsed.baseLevel : courseSl
+  const isInitialScuba = normExp === 'scuba' && !hasCert && (courseBaseLevel === 0 || courseBaseLevel === 1)
 
-  if (!isInitialSl0Scuba && !isPrerequisiteSatisfied(course, hasCert, certs)) {
+  if (!isInitialScuba && !isPrerequisiteSatisfied(course, hasCert, certs)) {
     return {
       valid: false,
       error: `${participant.name || 'Participant'} does not satisfy the prerequisite certifications for ${getCourseDisplayName(course)}. Required: ${course.certLabel || 'Prior certification'}.`
@@ -1607,7 +1633,7 @@ export function validateParticipantBooking(participant, experience = 'Scuba Divi
       }
     } else if (normExp === 'scuba') {
       if (!hasCert) {
-        if (courseSl !== 0) {
+        if (courseBaseLevel !== 0 && courseBaseLevel !== 1) {
           return {
             valid: false,
             error: `Selected program (${getCourseDisplayName(course)}, SL #${courseSl}) is not available for beginners with no prior certifications.`
@@ -1633,6 +1659,7 @@ export function validateParticipantBooking(participant, experience = 'Scuba Divi
 
 export default {
   EXPERIENCE_OPTIONS,
+  ADD_ON_OPTIONS,
   DIRECT_ACTIVITIES,
   isDirectActivity,
   getCourseDisplayName,
@@ -1651,6 +1678,7 @@ export default {
   getEligibleCourses,
   getRecommendedCourses,
   getAvailableCertificationsForAge,
+  sortCoursesByDifficulty,
   EXCLUDED_SCUBA_CERT_OPTIONS,
   parseProgressionLevel,
   compareProgressionLevels,
