@@ -9,11 +9,11 @@ import barracudaVideo from '../assets/Media/Background/Barracuda.mp4'
 import turtleBgVideo from '../assets/Media/Background/Turtle.mp4'
 import nightDiveVideoLocal from '../assets/Media/Background/Night Dive.mp4'
 
-import underwaterAudio from '../assets/Underwater.mp3'
+import underwaterAudio from '../assets/Audio.mp3'
 import { setHeroVideoReady, getOrCreateHeroVideoElement, setHeroWebGLReady, HERO_VIDEO_SRC } from '../utils/mediaReadyManager'
 
 const videoFile = HERO_VIDEO_SRC || clownfishVideo
-const bookFile = 'https://res.cloudinary.com/qvbunv8y/video/upload/v2/dive-village/hero-360/duskamhque0kugdulev7.mp4?v=2' || barracudaVideo
+const bookFile = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791381034/dive-village/hero-360/baracuda_mp4.mp4' || barracudaVideo
 const turtleVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/v2/dive-village/gallery-videos/turtle_anna_mp4.mp4?v=2' || turtleBgVideo
 const nightDiveVideo = nightDiveVideoLocal
 
@@ -448,15 +448,6 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
         meshRef3.current.rotation.x = meshRef.current.rotation.x - (Math.PI / 7)
         meshRef3.current.material.opacity += (targetOpacity3.current - meshRef3.current.material.opacity) * delta * 2.5
       }
-
-      if (camera && isHome) {
-        const baseFov = 85
-        const targetFov = baseFov + (targetOpacity2.current * 30) // Zoom out wider when Barracuda plays
-        if (Math.abs(camera.fov - targetFov) > 0.1) {
-          camera.fov += (targetFov - camera.fov) * delta * 2.5
-          camera.updateProjectionMatrix()
-        }
-      }
     }
   })
 
@@ -553,28 +544,37 @@ export default function VideoSphereBackground() {
       'pointerdown',
       'touchstart',
       'keydown',
+      'mousemove',
+      'wheel',
+      'scroll'
     ]
 
     const removeUnlockListeners = () => {
       validUnlockEvents.forEach((evt) => {
-        window.removeEventListener(evt, handleFirstInteraction)
+        window.removeEventListener(evt, handleFirstInteraction, true)
       })
     }
 
+    let playAttemptInProgress = false
     const startAudio = () => {
-      if (isCleanedUp || isMutedRef.current) return
+      if (isCleanedUp || isMutedRef.current || playAttemptInProgress) return
       const el = audioRef.current
       if (!el) return
 
+      playAttemptInProgress = true
       el.muted = false
       el.volume = 0.5
       const p = el.play()
       if (p !== undefined) {
         p.then(() => {
+          playAttemptInProgress = false
           removeUnlockListeners()
         }).catch((err) => {
+          playAttemptInProgress = false
           console.debug('Autoplay unlock retry on next interaction:', err)
         })
+      } else {
+        playAttemptInProgress = false
       }
     }
 
@@ -586,21 +586,31 @@ export default function VideoSphereBackground() {
       // 1. Immediate trigger on load
       startAudio()
 
-      // 2. Focused one-time unlock listeners
+      // 2. Focused unlock listeners
       validUnlockEvents.forEach((evt) => {
-        window.addEventListener(evt, handleFirstInteraction, { passive: true, once: true })
+        window.addEventListener(evt, handleFirstInteraction, { capture: true, passive: true })
       })
 
-      // 3. Staggered retries for when audio finishes buffering
-      const timer1 = setTimeout(startAudio, 200)
-      const timer2 = setTimeout(startAudio, 800)
+      // 3. Continuous aggressive polling to bypass restrictions as soon as possible
+      let pollingTimer = setInterval(() => {
+        if (isCleanedUp || isMutedRef.current) {
+          clearInterval(pollingTimer)
+          return
+        }
+        const el = audioRef.current
+        if (el && el.paused) {
+          startAudio()
+        } else if (el && !el.paused) {
+          clearInterval(pollingTimer)
+          removeUnlockListeners()
+        }
+      }, 500)
 
       audio.addEventListener('canplaythrough', startAudio, { once: true })
 
       return () => {
         isCleanedUp = true
-        clearTimeout(timer1)
-        clearTimeout(timer2)
+        clearInterval(pollingTimer)
         audio.removeEventListener('canplaythrough', startAudio)
         removeUnlockListeners()
       }
@@ -663,7 +673,7 @@ export default function VideoSphereBackground() {
 
   return (
     <>
-      <audio ref={audioRef} src={underwaterAudio} loop autoPlay preload="auto" playsInline />
+      <audio ref={audioRef} src={underwaterAudio} loop preload="auto" playsInline />
       <div className="fixed inset-0 -z-10 pointer-events-none">
         <div
           className="h-full w-full overflow-hidden relative"

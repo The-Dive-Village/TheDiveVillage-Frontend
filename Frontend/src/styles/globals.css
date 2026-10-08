@@ -25,9 +25,21 @@
   html {
     scroll-behavior: smooth;
     background-color: #001e3d !important;
-    -webkit-tap-highlight-color: transparent;
+    -webkit-tap-highlight-color: transparent !important;
     -webkit-text-size-adjust: 100%;
     overflow-x: hidden;
+  }
+  
+  *, *::before, *::after {
+    -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
+  }
+  
+  a, button, [role="button"], input, select, textarea,
+  a:focus, button:focus, [role="button"]:focus, input:focus, select:focus, textarea:focus,
+  a:active, button:active, [role="button"]:active {
+    -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
+    outline: none !important;
+    box-shadow: none !important;
   }
 
   body {

@@ -3,17 +3,17 @@ const imgCloudinaryWomensShirtFront = 'https://res.cloudinary.com/qvbunv8y/image
 const imgCloudinaryWomensShirtBack = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1790243996/dive-village/products/gd7symgzgjml8cng5qya.jpg'
 
 // 3D GLB Model Imports
-import glbYellowSuit from '../assets/Media/Products/TDV - 3D Product Files/Yellow suit 3d model.glb.txt?url'
-import glbBlackLongSleeve from '../assets/Media/Products/TDV - 3D Product Files/black long-sleeve top 3d model.glb.txt?url'
-import glbCap from '../assets/Media/Products/TDV - 3D Product Files/black rash guard 3d model.glb.txt?url'
-import glbSwimsuit from '../assets/Media/Products/TDV - 3D Product Files/black swimsuit 3d model.glb.txt?url'
-import glbBlackWetsuit from '../assets/Media/Products/TDV - 3D Product Files/black wetsuit 3d model.glb.txt?url'
-import glbLeggings from '../assets/Media/Products/TDV - 3D Product Files/diving leggings 3d model.glb.txt?url'
-import glbWetsuitMale from '../assets/Media/Products/TDV - 3D Product Files/diving wetsuit 3d model male.glb.txt?url'
-import glbWetsuit1 from '../assets/Media/Products/TDV - 3D Product Files/diving wetsuit 3d model.glb (1).txt?url'
-import glbWetsuitDoc from '../assets/Media/Products/TDV - 3D Product Files/diving wetsuit 3d model.glb.txt?url'
-import glbLongSleeveShirt from '../assets/Media/Products/TDV - 3D Product Files/long sleeve shirt 3d model.glb.txt?url'
-import glbSwimShorts from '../assets/Media/Products/TDV - 3D Product Files/swim shorts 3d model.glb.txt?url'
+import glbYellowSuit from '../assets/Media/Products/TDV - 3D Product Files/Yellow suit 3d model.glb?url'
+import glbBlackLongSleeve from '../assets/Media/Products/TDV - 3D Product Files/black long-sleeve top 3d model.glb?url'
+import glbCap from '../assets/Media/Products/TDV - 3D Product Files/black rash guard 3d model.glb?url'
+import glbSwimsuit from '../assets/Media/Products/TDV - 3D Product Files/black swimsuit 3d model.glb?url'
+import glbBlackWetsuit from '../assets/Media/Products/TDV - 3D Product Files/black wetsuit 3d model.glb?url'
+import glbLeggings from '../assets/Media/Products/TDV - 3D Product Files/diving leggings 3d model.glb?url'
+import glbWetsuitMale from '../assets/Media/Products/TDV - 3D Product Files/diving wetsuit 3d model male.glb?url'
+import glbWetsuit1 from '../assets/Media/Products/TDV - 3D Product Files/diving wetsuit 3d model.glb (1)?url'
+import glbWetsuitDoc from '../assets/Media/Products/TDV - 3D Product Files/diving wetsuit 3d model.glb?url'
+import glbLongSleeveShirt from '../assets/Media/Products/TDV - 3D Product Files/long sleeve shirt 3d model.glb?url'
+import glbSwimShorts from '../assets/Media/Products/TDV - 3D Product Files/swim shorts 3d model.glb?url'
 
 // Backpack Assets
 import imgBagFront from '../assets/Media/Products/Backpack/bag front.webp'
@@ -23,8 +23,8 @@ import imgBagOpen1 from '../assets/Media/Products/Backpack/bagopen1.webp'
 import imgBagOpen2 from '../assets/Media/Products/Backpack/bagopen2.webp'
 
 // Bottoms with compression support Assets
-import imgWomensPantsFront from '../assets/Media/Products/Bottoms with compression support/Womans pants front upscaled.png'
-import imgWomensPantsBack from '../assets/Media/Products/Bottoms with compression support/Womans pants back upscaled.png'
+import imgWomensPantsFront from '../assets/Media/Products/Bottoms with compression support/Front.png'
+import imgWomensPantsBack from '../assets/Media/Products/Bottoms with compression support/Back.png'
 import imgWomensPantsModel1 from '../assets/Media/Products/Bottoms with compression support/4M7A5502.jpg'
 import imgWomensPantsModel2 from '../assets/Media/Products/Bottoms with compression support/4M7A5568.jpg'
 import imgWomensPantsModel3 from '../assets/Media/Products/Bottoms with compression support/4M7A6024.jpg'
@@ -34,30 +34,32 @@ import imgCapFront from '../assets/Media/Products/Cap/catf.webp'
 import imgCapBack from '../assets/Media/Products/Cap/capb.webp'
 
 // Full Sleeves Tops - Unisex Assets
-import imgFullSleevesFront from '../assets/Media/Products/Full Sleeves Tops - Unisex/unisex front upscaled.png'
-import imgFullSleevesBack from '../assets/Media/Products/Full Sleeves Tops - Unisex/Unisex back upscaled.png'
+import imgFullSleevesFront from '../assets/Media/Products/Full Sleeves Tops - Unisex/front.png'
+import imgFullSleevesBack from '../assets/Media/Products/Full Sleeves Tops - Unisex/back.png'
 import imgFullSleevesModel1 from '../assets/Media/Products/Full Sleeves Tops - Unisex/4M7A5597.jpg'
 import imgFullSleevesModel2 from '../assets/Media/Products/Full Sleeves Tops - Unisex/4M7A6299.jpg'
 import imgFullSleevesModel3 from '../assets/Media/Products/Full Sleeves Tops - Unisex/4M7A6453.jpg'
 import imgFullSleevesModel4 from '../assets/Media/Products/Full Sleeves Tops - Unisex/4M7A6526.jpg'
 
 // Half Sleeves Tops - Unisex Assets
+import imgHalfSleevesFront from '../assets/Media/Products/Half Sleeves Tops - Unisex/front.png'
+import imgHalfSleevesBack from '../assets/Media/Products/Half Sleeves Tops - Unisex/back.png'
 import imgHalfSleevesModel1 from '../assets/Media/Products/Half Sleeves Tops - Unisex/4M7A5897.jpg'
 import imgHalfSleevesModel2 from '../assets/Media/Products/Half Sleeves Tops - Unisex/4M7A6356.jpg'
 import imgHalfSleevesModel3 from '../assets/Media/Products/Half Sleeves Tops - Unisex/4M7A6429.jpg'
 import imgHalfSleevesModel4 from '../assets/Media/Products/Half Sleeves Tops - Unisex/4M7A6544.JPG'
 
 // Shorts - Unisex Assets
-import imgUnisexShortsFront from '../assets/Media/Products/Shorts - Unisex/Unisex Shorts front upscaled.png'
-import imgUnisexShortsBack from '../assets/Media/Products/Shorts - Unisex/Unisex shorts back upscaled.png'
+import imgUnisexShortsFront from '../assets/Media/Products/Shorts - Unisex/front.png'
+import imgUnisexShortsBack from '../assets/Media/Products/Shorts - Unisex/back.png'
 import imgUnisexShortsModel1 from '../assets/Media/Products/Shorts - Unisex/4M7A5477.jpg'
 import imgUnisexShortsModel2 from '../assets/Media/Products/Shorts - Unisex/4M7A5614.jpg'
 import imgUnisexShortsModel3 from '../assets/Media/Products/Shorts - Unisex/4M7A5732.jpg'
 import imgUnisexShortsModel4 from '../assets/Media/Products/Shorts - Unisex/4M7A6500.jpg'
 
 // Unisex full body skin with front zipper Assets
-import imgSkinSuitFront from '../assets/Media/Products/Unisex full body skin with front zipper/Dive Suit Front.png'
-import imgSkinSuitBack from '../assets/Media/Products/Unisex full body skin with front zipper/Dive suit back.png'
+import imgSkinSuitFront from '../assets/Media/Products/Unisex full body skin with front zipper/Yellow/front.png'
+import imgSkinSuitBack from '../assets/Media/Products/Unisex full body skin with front zipper/Yellow/back.png'
 import imgSkinSuitYellow1 from '../assets/Media/Products/Unisex full body skin with front zipper/Yellow/4M7A5420.jpg'
 import imgSkinSuitYellow2 from '../assets/Media/Products/Unisex full body skin with front zipper/Yellow/4M7A5779.jpg'
 import imgSkinSuitYellow3 from '../assets/Media/Products/Unisex full body skin with front zipper/Yellow/4M7A6616.jpg'
@@ -72,22 +74,22 @@ import imgFullWetsuitModel2 from '../assets/Media/Products/Wet Suit - Full Lengt
 import imgFullWetsuitModel3 from '../assets/Media/Products/Wet Suit - Full Length/4M7A7125.JPG'
 
 // Wet Suit - Shortie Assets
-import imgShortieWetsuitFront from '../assets/Media/Products/Wet Suit - Shortie/Wet suit front.png'
-import imgShortieWetsuitBack from '../assets/Media/Products/Wet Suit - Shortie/Wet suit back.png'
+import imgShortieWetsuitFront from '../assets/Media/Products/Wet Suit - Shortie/front.png'
+import imgShortieWetsuitBack from '../assets/Media/Products/Wet Suit - Shortie/back.png'
 import imgShortieWetsuitModel1 from '../assets/Media/Products/Wet Suit - Shortie/4M7A7068.JPG'
 import imgShortieWetsuitModel2 from '../assets/Media/Products/Wet Suit - Shortie/4M7A7089.jpg'
 import imgShortieWetsuitModel3 from '../assets/Media/Products/Wet Suit - Shortie/4M7A7130.jpg'
 
 // Women's Shoulder Strap Shortie with all round compression Assets
-import imgWomensStrapFront from "../assets/Media/Products/Women's Shoulder Strap Shortie with all round compression/Womans front upscaled.png"
-import imgWomensStrapBack from "../assets/Media/Products/Women's Shoulder Strap Shortie with all round compression/Womans Back Upscaled.png"
+import imgWomensStrapFront from "../assets/Media/Products/Women's Shoulder Strap Shortie with all round compression/Front.png"
+import imgWomensStrapBack from "../assets/Media/Products/Women's Shoulder Strap Shortie with all round compression/Back.png"
 import imgWomensStrapModel1 from "../assets/Media/Products/Women's Shoulder Strap Shortie with all round compression/4M7A5683.jpg"
 import imgWomensStrapModel2 from "../assets/Media/Products/Women's Shoulder Strap Shortie with all round compression/4M7A6182.jpg"
 import imgWomensStrapModel3 from "../assets/Media/Products/Women's Shoulder Strap Shortie with all round compression/4M7A6782.jpg"
 
 // Womens Sweetheart Neck Top Assets
-import imgWomensSweetheartFront from '../assets/Media/Products/Womens Sweetheart Neck Top/Womans sweetheart front upscaled.png'
-import imgWomensSweetheartBack from '../assets/Media/Products/Womens Sweetheart Neck Top/Womans sweetheart back upscaled.png'
+import imgWomensSweetheartFront from '../assets/Media/Products/Womens Sweetheart Neck Top/front.png'
+import imgWomensSweetheartBack from '../assets/Media/Products/Womens Sweetheart Neck Top/back.png'
 import imgWomensSweetheartModel1 from '../assets/Media/Products/Womens Sweetheart Neck Top/4M7A5652.jpg'
 import imgWomensSweetheartModel2 from '../assets/Media/Products/Womens Sweetheart Neck Top/4M7A5870.jpg'
 import imgWomensSweetheartModel3 from '../assets/Media/Products/Womens Sweetheart Neck Top/4M7A6144.jpg'
@@ -239,9 +241,9 @@ export const SHOP_PRODUCTS = [
     name: 'Half Sleeves Tops - Unisex',
     price: 2299,
     oldPrice: 2799,
-    image: imgHalfSleevesModel1,
-    images: [imgHalfSleevesModel1, imgHalfSleevesModel2, imgHalfSleevesModel3, imgHalfSleevesModel4],
-    imageLabels: ['Photo 1', 'Photo 2', 'Photo 3', 'Photo 4'],
+    image: imgHalfSleevesFront,
+    images: [imgHalfSleevesFront, imgHalfSleevesBack, imgHalfSleevesModel1, imgHalfSleevesModel2, imgHalfSleevesModel3, imgHalfSleevesModel4],
+    imageLabels: ['Front', 'Back', 'Photo 1', 'Photo 2', 'Photo 3', 'Photo 4'],
     glb: glbLongSleeveShirt,
     category: 'Tops',
     description: 'Versatile half-sleeve dive top featuring hidden neck seams and quick-dry fabric for all-day comfort.',
@@ -364,8 +366,8 @@ export const SHOP_PRODUCTS = [
   },
   {
     id: 'product-dive-cap',
-    title: 'Cap',
-    name: 'Cap',
+    title: 'The Dive Village Foldable Cap',
+    name: 'The Dive Village Foldable Cap',
     price: 1299,
     oldPrice: 1599,
     image: imgCapFront,
@@ -389,8 +391,8 @@ export const SHOP_PRODUCTS = [
   },
   {
     id: 'product-ocean-bag',
-    title: 'Backpack',
-    name: 'Backpack',
+    title: 'The Dive Village Gear Bag',
+    name: 'The Dive Village Gear Bag',
     price: 3499,
     oldPrice: 3999,
     image: imgBagFront,

@@ -487,6 +487,7 @@ export default function BookUs() {
     const isDirect = (!experience && Boolean(selectedAddOn)) || isDirectActivity(experience)
     return (
       <div className="bg-[#FAFAFA] flex min-h-[80vh] flex-col items-center justify-center px-4 py-16 text-center">
+<<<<<<< HEAD
         <div className="rounded-[40px] bg-white p-10 sm:p-14 shadow-card max-w-xl w-full border border-navy/5">
           <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
             <CheckIcon />
@@ -536,12 +537,81 @@ export default function BookUs() {
                     </div>
                   )
                 })}
-              </div>
-            )}
+=======
+        <motion.div 
+          initial={{ opacity: 0, y: 30, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+          className="rounded-[40px] bg-white p-8 sm:p-14 shadow-[0_20px_60px_-15px_rgba(0,56,101,0.1)] max-w-xl w-full border border-navy/5 relative overflow-hidden"
+        >
+          {/* Decorative background flare */}
+          <div className="absolute -top-32 -right-32 w-64 h-64 bg-emerald-400/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-accent/10 rounded-full blur-3xl pointer-events-none" />
 
-            <div className="flex justify-between border-t border-navy/10 pt-3 text-xs">
-              <span className="text-navy/60 font-semibold">Contact Email & Phone:</span>
-              <span className="font-bold text-navy">{contact.email} ({contact.phone || 'N/A'})</span>
+          <motion.div 
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: 'spring', damping: 15, stiffness: 200, delay: 0.1 }}
+            className="mx-auto mb-8 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 shadow-[0_0_0_10px_rgba(16,185,129,0.1)] relative"
+          >
+            <div className="absolute inset-0 rounded-full border border-emerald-500/20 animate-[ping_2s_cubic-bezier(0,0,0.2,1)_infinite]" />
+            <div className="scale-125"><CheckIcon /></div>
+          </motion.div>
+
+          <h2 className="font-heading text-4xl sm:text-5xl font-bold text-navy tracking-tight leading-tight mb-4">
+            Great!<br/>We'll get in touch with you.
+          </h2>
+          <p className="text-navy/70 text-sm sm:text-base leading-relaxed">
+            Thank you <span className="font-bold text-navy">{contact.name}</span>! We've reserved your request for <span className="font-bold text-accent">{experience}</span> at <span className="font-bold text-navy">{location}</span>.
+          </p>
+
+          <div className="my-10 relative">
+            {/* Ticket Cutout Effect */}
+            <div className="absolute -left-12 top-1/2 -translate-y-1/2 w-8 h-8 bg-[#FAFAFA] rounded-full shadow-[inset_-3px_0_6px_rgba(0,0,0,0.02)] z-10" />
+            <div className="absolute -right-12 top-1/2 -translate-y-1/2 w-8 h-8 bg-[#FAFAFA] rounded-full shadow-[inset_3px_0_6px_rgba(0,0,0,0.02)] z-10" />
+            
+            <div className="rounded-3xl bg-[#F8F9FA] p-6 text-left space-y-4 text-xs sm:text-sm border border-dashed border-navy/20 relative z-0">
+              <div className="flex justify-between items-start border-b border-navy/5 pb-3">
+                <span className="text-navy/50 font-semibold uppercase tracking-wider text-[10px] sm:text-xs">Experience & Location</span>
+                <span className="font-bold text-navy text-right leading-tight max-w-[60%]">{experience} <br/><span className="text-navy/60 font-medium text-[11px] sm:text-xs">{location}</span></span>
+              </div>
+              <div className="flex justify-between items-start border-b border-navy/5 pb-3">
+                <span className="text-navy/50 font-semibold uppercase tracking-wider text-[10px] sm:text-xs">Date & Group</span>
+                <span className="font-bold text-navy text-right leading-tight max-w-[60%]">{formatDateToDDMMYYYY(date)} <br/><span className="text-navy/60 font-medium text-[11px] sm:text-xs">{participants.length} Person{participants.length > 1 ? 's' : ''}</span></span>
+>>>>>>> b1f540cd570da68eae81bec88721de7ead4ee220
+              </div>
+
+              {!isDirect && (
+                <div className="space-y-3 pt-1">
+                  <span className="text-navy/50 font-semibold uppercase tracking-wider text-[10px] sm:text-xs block mb-2">Participants & Programs</span>
+                  {participants.map((p, idx) => {
+                    const prog = COURSE_CATALOG.find((pr) => pr.id === p.selectedProgram)
+                    const certNames = (p.certifications || [])
+                      .map((id) => CERTIFICATION_OPTIONS.find((c) => c.id === id)?.name)
+                      .filter(Boolean)
+                    const certSummary = p.hasCertification
+                      ? (certNames.length ? certNames.join(', ') : 'Certified Diver')
+                      : 'No Prior Certification (Beginner / Pathway)'
+
+                    return (
+                      <div key={idx} className="flex justify-between items-center bg-white p-4 rounded-2xl shadow-sm border border-navy/5">
+                        <div className="pr-3">
+                          <span className="font-bold text-navy text-sm block mb-0.5">{p.name || `Participant ${idx + 1}`}</span>
+                          <span className="text-[10px] sm:text-[11px] text-navy/50 leading-tight block">Age: {p.age || 'N/A'} • {certSummary}</span>
+                        </div>
+                        <span className="font-bold text-accent text-[10px] bg-accent/10 px-2.5 py-1.5 rounded-full text-center shrink-0 max-w-[110px] leading-tight">
+                          {getCourseDisplayName(prog?.name || 'Selected Course')}
+                        </span>
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
+
+              <div className="flex justify-between items-start border-t border-navy/10 pt-4 mt-2">
+                <span className="text-navy/50 font-semibold uppercase tracking-wider text-[10px] sm:text-xs">Contact Info</span>
+                <span className="font-bold text-navy text-right leading-tight max-w-[60%]">{contact.email} <br/><span className="text-navy/60 font-medium text-[11px] sm:text-xs">{contact.phone || 'N/A'}</span></span>
+              </div>
             </div>
           </div>
 
@@ -550,11 +620,11 @@ export default function BookUs() {
               setSubmitted(false)
               setCurrentStep(1)
             }}
-            className="rounded-full bg-navy px-8 py-4 text-sm font-bold text-white transition hover:bg-accent hover:text-navy w-full shadow-md"
+            className="relative z-10 rounded-full bg-navy px-8 py-4 sm:py-5 text-sm sm:text-base font-bold text-white transition-all hover:bg-accent hover:text-navy hover:scale-[1.02] active:scale-[0.98] w-full shadow-[0_8px_20px_rgba(0,56,101,0.15)] cursor-pointer"
           >
             Submit Another Booking
           </button>
-        </div>
+        </motion.div>
       </div>
     )
   }
@@ -1344,6 +1414,8 @@ export default function BookUs() {
                           placeholder="Phone number"
                           value={contact.phone}
                           onChange={(val) => setContact((prev) => ({ ...prev, phone: val }))}
+                          limitMaxLength={true}
+                          maxLength={15}
                           className="w-full rounded-lg sm:rounded-2xl bg-[#F0F2F5] px-3 py-2 sm:px-5 sm:py-4 text-[11px] sm:text-sm font-semibold sm:font-bold text-navy outline-none focus-within:ring-2 focus-within:ring-accent/50 transition [&_.PhoneInputCountryIcon]:rounded-sm [&_.PhoneInputInput]:bg-transparent [&_.PhoneInputInput]:outline-none [&_.PhoneInputInput]:border-none [&_.PhoneInputCountrySelect]:outline-none [&_.PhoneInputCountryIcon--border]:border-none [&_.PhoneInputInput]:ml-2 [&_.PhoneInputInput]:text-[11px] sm:[&_.PhoneInputInput]:text-sm [&_.PhoneInputInput]:placeholder:text-[10px] sm:[&_.PhoneInputInput]:placeholder:text-sm font-semibold sm:font-bold"
                         />
                       </div>

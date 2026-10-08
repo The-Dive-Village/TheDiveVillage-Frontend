@@ -39,9 +39,58 @@ export default function CustomCursor() {
       return !!target.closest('a, button, input, select, textarea, [role="button"], .cursor-pointer, [data-cursor-interactive], label')
     }
 
+    const checkRadiusForInteractive = (x, y) => {
+      let el = document.elementFromPoint(x, y)
+      if (el && checkInteractive(el)) return true
+      
+      const r = 45 // 45px wide radius
+      const points = [
+        [x + r, y], [x - r, y], [x, y + r], [x, y - r],
+        [x + r * 0.7, y + r * 0.7], [x - r * 0.7, y - r * 0.7],
+        [x + r * 0.7, y - r * 0.7], [x - r * 0.7, y + r * 0.7]
+      ]
+      
+      for (const [px, py] of points) {
+        if (px >= 0 && py >= 0 && px <= window.innerWidth && py <= window.innerHeight) {
+          const pel = document.elementFromPoint(px, py)
+          if (pel && checkInteractive(pel)) return true
+        }
+      }
+      return false
+    }
+
+    let lastRenderX = -100
+    let lastRenderY = -100
+    let currentRotation = 0
+    let targetRotation = 0
+    let currentScaleX = 1
+    let targetScaleX = 1
+
     const updateCursorPosition = () => {
       if (cursorRef.current) {
-        cursorRef.current.style.transform = `translate3d(${latestX}px, ${latestY}px, 0)`
+        const dx = latestX - lastRenderX
+        const dy = latestY - lastRenderY
+        lastRenderX = latestX
+        lastRenderY = latestY
+
+        // Update target orientation
+        if (isHoveringInteractive) {
+          targetRotation = 0
+          targetScaleX = 1
+        } else if (Math.abs(dx) > 1 || Math.abs(dy) > 1) {
+          if (Math.abs(dx) > Math.abs(dy)) {
+            targetRotation = 0
+            targetScaleX = dx > 0 ? -1 : 1
+          } else {
+            targetRotation = dy < 0 ? 90 : -90
+            targetScaleX = 1
+          }
+        }
+
+        currentRotation += (targetRotation - currentRotation) * 0.15
+        currentScaleX += (targetScaleX - currentScaleX) * 0.15
+
+        cursorRef.current.style.transform = `translate3d(${latestX}px, ${latestY}px, 0) rotate(${currentRotation}deg) scaleX(${currentScaleX})`
 
         if (isOverNormalCursor || isHidden) {
           cursorRef.current.style.opacity = '0'
@@ -53,12 +102,12 @@ export default function CustomCursor() {
       }
 
       const now = performance.now()
-      if (now - lastCheckTime >= 16.6 && latestX >= 0 && latestY >= 0) {
+      if (now - lastCheckTime >= 32 && latestX >= 0 && latestY >= 0) { // Limit to ~30fps for radius checks
         lastCheckTime = now
         const elUnderPoint = document.elementFromPoint(latestX, latestY) || currentTarget
         if (elUnderPoint) {
           isOverNormalCursor = checkNormalCursor(elUnderPoint)
-          const hovering = checkInteractive(elUnderPoint)
+          const hovering = checkRadiusForInteractive(latestX, latestY)
           if (hovering !== isHoveringInteractive) {
             isHoveringInteractive = hovering
             setIsHovering(hovering)
@@ -69,7 +118,6 @@ export default function CustomCursor() {
       rafId = requestAnimationFrame(updateCursorPosition)
     }
 
-    // Start high-performance rAF loop
     rafId = requestAnimationFrame(updateCursorPosition)
 
     const onMouseMove = (e) => {
@@ -82,12 +130,11 @@ export default function CustomCursor() {
         isHidden = false
       }
 
-      // 0ms Instant Response: check hover state directly from mouse event target
-      if (e.target) {
-        const hovering = checkInteractive(e.target)
-        if (hovering !== isHoveringInteractive) {
-          isHoveringInteractive = hovering
-          setIsHovering(hovering)
+      // 0ms Instant Response ONLY if directly on a button to avoid CPU load
+      if (e.target && checkInteractive(e.target)) {
+        if (!isHoveringInteractive) {
+          isHoveringInteractive = true
+          setIsHovering(true)
         }
       }
     }

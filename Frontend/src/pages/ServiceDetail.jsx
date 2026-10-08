@@ -26,7 +26,7 @@ export default function ServiceDetail() {
   const { id } = useParams()
   const [openFaq, setOpenFaq] = useState(null)
   const [selectedFunPackage, setSelectedFunPackage] = useState(FUN_DIVES_PACKAGES[1] || FUN_DIVES_PACKAGES[0])
-  const [funCategoryFilter, setFunCategoryFilter] = useState('all')
+  const [funCategoryFilter, setFunCategoryFilter] = useState('day')
 
   const service = SERVICES_DATA.find((s) => s.id === id) || (id === 'combo-fundives' ? SERVICES_DATA.find(s => s.id === 'combo-fundives') : null)
 
@@ -40,10 +40,8 @@ export default function ServiceDetail() {
   const activeFaqs = service.faqs && service.faqs.length > 0 ? service.faqs : DEFAULT_FAQS
 
   const filteredFunPackages = FUN_DIVES_PACKAGES.filter((pkg) => {
-    if (funCategoryFilter === 'all') return true
-    if (funCategoryFilter === 'day') return pkg.dives <= 4 && pkg.id !== 'fun-night' && pkg.id !== 'fun-dawn'
-    if (funCategoryFilter === 'multi') return pkg.dives >= 6
-    if (funCategoryFilter === 'special') return pkg.id === 'fun-night' || pkg.id === 'fun-dawn'
+    if (funCategoryFilter === 'day') return pkg.id !== 'fun-night' && pkg.id !== 'fun-dawn'
+    if (funCategoryFilter === 'night') return pkg.id === 'fun-night' || pkg.id === 'fun-dawn'
     return true
   })
 
@@ -172,10 +170,8 @@ export default function ServiceDetail() {
               {/* Filter Pills */}
               <div className="flex gap-2 overflow-x-auto pb-1 max-w-full">
                 {[
-                  { key: 'all', label: 'All Packages' },
-                  { key: 'day', label: 'Day Dives (1–4)' },
-                  { key: 'multi', label: 'Multi-Day (6–12+)' },
-                  { key: 'special', label: 'Night & Dawn' },
+                  { key: 'day', label: 'Day Dives' },
+                  { key: 'night', label: 'Night & Dawn Dives' },
                 ].map((tab) => (
                   <button
                     key={tab.key}

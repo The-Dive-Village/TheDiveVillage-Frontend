@@ -181,7 +181,7 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
     >
       <model-viewer
         ref={modelRef}
-        src={src ? encodeURI(src) : undefined}
+        src={src ? src : undefined}
         alt={alt}
         auto-rotate={autoRotate ? true : undefined}
         rotation-per-second="35deg"
