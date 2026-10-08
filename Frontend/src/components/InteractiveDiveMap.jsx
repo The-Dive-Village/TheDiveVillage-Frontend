@@ -447,7 +447,7 @@ export default function InteractiveDiveMap({
         viewer.scene.screenSpaceCameraController.enableZoom = true
         viewer.scene.screenSpaceCameraController.enableRotate = true
         viewer.scene.screenSpaceCameraController.enableTilt = true
-        viewer.scene.screenSpaceCameraController.enableTranslate = true
+        viewer.scene.screenSpaceCameraController.enableTranslate = false
         viewer.scene.screenSpaceCameraController.inertiaSpin = 0.85
         viewer.scene.screenSpaceCameraController.inertiaTranslate = 0.85
         viewer.scene.screenSpaceCameraController.inertiaZoom = 0.8

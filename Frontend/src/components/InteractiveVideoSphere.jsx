@@ -289,7 +289,7 @@ export default function InteractiveVideoSphere({ autoRotate = true, className = 
           dampingFactor={0.05}
           autoRotate={autoRotate}
           autoRotateSpeed={1.0}
-          rotateSpeed={-0.5} 
+          rotateSpeed={-0.15} 
         />
       </Canvas>
     </div>

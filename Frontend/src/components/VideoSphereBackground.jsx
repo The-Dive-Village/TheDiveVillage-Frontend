@@ -745,7 +745,7 @@ export default function VideoSphereBackground() {
                 enableDamping={true}
                 dampingFactor={0.05}
                 autoRotate={false}
-                rotateSpeed={-0.5}
+                rotateSpeed={-0.15}
               />
             </Canvas>
           </div>
