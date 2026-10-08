@@ -47,10 +47,11 @@ export default function ProductDetail() {
   }
 
   // Construct media items: 3D Model appears FIRST by default, followed by Front, Back, Open 1, Open 2, etc.
-  const buildMediaItems = (p) => {
+  const buildMediaItems = (p, color) => {
     const items = []
-    if (p.glb) {
-      items.push({ type: 'glb', src: p.glb, id: 'glb-0', label: '3D Model' })
+    const glbUrl = (color && p.glbByColor && p.glbByColor[color.name]) || p.glb
+    if (glbUrl) {
+      items.push({ type: 'glb', src: glbUrl, id: 'glb-0', label: '3D Model' })
     }
     if (p.images && p.images.length > 0) {
       const defaultLabels = ['Front', 'Back', 'Open 1', 'Open 2', 'Interior']
@@ -65,11 +66,11 @@ export default function ProductDetail() {
     return items
   }
 
-  const mediaItems = buildMediaItems(product)
+  const [selectedColor, setSelectedColor] = useState(product.colors ? product.colors[0] : { name: 'Standard', hex: '#FFFFFF' })
+  const mediaItems = buildMediaItems(product, selectedColor)
 
   const [activeMedia, setActiveMedia] = useState(mediaItems[0] || null)
   const [selectedSize, setSelectedSize] = useState(product.sizes ? product.sizes[0] : 'Standard')
-  const [selectedColor, setSelectedColor] = useState(product.colors ? product.colors[0] : { name: 'Standard', hex: '#FFFFFF' })
   const [quantity, setQuantity] = useState(1)
   const [activeTab, setActiveTab] = useState('details')
   const [toastMessage, setToastMessage] = useState(null)
@@ -142,16 +143,25 @@ export default function ProductDetail() {
 
   useEffect(() => {
     const p = SHOP_PRODUCTS.find((item) => item.id === id) || SHOP_PRODUCTS[0]
-    const items = buildMediaItems(p)
+    const initialColor = p.colors && p.colors.length > 0 ? p.colors[0] : { name: 'Standard', hex: '#FFFFFF' }
+    setSelectedColor(initialColor)
+    const items = buildMediaItems(p, initialColor)
     setActiveMedia(items[0] || null)
     if (p.sizes && p.sizes.length > 0) {
       setSelectedSize(p.sizes[0])
     }
-    if (p.colors && p.colors.length > 0) {
-      setSelectedColor(p.colors[0])
-    }
     setQuantity(1)
   }, [id])
+
+  // Sync active 3D model if user changes color (e.g., Yellow <-> Grey Full Body Skin)
+  useEffect(() => {
+    if (product.glbByColor && activeMedia?.type === 'glb') {
+      const activeGlb = product.glbByColor[selectedColor?.name] || product.glb
+      if (activeGlb && activeGlb !== activeMedia.src) {
+        setActiveMedia({ type: 'glb', src: activeGlb, id: 'glb-0', label: '3D Model' })
+      }
+    }
+  }, [selectedColor, product])
 
   const handleAddToCart = () => {
     triggerSuccessHaptic()
@@ -392,7 +402,7 @@ export default function ProductDetail() {
                   className="w-full rounded-[28px] overflow-hidden bg-white border border-navy/10 h-[480px] xs:h-[520px] sm:h-[600px] lg:h-[660px] relative shadow-card group"
                 >
                   {activeMedia?.type === 'glb' ? (
-                    <Product3DViewer src={activeMedia.src} alt={product.title} productId={product.id} />
+                    <Product3DViewer key={activeMedia.src} src={activeMedia.src} alt={product.title} productId={product.id} />
                   ) : activeMedia?.type === 'video' ? (
                     <>
                       <LazyVideo

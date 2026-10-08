@@ -1,18 +1,23 @@
+// Local 3D Models for Cap & Bag
+import glbCap from '../assets/Media/baseball cap 3d model.glb';
+import glbBag from '../assets/Media/backpack 3d model (4).glb';
+
 // Cloudinary Fallbacks
 const imgCloudinaryWomensShirtFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1790243995/dive-village/products/enwcujudp0hde9okxzpo.jpg'
 const imgCloudinaryWomensShirtBack = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1790243996/dive-village/products/gd7symgzgjml8cng5qya.jpg'
 
 // 3D GLB Model Imports
-const glbYellowSuit = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791458376/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Unisex_full_body_skin_with_front_zipper_yellow.glb';
-const glbBlackLongSleeve = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791458308/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Full_Sleeves_Top.glb';
-const glbCap = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791458335/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Shorts_-_unisex.glb';
-const glbSwimsuit = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791458455/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Womens_shoulder_strap_shortie_with_all_round_compression.glb';
-const glbBlackWetsuit = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791458396/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Wet_Suit_-_Full_Length_Male.glb';
-const glbLeggings = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791458296/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Bottoms_with_compression_support.glb';
-const glbWetsuitMale = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791458417/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Wet_Suit_-_Shortie_Male.glb';
-const glbWetsuitDoc = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791458436/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Wet_Suit_Shortie_Female.glb';
-const glbLongSleeveShirt = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791458322/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Half_sleeves_tops_-_unisex.glb';
-const glbSwimShorts = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791458335/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Shorts_-_unisex.glb';
+const glbBottomsCompression = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791458296/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Bottoms_with_compression_support.glb';
+const glbFullSleeves = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791458308/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Full_Sleeves_Top.glb';
+const glbHalfSleeves = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791458322/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Half_sleeves_tops_-_unisex.glb';
+const glbShortsUnisex = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791458335/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Shorts_-_unisex.glb';
+const glbFullBodySkinGrey = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791458356/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Unisex_full_body_skin_with_front_zipper_Grey.glb';
+const glbFullBodySkinYellow = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791458376/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Unisex_full_body_skin_with_front_zipper_yellow.glb';
+const glbWetSuitFullLengthMale = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791458396/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Wet_Suit_-_Full_Length_Male.glb';
+const glbWetSuitShortieMale = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791458417/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Wet_Suit_-_Shortie_Male.glb';
+const glbWetSuitShortieFemale = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791458436/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Wet_Suit_Shortie_Female.glb';
+const glbWomensShoulderStrap = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791458455/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Womens_shoulder_strap_shortie_with_all_round_compression.glb';
+const glbWomensSweetheart = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791458478/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Womens_Sweetheart_neck_top.glb';
 
 // Backpack Assets
 const imgBagFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458222/TDV-Media/Products/Backpack/bag_front.webp';
@@ -57,24 +62,26 @@ const imgUnisexShortsModel3 = 'https://res.cloudinary.com/qvbunv8y/image/upload/
 const imgUnisexShortsModel4 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458280/TDV-Media/Products/Shorts%20-%20Unisex/4M7A6500.jpg';
 
 // Unisex full body skin with front zipper Assets
-const imgSkinSuitFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458487/TDV-Media/Products/Unisex%20full%20body%20skin%20with%20front%20zipper/Yellow/4M7A5413.jpg';
-const imgSkinSuitBack = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458490/TDV-Media/Products/Unisex%20full%20body%20skin%20with%20front%20zipper/Yellow/4M7A5428.jpg';
+const imgSkinSuitFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458500/TDV-Media/Products/Unisex%20full%20body%20skin%20with%20front%20zipper/Yellow/front.png';
+const imgSkinSuitBack = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458499/TDV-Media/Products/Unisex%20full%20body%20skin%20with%20front%20zipper/Yellow/back.png';
 const imgSkinSuitYellow1 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458488/TDV-Media/Products/Unisex%20full%20body%20skin%20with%20front%20zipper/Yellow/4M7A5420.jpg';
 const imgSkinSuitYellow2 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458494/TDV-Media/Products/Unisex%20full%20body%20skin%20with%20front%20zipper/Yellow/4M7A5779.jpg';
 const imgSkinSuitYellow3 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458496/TDV-Media/Products/Unisex%20full%20body%20skin%20with%20front%20zipper/Yellow/4M7A6616.jpg';
+const imgSkinSuitGreyFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458486/TDV-Media/Products/Unisex%20full%20body%20skin%20with%20front%20zipper/Grey/Front.jpg';
+const imgSkinSuitGreyBack = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458484/TDV-Media/Products/Unisex%20full%20body%20skin%20with%20front%20zipper/Grey/Back.jpg';
 const imgSkinSuitGrey1 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458482/TDV-Media/Products/Unisex%20full%20body%20skin%20with%20front%20zipper/Grey/4M7A5826.jpg';
 const imgSkinSuitGrey2 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458483/TDV-Media/Products/Unisex%20full%20body%20skin%20with%20front%20zipper/Grey/4M7A6907.jpg';
 
 // Wet Suit - Full Length Assets
-const imgFullWetsuitFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458502/TDV-Media/Products/Wet%20Suit%20-%20Full%20Length/4M7A7097.jpg';
-const imgFullWetsuitBack = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458504/TDV-Media/Products/Wet%20Suit%20-%20Full%20Length/4M7A7125.jpg';
+const imgFullWetsuitFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458508/TDV-Media/Products/Wet%20Suit%20-%20Full%20Length/front.jpg';
+const imgFullWetsuitBack = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458506/TDV-Media/Products/Wet%20Suit%20-%20Full%20Length/back.jpg';
 const imgFullWetsuitModel1 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458502/TDV-Media/Products/Wet%20Suit%20-%20Full%20Length/4M7A7097.jpg';
 const imgFullWetsuitModel2 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458505/TDV-Media/Products/Wet%20Suit%20-%20Full%20Length/4M7A7149.jpg';
 const imgFullWetsuitModel3 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441733/TDV-Products/4M7A7125.jpg';
 
 // Wet Suit - Shortie Assets
-const imgShortieWetsuitFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458509/TDV-Media/Products/Wet%20Suit%20-%20Shortie/4M7A7068.jpg';
-const imgShortieWetsuitBack = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458510/TDV-Media/Products/Wet%20Suit%20-%20Shortie/4M7A7089.jpg';
+const imgShortieWetsuitFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458515/TDV-Media/Products/Wet%20Suit%20-%20Shortie/front.png';
+const imgShortieWetsuitBack = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458513/TDV-Media/Products/Wet%20Suit%20-%20Shortie/back.png';
 const imgShortieWetsuitModel1 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441747/TDV-Products/4M7A7068.jpg';
 const imgShortieWetsuitModel2 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458510/TDV-Media/Products/Wet%20Suit%20-%20Shortie/4M7A7089.jpg';
 const imgShortieWetsuitModel3 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458511/TDV-Media/Products/Wet%20Suit%20-%20Shortie/4M7A7130.jpg';
@@ -138,7 +145,7 @@ export const SHOP_PRODUCTS = [
     image: imgWomensSweetheartFront,
     images: [imgWomensSweetheartFront, imgWomensSweetheartBack, imgWomensSweetheartModel1, imgWomensSweetheartModel2, imgWomensSweetheartModel3],
     imageLabels: ['Front', 'Back', 'Photo 1', 'Photo 2', 'Photo 3'],
-    glb: glbBlackLongSleeve,
+    glb: glbWomensSweetheart,
     category: 'Tops',
     description: 'Stay protected and stylish in the water. Features a sweetheart neckline, premium stretch, and comfortable ergonomic fit.',
     features: [
@@ -164,7 +171,7 @@ export const SHOP_PRODUCTS = [
     image: imgWomensPantsFront,
     images: [imgWomensPantsFront, imgWomensPantsBack, imgWomensPantsModel1, imgWomensPantsModel2, imgWomensPantsModel3],
     imageLabels: ['Front', 'Back', 'Photo 1', 'Photo 2', 'Photo 3'],
-    glb: glbLeggings,
+    glb: glbBottomsCompression,
     category: 'Bottoms',
     description: 'High-waisted dive pants offering full-length coverage and thigh-smoothing compression panels for ultimate comfort and confidence.',
     features: [
@@ -191,7 +198,7 @@ export const SHOP_PRODUCTS = [
     image: imgWomensStrapFront,
     images: [imgWomensStrapFront, imgWomensStrapBack, imgWomensStrapModel1, imgWomensStrapModel2, imgWomensStrapModel3],
     imageLabels: ['Front', 'Back', 'Photo 1', 'Photo 2', 'Photo 3'],
-    glb: glbSwimsuit,
+    glb: glbWomensShoulderStrap,
     category: 'Tops',
     description: 'Supportive and comfortable dive top featuring heavy-duty Velcro straps, built-in chest support, and all-round compression fit.',
     features: [
@@ -217,7 +224,7 @@ export const SHOP_PRODUCTS = [
     image: imgUnisexShortsFront,
     images: [imgUnisexShortsFront, imgUnisexShortsBack, imgUnisexShortsModel1, imgUnisexShortsModel2, imgUnisexShortsModel3, imgUnisexShortsModel4],
     imageLabels: ['Front', 'Back', 'Photo 1', 'Photo 2', 'Photo 3', 'Photo 4'],
-    glb: glbSwimShorts,
+    glb: glbShortsUnisex,
     category: 'Bottoms',
     description: 'Experience seamless comfort with these unisex dive shorts, designed without visible stitching to reduce skin friction.',
     features: [
@@ -243,7 +250,7 @@ export const SHOP_PRODUCTS = [
     image: imgHalfSleevesFront,
     images: [imgHalfSleevesFront, imgHalfSleevesBack, imgHalfSleevesModel1, imgHalfSleevesModel2, imgHalfSleevesModel3, imgHalfSleevesModel4],
     imageLabels: ['Front', 'Back', 'Photo 1', 'Photo 2', 'Photo 3', 'Photo 4'],
-    glb: glbLongSleeveShirt,
+    glb: glbHalfSleeves,
     category: 'Tops',
     description: 'Versatile half-sleeve dive top featuring hidden neck seams and quick-dry fabric for all-day comfort.',
     features: [
@@ -269,7 +276,7 @@ export const SHOP_PRODUCTS = [
     image: imgFullSleevesFront,
     images: [imgFullSleevesFront, imgFullSleevesBack, imgFullSleevesModel1, imgFullSleevesModel2, imgFullSleevesModel3, imgFullSleevesModel4],
     imageLabels: ['Front', 'Back', 'Photo 1', 'Photo 2', 'Photo 3', 'Photo 4'],
-    glb: glbBlackLongSleeve,
+    glb: glbFullSleeves,
     category: 'Tops',
     description: 'Full coverage unisex long sleeve rashguard for maximum UV and sting protection in warm and cold waters.',
     features: [
@@ -293,9 +300,13 @@ export const SHOP_PRODUCTS = [
     price: 6999,
     oldPrice: 8999,
     image: imgSkinSuitFront,
-    images: [imgSkinSuitFront, imgSkinSuitBack, imgSkinSuitYellow1, imgSkinSuitYellow2, imgSkinSuitYellow3, imgSkinSuitGrey1, imgSkinSuitGrey2],
-    imageLabels: ['Front', 'Back', 'Yellow View 1', 'Yellow View 2', 'Yellow View 3', 'Grey View 1', 'Grey View 2'],
-    glb: glbYellowSuit,
+    images: [imgSkinSuitFront, imgSkinSuitBack, imgSkinSuitYellow1, imgSkinSuitYellow2, imgSkinSuitYellow3, imgSkinSuitGreyFront, imgSkinSuitGreyBack, imgSkinSuitGrey1, imgSkinSuitGrey2],
+    imageLabels: ['Front', 'Back', 'Yellow View 1', 'Yellow View 2', 'Yellow View 3', 'Grey Front', 'Grey Back', 'Grey View 1', 'Grey View 2'],
+    glb: glbFullBodySkinYellow,
+    glbByColor: {
+      'Yellow / Black': glbFullBodySkinYellow,
+      'Grey / Black': glbFullBodySkinGrey,
+    },
     category: 'Skin Wear',
     description: 'Ultimate full-body protection with grip panels on knees and seat, full front zipper, and stirrup foot straps.',
     features: [
@@ -322,7 +333,7 @@ export const SHOP_PRODUCTS = [
     image: imgFullWetsuitFront,
     images: [imgFullWetsuitFront, imgFullWetsuitBack, imgFullWetsuitModel1, imgFullWetsuitModel2, imgFullWetsuitModel3],
     imageLabels: ['Front', 'Back', 'Photo 1', 'Photo 2', 'Photo 3'],
-    glb: glbBlackWetsuit,
+    glb: glbWetSuitFullLengthMale,
     category: 'Wetsuits',
     description: 'High-performance 3mm super-stretch thermal neoprene full wetsuit with anatomical cut.',
     features: [
@@ -347,7 +358,7 @@ export const SHOP_PRODUCTS = [
     image: imgShortieWetsuitFront,
     images: [imgShortieWetsuitFront, imgShortieWetsuitBack, imgShortieWetsuitModel1, imgShortieWetsuitModel2, imgShortieWetsuitModel3],
     imageLabels: ['Front', 'Back', 'Photo 1', 'Photo 2', 'Photo 3'],
-    glb: glbWetsuitMale,
+    glb: glbWetSuitShortieMale,
     category: 'Wetsuits',
     description: 'Flexible 2mm shortie wetsuit ideal for warm water diving, surfing, and snorkeling.',
     features: [
@@ -397,7 +408,7 @@ export const SHOP_PRODUCTS = [
     image: imgBagFront,
     images: [imgBagFront, imgBagBack, imgBagIn, imgBagOpen1, imgBagOpen2],
     imageLabels: ['Front', 'Back', 'Inside', 'Open Top 1', 'Open Top 2'],
-    glb: null,
+    glb: glbBag,
     category: 'Accessories',
     description: 'Heavy-duty waterproof gear backpack designed for carrying wetsuits, towels, and dive equipment.',
     features: [
