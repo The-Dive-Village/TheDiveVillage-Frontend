@@ -3,9 +3,9 @@ import { motion, useReducedMotion } from 'framer-motion'
 import { IMAGES } from '../utils/images'
 import Button from '../components/Button'
 
-import scubaVid from '../assets/Media/Services/Open Water Diver.mp4'
-import snorkelingVid from '../assets/Media/Services/Discover Snorkelling.mp4'
-import freedivingVidLocal from '../assets/Media/Services/Freediver.mp4'
+const scubaVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791432885/TDV-Media/Open_Water_Diver.mp4';
+const snorkelingVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791432859/TDV-Media/Discover_Snorkelling.mp4';
+const freedivingVidLocal = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791432852/TDV-Media/Freediver.mp4';
 const freedivingVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1790240858/dive-village/gallery-videos/free_diving_3_mp4.mp4'
 
 export default function AllCourses() {
@@ -57,7 +57,7 @@ export default function AllCourses() {
             className="group block relative rounded-3xl sm:rounded-[40px] overflow-hidden aspect-[4/3] xs:aspect-[16/11] sm:aspect-[3/4] shadow-xl bg-navy"
           >
             {cat.video ? (
-              <video
+              <LazyVideo
                 src={cat.video}
                 autoPlay
                 loop

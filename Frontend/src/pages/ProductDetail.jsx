@@ -322,7 +322,7 @@ export default function ProductDetail() {
                           <img src={item.src} alt={item.label} className="w-full h-full object-cover bg-white" />
                         ) : item.type === 'video' ? (
                           <div className="relative w-full h-full bg-black flex items-center justify-center">
-                            <video src={item.src} className="w-full h-full object-cover opacity-70 pointer-events-none" muted />
+                            <LazyVideosrc={item.src} className="w-full h-full object-cover opacity-70 pointer-events-none" muted />
                             <div className="absolute inset-0 flex items-center justify-center bg-black/40">
                               <span className="w-6 h-6 rounded-full bg-accent text-navy flex items-center justify-center text-xs font-bold shadow-sm">
                                 ▶
@@ -394,7 +394,7 @@ export default function ProductDetail() {
                     <Product3DViewer src={activeMedia.src} alt={product.title} productId={product.id} />
                   ) : activeMedia?.type === 'video' ? (
                     <>
-                      <video
+                      <LazyVideo
                         src={activeMedia.src}
                         controls
                         autoPlay

@@ -4,10 +4,10 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
 import { useLocation } from 'react-router'
-import clownfishVideo from '../assets/Media/Background/ClownFish.mp4'
+const clownfishVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791432887/TDV-Media/ClownFish.mp4';
 import barracudaVideo from '../assets/Media/Background/Barracuda.mp4'
-import turtleBgVideo from '../assets/Media/Background/Turtle.mp4'
-import nightDiveVideoLocal from '../assets/Media/Background/Night Dive.mp4'
+const turtleBgVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791433260/TDV-Media/Turtle.mp4';
+const nightDiveVideoLocal = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791432880/TDV-Media/Night_Dive.mp4';
 
 import underwaterAudio from '../assets/Audio.mp3'
 import { setHeroVideoReady, getOrCreateHeroVideoElement, setHeroWebGLReady, HERO_VIDEO_SRC } from '../utils/mediaReadyManager'

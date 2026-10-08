@@ -86,7 +86,7 @@ function Card({ program }) {
       {/* Image Container */}
       <div className="relative aspect-[16/10] w-full rounded-2xl overflow-hidden mb-6 bg-black/20 shrink-0">
         {program.video ? (
-          <video
+          <LazyVideo
             src={program.video}
             autoPlay
             loop

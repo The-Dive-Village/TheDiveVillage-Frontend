@@ -33,7 +33,7 @@ export default function CourseTemplate({
       <section className="relative h-[80vh] min-h-[600px] w-full flex items-center justify-center overflow-hidden bg-navy">
         <div className="absolute inset-0 z-0">
           {heroVideo ? (
-            <video
+            <LazyVideo
               ref={(el) => {
                 if (el) {
                   el.muted = true

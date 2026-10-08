@@ -80,7 +80,7 @@ export default function Login() {
       
       {/* Left side - Background Video (hidden on mobile) */}
       <div className="hidden lg:block lg:w-[60%] xl:w-[62%] shrink-0 relative bg-white overflow-hidden">
-        <video
+        <LazyVideo
           src={vidBarracuda}
           autoPlay
           loop

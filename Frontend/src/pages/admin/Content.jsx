@@ -514,7 +514,7 @@ export default function AdminContent() {
                   {/* Media Preview Thumbnail */}
                   <div className="relative aspect-video bg-slate-100 overflow-hidden">
                     {item.mediaType === 'VIDEO' ? (
-                      <video
+                      <LazyVideo
                         src={item.src}
                         poster={item.thumbnail || undefined}
                         className="w-full h-full object-cover"

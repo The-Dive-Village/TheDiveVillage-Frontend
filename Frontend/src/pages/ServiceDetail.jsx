@@ -67,7 +67,7 @@ export default function ServiceDetail() {
       {/* 1. HERO BANNER */}
       <div className="relative w-full min-h-[60vh] sm:min-h-[75vh] bg-navy overflow-hidden flex flex-col justify-end pt-32 pb-24 sm:pb-36">
         {activeHeroVideo ? (
-          <video
+          <LazyVideo
             key={activeHeroVideo}
             ref={(el) => {
               if (el) {

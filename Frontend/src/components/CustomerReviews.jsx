@@ -95,7 +95,7 @@ export default function CustomerReviews({ className = '' }) {
               </button>
 
               {activeMedia.type === 'video' ? (
-                <video
+                <LazyVideo
                   src={activeMedia.src}
                   controls
                   autoPlay

@@ -169,7 +169,7 @@ export default function GalleryPreview() {
               className="relative flex-shrink-0 w-[44vw] min-w-[155px] max-w-[210px] aspect-square sm:aspect-auto sm:w-[230px] sm:h-[310px] lg:w-[260px] lg:h-[350px] rounded-2xl overflow-hidden border border-white/20 shadow-2xl group cursor-pointer bg-navy/20"
             >
               {item.type === 'video' ? (
-                <video
+                <LazyVideo
                   src={item.src}
                   muted
                   loop

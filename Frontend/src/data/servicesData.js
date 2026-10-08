@@ -59,44 +59,44 @@ import extVaricose from '../assets/Media/Extras for Gallery/Varicose Wart Slug.w
 import extYellowback from '../assets/Media/Extras for Gallery/Yellowback fusiliers.webp'
 
 // Exact Service Media Video Imports from Assets/Media/Services
-import vidTryDive from '../assets/Media/Services/Try Dive.mp4'
-import vidDSDLite from '../assets/Media/Services/Discover Scuba Dive Lite.mp4'
-import vidDiscoverScuba from '../assets/Media/Services/Discover Scuba Dive.mp4'
-import vidDiscoverSnorkelling from '../assets/Media/Services/Discover Snorkelling.mp4'
-import vidBubblemaker from '../assets/Media/Services/Bubblemaker.mp4'
-import vidAddDiveAfterDSD from '../assets/Media/Services/Additional dive ater discover scuba dive.mp4'
-import vidSkinDiver from '../assets/Media/Services/Skin Diver.mp4'
-import vidScubaDiver from '../assets/Media/Services/Scuba Diver.MP4'
-import vidOpenWater from '../assets/Media/Services/Open Water Diver.mp4'
-import vidAdventureDiver from '../assets/Media/Services/AdventureDiver.mp4'
-import vidAdvancedOpenWater from '../assets/Media/Services/Advanced Open Water.mp4'
-import vidEFR from '../assets/Media/Services/EFR Primary & Secondary Care.mp4'
-import vidRescueDiver from '../assets/Media/Services/Rescue Diver.MP4'
-import vidReactivate from '../assets/Media/Services/Reactivate with dive.mp4'
-import vidFullRefresher from '../assets/Media/Services/Full Refresher with dive.mp4'
-import vidLiteRefresher from '../assets/Media/Services/Lite Refresher.mp4'
-import vidBuoyancy from '../assets/Media/Services/Peak Perormance Buoyancy.mp4'
-import vidProjectAware from '../assets/Media/Services/Project AWARE.mp4'
-import vidDeepDiver from '../assets/Media/Services/DeepDiver.mp4'
-import vidWreckDiver from '../assets/Media/Services/Wreck Diver.mp4'
-import vidNightDiver from '../assets/Media/Services/Night Diver.mp4'
-import vidNightDiveBackground from '../assets/Media/Background/Night Dive.mp4'
-import vidNitrox from '../assets/Media/Services/Enriched Air Nitrox.mp4'
-import vidFunDive from '../assets/Media/Services/Fun Dive.mp4'
+const vidTryDive = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791432892/TDV-Media/Try_Dive.mp4';
+const vidDSDLite = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791432859/TDV-Media/Discover_Scuba_Dive_Lite.mp4';
+const vidDiscoverScuba = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791432794/TDV-Media/Discover_Scuba_Dive.mp4';
+const vidDiscoverSnorkelling = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791432859/TDV-Media/Discover_Snorkelling.mp4';
+const vidBubblemaker = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791432853/TDV-Media/Bubblemaker.mp4';
+const vidAddDiveAfterDSD = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791432796/TDV-Media/Additional_dive_ater_discover_scuba_dive.mp4';
+const vidSkinDiver = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791432864/TDV-Media/Skin_Diver.mp4';
+const vidScubaDiver = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791433947/TDV-Media/Scuba_Diver.mp4';
+const vidOpenWater = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791432885/TDV-Media/Open_Water_Diver.mp4';
+const vidAdventureDiver = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791432794/TDV-Media/AdventureDiver.mp4';
+const vidAdvancedOpenWater = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791433284/TDV-Media/Advanced_Open_Water.mp4';
+const vidEFR = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791432873/TDV-Media/EFR_Primary_Secondary_Care.mp4';
+const vidRescueDiver = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791432883/TDV-Media/Rescue_Diver.mp4';
+const vidReactivate = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791432859/TDV-Media/Reactivate_with_dive.mp4';
+const vidFullRefresher = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791432890/TDV-Media/Full_Refresher_with_dive.mp4';
+const vidLiteRefresher = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791432791/TDV-Media/Lite_Refresher.mp4';
+const vidBuoyancy = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791432861/TDV-Media/Peak_Perormance_Buoyancy.mp4';
+const vidProjectAware = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791433806/TDV-Media/Project_AWARE.mp4';
+const vidDeepDiver = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791433305/TDV-Media/DeepDiver.mp4';
+const vidWreckDiver = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791432796/TDV-Media/Wreck_Diver.mp4';
+const vidNightDiver = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791432852/TDV-Media/Night_Diver.mp4';
+const vidNightDiveBackground = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791432880/TDV-Media/Night_Dive.mp4';
+const vidNitrox = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791432798/TDV-Media/Enriched_Air_Nitrox.mp4';
+const vidFunDive = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791432797/TDV-Media/Fun_Dive.mp4';
 import vidDSDOpenWater from '../assets/Media/Services/Discover Scuba Dive + Open Water.mp4'
-import vidOWAdvanced from '../assets/Media/Services/Open water+Advanced Openwater.mp4'
+const vidOWAdvanced = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791432859/TDV-Media/Open_water_Advanced_Openwater.mp4';
 import vidEFRRescue from '../assets/Media/Services/Emergency First Response +Rescue Diver.mp4'
-import vidDivemaster from '../assets/Media/Services/DiveMaster.mp4'
-import vidEFRRescueDM from '../assets/Media/Services/Emergency First Response+Rescue+DiveMaster.mp4'
+const vidDivemaster = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791432862/TDV-Media/DiveMaster.mp4';
+const vidEFRRescueDM = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791433668/TDV-Media/Emergency_First_Response_Rescue_DiveMaster.mp4';
 import vidEFRRescueDMPrereq from '../assets/Media/Services/Emergency First Response+Rescue+DiveMaster(Prequesites).mp4'
-import vidZeroToHero from '../assets/Media/Services/Zero to hero - Open Water to Dive Master.mp4'
-import vidBasicFreediver from '../assets/Media/Services/BasicFreeDiver.mp4'
-import vidFreediver from '../assets/Media/Services/Freediver.mp4'
-import vidReefExplorer from '../assets/Media/Services/reefexplorer.MP4'
-import vidOceanExplorer from '../assets/Media/Services/oceanexplorer.mp4'
-import vidDriftDiver from '../assets/Media/Services/Drift Dive.mp4'
-import vid3DaySurf from '../assets/Media/Services/3 Day Surf Academy Course.mp4'
-import vidDiscoverSurfing from '../assets/Media/Services/discover surfing.mp4'
+const vidZeroToHero = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791432873/TDV-Media/Zero_to_hero_-_Open_Water_to_Dive_Master.mp4';
+const vidBasicFreediver = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791432792/TDV-Media/BasicFreeDiver.mp4';
+const vidFreediver = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791432852/TDV-Media/Freediver.mp4';
+const vidReefExplorer = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791433879/TDV-Media/reefexplorer.mp4';
+const vidOceanExplorer = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791432852/TDV-Media/oceanexplorer.mp4';
+const vidDriftDiver = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791432807/TDV-Media/Drift_Dive.mp4';
+const vid3DaySurf = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791433273/TDV-Media/3_Day_Surf_Academy_Course.mp4';
+const vidDiscoverSurfing = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791432789/TDV-Media/discover_surfing.mp4';
 import vidCanoneering from '../assets/Media/Services/Other/Canoneering.mp4'
 
 export const CATEGORIES = [

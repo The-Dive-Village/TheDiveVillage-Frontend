@@ -8,7 +8,7 @@ import MerchBannerCTA from '../components/MerchBannerCTA'
 import { CAROUSEL_IMAGES } from '../utils/images'
 import { useReviews } from '../contexts/ReviewsContext'
 import divingVidLocal from '../assets/Diving(1).mp4'
-import aboutVidLocal from '../assets/Media/Background/About.mp4'
+const aboutVidLocal = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791432800/TDV-Media/About.mp4';
 import jellyfishVideoLocal from '../assets/jelly fish.mp4'
 
 const nightDiveVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1790845672/dive-village/ui-videos/night_dive_mp4.mp4'
@@ -117,7 +117,7 @@ export default function About() {
       
       {/* FULL-SCREEN VIDEO BACKGROUND (DYNAMIC FOR NIGHT DIVE ACROSS ENTIRE PAGE) */}
       <div className="fixed inset-0 w-full h-full z-0 pointer-events-none overflow-hidden">
-        <video
+        <LazyVideo
           key={isNightDive ? 'night-dive-bg' : 'day-diving-bg'}
           src={isNightDive ? nightDiveVideo : divingVid}
           autoPlay
@@ -264,7 +264,7 @@ export default function About() {
 
             {/* Right Video Frame next to Sanjeev's Story */}
             <div className="lg:col-span-5 relative min-h-[360px] lg:min-h-full overflow-hidden rounded-b-[40px] lg:rounded-b-none lg:rounded-r-[40px]">
-              <video 
+              <LazyVideo
                 src={aboutVid} 
                 autoPlay
                 loop

@@ -382,7 +382,7 @@ export default function Gallery() {
                 onMouseLeave={handlePanMouseUp}
               >
                 {currentItem.type === 'video' ? (
-                  <video
+                  <LazyVideo
                     src={currentItem.src}
                     controls
                     autoPlay
@@ -462,7 +462,7 @@ export default function Gallery() {
                     >
                       {thumbItem.type === 'video' ? (
                         <>
-                          <video
+                          <LazyVideo
                             src={thumbItem.thumbnail || thumbItem.poster || thumbItem.src}
                             muted
                             playsInline
