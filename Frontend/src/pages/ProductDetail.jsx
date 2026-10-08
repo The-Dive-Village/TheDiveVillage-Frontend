@@ -79,21 +79,21 @@ export default function ProductDetail() {
   const [floatingZoom, setFloatingZoom] = useState(1)
 
   const thumbsRef = useRef(null)
-  const [canScrollUp, setCanScrollUp] = useState(false)
-  const [canScrollDown, setCanScrollDown] = useState(false)
+  const [canScrollLeft, setCanScrollLeft] = useState(false)
+  const [canScrollRight, setCanScrollRight] = useState(false)
 
   const checkThumbScroll = () => {
     if (!thumbsRef.current) return
-    const { scrollTop, scrollHeight, clientHeight } = thumbsRef.current
-    setCanScrollUp(scrollTop > 5)
-    setCanScrollDown(scrollTop + clientHeight < scrollHeight - 5)
+    const { scrollLeft, scrollWidth, clientWidth } = thumbsRef.current
+    setCanScrollLeft(scrollLeft > 5)
+    setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 5)
   }
 
   const scrollThumbs = (direction) => {
     triggerHaptic(6)
     if (thumbsRef.current) {
-      const scrollAmount = direction === 'up' ? -180 : 180
-      thumbsRef.current.scrollBy({ top: scrollAmount, behavior: 'smooth' })
+      const scrollAmount = direction === 'left' ? -200 : 200
+      thumbsRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' })
     }
   }
 
@@ -287,170 +287,172 @@ export default function ProductDetail() {
         </AnimatePresence>
 
         {/* Breadcrumb Navigation Header */}
+        {/* Top Header Bar: Back Button & Breadcrumbs */}
         <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
-          {/* Breadcrumb Navigation */}
-          <nav className="flex items-center gap-2 text-xs font-bold text-navy/60 overflow-x-auto whitespace-nowrap">
-            <Link to="/" className="hover:text-navy transition">Home</Link>
-            <span>/</span>
-            <Link to="/shop" className="hover:text-navy transition">Merchandise Store</Link>
-            <span>/</span>
-            <span className="text-navy/80">{product.category}</span>
-            <span>/</span>
-            <span className="text-navy truncate max-w-xs">{product.title}</span>
-          </nav>
+          <div className="flex items-center gap-3 sm:gap-4 overflow-x-auto whitespace-nowrap scrollbar-none py-1">
+            <button
+              type="button"
+              onClick={() => {
+                triggerHaptic(8)
+                navigate('/shop')
+              }}
+              aria-label="Back to store"
+              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-white border border-navy/15 text-navy font-bold text-xs shadow-xs hover:bg-[#FFCD00] hover:text-[#001e3d] hover:border-[#FFCD00] transition active:scale-95 cursor-pointer group shrink-0"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transition-transform group-hover:-translate-x-0.5">
+                <path d="M19 12H5" />
+                <path d="m12 19-7-7 7-7" />
+              </svg>
+              <span>Back</span>
+            </button>
+
+            {/* Breadcrumb Navigation */}
+            <nav className="flex items-center gap-2 text-xs font-bold text-navy/60">
+              <Link to="/" className="hover:text-navy transition">Home</Link>
+              <span>/</span>
+              <Link to="/shop" className="hover:text-navy transition">Merchandise Store</Link>
+              <span>/</span>
+              <span className="text-navy/80">{product.category}</span>
+              <span>/</span>
+              <span className="text-navy truncate max-w-[160px] sm:max-w-xs">{product.title}</span>
+            </nav>
+          </div>
         </div>
 
         {/* Main Product Details Split */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 mb-20 items-start">
           
           {/* Left Column: Integrated Multi-Media Showcase (Photos + Video + 3D Model) */}
-          <div className="lg:col-span-6 flex flex-col gap-6">
-            <div className="flex gap-4 flex-col-reverse sm:flex-row items-start">
-              {/* Thumbnail Selectors with Smooth Scroll & Down Arrow Control */}
-              <div className="relative flex flex-col items-center shrink-0 w-full sm:w-auto h-auto sm:h-[600px] lg:h-[660px]">
+          <div className="lg:col-span-6 flex flex-col gap-4">
+            {/* Main Product Card Media Display with Touch Swipe & Zoom Support */}
+            <div 
+              onTouchStart={activeMedia?.type !== 'glb' ? handleMediaTouchStart : undefined}
+              onTouchEnd={activeMedia?.type !== 'glb' ? handleMediaTouchEnd : undefined}
+              className="w-full rounded-[28px] overflow-hidden bg-white border border-navy/10 h-[460px] xs:h-[500px] sm:h-[560px] lg:h-[600px] relative shadow-card group"
+            >
+              {activeMedia?.type === 'glb' ? (
+                <Product3DViewer key={activeMedia.src} src={activeMedia.src} alt={product.title} productId={product.id} />
+              ) : activeMedia?.type === 'video' ? (
+                <>
+                  <LazyVideo
+                    src={activeMedia.src}
+                    controls
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    className="w-full h-full object-cover rounded-[28px]"
+                  />
+                </>
+              ) : (
+                <InteractiveProductImage
+                  src={activeMedia?.src || product.image}
+                  alt={product.title}
+                  onOpenFloating={(imgSrc) => {
+                    triggerHaptic(8)
+                    setFloatingImage(imgSrc)
+                    setFloatingZoom(1)
+                  }}
+                />
+              )}
+            </div>
 
-                {/* Thumbnails Container */}
-                <div
-                  ref={thumbsRef}
-                  onScroll={checkThumbScroll}
-                  className="flex sm:flex-col gap-3 overflow-x-auto sm:overflow-y-auto shrink-0 max-w-full sm:max-w-none w-full sm:w-auto h-full max-h-full pb-2 sm:pb-2 scrollbar-none py-1 scroll-smooth"
-                >
-                  {/* Media Item Thumbnails */}
-                  {mediaItems.map((item, i) => (
-                    <div key={item.id || i} className="flex flex-col items-center gap-1 shrink-0">
-                      <button
-                        onClick={() => {
-                          triggerHaptic(8)
-                          setActiveMedia(item)
-                        }}
-                        className={`flex-shrink-0 w-16 h-20 sm:w-18 sm:h-22 rounded-2xl overflow-hidden border-2 transition relative cursor-pointer ${
-                          activeMedia?.id === item.id || activeMedia?.src === item.src
-                            ? 'border-navy shadow-md ring-2 ring-navy/20'
-                            : 'border-transparent hover:border-navy/30 bg-[#F0F2F5]'
-                        }`}
-                      >
-                        {item.type === 'image' ? (
-                          <img src={item.src} alt={item.label} className="w-full h-full object-cover bg-white" />
-                        ) : item.type === 'video' ? (
-                          <div className="relative w-full h-full bg-black flex items-center justify-center">
-                            <LazyVideo src={item.src} className="w-full h-full object-cover opacity-70 pointer-events-none" muted />
-                            <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-                              <span className="w-6 h-6 rounded-full bg-accent text-navy flex items-center justify-center text-xs font-bold shadow-sm">
-                                ▶
-                              </span>
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="relative w-full h-full bg-[#001E36] flex flex-col items-center justify-center text-[#FFCD00] p-1 border border-[#FFCD00]/30 shadow-inner">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" /><polyline points="3.27 6.96 12 12.01 20.73 6.96" /><line x1="12" y1="22.08" x2="12" y2="12" /></svg>
-                            <span className="text-[8px] font-bold tracking-wider uppercase text-white mt-1">3D MODEL</span>
-                          </div>
-                        )}
-                      </button>
-                      <span className="text-[10px] font-bold text-navy/80 tracking-tight text-center max-w-[72px] leading-tight">
-                        {item.label}
-                      </span>
-                    </div>
-                  ))}
-
-                  {/* Back Arrow Button Underneath Last Thumbnail */}
-                  <div className="flex flex-col items-center gap-1 shrink-0">
+            {/* Mobile Media Swipe Indicator Dots */}
+            {mediaItems.length > 1 && (
+              <div className="flex sm:hidden justify-center items-center gap-1.5 -mt-1 mb-1">
+                {mediaItems.map((m, idx) => {
+                  const isSelected = (activeMedia?.id === m.id || activeMedia?.src === m.src)
+                  return (
                     <button
+                      key={m.id || idx}
                       type="button"
-                      onClick={() => navigate('/shop')}
-                      aria-label="Back to store"
-                      title="Back to store"
-                      className="flex-shrink-0 w-16 h-16 sm:w-18 sm:h-18 rounded-2xl bg-navy/5 text-navy hover:bg-[#FFCD00] hover:text-[#001e3d] hover:border-[#FFCD00] border-2 border-navy/15 shadow-sm flex items-center justify-center transition-all duration-200 cursor-pointer active:scale-95"
-                    >
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M19 12H5" />
-                        <path d="m12 19-7-7 7-7" />
-                      </svg>
-                    </button>
-                    <span className="text-[10px] font-bold text-navy/70 tracking-tight text-center">Back</span>
-                  </div>
-
-                  {/* Scroll Down Arrow Button Positioned Near Last Thumbnail */}
-                  {canScrollDown && (
-                    <div className="flex flex-col items-center justify-center shrink-0 pt-1">
-                      <button
-                        type="button"
-                        onClick={() => scrollThumbs('down')}
-                        aria-label="Scroll down thumbnails"
-                        title="Scroll down for more views"
-                        className="w-8 h-8 rounded-full bg-navy text-white shadow-lg flex items-center justify-center hover:bg-[#FFCD00] hover:text-[#001e3d] transition-all duration-200 cursor-pointer active:scale-90 border border-white/20 animate-bounce"
-                      >
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="m6 9 6 6 6-6"/>
-                        </svg>
-                      </button>
-                    </div>
-                  )}
-                </div>
-
-                {/* Bottom Subtle Gradient Fade when scrollable down */}
-                {canScrollDown && (
-                  <div className="hidden sm:block absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-[#FAFAFA] to-transparent z-10 pointer-events-none rounded-b-xl" />
-                )}
-              </div>
-
-              {/* Main Product Card Media Display with Touch Swipe & Zoom Support */}
-              <div className="flex-1 w-full flex flex-col">
-                <div 
-                  onTouchStart={activeMedia?.type !== 'glb' ? handleMediaTouchStart : undefined}
-                  onTouchEnd={activeMedia?.type !== 'glb' ? handleMediaTouchEnd : undefined}
-                  className="w-full rounded-[28px] overflow-hidden bg-white border border-navy/10 h-[480px] xs:h-[520px] sm:h-[600px] lg:h-[660px] relative shadow-card group"
-                >
-                  {activeMedia?.type === 'glb' ? (
-                    <Product3DViewer key={activeMedia.src} src={activeMedia.src} alt={product.title} productId={product.id} />
-                  ) : activeMedia?.type === 'video' ? (
-                    <>
-                      <LazyVideo
-                        src={activeMedia.src}
-                        controls
-                        autoPlay
-                        muted
-                        loop
-                        playsInline
-                        className="w-full h-full object-cover rounded-[28px]"
-                      />
-                    </>
-                  ) : (
-                    <InteractiveProductImage
-                      src={activeMedia?.src || product.image}
-                      alt={product.title}
-                      onOpenFloating={(imgSrc) => {
+                      onClick={() => {
                         triggerHaptic(8)
-                        setFloatingImage(imgSrc)
-                        setFloatingZoom(1)
+                        setActiveMedia(m)
                       }}
+                      aria-label={`View ${m.label}`}
+                      className={`h-1.5 rounded-full transition-all duration-300 ${
+                        isSelected ? 'w-5 bg-navy' : 'w-1.5 bg-navy/20'
+                      }`}
                     />
-                  )}
-                </div>
-
-                {/* Mobile Media Swipe Indicator Dots */}
-                {mediaItems.length > 1 && (
-                  <div className="flex sm:hidden justify-center items-center gap-1.5 mt-2.5">
-                    {mediaItems.map((m, idx) => {
-                      const isSelected = (activeMedia?.id === m.id || activeMedia?.src === m.src)
-                      return (
-                        <button
-                          key={m.id || idx}
-                          type="button"
-                          onClick={() => {
-                            triggerHaptic(8)
-                            setActiveMedia(m)
-                          }}
-                          aria-label={`View ${m.label}`}
-                          className={`h-1.5 rounded-full transition-all duration-300 ${
-                            isSelected ? 'w-5 bg-navy' : 'w-1.5 bg-navy/20'
-                          }`}
-                        />
-                      )
-                    })}
-                  </div>
-                )}
+                  )
+                })}
               </div>
+            )}
+
+            {/* Thumbnail Selectors Below Product Image */}
+            <div className="relative w-full flex items-center gap-2">
+              {/* Left Scroll Arrow */}
+              {canScrollLeft && (
+                <button
+                  type="button"
+                  onClick={() => scrollThumbs('left')}
+                  aria-label="Scroll left thumbnails"
+                  className="shrink-0 w-8 h-8 rounded-full bg-white border border-navy/15 text-navy shadow-md flex items-center justify-center hover:bg-[#FFCD00] hover:text-[#001e3d] hover:border-[#FFCD00] transition active:scale-90 cursor-pointer z-10"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="m15 18-6-6 6-6"/>
+                  </svg>
+                </button>
+              )}
+
+              {/* Scrollable Thumbnails Track */}
+              <div
+                ref={thumbsRef}
+                onScroll={checkThumbScroll}
+                className="flex items-center gap-3 overflow-x-auto w-full py-2 px-1 scrollbar-none scroll-smooth"
+              >
+                {mediaItems.map((item, i) => (
+                  <div key={item.id || i} className="flex flex-col items-center gap-1 shrink-0">
+                    <button
+                      onClick={() => {
+                        triggerHaptic(8)
+                        setActiveMedia(item)
+                      }}
+                      className={`flex-shrink-0 w-16 h-20 sm:w-18 sm:h-22 rounded-2xl overflow-hidden border-2 transition relative cursor-pointer ${
+                        activeMedia?.id === item.id || activeMedia?.src === item.src
+                          ? 'border-navy shadow-md ring-2 ring-navy/20 scale-102'
+                          : 'border-transparent hover:border-navy/30 bg-[#F0F2F5]'
+                      }`}
+                    >
+                      {item.type === 'image' ? (
+                        <img src={item.src} alt={item.label} className="w-full h-full object-cover bg-white" />
+                      ) : item.type === 'video' ? (
+                        <div className="relative w-full h-full bg-black flex items-center justify-center">
+                          <LazyVideo src={item.src} className="w-full h-full object-cover opacity-70 pointer-events-none" muted />
+                          <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                            <span className="w-6 h-6 rounded-full bg-accent text-navy flex items-center justify-center text-xs font-bold shadow-sm">
+                              ▶
+                            </span>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="relative w-full h-full bg-[#001E36] flex flex-col items-center justify-center text-[#FFCD00] p-1 border border-[#FFCD00]/30 shadow-inner">
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" /><polyline points="3.27 6.96 12 12.01 20.73 6.96" /><line x1="12" y1="22.08" x2="12" y2="12" /></svg>
+                          <span className="text-[8px] font-bold tracking-wider uppercase text-white mt-1">3D MODEL</span>
+                        </div>
+                      )}
+                    </button>
+                    <span className="text-[10px] font-bold text-navy/80 tracking-tight text-center max-w-[72px] leading-tight">
+                      {item.label}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Right Scroll Arrow */}
+              {canScrollRight && (
+                <button
+                  type="button"
+                  onClick={() => scrollThumbs('right')}
+                  aria-label="Scroll right thumbnails"
+                  className="shrink-0 w-8 h-8 rounded-full bg-white border border-navy/15 text-navy shadow-md flex items-center justify-center hover:bg-[#FFCD00] hover:text-[#001e3d] hover:border-[#FFCD00] transition active:scale-90 cursor-pointer z-10"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="m9 18 6-6-6-6"/>
+                  </svg>
+                </button>
+              )}
             </div>
           </div>
 

@@ -14,11 +14,6 @@ import diversBg from '../assets/divers.png'
 export default function Gallery() {
   const [itemsList, setItemsList] = useState(GALLERY_ITEMS)
   const [selectedMediaIndex, setSelectedMediaIndex] = useState(null)
-  const [lightboxZoom, setLightboxZoom] = useState(1)
-  const [panOffset, setPanOffset] = useState({ x: 0, y: 0 })
-  const [isPanning, setIsPanning] = useState(false)
-  const panStartRef = useRef({ x: 0, y: 0 })
-  const filmstripRef = useRef(null)
   const reduce = useReducedMotion()
   const lenis = useLenis()
 
@@ -43,12 +38,6 @@ export default function Gallery() {
     return () => clearTimeout(timer)
   }, [lenis])
 
-  // Reset zoom & pan when switching media in lightbox
-  useEffect(() => {
-    setLightboxZoom(1)
-    setPanOffset({ x: 0, y: 0 })
-  }, [selectedMediaIndex])
-
   // High-Res Preloading for adjacent images in Lightbox
   useEffect(() => {
     if (selectedMediaIndex === null || !filteredItems.length) return
@@ -64,23 +53,12 @@ export default function Gallery() {
     })
   }, [selectedMediaIndex, filteredItems])
 
-  // Scroll active thumbnail into center view
-  useEffect(() => {
-    if (selectedMediaIndex !== null && filmstripRef.current) {
-      const activeEl = filmstripRef.current.children[selectedMediaIndex]
-      if (activeEl) {
-        activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' })
-      }
-    }
-  }, [selectedMediaIndex])
-
   const handleLightboxTouchStart = (e) => {
     touchStartX.current = e.touches[0].clientX
     touchStartY.current = e.touches[0].clientY
   }
 
   const handleLightboxTouchEnd = (e) => {
-    if (lightboxZoom > 1) return // Ignore swipe if zoomed in
     const deltaX = e.changedTouches[0].clientX - touchStartX.current
     const deltaY = e.changedTouches[0].clientY - touchStartY.current
     if (Math.abs(deltaX) > 40 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5) {
@@ -90,45 +68,6 @@ export default function Gallery() {
         prevMedia()
       }
     }
-  }
-
-  const handleWheelZoom = (e) => {
-    if (currentItem?.type === 'video') return
-    e.preventDefault()
-    const zoomDelta = e.deltaY < 0 ? 0.25 : -0.25
-    setLightboxZoom((prev) => {
-      const next = Math.min(Math.max(1, prev + zoomDelta), 3.5)
-      if (next === 1) setPanOffset({ x: 0, y: 0 })
-      return next
-    })
-  }
-
-  const handleDoubleClickZoom = () => {
-    if (currentItem?.type === 'video') return
-    if (lightboxZoom > 1) {
-      setLightboxZoom(1)
-      setPanOffset({ x: 0, y: 0 })
-    } else {
-      setLightboxZoom(2.5)
-    }
-  }
-
-  const handlePanMouseDown = (e) => {
-    if (lightboxZoom <= 1) return
-    setIsPanning(true)
-    panStartRef.current = { x: e.clientX - panOffset.x, y: e.clientY - panOffset.y }
-  }
-
-  const handlePanMouseMove = (e) => {
-    if (!isPanning || lightboxZoom <= 1) return
-    setPanOffset({
-      x: e.clientX - panStartRef.current.x,
-      y: e.clientY - panStartRef.current.y
-    })
-  }
-
-  const handlePanMouseUp = () => {
-    setIsPanning(false)
   }
 
   // Keyboard navigation for lightbox
@@ -320,11 +259,11 @@ export default function Gallery() {
 
       </div>
 
-      {/* 6. FULLSCREEN LIGHTBOX MODAL */}
+      {/* 6. IMMERSIVE LIGHTBOX MODAL */}
       <AnimatePresence>
         {selectedMediaIndex !== null && currentItem && (
           <div 
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-3 sm:p-6 backdrop-blur-md"
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/92 p-3 sm:p-6 md:p-8 backdrop-blur-md"
             onClick={() => setSelectedMediaIndex(null)}
             onTouchStart={handleLightboxTouchStart}
             onTouchEnd={handleLightboxTouchEnd}
@@ -332,10 +271,10 @@ export default function Gallery() {
             {/* Close Button */}
             <button
               onClick={() => setSelectedMediaIndex(null)}
-              className="absolute top-4 right-4 sm:top-6 sm:right-6 z-30 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-white/20 text-white transition hover:bg-accent hover:text-navy hover:scale-110 cursor-pointer shadow-lg backdrop-blur-md"
+              className="absolute top-4 right-4 sm:top-6 sm:right-6 z-50 flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-white/20 hover:bg-[#FFCD00] hover:text-[#001e3d] text-white transition duration-200 hover:scale-105 active:scale-95 cursor-pointer shadow-xl backdrop-blur-md border border-white/20"
               aria-label="Close Lightbox"
             >
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M18 6L6 18M6 6l12 12" />
               </svg>
             </button>
@@ -343,10 +282,10 @@ export default function Gallery() {
             {/* Left Nav */}
             <button
               onClick={(e) => { e.stopPropagation(); prevMedia() }}
-              className="absolute left-2 sm:left-8 z-20 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-white/20 text-white transition hover:bg-accent hover:text-navy hover:scale-110 cursor-pointer shadow-lg backdrop-blur-md"
+              className="absolute left-3 sm:left-6 z-40 flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-white/15 text-white transition hover:bg-[#FFCD00] hover:text-[#001e3d] hover:scale-110 active:scale-90 cursor-pointer shadow-xl backdrop-blur-md border border-white/15"
               aria-label="Previous media"
             >
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M15 19l-7-7 7-7" />
               </svg>
             </button>
@@ -354,33 +293,24 @@ export default function Gallery() {
             {/* Right Nav */}
             <button
               onClick={(e) => { e.stopPropagation(); nextMedia() }}
-              className="absolute right-2 sm:right-8 z-20 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-white/20 text-white transition hover:bg-accent hover:text-navy hover:scale-110 cursor-pointer shadow-lg backdrop-blur-md"
+              className="absolute right-3 sm:right-6 z-40 flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-white/15 text-white transition hover:bg-[#FFCD00] hover:text-[#001e3d] hover:scale-110 active:scale-90 cursor-pointer shadow-xl backdrop-blur-md border border-white/15"
               aria-label="Next media"
             >
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M9 5l7 7-7 7" />
               </svg>
             </button>
 
-            {/* Modal Body */}
+            {/* Big, Simple Media Content */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
+              initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
+              exit={{ opacity: 0, scale: 0.96 }}
               transition={{ duration: 0.2 }}
-              className="relative max-h-[94vh] max-w-5xl w-full flex flex-col rounded-3xl overflow-hidden bg-[#001e3d] border border-white/20 shadow-2xl text-white select-none"
+              className="relative max-h-[92vh] max-w-6xl w-full flex flex-col items-center justify-center select-none"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Main Media Stage with Wheel Zoom & Pan Dragging */}
-              <div 
-                className={`relative w-full h-[52vh] sm:h-[60vh] flex items-center justify-center bg-black/80 overflow-hidden ${lightboxZoom > 1 ? 'cursor-grab active:cursor-grabbing' : 'cursor-zoom-in'}`}
-                onWheel={handleWheelZoom}
-                onDoubleClick={handleDoubleClickZoom}
-                onMouseDown={handlePanMouseDown}
-                onMouseMove={handlePanMouseMove}
-                onMouseUp={handlePanMouseUp}
-                onMouseLeave={handlePanMouseUp}
-              >
+              <div className="relative w-full max-h-[82vh] flex items-center justify-center overflow-hidden rounded-2xl sm:rounded-3xl shadow-2xl">
                 {currentItem.type === 'video' ? (
                   <LazyVideo
                     src={currentItem.src}
@@ -388,137 +318,29 @@ export default function Gallery() {
                     autoPlay
                     loop
                     playsInline
-                    className="max-h-full w-auto max-w-full object-contain"
+                    className="max-h-[82vh] w-auto max-w-full rounded-2xl sm:rounded-3xl object-contain shadow-2xl"
                   />
                 ) : (
                   <img
                     src={currentItem.src}
                     alt={currentItem.title || 'Gallery visual'}
                     draggable={false}
-                    className="max-h-full w-auto max-w-full object-contain transition-transform duration-100 ease-out select-none pointer-events-none"
-                    style={{
-                      transform: `scale(${lightboxZoom}) translate(${panOffset.x / lightboxZoom}px, ${panOffset.y / lightboxZoom}px)`,
-                    }}
+                    className="max-h-[82vh] w-auto max-w-full rounded-2xl sm:rounded-3xl object-contain shadow-2xl select-none"
                   />
                 )}
-
-                {/* Floating Desktop Zoom Status Badge & Hints */}
-                {currentItem.type !== 'video' && (
-                  <div className="hidden sm:flex absolute bottom-3 right-3 items-center gap-1.5 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-full text-[11px] font-mono border border-white/10 z-10">
-                    <button
-                      type="button"
-                      onClick={() => setLightboxZoom((prev) => Math.max(1, prev - 0.5))}
-                      className="hover:text-accent font-bold px-1 transition"
-                      title="Zoom Out"
-                    >
-                      −
-                    </button>
-                    <span className="text-accent font-bold px-1">{Math.round(lightboxZoom * 100)}%</span>
-                    <button
-                      type="button"
-                      onClick={() => setLightboxZoom((prev) => Math.min(3.5, prev + 0.5))}
-                      className="hover:text-accent font-bold px-1 transition"
-                      title="Zoom In"
-                    >
-                      +
-                    </button>
-                    {lightboxZoom > 1 && (
-                      <button
-                        type="button"
-                        onClick={() => { setLightboxZoom(1); setPanOffset({ x: 0, y: 0 }); }}
-                        className="text-[10px] uppercase font-bold text-white/70 hover:text-white ml-1 border-l border-white/20 pl-1.5 transition"
-                      >
-                        Reset
-                      </button>
-                    )}
-                    <span className="text-[9px] text-white/50 ml-1 hidden md:inline">
-                      (Scroll wheel / Double-click to zoom)
-                    </span>
-                  </div>
-                )}
               </div>
 
-              {/* Desktop Bottom Thumbnail Strip */}
-              <div 
-                ref={filmstripRef}
-                className="hidden sm:flex items-center gap-2 px-4 py-2.5 bg-[#001428] border-t border-white/10 overflow-x-auto scrollbar-none"
-              >
-                {filteredItems.map((thumbItem, tIdx) => {
-                  const isActive = tIdx === selectedMediaIndex
-                  return (
-                    <button
-                      key={thumbItem.id || tIdx}
-                      type="button"
-                      onClick={() => {
-                        triggerHaptic(8)
-                        setSelectedMediaIndex(tIdx)
-                      }}
-                      className={`relative shrink-0 w-14 h-10 rounded-lg overflow-hidden border-2 transition-all duration-200 cursor-pointer ${
-                        isActive
-                          ? 'border-accent scale-105 shadow-md shadow-accent/20 opacity-100 ring-2 ring-accent/40'
-                          : 'border-white/10 opacity-50 hover:opacity-100 hover:border-white/40'
-                      }`}
-                      title={thumbItem.title}
-                    >
-                      {thumbItem.type === 'video' ? (
-                        <>
-                          <LazyVideo
-                            src={thumbItem.thumbnail || thumbItem.poster || thumbItem.src}
-                            muted
-                            playsInline
-                            preload="metadata"
-                            className="w-full h-full object-cover pointer-events-none"
-                          />
-                          <div className="absolute inset-0 bg-black/40 flex items-center justify-center text-white text-[9px]">
-                            ▶
-                          </div>
-                        </>
-                      ) : (
-                        <img
-                          src={thumbItem.thumbnail || thumbItem.poster || thumbItem.src}
-                          alt=""
-                          className="w-full h-full object-cover"
-                          loading="lazy"
-                        />
-                      )}
-                    </button>
-                  )
-                })}
-              </div>
-
-              {/* Lightbox Footer Bar - Title, Serial Number, Native Share, Action */}
-              <div className="p-3.5 sm:p-5 bg-[#001830] border-t border-white/10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4">
-                <div className="flex items-center gap-3 max-w-2xl min-w-0">
-                  <h2 className="text-sm sm:text-xl font-bold font-heading text-white truncate">
+              {/* Clean Bottom Title & Count Bar */}
+              {currentItem.title && (
+                <div className="mt-4 flex items-center justify-between w-full max-w-4xl px-3 text-white">
+                  <h2 className="text-sm sm:text-lg font-bold font-heading truncate text-white/90">
                     {currentItem.title}
                   </h2>
-                </div>
-
-                <div className="flex items-center gap-2.5 sm:gap-4 shrink-0 w-full sm:w-auto justify-between sm:justify-end">
-                  <button
-                    type="button"
-                    onClick={() => handleShareVisual(currentItem)}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full bg-white/10 hover:bg-white/20 border border-white/15 text-white text-xs font-bold transition active:scale-95 cursor-pointer shadow-sm"
-                    title="Share this visual"
-                    aria-label="Share visual"
-                  >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
-                      <polyline points="16 6 12 2 8 6" />
-                      <line x1="12" y1="2" x2="12" y2="15" />
-                    </svg>
-                    <span>Share</span>
-                  </button>
-
-                  <span className="text-xs sm:text-sm font-bold text-white/60 tracking-wider">
+                  <span className="text-xs sm:text-sm font-semibold text-white/60 tracking-wider ml-4 shrink-0">
                     {selectedMediaIndex + 1} / {filteredItems.length}
                   </span>
-
-                  <Button as={Link} to="/book-us" variant="primary" className="text-xs sm:text-sm py-1.5 sm:py-2 px-3.5 sm:px-5 font-bold shadow-md">
-                    Join Expedition
-                  </Button>
                 </div>
-              </div>
+              )}
             </motion.div>
           </div>
         )}
