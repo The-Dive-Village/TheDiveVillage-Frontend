@@ -278,32 +278,32 @@ export default function Gallery() {
       <AnimatePresence>
         {selectedMediaIndex !== null && currentItem && (
           <div 
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-3 sm:p-6 backdrop-blur-sm"
+            className="fixed inset-0 z-[100] flex flex-col items-center justify-end pt-[56px] xs:pt-[60px] sm:pt-[70px] lg:pt-[76px] pb-1.5 sm:pb-2 px-2 sm:px-4 bg-black/85 backdrop-blur-sm"
             onClick={() => setSelectedMediaIndex(null)}
             onTouchStart={handleLightboxTouchStart}
             onTouchEnd={handleLightboxTouchEnd}
           >
-            {/* Dark Blue, Sleek Preview Panel with Reduced Padding */}
+            {/* Dark Blue, Full Height Preview Panel Extending to Toolbar & Extreme Bottom */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              initial={{ opacity: 0, scale: 0.97, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              exit={{ opacity: 0, scale: 0.97, y: 10 }}
               transition={{ duration: 0.2 }}
-              className="relative bg-navy rounded-3xl shadow-2xl p-2.5 sm:p-4 max-w-4xl sm:max-w-5xl lg:max-w-6xl w-full border border-white/15 flex flex-col gap-2 sm:gap-2.5 select-none"
+              className="relative bg-navy rounded-2xl sm:rounded-3xl shadow-2xl p-2 sm:p-3.5 max-w-4xl sm:max-w-5xl lg:max-w-6xl w-full h-full flex flex-col gap-2 select-none border border-white/15 overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Floating Top-Right Close Button */}
               <button
                 type="button"
                 onClick={() => setSelectedMediaIndex(null)}
-                className="absolute top-2.5 right-2.5 sm:top-3.5 sm:right-3.5 z-30 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/60 hover:bg-[#FFCD00] hover:text-[#001e3d] text-white flex items-center justify-center transition active:scale-90 cursor-pointer font-bold text-xs sm:text-sm border border-white/20 shadow-lg backdrop-blur-md"
+                className="absolute top-2 right-2 sm:top-3 sm:right-3 z-30 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/60 hover:bg-[#FFCD00] hover:text-[#001e3d] text-white flex items-center justify-center transition active:scale-90 cursor-pointer font-bold text-xs sm:text-sm border border-white/20 shadow-lg backdrop-blur-md"
                 aria-label="Close Lightbox"
               >
                 ✕
               </button>
 
-              {/* Media Display Area with Integrated Nav Arrows (Reduced Height) */}
-              <div className="relative w-full h-[220px] xs:h-[280px] sm:h-[340px] lg:h-[380px] max-h-[46vh] flex items-center justify-center overflow-hidden rounded-2xl bg-black/95">
+              {/* Media Display Area (Expands Dynamically to Fill Vertical Room) */}
+              <div className="relative flex-1 min-h-0 w-full flex items-center justify-center overflow-hidden rounded-xl sm:rounded-2xl bg-black/95">
                 {/* Previous Media Arrow */}
                 <button
                   type="button"
@@ -348,7 +348,7 @@ export default function Gallery() {
               </div>
 
               {/* Bottom Title Bar: Bigger Title & Count */}
-              <div className="flex items-center justify-between gap-4 px-1.5 w-full">
+              <div className="flex items-center justify-between gap-4 px-1.5 w-full shrink-0">
                 <h2 className="text-lg xs:text-xl sm:text-2xl md:text-3xl font-heading font-extrabold text-white tracking-wide truncate">
                   {currentItem.title}
                 </h2>
@@ -357,9 +357,9 @@ export default function Gallery() {
                 </span>
               </div>
 
-              {/* Only 10 Thumbnails Visible in a Given Time (Compact & Centered) */}
+              {/* Only 10 Thumbnails Visible in a Given Time (Compact & Centered at Bottom) */}
               {filteredItems.length > 1 && (
-                <div className="flex items-center justify-center gap-1.5 sm:gap-2.5 max-w-xl sm:max-w-2xl md:max-w-3xl mx-auto w-full pt-0.5">
+                <div className="flex items-center justify-center gap-1.5 sm:gap-2.5 max-w-xl sm:max-w-2xl md:max-w-3xl mx-auto w-full pt-0.5 shrink-0">
                   {filteredItems.length > 10 && (
                     <button
                       type="button"
