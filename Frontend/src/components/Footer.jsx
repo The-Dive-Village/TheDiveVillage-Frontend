@@ -63,7 +63,7 @@ export default function Footer() {
 
   return (
     <>
-      <footer className="bg-navy border-t border-white/20 text-white mt-auto relative z-10 pointer-events-auto">
+      <footer className="bg-navy text-white mt-auto relative z-10 pointer-events-auto">
         <div className="mx-auto grid max-w-7xl gap-8 lg:gap-10 px-4 py-12 sm:py-14 sm:px-6 lg:grid-cols-12 lg:px-8">
           <div className="flex flex-col items-center sm:items-start justify-between lg:col-span-3">
             <div className="flex flex-col items-center w-fit">

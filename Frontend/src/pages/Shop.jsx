@@ -11,10 +11,10 @@ import SEOHead from '../components/SEOHead'
 
 import { triggerHaptic, triggerSuccessHaptic } from '../utils/haptics'
 import picture3 from '../assets/Picture3.webp'
-import bannerImg from '../assets/Media/Products/banner.webp'
+const bannerImg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458229/TDV-Media/Products/banner.webp';
 import divingVidLocal from '../assets/Diving(1).mp4'
-import pop1Local from '../assets/Media/Products/pop1.webp'
-import pop2Local from '../assets/Media/Products/pop2.webp'
+const pop1Local = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458274/TDV-Media/Products/pop1.webp';
+const pop2Local = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458275/TDV-Media/Products/pop2.webp';
 const divingVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1790244035/dive-village/ui-videos/diving_1_mp4.mp4'
 const pop1 = pop1Local
 const pop2 = pop2Local

@@ -12,10 +12,10 @@ import img1 from '../assets/Media/The Ocean Welcomes All/1.webp'
 import img2 from '../assets/Media/The Ocean Welcomes All/2.webp'
 import img3 from '../assets/Media/The Ocean Welcomes All/3.webp'
 import img4 from '../assets/Media/The Ocean Welcomes All/4.webp'
-const travelVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791432790/TDV-Media/travel.mp4';
+import travelVid from '../assets/Media/Airport to Airport/travel.mp4'
 import stayImg from '../assets/Media/Airport to Airport/Stay.webp'
 import foodImg from '../assets/Media/Airport to Airport/food.webp'
-const itineraryVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791432861/TDV-Media/gallery1.mp4';
+import itineraryVid from '../assets/Media/Airport to Airport/gallery1.mp4'
 import imgIntroductoryPrograms from '../assets/Media/Services Thumbnails/Introductory Programs.webp'
 import imgGuidedSnorkeling from '../assets/Media/Services Thumbnails/Snorkeling.webp'
 import imgCertifiedCourses from '../assets/Media/Services Thumbnails/Certified Courses.webp'

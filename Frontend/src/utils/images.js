@@ -1,6 +1,6 @@
 // Curated Gallery & High-Res Diving Photos from assets/Gallery
 import p1 from '../assets/Gallery/5.jpg'
-import p2 from '../assets/Media/Extras for Gallery/Blue Lincka.webp'
+const p2 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458048/TDV-Media/Extras%20for%20Gallery/Blue_Lincka.webp';
 import p3 from '../assets/Gallery/Photo00086574.jpg'
 import p4 from '../assets/Gallery/Photo00086587.jpg'
 import p6 from '../assets/Gallery/Photo00086738.jpg'

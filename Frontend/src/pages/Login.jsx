@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { useAuth } from '../hooks/useAuth'
 import { firebaseAuth } from '../services/firebase'
-import vidBarracuda from '../assets/Media/Background/Barracuda.mp4'
+import vidBarracuda from '../assets/Media/Background/baracuda_compressed.mp4'
 
 export default function Login() {
   const navigate = useNavigate()

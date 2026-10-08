@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import preloaderVideoLocal from '../assets/preloader.mp4'
-const preloaderVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1790244031/dive-village/ui-videos/preloader_mp4.mp4'
+const preloaderVideo = preloaderVideoLocal
 import {
   subscribeHeroVideoReady,
   getHeroVideoReady,
@@ -110,8 +110,8 @@ export default function Preloader({ onComplete }) {
 
   useEffect(() => {
     const startTime = performance.now()
-    const baseTargetDuration = 2000 // Extended relaxed duration (~2.0s)
-    const maxSafetyTimeout = 3000 // Safety cap ensuring user is never held too long
+    const maxSafetyTimeout = 1800 // Hard safety cap guaranteeing preloader finishes within 2.0s
+    const baseTargetDuration = 1400 // Smooth progress duration (~1.4s)
     let animationFrameId
     let completed = false
 
@@ -120,12 +120,14 @@ export default function Preloader({ onComplete }) {
       const isFullyReady = (isVideoReadyRef.current && isWebGLReadyRef.current) || elapsed >= maxSafetyTimeout
 
       let targetProgress
-      if (isFullyReady) {
-        // Smoothly progress to 100% by baseTargetDuration
+      if (elapsed >= maxSafetyTimeout) {
+        targetProgress = 100
+      } else if (isFullyReady) {
+        // Smoothly progress to 100%
         targetProgress = Math.min(100, (elapsed / baseTargetDuration) * 100)
       } else {
-        // If still buffering or uploading WebGL texture, smoothly ease up to 85% and hold until ready
-        targetProgress = Math.min(85, (elapsed / baseTargetDuration) * 85)
+        // Smoothly ease up to 90% while waiting for assets
+        targetProgress = Math.min(90, (elapsed / maxSafetyTimeout) * 90)
       }
 
       setProgress(targetProgress)
@@ -134,7 +136,7 @@ export default function Preloader({ onComplete }) {
         completed = true
         setTimeout(() => {
           if (onComplete) onComplete()
-        }, 350)
+        }, 200)
         return
       }
 

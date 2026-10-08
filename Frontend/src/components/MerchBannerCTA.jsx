@@ -1,9 +1,9 @@
 import { useNavigate } from 'react-router'
 import { motion } from 'framer-motion'
-import bannerImg from '../assets/Media/Products/banner.webp'
+const bannerImg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458229/TDV-Media/Products/banner.webp';
 
-import pop1 from '../assets/Media/Products/pop1.webp'
-import pop2 from '../assets/Media/Products/pop2.webp'
+const pop1 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458274/TDV-Media/Products/pop1.webp';
+const pop2 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458275/TDV-Media/Products/pop2.webp';
 
 export default function MerchBannerCTA({ className = '' }) {
   const navigate = useNavigate()

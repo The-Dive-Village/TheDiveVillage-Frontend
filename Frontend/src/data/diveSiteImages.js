@@ -32,19 +32,19 @@ import img86787 from '../assets/Gallery/Photo00086787.jpg'
 import img86792 from '../assets/Gallery/Photo00086792.jpg'
 
 // Special Dive Life & Landmark Images from Gallery
-import imgSeaFan from '../assets/Media/Extras for Gallery/Sea fan.webp'
-import imgBlueLincka from '../assets/Media/Extras for Gallery/Blue Lincka.webp'
+const imgSeaFan = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458192/TDV-Media/Extras%20for%20Gallery/Sea_fan.webp';
+const imgBlueLincka = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458048/TDV-Media/Extras%20for%20Gallery/Blue_Lincka.webp';
 import imgCrownOfThorns from '../assets/Gallery/Crown of thorns.JPG'
-import imgThornyOyster from '../assets/Media/Extras for Gallery/Thorny Oyster.webp'
-import imgArticulata from '../assets/Media/Extras for Gallery/Articulata.webp'
-import imgShoal from '../assets/Media/Extras for Gallery/Shoal.webp'
+const imgThornyOyster = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458205/TDV-Media/Extras%20for%20Gallery/Thorny_Oyster.webp';
+const imgArticulata = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458009/TDV-Media/Extras%20for%20Gallery/Articulata.webp';
+const imgShoal = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458193/TDV-Media/Extras%20for%20Gallery/Shoal.webp';
 import imgNightdive from '../assets/Gallery/Nightdive.jpg'
 import imgScuba1 from '../assets/Gallery/Scuba1.jpg'
 import imgScuba2 from '../assets/Gallery/Scuba2.jpg'
 import imgScuba3 from '../assets/Gallery/Scuba3.jpg'
 import imgScuba4 from '../assets/Gallery/Scuba4.jpg'
 import imgScuba5 from '../assets/Gallery/Scuba5.jpg'
-import imgScubadiving from '../assets/Media/Extras for Gallery/Scubadiving.webp'
+const imgScubadiving = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458191/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp';
 import imgFreeDiving from '../assets/Gallery/Free Diving.jpg'
 import imgFreeDiving2 from '../assets/Gallery/Free Diving (2).jpg'
 import imgFreeDivingPng from '../assets/Media/Services Thumbnails/Free Diving.webp'
