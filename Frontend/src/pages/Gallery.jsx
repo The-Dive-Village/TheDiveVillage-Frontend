@@ -105,6 +105,21 @@ export default function Gallery() {
 
   const currentItem = selectedMediaIndex !== null ? filteredItems[selectedMediaIndex] : null
 
+  // Ensure only 10 thumbnails are visible in a given time
+  const thumbStartIndex = useMemo(() => {
+    if (selectedMediaIndex === null || filteredItems.length <= 10) return 0
+    return Math.max(0, Math.min(selectedMediaIndex - 4, filteredItems.length - 10))
+  }, [selectedMediaIndex, filteredItems.length])
+
+  const visibleThumbs = useMemo(() => {
+    if (!filteredItems.length) return []
+    const count = Math.min(10, filteredItems.length)
+    return filteredItems.slice(thumbStartIndex, thumbStartIndex + count).map((item, idx) => ({
+      item,
+      index: thumbStartIndex + idx,
+    }))
+  }, [filteredItems, thumbStartIndex])
+
   const handleShareVisual = async (item = currentItem) => {
     if (!item) return
     triggerHaptic(15)
@@ -263,54 +278,67 @@ export default function Gallery() {
       <AnimatePresence>
         {selectedMediaIndex !== null && currentItem && (
           <div 
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/92 p-3 sm:p-6 md:p-8 backdrop-blur-md"
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-3 sm:p-6 backdrop-blur-sm"
             onClick={() => setSelectedMediaIndex(null)}
             onTouchStart={handleLightboxTouchStart}
             onTouchEnd={handleLightboxTouchEnd}
           >
-            {/* Close Button */}
-            <button
-              onClick={() => setSelectedMediaIndex(null)}
-              className="absolute top-4 right-4 sm:top-6 sm:right-6 z-50 flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-white/20 hover:bg-[#FFCD00] hover:text-[#001e3d] text-white transition duration-200 hover:scale-105 active:scale-95 cursor-pointer shadow-xl backdrop-blur-md border border-white/20"
-              aria-label="Close Lightbox"
-            >
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M18 6L6 18M6 6l12 12" />
-              </svg>
-            </button>
-
-            {/* Left Nav */}
-            <button
-              onClick={(e) => { e.stopPropagation(); prevMedia() }}
-              className="absolute left-3 sm:left-6 z-40 flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-white/15 text-white transition hover:bg-[#FFCD00] hover:text-[#001e3d] hover:scale-110 active:scale-90 cursor-pointer shadow-xl backdrop-blur-md border border-white/15"
-              aria-label="Previous media"
-            >
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-
-            {/* Right Nav */}
-            <button
-              onClick={(e) => { e.stopPropagation(); nextMedia() }}
-              className="absolute right-3 sm:right-6 z-40 flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-white/15 text-white transition hover:bg-[#FFCD00] hover:text-[#001e3d] hover:scale-110 active:scale-90 cursor-pointer shadow-xl backdrop-blur-md border border-white/15"
-              aria-label="Next media"
-            >
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-
-            {/* Big, Simple Media Content */}
+            {/* White, Compact Lightbox View Box */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.96 }}
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
               transition={{ duration: 0.2 }}
-              className="relative max-h-[92vh] max-w-6xl w-full flex flex-col items-center justify-center select-none"
+              className="relative bg-white rounded-3xl shadow-2xl p-4 sm:p-5 max-w-2xl sm:max-w-3xl w-full border border-navy/10 flex flex-col gap-3 select-none"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="relative w-full max-h-[82vh] flex items-center justify-center overflow-hidden rounded-2xl sm:rounded-3xl shadow-2xl">
+              {/* Top Bar: Title, Count, & Close Button */}
+              <div className="flex items-center justify-between gap-3 px-1">
+                <div className="min-w-0 flex items-center gap-2.5">
+                  <h2 className="text-sm sm:text-base font-bold font-heading text-navy truncate">
+                    {currentItem.title}
+                  </h2>
+                  <span className="text-xs font-semibold text-navy/50 tracking-wider shrink-0">
+                    ({selectedMediaIndex + 1}/{filteredItems.length})
+                  </span>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setSelectedMediaIndex(null)}
+                  className="w-8 h-8 rounded-full bg-navy/5 hover:bg-navy hover:text-white text-navy flex items-center justify-center transition active:scale-90 cursor-pointer shrink-0 font-bold text-sm"
+                  aria-label="Close Lightbox"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* Media Display Area with Integrated Nav Arrows */}
+              <div className="relative w-full h-[280px] xs:h-[340px] sm:h-[420px] flex items-center justify-center overflow-hidden rounded-2xl bg-black">
+                {/* Previous Media Arrow */}
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); prevMedia() }}
+                  className="absolute left-3 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-white/20 hover:bg-[#FFCD00] hover:text-[#001e3d] text-white transition hover:scale-110 active:scale-90 cursor-pointer shadow-md backdrop-blur-md"
+                  aria-label="Previous visual"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+
+                {/* Next Media Arrow */}
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); nextMedia() }}
+                  className="absolute right-3 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-white/20 hover:bg-[#FFCD00] hover:text-[#001e3d] text-white transition hover:scale-110 active:scale-90 cursor-pointer shadow-md backdrop-blur-md"
+                  aria-label="Next visual"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+
                 {currentItem.type === 'video' ? (
                   <LazyVideo
                     src={currentItem.src}
@@ -318,27 +346,101 @@ export default function Gallery() {
                     autoPlay
                     loop
                     playsInline
-                    className="max-h-[82vh] w-auto max-w-full rounded-2xl sm:rounded-3xl object-contain shadow-2xl"
+                    className="w-full h-full object-contain"
                   />
                 ) : (
                   <img
                     src={currentItem.src}
                     alt={currentItem.title || 'Gallery visual'}
                     draggable={false}
-                    className="max-h-[82vh] w-auto max-w-full rounded-2xl sm:rounded-3xl object-contain shadow-2xl select-none"
+                    className="w-full h-full object-contain select-none"
                   />
                 )}
               </div>
 
-              {/* Clean Bottom Title & Count Bar */}
-              {currentItem.title && (
-                <div className="mt-4 flex items-center justify-between w-full max-w-4xl px-3 text-white">
-                  <h2 className="text-sm sm:text-lg font-bold font-heading truncate text-white/90">
-                    {currentItem.title}
-                  </h2>
-                  <span className="text-xs sm:text-sm font-semibold text-white/60 tracking-wider ml-4 shrink-0">
-                    {selectedMediaIndex + 1} / {filteredItems.length}
-                  </span>
+              {/* Only 10 Thumbnails Visible in a Given Time */}
+              {filteredItems.length > 1 && (
+                <div className="flex items-center gap-1.5 sm:gap-2 w-full pt-1">
+                  {filteredItems.length > 10 && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setSelectedMediaIndex((prev) => Math.max(0, prev - 10))
+                      }}
+                      disabled={thumbStartIndex === 0}
+                      className="w-7 h-7 sm:w-8 sm:h-8 shrink-0 rounded-xl bg-navy/5 hover:bg-[#FFCD00] hover:text-[#001e3d] disabled:opacity-20 disabled:pointer-events-none text-navy flex items-center justify-center transition active:scale-90 cursor-pointer font-bold"
+                      aria-label="Previous 10 thumbnails"
+                      title="Previous 10"
+                    >
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <path d="M15 19l-7-7 7-7" />
+                      </svg>
+                    </button>
+                  )}
+
+                  {/* 10 Visible Thumbnail Slots */}
+                  <div className="grid grid-cols-10 gap-1 sm:gap-1.5 flex-1 min-w-0">
+                    {visibleThumbs.map(({ item, index }) => {
+                      const isActive = index === selectedMediaIndex
+                      return (
+                        <button
+                          key={item.id || index}
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            triggerHaptic(8)
+                            setSelectedMediaIndex(index)
+                          }}
+                          className={`relative aspect-square w-full rounded-lg sm:rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${
+                            isActive
+                              ? 'border-navy shadow-md ring-2 ring-navy/20 scale-102 opacity-100'
+                              : 'border-transparent opacity-60 hover:opacity-100 hover:border-navy/30 bg-slate-100'
+                          }`}
+                          title={item.title}
+                        >
+                          {item.type === 'video' ? (
+                            <div className="relative w-full h-full bg-black flex items-center justify-center">
+                              <LazyVideo
+                                src={item.thumbnail || item.poster || item.src}
+                                muted
+                                playsInline
+                                className="w-full h-full object-cover pointer-events-none opacity-80"
+                              />
+                              <div className="absolute inset-0 bg-black/30 flex items-center justify-center text-white text-[7px] sm:text-[9px]">
+                                ▶
+                              </div>
+                            </div>
+                          ) : (
+                            <img
+                              src={item.thumbnail || item.poster || item.src}
+                              alt=""
+                              className="w-full h-full object-cover"
+                              loading="lazy"
+                            />
+                          )}
+                        </button>
+                      )
+                    })}
+                  </div>
+
+                  {filteredItems.length > 10 && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setSelectedMediaIndex((prev) => Math.min(filteredItems.length - 1, prev + 10))
+                      }}
+                      disabled={thumbStartIndex + 10 >= filteredItems.length}
+                      className="w-7 h-7 sm:w-8 sm:h-8 shrink-0 rounded-xl bg-navy/5 hover:bg-[#FFCD00] hover:text-[#001e3d] disabled:opacity-20 disabled:pointer-events-none text-navy flex items-center justify-center transition active:scale-90 cursor-pointer font-bold"
+                      aria-label="Next 10 thumbnails"
+                      title="Next 10"
+                    >
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <path d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+                  )}
                 </div>
               )}
             </motion.div>

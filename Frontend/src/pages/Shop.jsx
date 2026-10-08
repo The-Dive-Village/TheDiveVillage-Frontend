@@ -449,7 +449,7 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
     >
       <div>
         <div className="relative mb-3 sm:mb-5">
-          <div className="aspect-[4/5] w-full rounded-xl sm:rounded-2xl overflow-hidden bg-[#F0F2F5] flex items-center justify-center p-2.5 sm:p-4 relative">
+          <div className="aspect-[4/5] w-full rounded-xl sm:rounded-2xl overflow-hidden bg-white flex items-center justify-center p-2.5 sm:p-4 relative">
             {/* Low-contrast Skeleton Shimmer Placeholder */}
             {!imgLoaded && (
               <div className="absolute inset-0 skeleton-shimmer bg-navy/5 z-0" aria-hidden="true" />
@@ -463,7 +463,7 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
             />
             {product.glb && hasHovered && (
               <div
-                className={`absolute inset-0 w-full h-full z-10 bg-gradient-to-b from-[#FFFFFF] via-[#F8FAFC] to-[#EDF2F7] flex items-center justify-center transition-opacity duration-300 cursor-grab active:cursor-grabbing ${show3D ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+                className={`absolute inset-0 w-full h-full z-10 bg-white flex items-center justify-center transition-opacity duration-300 cursor-grab active:cursor-grabbing ${show3D ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
                   }`}
               >
                 <model-viewer

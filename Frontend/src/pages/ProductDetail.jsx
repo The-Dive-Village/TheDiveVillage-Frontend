@@ -76,7 +76,6 @@ export default function ProductDetail() {
   const [toastMessage, setToastMessage] = useState(null)
   const [isAdding, setIsAdding] = useState(false)
   const [floatingImage, setFloatingImage] = useState(null)
-  const [floatingZoom, setFloatingZoom] = useState(1)
 
   const thumbsRef = useRef(null)
   const [canScrollLeft, setCanScrollLeft] = useState(false)
@@ -254,7 +253,7 @@ export default function ProductDetail() {
   }
 
   return (
-    <div className="bg-[#FAFAFA] min-h-screen text-navy font-body pt-24 sm:pt-32 pb-32 sm:pb-24 overflow-x-hidden">
+    <div className="bg-[#FAFAFA] min-h-screen text-navy font-body pt-20 sm:pt-24 pb-32 sm:pb-24 overflow-x-hidden">
       <SEOHead
         title={`${product.title || product.name} | Ocean Apparel | The Dive Village`}
         description={`${product.description}. Premium quality dive gear and eco-friendly apparel crafted by The Dive Village.`}
@@ -288,7 +287,7 @@ export default function ProductDetail() {
 
         {/* Breadcrumb Navigation Header */}
         {/* Top Header Bar: Back Button & Breadcrumbs */}
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
           <div className="flex items-center gap-3 sm:gap-4 overflow-x-auto whitespace-nowrap scrollbar-none py-1">
             <button
               type="button"
@@ -328,7 +327,7 @@ export default function ProductDetail() {
             <div 
               onTouchStart={activeMedia?.type !== 'glb' ? handleMediaTouchStart : undefined}
               onTouchEnd={activeMedia?.type !== 'glb' ? handleMediaTouchEnd : undefined}
-              className="w-full rounded-[28px] overflow-hidden bg-white border border-navy/10 h-[460px] xs:h-[500px] sm:h-[560px] lg:h-[600px] relative shadow-card group"
+              className="w-full rounded-[28px] overflow-hidden bg-white border border-navy/10 h-[380px] xs:h-[420px] sm:h-[480px] lg:h-[500px] relative shadow-card group"
             >
               {activeMedia?.type === 'glb' ? (
                 <Product3DViewer key={activeMedia.src} src={activeMedia.src} alt={product.title} productId={product.id} />
@@ -351,7 +350,6 @@ export default function ProductDetail() {
                   onOpenFloating={(imgSrc) => {
                     triggerHaptic(8)
                     setFloatingImage(imgSrc)
-                    setFloatingZoom(1)
                   }}
                 />
               )}
@@ -889,7 +887,7 @@ export default function ProductDetail() {
         </div>
       </div>
 
-      {/* Floating Window Lightbox Modal */}
+      {/* Floating Window Lightbox Modal - Simple, Big & Clean */}
       <AnimatePresence>
         {floatingImage && (
           <motion.div
@@ -897,96 +895,45 @@ export default function ProductDetail() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setFloatingImage(null)}
-            className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xl flex items-center justify-center p-3 sm:p-6 md:p-8 select-none"
+            className="fixed inset-0 z-50 bg-black/85 backdrop-blur-xl flex items-center justify-center p-3 sm:p-6 md:p-8 select-none"
           >
             <motion.div
-              initial={{ opacity: 0, scale: 0.92, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.92, y: 20 }}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative max-w-4xl w-full bg-white rounded-3xl sm:rounded-[36px] shadow-[0_25px_60px_rgba(0,0,0,0.5)] border border-navy/10 flex flex-col overflow-hidden max-h-[92vh]"
+              className="relative max-w-5xl w-full bg-white rounded-3xl sm:rounded-[36px] shadow-2xl border border-navy/10 flex flex-col overflow-hidden max-h-[92vh]"
             >
               {/* Floating Header */}
-              <div className="flex items-center justify-between px-5 py-4 sm:px-7 sm:py-5 border-b border-navy/10 bg-slate-50/80 backdrop-blur-md">
+              <div className="flex items-center justify-between px-5 py-4 sm:px-7 sm:py-5 border-b border-navy/10 bg-slate-50/90 backdrop-blur-md">
                 <div>
                   <span className="text-[10px] font-bold uppercase tracking-wider text-accent block">Product Visual Preview</span>
                   <h3 className="font-heading text-sm sm:text-lg font-bold text-navy">{product.title}</h3>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setFloatingZoom((prev) => Math.max(1, prev - 0.5))}
-                    disabled={floatingZoom <= 1}
-                    className="w-8 h-8 rounded-full bg-white border border-navy/15 text-navy disabled:opacity-35 flex items-center justify-center text-sm font-bold shadow-sm hover:bg-navy/5 active:scale-95 transition cursor-pointer"
-                    title="Zoom Out"
-                  >
-                    −
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setFloatingZoom((prev) => Math.min(3, prev + 0.5))}
-                    disabled={floatingZoom >= 3}
-                    className="w-8 h-8 rounded-full bg-white border border-navy/15 text-navy disabled:opacity-35 flex items-center justify-center text-sm font-bold shadow-sm hover:bg-navy/5 active:scale-95 transition cursor-pointer"
-                    title="Zoom In"
-                  >
-                    +
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      triggerHaptic(8)
-                      setFloatingImage(null)
-                    }}
-                    className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-navy/10 hover:bg-navy text-navy hover:text-white flex items-center justify-center transition shadow-sm active:scale-90 cursor-pointer ml-1 sm:ml-2"
-                    aria-label="Close floating window"
-                  >
-                    ✕
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic(8)
+                    setFloatingImage(null)
+                  }}
+                  className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-navy/10 hover:bg-[#FFCD00] text-navy hover:text-[#001e3d] flex items-center justify-center transition shadow-sm active:scale-90 cursor-pointer font-bold text-base"
+                  aria-label="Close floating window"
+                >
+                  ✕
+                </button>
               </div>
 
-              {/* Center Floating Content Container (Strict FIT bounds) */}
-              <div className="relative w-full h-[55vh] sm:h-[62vh] min-h-[300px] bg-[#F8FAFC] flex items-center justify-center p-3 sm:p-6 overflow-hidden">
-                <div className="w-full h-full flex items-center justify-center overflow-hidden">
-                  <img
-                    src={floatingImage}
-                    alt={product.title}
-                    className="max-h-full max-w-full w-auto h-auto object-contain transition-transform duration-300 select-none drop-shadow-md"
-                    style={{ transform: `scale(${floatingZoom})` }}
-                    draggable={false}
-                  />
-                </div>
+              {/* Big Center Content Container */}
+              <div className="relative w-full h-[70vh] sm:h-[78vh] bg-[#F8FAFC] flex items-center justify-center p-4 sm:p-8 overflow-hidden">
+                <img
+                  src={floatingImage}
+                  alt={product.title}
+                  className="max-h-full max-w-full w-auto h-auto object-contain select-none drop-shadow-md rounded-2xl"
+                  draggable={false}
+                />
               </div>
-
-              {/* Bottom Thumbnail Switcher if multiple images exist */}
-              {mediaItems.filter((m) => m.type === 'image').length > 1 && (
-                <div className="px-4 py-3 sm:px-6 sm:py-4 border-t border-navy/10 bg-white flex items-center justify-center gap-2 sm:gap-3 overflow-x-auto">
-                  {mediaItems
-                    .filter((m) => m.type === 'image')
-                    .map((m, idx) => {
-                      const isSelected = floatingImage === m.src
-                      return (
-                        <button
-                          key={m.id || idx}
-                          type="button"
-                          onClick={() => {
-                            triggerHaptic(6)
-                            setFloatingImage(m.src)
-                            setFloatingZoom(1)
-                            setActiveMedia(m)
-                          }}
-                          className={`relative w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden border-2 transition-all duration-200 cursor-pointer p-1 bg-[#F0F2F5] shrink-0 ${
-                            isSelected ? 'border-accent shadow-md scale-105 bg-white' : 'border-navy/10 opacity-70 hover:opacity-100'
-                          }`}
-                        >
-                          <img src={m.src} alt={m.label} className="w-full h-full object-contain" />
-                        </button>
-                      )
-                    })}
-                </div>
-              )}
             </motion.div>
           </motion.div>
         )}
