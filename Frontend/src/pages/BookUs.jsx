@@ -7,6 +7,7 @@ import SEOHead from '../components/SEOHead'
 import { diveSiteService, normalizeCountryKey } from '../services/diveSiteService'
 import { getDiveSiteCreatureInfo } from '../data/diveSiteImages'
 import { bookingService } from '../services/bookingService'
+import { FUN_DIVES_PACKAGES } from '../data/servicesData'
 import {
   COURSE_CATALOG,
   CERTIFICATION_OPTIONS,
@@ -352,6 +353,12 @@ export default function BookUs() {
       if (hasUnselected) {
         triggerErrorHaptic()
         setStepError('Please select an eligible program for each participant.')
+        return false
+      }
+      const hasMissingFunDivesCount = participants.some((p) => ['fun-day-dive', 'fun-dawn-dive', 'fun-night-dive'].includes(p.selectedProgram) && !p.funDivesCount)
+      if (hasMissingFunDivesCount) {
+        triggerErrorHaptic()
+        setStepError('Please select a dive package (number of dives) for each Fun Dive participant.')
         return false
       }
       for (const p of participants) {
@@ -1315,7 +1322,30 @@ export default function BookUs() {
                                       </div>
                                     )
                                   })}
-                                </div>
+                                  </div>
+                                {['fun-day-dive', 'fun-dawn-dive', 'fun-night-dive'].includes(p.selectedProgram) && (
+                                  <div className="mt-3.5 pt-3.5 border-t border-navy/5">
+                                    <label className="text-[9px] sm:text-xs font-bold text-navy/70 uppercase tracking-wider mb-2 block">
+                                      Select Number of Dives
+                                    </label>
+                                    <div className="relative">
+                                      <select
+                                        value={p.funDivesCount || ''}
+                                        onChange={(e) => handleParticipantChange(idx, 'funDivesCount', e.target.value)}
+                                        required
+                                        className="w-full rounded-lg sm:rounded-2xl bg-[#F0F2F5] border border-navy/5 px-2.5 py-2 sm:px-4 sm:py-3.5 text-[11px] sm:text-sm font-semibold sm:font-bold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition appearance-none shadow-inner cursor-pointer pr-8"
+                                      >
+                                        <option value="" disabled>Choose your dive package...</option>
+                                        {FUN_DIVES_PACKAGES.map(pkg => (
+                                          <option key={pkg.id} value={pkg.id}>{pkg.title} - {pkg.duration}</option>
+                                        ))}
+                                      </select>
+                                      <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-navy/50">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 9l6 6 6-6" /></svg>
+                                      </div>
+                                    </div>
+                                  </div>
+                                )}
                               </div>
                             )}
                           </div>

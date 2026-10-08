@@ -39,11 +39,7 @@ export default function ServiceDetail() {
   const categoryLabel = CATEGORIES.find(c => c.key === service.category)?.label || (isFunDivesCombo ? 'Combos & Packages' : 'Services')
   const activeFaqs = service.faqs && service.faqs.length > 0 ? service.faqs : DEFAULT_FAQS
 
-  const filteredFunPackages = FUN_DIVES_PACKAGES.filter((pkg) => {
-    if (funCategoryFilter === 'day') return pkg.id !== 'fun-night' && pkg.id !== 'fun-dawn'
-    if (funCategoryFilter === 'night') return pkg.id === 'fun-night' || pkg.id === 'fun-dawn'
-    return true
-  })
+  const filteredFunPackages = FUN_DIVES_PACKAGES
 
   // Parse highlight string into pills
   const highlightItems = service.highlights
@@ -170,8 +166,9 @@ export default function ServiceDetail() {
               {/* Filter Pills */}
               <div className="flex gap-2 overflow-x-auto pb-1 max-w-full">
                 {[
-                  { key: 'day', label: 'Day Dives' },
-                  { key: 'night', label: 'Night & Dawn Dives' },
+                  { key: 'day', label: 'Day Dive' },
+                  { key: 'dawn', label: 'Dawn Dive' },
+                  { key: 'night', label: 'Night Dive' },
                 ].map((tab) => (
                   <button
                     key={tab.key}

@@ -649,10 +649,10 @@ export const COURSE_CATALOG = [
     slNumber: 13,
     experience: 'Scuba Diving'
   },
-  // 23-30. Fun Dive Packages
+  // 23-25. Fun Dive Categories
   {
-    id: '1-dive',
-    name: '1 Dive',
+    id: 'fun-day-dive',
+    name: 'Day Dive',
     category: 'Fun Dives',
     minimumAge: 10,
     maxAge: null,
@@ -663,106 +663,22 @@ export const COURSE_CATALOG = [
     experience: 'Scuba Diving'
   },
   {
-    id: '2-dives',
-    name: '2 Dives',
-    category: 'Fun Dives',
-    minimumAge: 10,
-    maxAge: null,
-    bookingType: 'certification_required',
-    prerequisites: { type: 'SINGLE', requirement: CERTIFICATIONS.OPEN_WATER },
-    certLabel: 'Open Water Diver',
-    slNumber: null,
-    experience: 'Scuba Diving'
-  },
-  {
-    id: '4-dives',
-    name: '4 Dives',
-    category: 'Fun Dives',
-    minimumAge: 10,
-    maxAge: null,
-    bookingType: 'certification_required',
-    prerequisites: { type: 'SINGLE', requirement: CERTIFICATIONS.OPEN_WATER },
-    certLabel: 'Open Water Diver',
-    slNumber: null,
-    experience: 'Scuba Diving'
-  },
-  {
-    id: '6-dives',
-    name: '6 Dives',
-    category: 'Fun Dives',
-    minimumAge: 10,
-    maxAge: null,
-    bookingType: 'certification_required',
-    prerequisites: { type: 'SINGLE', requirement: CERTIFICATIONS.OPEN_WATER },
-    certLabel: 'Open Water Diver',
-    slNumber: null,
-    experience: 'Scuba Diving'
-  },
-  {
-    id: '8-dives',
-    name: '8 Dives',
-    category: 'Fun Dives',
-    minimumAge: 10,
-    maxAge: null,
-    bookingType: 'certification_required',
-    prerequisites: { type: 'SINGLE', requirement: CERTIFICATIONS.OPEN_WATER },
-    certLabel: 'Open Water Diver',
-    slNumber: null,
-    experience: 'Scuba Diving'
-  },
-  {
-    id: '10-dives',
-    name: '10 Dives',
-    category: 'Fun Dives',
-    minimumAge: 10,
-    maxAge: null,
-    bookingType: 'certification_required',
-    prerequisites: { type: 'SINGLE', requirement: CERTIFICATIONS.OPEN_WATER },
-    certLabel: 'Open Water Diver',
-    slNumber: null,
-    experience: 'Scuba Diving'
-  },
-  {
-    id: '12-dives',
-    name: '12 Dives',
-    category: 'Fun Dives',
-    minimumAge: 10,
-    maxAge: null,
-    bookingType: 'certification_required',
-    prerequisites: { type: 'SINGLE', requirement: CERTIFICATIONS.OPEN_WATER },
-    certLabel: 'Open Water Diver',
-    slNumber: null,
-    experience: 'Scuba Diving'
-  },
-  {
-    id: 'post-12-dives',
-    name: 'Post 12 (extra 2 dives)',
-    category: 'Fun Dives',
-    minimumAge: 10,
-    maxAge: null,
-    bookingType: 'certification_required',
-    prerequisites: { type: 'SINGLE', requirement: CERTIFICATIONS.OPEN_WATER },
-    certLabel: 'Open Water Diver',
-    slNumber: null,
-    experience: 'Scuba Diving'
-  },
-  {
-    id: 'night-dive',
-    name: 'Night Dive',
-    category: 'Fun Dives',
-    minimumAge: 12,
-    maxAge: null,
-    bookingType: 'certification_required',
-    prerequisites: { type: 'SINGLE', requirement: CERTIFICATIONS.OPEN_WATER },
-    certLabel: 'Open Water Diver',
-    slNumber: null,
-    experience: 'Scuba Diving'
-  },
-  {
-    id: 'dawn-dive',
+    id: 'fun-dawn-dive',
     name: 'Dawn Dive',
     category: 'Fun Dives',
     minimumAge: 10,
+    maxAge: null,
+    bookingType: 'certification_required',
+    prerequisites: { type: 'SINGLE', requirement: CERTIFICATIONS.OPEN_WATER },
+    certLabel: 'Open Water Diver',
+    slNumber: null,
+    experience: 'Scuba Diving'
+  },
+  {
+    id: 'fun-night-dive',
+    name: 'Night Dive',
+    category: 'Fun Dives',
+    minimumAge: 12,
     maxAge: null,
     bookingType: 'certification_required',
     prerequisites: { type: 'SINGLE', requirement: CERTIFICATIONS.OPEN_WATER },

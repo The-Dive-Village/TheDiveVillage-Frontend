@@ -1091,33 +1091,7 @@ export const FUN_DIVES_PACKAGES = [
     highlights: 'Certified divers only',
     badge: 'Add-On',
     duration: '1 Extra Day',
-  },
-  {
-    id: 'fun-night',
-    dives: 1,
-    title: 'Night Dive',
-    tag: 'Specialty',
-    short_desc: 'Experience the reef after dark.',
-    long_desc: 'Guided night dive spotting nocturnal marine life.',
-    video: vidNightDiveBackground,
-    image: extVaricose,
-    highlights: 'Prerequisites: Open Water Diver',
-    badge: 'Night Dive',
-    duration: 'Night (1 Dive)',
-  },
-  {
-    id: 'fun-dawn',
-    dives: 1,
-    title: 'Dawn Dive',
-    tag: 'Sunrise',
-    short_desc: 'Catch the reef at sunrise.',
-    long_desc: 'See marine life during feeding and sunrise light.',
-    video: vidFunDive,
-    image: extYellowback,
-    highlights: 'Certified divers only',
-    badge: 'Dawn Special',
-    duration: 'Sunrise (1 Dive)',
-  },
+  }
 ]
 
 export default SERVICES_DATA
