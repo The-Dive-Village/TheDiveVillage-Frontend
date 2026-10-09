@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router'
 import { motion, AnimatePresence } from 'framer-motion'
 import { COURSE_CATALOG } from '../utils/courseEligibility'
 import { SHOP_PRODUCTS } from '../utils/products'
-import { COUNTRY_CENTROIDS } from '../data/countryCentroids'
+import padiCountries from '../data/padiCountries.json'
 import { GALLERY_ITEMS } from '../utils/galleryData'
 import { triggerHaptic } from '../utils/haptics'
 
@@ -31,7 +31,7 @@ export default function CommandPalette({ isOpen, onClose }) {
     // 1. Pages & Fast Navigation
     list.push(
       { id: 'page-home', type: 'page', title: 'Home Page', subtitle: 'Welcome to The Dive Village', url: '/', iconKey: 'home', category: 'Pages' },
-      { id: 'page-book', type: 'page', title: 'Book A Dive / Course', subtitle: 'Interactive 3D Globe Booking Wizard', url: '/book-us', iconKey: 'globe', category: 'Pages' },
+      { id: 'page-book', type: 'page', title: 'Book A Dive / Course', subtitle: 'Online Dive Booking Wizard', url: '/book-us', iconKey: 'globe', category: 'Pages' },
       { id: 'page-services', type: 'page', title: 'Services & Expeditions', subtitle: 'Scuba Diving, Freediving, Surfing', url: '/services', iconKey: 'services', category: 'Pages' },
       { id: 'page-shop', type: 'page', title: 'Shop & Merchandise', subtitle: 'Apparel, Dry Bags, Rashguards & Gear', url: '/shop', iconKey: 'shop', category: 'Pages' },
       { id: 'page-gallery', type: 'page', title: 'Visual Gallery & Lightbox', subtitle: 'Underwater wildlife photos & videos', url: '/gallery', iconKey: 'gallery', category: 'Pages' },
@@ -67,13 +67,13 @@ export default function CommandPalette({ isOpen, onClose }) {
       })
     })
 
-    // 4. Dive Sites / Locations
-    COUNTRY_CENTROIDS.forEach((c) => {
+    // 4. Dive Sites / Destinations
+    ;(padiCountries || []).slice(0, 25).forEach((countryName) => {
       list.push({
-        id: `site-${c.name}`,
+        id: `site-${countryName}`,
         type: 'location',
-        title: `${c.name} Dive Expeditions`,
-        subtitle: `Explore world-class dive sites across ${c.name}`,
+        title: `${countryName} Dive Expeditions`,
+        subtitle: `Explore world-class dive destinations in ${countryName}`,
         url: `/book-us`,
         iconKey: 'location',
         category: 'Dive Sites',

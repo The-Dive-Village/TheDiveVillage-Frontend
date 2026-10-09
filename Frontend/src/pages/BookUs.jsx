@@ -1,12 +1,10 @@
 import LazyVideo from '../components/LazyVideo'
-import { useState, useEffect, useMemo, useCallback, useRef, lazy, Suspense } from 'react'
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { useSearchParams } from 'react-router'
 import { motion } from 'framer-motion'
-const InteractiveDiveMap = lazy(() => import('../components/InteractiveDiveMap'))
 import CompactTwoMonthCalendarPopover from '../components/CompactTwoMonthCalendarPopover'
 import SEOHead from '../components/SEOHead'
-import { diveSiteService, normalizeCountryKey } from '../services/diveSiteService'
-import { getDiveSiteCreatureInfo } from '../data/diveSiteImages'
+import padiCountries from '../data/padiCountries.json'
 import { bookingService } from '../services/bookingService'
 import { FUN_DIVES_PACKAGES } from '../data/servicesData'
 import {
@@ -28,6 +26,20 @@ import PhoneInput from 'react-phone-number-input'
 import turtleAnnaVideo from '../assets/Media/Background/Turtle.mp4'
 import compiledNightDiveVideo from '../assets/Media/Background/Night Dive.mp4'
 import useNightDive from '../hooks/useNightDive'
+
+// Curated popular dive hubs for quick selection
+const POPULAR_DESTINATIONS = {
+  Maldives: ['North Malé Atoll', 'South Ari Atoll', 'Baa Atoll (Hanifaru Bay)', 'Rasdhoo Atoll', 'Vaavu Atoll', 'Fuvahmulah'],
+  Thailand: ['Phuket', 'Koh Tao', 'Similan Islands', 'Phi Phi Islands', 'Koh Samui', 'Richelieu Rock'],
+  Indonesia: ['Bali (Tulamben & Nusa Penida)', 'Komodo National Park', 'Raja Ampat', 'Gili Islands', 'Bunaken & Lembeh Strait'],
+  Egypt: ['Sharm El Sheikh (Ras Mohammed)', 'Hurghada', 'Dahab (Blue Hole)', 'Marsa Alam (Elphinstone)', 'Brother Islands'],
+  Philippines: ['Cebu (Moalboal & Malapascua)', 'Coron (Shipwrecks)', 'El Nido', 'Apo Reef', 'Bohol (Panglao)', 'Tubbataha Reefs'],
+  Australia: ['Cairns (Great Barrier Reef)', 'Whitsundays', 'Ningaloo Reef', 'Lord Howe Island', 'Rowley Shoals'],
+  'Costa Rica': ['Cocos Island', 'Caño Island', 'Catalina Islands', 'Bat Islands', 'Golfo Dulce'],
+  Mexico: ['Cozumel', 'Cenotes (Riviera Maya)', 'Socorro Island', 'Cabo Pulmo', 'La Paz (Sea of Cortez)'],
+  Fiji: ['Rainbow Reef (Taveuni)', 'Beqa Lagoon (Shark Reef)', 'Great Astrolabe Reef', 'Bligh Water', 'Mamanuca Islands'],
+  Belize: ['Great Blue Hole', 'Lighthouse Reef', 'Hol Chan Marine Reserve', 'Glover’s Reef', 'Ambergris Caye'],
+}
 
 // Backwards-compatible export alias for any legacy imports
 export const PROGRAMS_CATALOG = COURSE_CATALOG
@@ -69,8 +81,6 @@ export default function BookUs() {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false)
   const datePickerBtnRef = useRef(null)
 
-  const countryRequestVersionRef = useRef(0)
-
   const formatDateToDDMMYYYY = (dateStr) => {
     if (!dateStr) return ''
     const parts = dateStr.split('-')
@@ -79,44 +89,8 @@ export default function BookUs() {
     return `${day}-${month}-${year}`
   }
 
-  // Derived PADI dataset lookups
-  const countries = useMemo(() => diveSiteService.getCountries(), [])
-  const [availableLocations, setAvailableLocations] = useState([])
-  const [isLocationsLoading, setIsLocationsLoading] = useState(false)
-
-  // Asynchronous location data resolution on country change with atomic transaction version check
-  useEffect(() => {
-    const currentVersion = ++countryRequestVersionRef.current
-    const requestedCountryKey = normalizeCountryKey(country)
-
-    if (!country) {
-      setAvailableLocations([])
-      setIsLocationsLoading(false)
-      return
-    }
-
-    setIsLocationsLoading(true)
-    diveSiteService
-      .getLocationsByCountry(country)
-      .then((locs) => {
-        if (
-          currentVersion === countryRequestVersionRef.current &&
-          normalizeCountryKey(country) === requestedCountryKey
-        ) {
-          setAvailableLocations(locs || [])
-          setIsLocationsLoading(false)
-        }
-      })
-      .catch(() => {
-        if (
-          currentVersion === countryRequestVersionRef.current &&
-          normalizeCountryKey(country) === requestedCountryKey
-        ) {
-          setAvailableLocations([])
-          setIsLocationsLoading(false)
-        }
-      })
-  }, [country])
+  // Country list lookup
+  const countries = useMemo(() => padiCountries || [], [])
 
   // Step 1 Handlers
   const handleCountryChange = (newCountry) => {
@@ -124,22 +98,6 @@ export default function BookUs() {
     setSelectedLocation(null)
     setLocationId('')
     setLocation('')
-    setStepError('')
-  }
-
-  const handleLocationChange = (newLocationId) => {
-    setLocationId(newLocationId)
-    const found = availableLocations.find(
-      (l) => String(l.id) === String(newLocationId)
-    )
-    if (found) {
-      setSelectedLocation(found)
-      const placeName = diveSiteService.getLocationDisplayName(found)
-      setLocation(placeName || found.title || found.name)
-    } else {
-      setSelectedLocation(null)
-      setLocation('')
-    }
     setStepError('')
   }
 
@@ -654,12 +612,9 @@ export default function BookUs() {
       </section>
 
       {/* 2. MAIN 4-STEP BOOKING WIZARD */}
-      <div className="mx-auto max-w-7xl px-3 xs:px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-28 sm:pb-40 w-full min-w-0 max-w-full relative z-20">
+      <div className="mx-auto max-w-4xl px-3 xs:px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-28 sm:pb-40 w-full min-w-0 relative z-20">
         {/* Main 4-Step Layout */}
-        <div className="grid lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-14 w-full min-w-0 max-w-full items-start">
-
-          {/* Form Wizard Column */}
-          <div className="lg:col-span-7 flex flex-col w-full min-w-0 max-w-full mx-auto">
+        <div className="flex flex-col w-full min-w-0 mx-auto">
 
             {/* Step Indicator Bar - Mobile Compact Version */}
             {(() => {
@@ -777,93 +732,51 @@ export default function BookUs() {
                     {/* 2. SELECT DIVE LOCATION */}
                     <div>
                       <label className="mb-1 sm:mb-2 block text-[9px] sm:text-xs font-bold text-navy/70 uppercase tracking-wider">
-                        Select Dive Location
+                        Dive Destination / Island / Resort
                       </label>
-                      <div className="relative">
-                        <select
-                          value={locationId}
-                          disabled={!country || isLocationsLoading}
-                          onChange={(e) => handleLocationChange(e.target.value)}
-                          required
-                          className="w-full rounded-lg sm:rounded-2xl bg-[#F0F2F5] px-3 py-2 sm:px-5 sm:py-4 pr-8 sm:pr-10 text-[11px] sm:text-sm font-semibold sm:font-bold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition cursor-pointer appearance-none disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                          {!country ? (
-                            <option value="">Select a country first</option>
-                          ) : isLocationsLoading ? (
-                            <option value="">Loading dive locations...</option>
-                          ) : (
-                            <>
-                              <option value="">Select a dive location</option>
-                              {availableLocations.map((loc) => {
-                                const optionLabel = diveSiteService.getLocationDisplayName(loc)
-                                return (
-                                  <option key={loc.id} value={loc.id}>
-                                    {optionLabel}
-                                  </option>
-                                )
-                              })}
-                            </>
-                          )}
-                        </select>
-                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 sm:pr-4 text-navy/60">
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="sm:w-4 sm:h-4">
-                            <polyline points="6 9 12 15 18 9" />
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
+                      <input
+                        type="text"
+                        value={location}
+                        onChange={(e) => {
+                          setLocation(e.target.value)
+                          setLocationId(e.target.value)
+                          setStepError('')
+                        }}
+                        placeholder={country ? `e.g. Popular dive spot, island, or resort in ${country}` : 'Select a country first or enter dive destination'}
+                        required
+                        className="w-full rounded-lg sm:rounded-2xl bg-[#F0F2F5] px-3 py-2 sm:px-5 sm:py-4 text-[11px] sm:text-sm font-semibold sm:font-bold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition placeholder:text-navy/40"
+                      />
 
-                    {/* 3. SELECTED LOCATION PREVIEW CARD */}
-                    {selectedLocation && (() => {
-                      const creature = getDiveSiteCreatureInfo(selectedLocation.id, selectedLocation)
-                      return (
-                        <div className="rounded-xl sm:rounded-3xl bg-white border border-navy/10 p-2.5 sm:p-4 shadow-sm space-y-2 sm:space-y-3 transition-all">
-                          <div className="flex gap-2.5 sm:gap-3.5 items-center">
-                            {creature?.image && (
-                              <div className="w-10 h-10 sm:w-16 sm:h-16 rounded-lg sm:rounded-2xl overflow-hidden bg-navy/10 shrink-0 border border-navy/10 relative group">
-                                <img
-                                  src={creature.image}
-                                  alt={creature.creatureName || 'Marine Life'}
-                                  className="w-full h-full object-cover group-hover:scale-110 transition duration-300"
-                                />
-                              </div>
-                            )}
-
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center justify-between gap-1 mb-0.5 sm:mb-1">
-                                <span className="text-[7px] sm:text-[9px] font-bold uppercase tracking-wider text-accent bg-navy px-1.5 py-0.5 rounded-full truncate">
-                                  {creature?.creatureName || selectedLocation.membershipLevel || 'Certified Dive Site'}
-                                </span>
-                                <span className="text-[8px] sm:text-[10px] font-mono font-bold text-navy/40 shrink-0">
-                                  #{selectedLocation.id}
-                                </span>
-                              </div>
-
-                              <p className="font-heading text-[11px] sm:text-sm font-bold text-navy truncate">
-                                {diveSiteService.getLocationDisplayName(selectedLocation)}
-                              </p>
-
-                              {(selectedLocation.country || selectedLocation.address) && (
-                                <p className="text-[9px] sm:text-[11px] text-navy/60 flex items-center gap-1 mt-0.5 truncate">
-                                  <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="shrink-0">
-                                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
-                                    <circle cx="12" cy="9" r="2.5" />
-                                  </svg>
-                                  <span className="truncate">{selectedLocation.country || selectedLocation.address}</span>
-                                </p>
-                              )}
-                            </div>
+                      {/* Popular Quick-Select Destination Tags */}
+                      {country && POPULAR_DESTINATIONS[country] && (
+                        <div className="mt-2.5">
+                          <span className="text-[10px] font-bold text-navy/50 uppercase tracking-wider block mb-1.5">
+                            Popular in {country}:
+                          </span>
+                          <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                            {POPULAR_DESTINATIONS[country].map((spot) => (
+                              <button
+                                key={spot}
+                                type="button"
+                                onClick={() => {
+                                  triggerHaptic(5)
+                                  setLocation(spot)
+                                  setLocationId(spot)
+                                  setStepError('')
+                                }}
+                                className={`px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-bold transition active:scale-95 cursor-pointer ${
+                                  location === spot
+                                    ? 'bg-navy text-accent shadow-sm ring-1 ring-accent/30'
+                                    : 'bg-navy/5 hover:bg-navy/10 text-navy'
+                                }`}
+                              >
+                                {spot}
+                              </button>
+                            ))}
                           </div>
-
-                          {creature?.species && (
-                            <div className="pt-1 sm:pt-2 border-t border-navy/5 flex items-center justify-between text-[9px] sm:text-[11px]">
-                              <span className="text-navy/50 font-bold uppercase text-[7px] sm:text-[9px]">Marine Life:</span>
-                              <span className="font-semibold text-navy truncate max-w-[140px] sm:max-w-[200px]">{creature.species}</span>
-                            </div>
-                          )}
                         </div>
-                      )
-                    })()}
+                      )}
+                    </div>
 
                     {/* 3. SELECT YOUR EXPERIENCE */}
                     <div>
@@ -1467,47 +1380,9 @@ export default function BookUs() {
                 )}
               </div>
             </form>
-
           </div>
-
-          {/* Interactive Globe Map Column with Desktop Sticky Pinning */}
-          <div data-globe="true" className="normal-cursor lg:col-span-5 lg:sticky lg:top-28 lg:self-start relative w-full min-w-0 max-w-full mx-auto h-[500px] xs:h-[540px] sm:h-[580px] lg:h-[calc(100vh-8.5rem)] min-h-[480px] sm:min-h-[520px] rounded-2xl sm:rounded-[36px] overflow-hidden bg-navy flex flex-col pt-4 sm:pt-6 shadow-card border border-navy/10 mt-6 lg:mt-0">
-            <div className="text-center px-4 z-10 mb-2 pointer-events-none">
-              <span className="text-accent text-[10px] font-bold uppercase tracking-widest">Interactive 3D Globe</span>
-              <h3 className="font-heading text-xl sm:text-2xl font-bold text-white">Select Dive Location</h3>
-            </div>
-            <div className="flex-1 w-full relative min-h-0 flex flex-col">
-              <Suspense fallback={
-                <div className="w-full h-full flex items-center justify-center bg-[#021426] text-white/50 text-sm font-medium">
-                  <div className="flex flex-col items-center gap-3">
-                    <div className="w-8 h-8 rounded-full border-2 border-accent border-t-transparent animate-spin" />
-                    <span>Loading 3D Globe...</span>
-                  </div>
-                </div>
-              }>
-                <InteractiveDiveMap
-                  selectedCountry={country}
-                  countryLocations={availableLocations}
-                  selectedLocation={selectedLocation}
-                  onCountrySelect={handleCountryChange}
-                  onLocationSelect={(loc) => {
-                    if (loc) {
-                      setLocationId(String(loc.id))
-                      setSelectedLocation(loc)
-                      const placeName = diveSiteService.getLocationDisplayName(loc)
-                      setLocation(placeName || loc.title || loc.name)
-                      setStepError('')
-                    }
-                  }}
-                />
-              </Suspense>
-            </div>
-          </div>
-
         </div>
-
       </div>
-    </div>
   )
 }
 

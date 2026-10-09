@@ -29,23 +29,13 @@ export default function CustomCursor() {
     let isOverNormalCursor = false
     let lastCheckTime = 0
 
-    const isPointInsideGlobe = (x, y) => {
-      if (x < 0 || y < 0) return false
-      const globeEls = document.querySelectorAll('#dive-map-container, [data-globe], .cesium-widget, .cesium-viewer')
-      for (let i = 0; i < globeEls.length; i++) {
-        const rect = globeEls[i].getBoundingClientRect()
-        if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
-          return true
-        }
-      }
-      return false
-    }
+    const isPointInsideGlobe = () => false
 
     const checkNormalCursor = (target) => {
       if (!target) return false
       const el = target instanceof Element ? target : target.parentElement
       if (!el || !(el instanceof Element)) return false
-      return !!el.closest('input, textarea, select, [contenteditable="true"], .normal-cursor, [data-normal-cursor], #dive-map-container, [data-globe], .cesium-widget, .cesium-viewer, model-viewer')
+      return !!el.closest('input, textarea, select, [contenteditable="true"], .normal-cursor, [data-normal-cursor], model-viewer')
     }
 
     const checkInteractive = (target) => {

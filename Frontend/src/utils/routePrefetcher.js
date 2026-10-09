@@ -3,13 +3,8 @@
  * Pre-warms dynamic imports and heavy assets during browser idle time
  * and on hover, achieving instantaneous (0ms) page navigation.
  */
-import { loadCesium } from '../services/cesiumLoader'
-
 const routeLoaders = {
-  '/book-us': () => {
-    import('../pages/BookUs')
-    loadCesium().catch(() => {})
-  },
+  '/book-us': () => import('../pages/BookUs'),
   '/about': () => import('../pages/About'),
   '/services': () => import('../pages/Services'),
   '/our-services': () => import('../pages/Services'),
