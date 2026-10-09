@@ -141,7 +141,7 @@ export default function Checkout() {
               <div className="divide-y divide-navy/10 max-h-60 overflow-y-auto">
                 {items.map((item) => (
                   <div key={item.inventoryId} className="py-2.5 flex items-center gap-3">
-                    <div className="w-12 h-14 rounded-xl overflow-hidden bg-[#F0F2F5] shrink-0 border border-navy/10 p-1 flex items-center justify-center">
+                    <div className="w-12 h-14 rounded-xl overflow-hidden bg-white shrink-0 border border-navy/10 p-1 flex items-center justify-center">
                       <img src={item.product?.image} alt={item.product?.name} className="max-h-full max-w-full object-contain" />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -488,7 +488,7 @@ export default function Checkout() {
             <div className="space-y-4 mb-6 max-h-[36vh] overflow-y-auto pr-1">
               {items.map((item) => (
                 <div key={item.id} className="flex gap-3 items-center">
-                  <div className="w-14 h-16 rounded-xl bg-[#F0F2F5] p-1 shrink-0 flex items-center justify-center relative">
+                  <div className="w-14 h-16 rounded-xl bg-white border border-navy/10 p-1 shrink-0 flex items-center justify-center relative">
                     <img
                       src={item.product?.image}
                       alt=""

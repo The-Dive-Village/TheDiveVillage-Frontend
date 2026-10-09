@@ -41,7 +41,22 @@ export default function Shop() {
       try {
         const res = await productService.getProducts()
         if (res.data?.data && Array.isArray(res.data.data) && res.data.data.length > 0) {
-          setProductsList(res.data.data)
+          const merged = SHOP_PRODUCTS.map((staticProd) => {
+            const dbProd = res.data.data.find((dp) => dp.id === staticProd.id || dp._id === staticProd.id)
+            if (!dbProd) return staticProd
+            return {
+              ...staticProd,
+              ...dbProd,
+              glb: staticProd.glb || dbProd.glb,
+              glbByColor: staticProd.glbByColor || dbProd.glbByColor,
+              images: staticProd.images && staticProd.images.length > 0 ? staticProd.images : dbProd.images,
+              image: staticProd.image || dbProd.image,
+            }
+          })
+          const extraDbProds = res.data.data.filter(
+            (dp) => !SHOP_PRODUCTS.some((sp) => sp.id === dp.id || sp.id === dp._id)
+          )
+          setProductsList([...merged, ...extraDbProds])
         }
       } catch (err) {
         console.warn('Could not load live products from DB, using fallback:', err)
@@ -309,7 +324,7 @@ function GroupGallerySection() {
               triggerHaptic(8)
               setSelectedPhoto(photo)
             }}
-            className="group relative aspect-[4/3] rounded-2xl overflow-hidden bg-slate-100 cursor-pointer shadow-sm hover:shadow-float transition duration-300 border border-navy/5"
+            className="group relative aspect-[4/3] rounded-2xl overflow-hidden bg-white cursor-pointer shadow-sm hover:shadow-float transition duration-300 border border-navy/5"
           >
             <img
               src={photo.src}
@@ -385,6 +400,17 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
     }
   }, [])
 
+  const isCap = Boolean(
+    product.id === 'product-dive-cap' ||
+    (typeof product.glb === 'string' && product.glb.toLowerCase().includes('cap')) ||
+    (product.title && product.title.toLowerCase().includes('cap'))
+  )
+  const isBag = Boolean(
+    product.id === 'product-ocean-bag' ||
+    (typeof product.glb === 'string' && (product.glb.toLowerCase().includes('bag') || product.glb.toLowerCase().includes('backpack'))) ||
+    (product.title && (product.title.toLowerCase().includes('bag') || product.title.toLowerCase().includes('backpack')))
+  )
+
   useEffect(() => {
     let active = true
     const el = viewerRef.current
@@ -400,7 +426,7 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
               }
               const pbr = mat.pbrMetallicRoughness
               if (pbr) {
-                pbr.setRoughnessFactor(0.82)
+                pbr.setRoughnessFactor(isCap ? 0.65 : isBag ? 0.75 : 0.82)
                 pbr.setMetallicFactor(0.0)
               }
             })
@@ -433,7 +459,7 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
       active = false
       clearTimeout(fallbackTimer)
     }
-  }, [product?.glb, hasHovered])
+  }, [product?.glb, hasHovered, isCap, isBag])
 
   const show3D = isHovered && hasHovered
 
@@ -475,7 +501,7 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
                   auto-rotate
                   auto-rotate-delay="0"
                   rotation-per-second="28deg"
-                  camera-orbit="0deg 75deg 120%"
+                  camera-orbit={isBag ? "0deg 75deg 125%" : "0deg 75deg 110%"}
                   camera-target="auto auto auto"
                   disable-zoom
                   disable-pan
@@ -483,8 +509,8 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
                   max-camera-orbit="auto 75deg auto"
                   interaction-prompt="none"
                   environment-image="neutral"
-                  exposure={product.id === 'product-dive-cap' || (typeof product.glb === 'string' && product.glb.toLowerCase().includes('cap')) ? '2.5' : '1.35'}
-                  shadow-intensity={product.id === 'product-dive-cap' || (typeof product.glb === 'string' && product.glb.toLowerCase().includes('cap')) ? '0.08' : '0.4'}
+                  exposure={isCap ? "2.5" : isBag ? "1.8" : "1.35"}
+                  shadow-intensity={isCap ? "0.08" : isBag ? "0.2" : "0.4"}
                   shadow-softness="0.9"
                   tone-mapping="commerce"
                   bounds="tight"

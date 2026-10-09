@@ -90,7 +90,7 @@ export default function Wishlist() {
                   <div key={item.id} className="py-6 first:pt-0 last:pb-0 flex flex-col sm:flex-row gap-4 sm:gap-6 items-start sm:items-center justify-between">
                     
                     <div className="flex gap-4 items-center flex-1 cursor-pointer" onClick={() => navigate(`/shop/${item.id}`)}>
-                      <div className="w-24 sm:w-28 h-28 sm:h-32 shrink-0 rounded-2xl overflow-hidden bg-[#F0F2F5] p-2 flex items-center justify-center">
+                      <div className="w-24 sm:w-28 h-28 sm:h-32 shrink-0 rounded-2xl overflow-hidden bg-white border border-navy/10 p-2 flex items-center justify-center">
                         <img
                           src={item.image}
                           alt={item.title || item.name}

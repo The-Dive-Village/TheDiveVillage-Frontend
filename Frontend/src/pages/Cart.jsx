@@ -75,7 +75,7 @@ export default function Cart() {
                       {/* Image */}
                       <Link
                         to={`/shop/${product.id || ''}`}
-                        className="w-24 sm:w-28 h-28 sm:h-32 shrink-0 rounded-2xl overflow-hidden bg-[#F0F2F5] p-2 flex items-center justify-center hover:opacity-90 transition"
+                        className="w-24 sm:w-28 h-28 sm:h-32 shrink-0 rounded-2xl overflow-hidden bg-white border border-navy/10 p-2 flex items-center justify-center hover:opacity-90 transition"
                       >
                         {product.image ? (
                           <img

@@ -412,7 +412,7 @@ export default function ProductDetail() {
                       className={`flex-shrink-0 w-16 h-20 sm:w-18 sm:h-22 rounded-2xl overflow-hidden border-2 transition relative cursor-pointer ${
                         activeMedia?.id === item.id || activeMedia?.src === item.src
                           ? 'border-navy shadow-md ring-2 ring-navy/20 scale-102'
-                          : 'border-transparent hover:border-navy/30 bg-[#F0F2F5]'
+                          : 'border-navy/10 hover:border-navy/30 bg-white'
                       }`}
                     >
                       {item.type === 'image' ? (
@@ -790,7 +790,7 @@ export default function ProductDetail() {
                   className="group w-[220px] xs:w-[250px] sm:w-[270px] lg:w-[285px] shrink-0 rounded-2xl sm:rounded-3xl bg-white border border-navy/5 p-3 sm:p-5 shadow-card hover:shadow-float transition duration-300 flex flex-col justify-between"
                 >
                   <div>
-                    <div className="aspect-[4/5] w-full overflow-hidden rounded-xl sm:rounded-2xl bg-[#F0F2F5] mb-2.5 sm:mb-4 flex items-center justify-center p-2 sm:p-3 relative">
+                    <div className="aspect-[4/5] w-full overflow-hidden rounded-xl sm:rounded-2xl bg-white mb-2.5 sm:mb-4 flex items-center justify-center p-2 sm:p-3 relative border border-navy/5">
                       <img
                         src={p.image}
                         alt={p.title}
@@ -928,7 +928,7 @@ export default function ProductDetail() {
               </div>
 
               {/* Big Center Content Container */}
-              <div className="relative w-full h-[70vh] sm:h-[78vh] bg-[#F8FAFC] flex items-center justify-center p-4 sm:p-8 overflow-hidden">
+              <div className="relative w-full h-[70vh] sm:h-[78vh] bg-white flex items-center justify-center p-4 sm:p-8 overflow-hidden">
                 <img
                   src={floatingImage}
                   alt={product.title}
