@@ -3,6 +3,7 @@ import { Map, setWorkerUrl, NavigationControl } from 'maplibre-gl'
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import { loadDiveSites } from '../utils/diveSitesLoader'
+import { getIslandForSite } from '../utils/diveIslandCatalog'
 
 // Official Vite worker setup for MapLibre GL JS
 setWorkerUrl(workerUrl)
@@ -62,6 +63,7 @@ export default function DiveExplorerMap({
   onSelectSite,
   onSelectCountry = null,
   selectedCountry: controlledCountry = undefined,
+  selectedIsland = null,
   selectedSite: controlledSite = null,
   selectedSiteId = null,
   compact = false,
@@ -485,6 +487,24 @@ export default function DiveExplorerMap({
     }
   }, [syncMapData, onSelectSite])
 
+  // 3b. Prevent outer page / background from scrolling when scrolling over the map
+  useEffect(() => {
+    const container = mapContainerRef.current
+    if (!container) return
+    const wrapper = container.parentElement || container
+
+    const stopBackgroundScroll = (e) => {
+      // Prevent browser from scrolling the webpage while the user is wheel-scrolling on the map
+      e.preventDefault()
+    }
+
+    wrapper.addEventListener('wheel', stopBackgroundScroll, { passive: false })
+
+    return () => {
+      wrapper.removeEventListener('wheel', stopBackgroundScroll)
+    }
+  }, [])
+
   // 4. Reactive updates when data, country, or search filters change
   useEffect(() => {
     syncMapData()
@@ -529,6 +549,41 @@ export default function DiveExplorerMap({
     }
   }, [controlledCountry, countryCentroids, selectedCountry])
 
+  // 5b. External selectedIsland synchronization (Booking Form -> Map)
+  useEffect(() => {
+    if (!selectedIsland || controlledSite || selectedSiteId || allSites.length === 0 || !mapRef.current) return
+    const countryToUse = selectedCountry || controlledCountry
+    if (!countryToUse) return
+
+    const islandSites = allSites.filter(
+      (s) => s.country && s.country.toLowerCase() === countryToUse.toLowerCase() && getIslandForSite(s) === selectedIsland
+    )
+    if (islandSites.length === 0) return
+
+    let minLng = Infinity, maxLng = -Infinity, minLat = Infinity, maxLat = -Infinity
+    islandSites.forEach((s) => {
+      const lng = parseFloat(s.longitude)
+      const lat = parseFloat(s.latitude)
+      if (!isNaN(lng) && !isNaN(lat)) {
+        if (lng < minLng) minLng = lng
+        if (lng > maxLng) maxLng = lng
+        if (lat < minLat) minLat = lat
+        if (lat > maxLat) maxLat = lat
+      }
+    })
+
+    if (minLng !== Infinity) {
+      if (minLng === maxLng && minLat === maxLat) {
+        mapRef.current.flyTo({ center: [minLng, minLat], zoom: 9.5, duration: 1000 })
+      } else {
+        mapRef.current.fitBounds(
+          [[minLng, minLat], [maxLng, maxLat]],
+          { padding: { top: 60, bottom: 60, left: 60, right: 60 }, maxZoom: 10.5, duration: 1200 }
+        )
+      }
+    }
+  }, [selectedIsland, selectedCountry, controlledCountry, controlledSite, selectedSiteId, allSites])
+
   // 6. External controlledSite / selectedSiteId synchronization (Booking Form -> Map)
   useEffect(() => {
     const query = controlledSite || selectedSiteId
@@ -560,9 +615,9 @@ export default function DiveExplorerMap({
     // 3. Fallback search across all sites
     if (!match) {
       match = allSites.find((s) => s.siteName.toLowerCase() === cleanQuery) ||
-              allSites.find((s) => s.siteName.toLowerCase().includes(cleanQuery)) ||
-              (prefixWord && allSites.find((s) => s.siteName.toLowerCase().includes(prefixWord))) ||
-              (insideParen && allSites.find((s) => s.siteName.toLowerCase().includes(insideParen)))
+        allSites.find((s) => s.siteName.toLowerCase().includes(cleanQuery)) ||
+        (prefixWord && allSites.find((s) => s.siteName.toLowerCase().includes(prefixWord))) ||
+        (insideParen && allSites.find((s) => s.siteName.toLowerCase().includes(insideParen)))
     }
 
     if (match && mapRef.current) {
@@ -773,195 +828,154 @@ export default function DiveExplorerMap({
           data-normal-cursor
           data-dive-map="true"
         >
-        {/* MapLibre Canvas Container */}
-        <div
-          ref={mapContainerRef}
-          className="w-full h-full normal-cursor"
-          data-normal-cursor
-          data-dive-map="true"
-        />
+          {/* MapLibre Canvas Container */}
+          <div
+            ref={mapContainerRef}
+            className="w-full h-full normal-cursor"
+            style={{ overscrollBehavior: 'contain', touchAction: 'pan-x pan-y pinch-zoom' }}
+            data-normal-cursor
+            data-dive-map="true"
+          />
 
-        {/* Loading Overlay */}
-        {loading && (
-          <div className="absolute inset-0 z-20 bg-white/80 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center">
-            <div className="w-10 h-10 border-4 border-navy border-t-accent rounded-full animate-spin mb-3" />
-            <h4 className="font-heading text-sm font-bold text-navy">Loading Dive Map...</h4>
-            <p className="text-xs text-navy/60 mt-1">Reading 3,500+ coordinates from dataset</p>
-          </div>
-        )}
+          {/* Loading Overlay */}
+          {loading && (
+            <div className="absolute inset-0 z-20 bg-white/80 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center">
+              <div className="w-10 h-10 border-4 border-navy border-t-accent rounded-full animate-spin mb-3" />
+              <h4 className="font-heading text-sm font-bold text-navy">Loading Dive Map...</h4>
+              <p className="text-xs text-navy/60 mt-1">Reading 3,500+ coordinates from dataset</p>
+            </div>
+          )}
 
-        {/* Error Overlay */}
-        {error && (
-          <div className="absolute inset-0 z-20 bg-white/95 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center">
-            <div className="w-12 h-12 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center text-xl font-bold mb-3">!</div>
-            <h4 className="font-heading text-base font-bold text-navy">Could Not Load Map</h4>
-            <p className="text-xs text-rose-600 max-w-md mt-1">{error}</p>
-          </div>
-        )}
+          {/* Error Overlay */}
+          {error && (
+            <div className="absolute inset-0 z-20 bg-white/95 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center">
+              <div className="w-12 h-12 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center text-xl font-bold mb-3">!</div>
+              <h4 className="font-heading text-base font-bold text-navy">Could Not Load Map</h4>
+              <p className="text-xs text-rose-600 max-w-md mt-1">{error}</p>
+            </div>
+          )}
 
-        {/* Level 2 Floating Banner: When inside a specific country */}
-        {selectedCountry && (
-          <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-20 flex items-center gap-2 bg-navy/95 backdrop-blur-md text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-2xl shadow-float border border-white/20 animate-in fade-in max-w-[calc(100%-4.5rem)]">
+          {/* Level 2 Floating Banner: When inside a specific country */}
+          {selectedCountry && (
+            <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-20 flex items-center gap-2 bg-navy/95 backdrop-blur-md text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-2xl shadow-float border border-white/20 animate-in fade-in max-w-[calc(100%-4.5rem)]">
+              <button
+                type="button"
+                onClick={handleResetWorldView}
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-white/15 hover:bg-accent hover:text-navy text-xs font-bold transition active:scale-95 cursor-pointer shrink-0"
+                title="Return to world overview"
+              >
+                <span>← All Countries</span>
+              </button>
+              <div className="h-3.5 w-px bg-white/20 shrink-0" />
+              <div className="text-xs font-semibold truncate text-white/95">
+                <span className="hidden sm:inline">Showing </span>
+                <strong className="text-accent">{countrySitesGeoJSON.features.length}</strong> sites in <strong className="text-white">{selectedCountry}</strong>
+              </div>
+            </div>
+          )}
+
+          {/* World View Guidance Banner (when at country level) */}
+          {!selectedCountry && !searchQuery && (
+            <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-10 hidden sm:flex items-center gap-2 bg-white/90 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-navy/15 shadow-sm text-[11px] font-bold text-navy max-w-[calc(100%-4.5rem)]">
+              <span className="w-2 h-2 rounded-full bg-accent animate-ping shrink-0" />
+              <span className="truncate">Tap any country point to explore its dive sites</span>
+            </div>
+          )}
+
+          {/* Hover Tooltip */}
+          {tooltipInfo && !activeSite && (
+            <div
+              className="pointer-events-none absolute z-30 transform -translate-x-1/2 -translate-y-full mb-3 bg-navy/95 text-white text-xs px-3.5 py-2 rounded-xl shadow-lg border border-white/20 whitespace-nowrap"
+              style={{ left: `${tooltipInfo.x}px`, top: `${tooltipInfo.y}px` }}
+            >
+              <div className="font-bold text-[#FFCD00]">{tooltipInfo.name}</div>
+              {tooltipInfo.subtitle && (
+                <div className="text-[10px] text-white/80 mt-0.5">{tooltipInfo.subtitle}</div>
+              )}
+            </div>
+          )}
+
+          {/* Floating Controls inside Map (Matching mockup: crosshair on left, map on right) */}
+          <div className="absolute bottom-5 left-4 z-10 flex flex-col gap-2">
             <button
               type="button"
               onClick={handleResetWorldView}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-white/15 hover:bg-accent hover:text-navy text-xs font-bold transition active:scale-95 cursor-pointer shrink-0"
-              title="Return to world overview"
+              className="w-10 h-10 rounded-full bg-white text-navy shadow-float border border-navy/15 flex items-center justify-center transition active:scale-95 cursor-pointer backdrop-blur-md"
+              title="Reset Map / Recenter"
+              aria-label="Reset Map"
             >
-              <span>← All Countries</span>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                <circle cx="12" cy="12" r="7" />
+                <circle cx="12" cy="12" r="2" />
+                <line x1="12" y1="2" x2="12" y2="5" />
+                <line x1="12" y1="19" x2="12" y2="22" />
+                <line x1="2" y1="12" x2="5" y2="12" />
+                <line x1="19" y1="12" x2="22" y2="12" />
+              </svg>
             </button>
-            <div className="h-3.5 w-px bg-white/20 shrink-0" />
-            <div className="text-xs font-semibold truncate text-white/95">
-              <span className="hidden sm:inline">Showing </span>
-              <strong className="text-accent">{countrySitesGeoJSON.features.length}</strong> sites in <strong className="text-white">{selectedCountry}</strong>
-            </div>
           </div>
-        )}
 
-        {/* World View Guidance Banner (when at country level) */}
-        {!selectedCountry && !searchQuery && (
-          <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-10 hidden sm:flex items-center gap-2 bg-white/90 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-navy/15 shadow-sm text-[11px] font-bold text-navy max-w-[calc(100%-4.5rem)]">
-            <span className="w-2 h-2 rounded-full bg-accent animate-ping shrink-0" />
-            <span className="truncate">Tap any country point to explore its dive sites</span>
+          <div className="absolute bottom-5 right-4 z-10">
+            <button
+              type="button"
+              onClick={handleResetWorldView}
+              className="w-10 h-10 rounded-full bg-[#001e3d] text-white shadow-float flex items-center justify-center transition active:scale-95 cursor-pointer"
+              title="World View"
+              aria-label="World View"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21" />
+                <line x1="9" y1="3" x2="9" y2="18" />
+                <line x1="15" y1="6" x2="15" y2="21" />
+              </svg>
+            </button>
           </div>
-        )}
 
-        {/* Hover Tooltip */}
-        {tooltipInfo && !activeSite && (
-          <div
-            className="pointer-events-none absolute z-30 transform -translate-x-1/2 -translate-y-full mb-3 bg-navy/95 text-white text-xs px-3.5 py-2 rounded-xl shadow-lg border border-white/20 whitespace-nowrap"
-            style={{ left: `${tooltipInfo.x}px`, top: `${tooltipInfo.y}px` }}
-          >
-            <div className="font-bold text-[#FFCD00]">{tooltipInfo.name}</div>
-            {tooltipInfo.subtitle && (
-              <div className="text-[10px] text-white/80 mt-0.5">{tooltipInfo.subtitle}</div>
-            )}
-          </div>
-        )}
-
-        {/* Floating Controls inside Map (Matching mockup: crosshair on left, map on right) */}
-        <div className="absolute bottom-5 left-4 z-10 flex flex-col gap-2">
-          <button
-            type="button"
-            onClick={handleResetWorldView}
-            className="w-10 h-10 rounded-full bg-white text-navy shadow-float border border-navy/15 flex items-center justify-center transition active:scale-95 cursor-pointer backdrop-blur-md"
-            title="Reset Map / Recenter"
-            aria-label="Reset Map"
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-              <circle cx="12" cy="12" r="7" />
-              <circle cx="12" cy="12" r="2" />
-              <line x1="12" y1="2" x2="12" y2="5" />
-              <line x1="12" y1="19" x2="12" y2="22" />
-              <line x1="2" y1="12" x2="5" y2="12" />
-              <line x1="19" y1="12" x2="22" y2="12" />
-            </svg>
-          </button>
-        </div>
-
-        <div className="absolute bottom-5 right-4 z-10">
-          <button
-            type="button"
-            onClick={handleResetWorldView}
-            className="w-10 h-10 rounded-full bg-[#001e3d] text-white shadow-float flex items-center justify-center transition active:scale-95 cursor-pointer"
-            title="World View"
-            aria-label="World View"
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21" />
-              <line x1="9" y1="3" x2="9" y2="18" />
-              <line x1="15" y1="6" x2="15" y2="21" />
-            </svg>
-          </button>
-        </div>
-
-        {/* Selected Dive Site Drawer / Detail Card */}
-        {activeSite && (
-          <div className="absolute bottom-4 right-4 left-4 sm:left-auto sm:w-96 z-20 bg-white/98 backdrop-blur-xl rounded-3xl border border-navy/15 p-4 sm:p-5 shadow-2xl animate-in fade-in slide-in-from-bottom-4 duration-200">
-            <div className="flex items-start justify-between gap-3">
-              <div className="min-w-0">
-                <span className="text-[9px] font-bold uppercase tracking-wider text-accent block">
-                  {activeSite.country}
-                </span>
-                <h3 className="font-heading text-base sm:text-lg font-bold text-navy truncate leading-tight mt-0.5">
-                  {activeSite.siteName}
-                </h3>
-              </div>
-              <button
-                type="button"
-                onClick={() => setActiveSite(null)}
-                className="w-7 h-7 rounded-full bg-navy/10 hover:bg-navy hover:text-white text-navy flex items-center justify-center text-xs font-bold transition shrink-0 cursor-pointer"
-                aria-label="Close details"
-              >
-                ✕
-              </button>
-            </div>
-
-            {/* Coordinates & Source Metadata */}
-            <div className="mt-3 pt-3 border-t border-navy/10 grid grid-cols-2 gap-2 text-[11px]">
-              <div className="bg-slate-50 p-2 rounded-xl border border-navy/5">
-                <span className="text-navy/50 block text-[9px] font-bold uppercase">Latitude</span>
-                <span className="font-mono font-bold text-navy">{Number(activeSite.latitude).toFixed(5)}°</span>
-              </div>
-              <div className="bg-slate-50 p-2 rounded-xl border border-navy/5">
-                <span className="text-navy/50 block text-[9px] font-bold uppercase">Longitude</span>
-                <span className="font-mono font-bold text-navy">{Number(activeSite.longitude).toFixed(5)}°</span>
-              </div>
-            </div>
-
-            {/* Natural Environment Types */}
-            {activeSite.naturalTypes && (
-              <div className="mt-3 flex flex-wrap gap-1.5">
-                {activeSite.naturalTypes.split(';').map((t, i) => (
-                  <span
-                    key={i}
-                    className="inline-block text-[10px] font-bold bg-[#001e3d]/10 text-navy px-2.5 py-1 rounded-lg"
-                  >
-                    🌊 {t.trim()}
+          {/* Selected Dive Site Drawer / Detail Card */}
+          {activeSite && (
+            <div className="absolute bottom-4 right-4 left-4 sm:left-auto sm:w-96 z-20 bg-white/98 backdrop-blur-xl rounded-3xl border border-navy/15 p-4 sm:p-5 shadow-2xl animate-in fade-in slide-in-from-bottom-4 duration-200">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0 flex-1">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-accent block">
+                    {activeSite.country}
                   </span>
-                ))}
-              </div>
-            )}
-
-            {/* Action Buttons */}
-            <div className="mt-4 pt-3 border-t border-navy/10 flex items-center gap-2">
-              {onBookSite && (
+                  <h3 className="font-heading text-base sm:text-lg font-bold text-navy leading-snug mt-0.5">
+                    {activeSite.siteName}
+                  </h3>
+                </div>
                 <button
                   type="button"
-                  onClick={() => onBookSite(activeSite)}
-                  className="flex-1 rounded-full bg-navy hover:bg-accent text-white hover:text-navy px-4 py-2.5 text-xs font-bold transition text-center shadow-sm cursor-pointer"
+                  onClick={() => setActiveSite(null)}
+                  className="w-7 h-7 rounded-full bg-navy/10 hover:bg-navy hover:text-white text-navy flex items-center justify-center text-xs font-bold transition shrink-0 cursor-pointer"
+                  aria-label="Close details"
                 >
-                  Select for Booking →
+                  ✕
                 </button>
-              )}
+              </div>
 
-              {activeSite.padiUrl && (
-                <a
-                  href={activeSite.padiUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3 py-2.5 rounded-full border border-navy/20 text-navy text-xs font-bold hover:bg-navy hover:text-white transition cursor-pointer"
-                  title="View original site details on PADI"
-                >
-                  <span>PADI</span>
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                    <polyline points="15 3 21 3 21 9" />
-                    <line x1="10" y1="14" x2="21" y2="3" />
-                  </svg>
-                </a>
-              )}
+              {/* Return to World Map Button */}
+              <button
+                type="button"
+                onClick={handleResetWorldView}
+                className="mt-4 w-full flex items-center justify-center gap-2 rounded-2xl bg-navy hover:bg-accent text-white hover:text-navy px-4 py-2.5 text-xs sm:text-sm font-bold transition shadow-sm cursor-pointer active:scale-95"
+              >
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
+                  <path d="M2 12h20" />
+                </svg>
+                <span>Return to World Map</span>
+              </button>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
 
-      {/* Dataset Attribution Footer */}
-      <div className="px-4 py-2.5 bg-slate-50/90 border-t border-navy/10 flex items-center justify-between text-[10px] text-navy/60 font-semibold">
-        <span>Source: Local dive site dataset (3,518 verified coordinates in 101 countries)</span>
-        <span className="text-navy/40">OpenFreeMap Liberty • MapLibre GL</span>
+        {/* Dataset Attribution Footer */}
+        <div className="px-4 py-2.5 bg-slate-50/90 border-t border-navy/10 flex items-center justify-between text-[10px] text-navy/60 font-semibold">
+          <span>Source: Local dive site dataset (3,518 verified coordinates in 101 countries)</span>
+          <span className="text-navy/40">OpenFreeMap Liberty • MapLibre GL</span>
+        </div>
       </div>
     </div>
-  </div>
-)
+  )
 }

@@ -11,8 +11,14 @@ import { shareContent } from '../utils/share'
 import { useLenis } from '../utils/lenisReact'
 import diversBg from '../assets/divers.png'
 
+const cleanTitle = (t) => (t ? t.replace(/\s*\(\d+\)/g, '').trim() : '')
+const SANITIZED_GALLERY_ITEMS = GALLERY_ITEMS.map((item) => ({
+  ...item,
+  title: cleanTitle(item.title),
+}))
+
 export default function Gallery() {
-  const [itemsList, setItemsList] = useState(GALLERY_ITEMS)
+  const [itemsList, setItemsList] = useState(SANITIZED_GALLERY_ITEMS)
   const [selectedMediaIndex, setSelectedMediaIndex] = useState(null)
   const reduce = useReducedMotion()
   const lenis = useLenis()
@@ -87,6 +93,47 @@ export default function Gallery() {
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [selectedMediaIndex, filteredItems.length])
+
+  // Lock background scrolling and pause Lenis when gallery preview / lightbox is open
+  useEffect(() => {
+    if (selectedMediaIndex === null) return
+
+    // 1. Pause Lenis smooth scroll
+    if (lenis) {
+      lenis.stop()
+    }
+
+    // 2. Lock body & html scroll & contain overscroll
+    const originalBodyOverflow = document.body.style.overflow
+    const originalBodyOverscroll = document.body.style.overscrollBehavior
+    const originalHtmlOverflow = document.documentElement.style.overflow
+    const originalHtmlOverscroll = document.documentElement.style.overscrollBehavior
+
+    document.body.style.overflow = 'hidden'
+    document.body.style.overscrollBehavior = 'contain'
+    document.documentElement.style.overflow = 'hidden'
+    document.documentElement.style.overscrollBehavior = 'contain'
+
+    // 3. Prevent any wheel / touch gestures from propagating to background
+    const preventBackgroundScroll = (e) => {
+      e.preventDefault()
+    }
+
+    window.addEventListener('wheel', preventBackgroundScroll, { passive: false })
+    window.addEventListener('touchmove', preventBackgroundScroll, { passive: false })
+
+    return () => {
+      if (lenis) {
+        lenis.start()
+      }
+      document.body.style.overflow = originalBodyOverflow
+      document.body.style.overscrollBehavior = originalBodyOverscroll
+      document.documentElement.style.overflow = originalHtmlOverflow
+      document.documentElement.style.overscrollBehavior = originalHtmlOverscroll
+      window.removeEventListener('wheel', preventBackgroundScroll)
+      window.removeEventListener('touchmove', preventBackgroundScroll)
+    }
+  }, [selectedMediaIndex, lenis])
 
   const openLightbox = (index) => {
     triggerHaptic(10)
@@ -278,7 +325,9 @@ export default function Gallery() {
       <AnimatePresence>
         {selectedMediaIndex !== null && currentItem && (
           <div 
-            className="fixed inset-0 z-[100] flex flex-col items-center justify-end pt-[56px] xs:pt-[60px] sm:pt-[70px] lg:pt-[76px] pb-1.5 sm:pb-2 px-2 sm:px-4 bg-black/90 backdrop-blur-sm overflow-hidden"
+            data-lenis-prevent="true"
+            className="fixed inset-0 z-[100] flex flex-col items-center justify-end pt-[56px] xs:pt-[60px] sm:pt-[70px] lg:pt-[76px] pb-1.5 sm:pb-2 px-2 sm:px-4 bg-black/90 backdrop-blur-sm overflow-hidden select-none"
+            style={{ overscrollBehavior: 'contain', touchAction: 'none' }}
             onClick={() => setSelectedMediaIndex(null)}
             onTouchStart={handleLightboxTouchStart}
             onTouchEnd={handleLightboxTouchEnd}

@@ -8,6 +8,7 @@ import { useWishlist } from '../hooks/useWishlist'
 import { useAuth } from '../hooks/useAuth'
 import Button from '../components/Button'
 import SEOHead from '../components/SEOHead'
+import { useLenis } from '../utils/lenisReact'
 
 import { triggerHaptic, triggerSuccessHaptic } from '../utils/haptics'
 const bannerImg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458229/TDV-Media/Products/banner.webp';
@@ -562,6 +563,24 @@ export default function Shop() {
 
 function GroupGallerySection() {
   const [selectedPhoto, setSelectedPhoto] = useState(null)
+  const lenis = useLenis()
+
+  // Lock background scroll when photo preview is open
+  useEffect(() => {
+    if (!selectedPhoto) return
+
+    if (lenis) lenis.stop()
+    const origBodyOverflow = document.body.style.overflow
+    const origHtmlOverflow = document.documentElement.style.overflow
+    document.body.style.overflow = 'hidden'
+    document.documentElement.style.overflow = 'hidden'
+
+    return () => {
+      if (lenis) lenis.start()
+      document.body.style.overflow = origBodyOverflow
+      document.documentElement.style.overflow = origHtmlOverflow
+    }
+  }, [selectedPhoto, lenis])
 
   return (
     <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 border-t border-navy/10 mt-8">
@@ -592,26 +611,24 @@ function GroupGallerySection() {
           >
             <img
               src={photo.src}
-              alt={photo.title || 'Group Photo'}
+              alt="Community Photo"
               className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
               loading="lazy"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex items-end p-3">
-              <span className="text-xs font-bold text-white tracking-wide truncate">
-                {photo.title}
-              </span>
-            </div>
+            <div className="absolute inset-0 bg-gradient-to-t from-navy/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex items-end p-3" />
           </div>
         ))}
       </div>
 
-      {/* Lightbox Modal */}
+      {/* Lightbox Modal - Clean with No Title */}
       <AnimatePresence>
         {selectedPhoto && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            data-lenis-prevent="true"
+            style={{ overscrollBehavior: 'contain', touchAction: 'none' }}
             onClick={() => setSelectedPhoto(null)}
             className="fixed inset-0 z-[9999] bg-black/90 backdrop-blur-md flex items-center justify-center p-4 sm:p-8 cursor-pointer"
           >
@@ -620,25 +637,21 @@ function GroupGallerySection() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative max-w-5xl max-h-[90vh] rounded-3xl overflow-hidden bg-navy border border-white/15 shadow-2xl flex flex-col items-center justify-center p-2"
+              className="relative max-w-5xl max-h-[90vh] rounded-3xl overflow-hidden bg-navy/95 border border-white/15 shadow-2xl flex flex-col items-center justify-center p-2.5 sm:p-4"
             >
               <button
                 type="button"
                 onClick={() => setSelectedPhoto(null)}
-                className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-black/60 text-white hover:bg-accent hover:text-navy flex items-center justify-center transition cursor-pointer font-bold"
+                className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-black/60 text-white hover:bg-accent hover:text-navy flex items-center justify-center transition cursor-pointer font-bold shadow-lg"
                 aria-label="Close photo"
               >
                 ✕
               </button>
               <img
                 src={selectedPhoto.src}
-                alt={selectedPhoto.title}
-                className="max-h-[80vh] w-auto object-contain rounded-2xl"
+                alt="Community Photo"
+                className="max-h-[85vh] w-auto max-w-full object-contain rounded-2xl shadow-inner"
               />
-              <div className="py-3 px-6 text-center">
-                <h4 className="text-base font-bold text-white tracking-wide">{selectedPhoto.title}</h4>
-                <p className="text-xs text-white/60">The Dive Village Group Showcase</p>
-              </div>
             </motion.div>
           </motion.div>
         )}

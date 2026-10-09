@@ -27,6 +27,8 @@ import turtleAnnaVideo from '../assets/Media/Background/Turtle.mp4'
 import compiledNightDiveVideo from '../assets/Media/Background/Night Dive.mp4'
 import useNightDive from '../hooks/useNightDive'
 import DiveExplorerMap from '../components/DiveExplorerMap'
+import { loadDiveSites } from '../utils/diveSitesLoader'
+import { getIslandsForCountry, getSitesForIsland, getIslandForSite } from '../utils/diveIslandCatalog'
 
 // Curated popular dive hubs for quick selection
 const POPULAR_DESTINATIONS = {
@@ -70,8 +72,10 @@ export default function BookUs() {
     return d.toISOString().split('T')[0]
   }, [])
 
-  // Step 1: Country, Location, Experience, Date & Group Size
+  // Step 1: Country, Island, Dive Site, Experience, Date & Group Size
   const [country, setCountry] = useState(initialCountry)
+  const [island, setIsland] = useState('')
+  const [allDiveSites, setAllDiveSites] = useState([])
   const [selectedLocation, setSelectedLocation] = useState(null)
   const [locationId, setLocationId] = useState(initialSite)
   const [location, setLocation] = useState(initialSite)
@@ -83,20 +87,46 @@ export default function BookUs() {
   const [groupSize, setGroupSize] = useState(1)
   const [isCalendarOpen, setIsCalendarOpen] = useState(false)
   const datePickerBtnRef = useRef(null)
-  const datePickerBtnMobileRef = useRef(null)
+
+  // Load all dive sites to populate islands & sites
+  useEffect(() => {
+    let isMounted = true
+    loadDiveSites().then((data) => {
+      if (isMounted && data?.sites) {
+        setAllDiveSites(data.sites)
+      }
+    }).catch(console.error)
+    return () => { isMounted = false }
+  }, [])
+
+  // Auto-resolve island if initialSite query parameter is provided
+  useEffect(() => {
+    if (initialSite && allDiveSites.length > 0 && !island) {
+      const match = allDiveSites.find((s) => s.id === initialSite || s.siteName === initialSite)
+      if (match) {
+        if (!country && match.country) setCountry(match.country)
+        const siteIsland = getIslandForSite(match)
+        if (siteIsland) setIsland(siteIsland)
+      }
+    }
+  }, [initialSite, allDiveSites, island, country])
+
+  // Available islands in selected country
+  const availableIslands = useMemo(() => {
+    return getIslandsForCountry(country, allDiveSites)
+  }, [country, allDiveSites])
+
+  // Available dive sites on selected island
+  const availableSitesForIsland = useMemo(() => {
+    return getSitesForIsland(country, island, allDiveSites)
+  }, [country, island, allDiveSites])
 
   const handleMapSelectCountry = useCallback((newCountry) => {
-    if (newCountry) {
-      setCountry(newCountry)
-      setSelectedLocation(null)
-      setLocation('')
-      setLocationId('')
-    } else {
-      setCountry('')
-      setSelectedLocation(null)
-      setLocation('')
-      setLocationId('')
-    }
+    setCountry(newCountry || '')
+    setIsland('')
+    setSelectedLocation(null)
+    setLocation('')
+    setLocationId('')
     setStepError('')
     triggerHaptic(5)
   }, [])
@@ -105,6 +135,10 @@ export default function BookUs() {
     if (!site) return
     if (site.country && site.country !== 'International Waters') {
       setCountry(site.country)
+    }
+    const siteIsland = getIslandForSite(site)
+    if (siteIsland) {
+      setIsland(siteIsland)
     }
     if (site.siteName) {
       setLocation(site.siteName)
@@ -129,10 +163,28 @@ export default function BookUs() {
   // Step 1 Handlers
   const handleCountryChange = (newCountry) => {
     setCountry(newCountry)
+    setIsland('')
     setSelectedLocation(null)
     setLocationId('')
     setLocation('')
     setStepError('')
+  }
+
+  const handleIslandChange = (newIsland) => {
+    setIsland(newIsland)
+    setSelectedLocation(null)
+    setLocationId('')
+    setLocation('')
+    setStepError('')
+    triggerHaptic(5)
+  }
+
+  const handleSiteChange = (newSiteName) => {
+    setLocation(newSiteName)
+    const match = availableSitesForIsland.find((s) => s.siteName === newSiteName)
+    setLocationId(match ? (match.id || match.siteName) : newSiteName)
+    setStepError('')
+    triggerSuccessHaptic()
   }
 
   const handleExperienceChange = (newExp) => {
@@ -284,9 +336,14 @@ export default function BookUs() {
         setStepError('Please select a dive country.')
         return false
       }
+      if (!island && availableIslands.length > 0) {
+        triggerErrorHaptic()
+        setStepError('Please select an island / region.')
+        return false
+      }
       if (!locationId && !selectedLocation && !location) {
         triggerErrorHaptic()
-        setStepError('Please select a dive location.')
+        setStepError('Please select a dive site.')
         return false
       }
       if (!experience && !selectedAddOn) {
@@ -487,7 +544,7 @@ export default function BookUs() {
     const isDirect = (!experience && Boolean(selectedAddOn)) || isDirectActivity(experience)
     return (
       <div className="bg-[#FAFAFA] flex min-h-[80vh] flex-col items-center justify-center px-4 py-16 text-center">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 30, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ type: 'spring', damping: 25, stiffness: 300 }}
@@ -497,7 +554,7 @@ export default function BookUs() {
           <div className="absolute -top-32 -right-32 w-64 h-64 bg-emerald-400/10 rounded-full blur-3xl pointer-events-none" />
           <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-accent/10 rounded-full blur-3xl pointer-events-none" />
 
-          <motion.div 
+          <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ type: 'spring', damping: 15, stiffness: 200, delay: 0.1 }}
@@ -508,7 +565,7 @@ export default function BookUs() {
           </motion.div>
 
           <h2 className="font-heading text-4xl sm:text-5xl font-bold text-navy tracking-tight leading-tight mb-4">
-            Great!<br/>We'll get in touch with you.
+            Great!<br />We'll get in touch with you.
           </h2>
           <p className="text-navy/70 text-sm sm:text-base leading-relaxed">
             Thank you <span className="font-bold text-navy">{contact.name}</span>! We've reserved your request for <span className="font-bold text-accent">{experience || selectedAddOn}</span> at <span className="font-bold text-navy">{location}</span>.
@@ -518,11 +575,11 @@ export default function BookUs() {
             {/* Ticket Cutout Effect */}
             <div className="absolute -left-12 top-1/2 -translate-y-1/2 w-8 h-8 bg-[#FAFAFA] rounded-full shadow-[inset_-3px_0_6px_rgba(0,0,0,0.02)] z-10" />
             <div className="absolute -right-12 top-1/2 -translate-y-1/2 w-8 h-8 bg-[#FAFAFA] rounded-full shadow-[inset_3px_0_6px_rgba(0,0,0,0.02)] z-10" />
-            
+
             <div className="rounded-3xl bg-[#F8F9FA] p-6 text-left space-y-4 text-xs sm:text-sm border border-dashed border-navy/20 relative z-0">
               <div className="flex justify-between items-start border-b border-navy/5 pb-3">
                 <span className="text-navy/50 font-semibold uppercase tracking-wider text-[10px] sm:text-xs">Experience & Location</span>
-                <span className="font-bold text-navy text-right leading-tight max-w-[60%]">{experience || selectedAddOn} <br/><span className="text-navy/60 font-medium text-[11px] sm:text-xs">{location}</span></span>
+                <span className="font-bold text-navy text-right leading-tight max-w-[60%]">{experience || selectedAddOn} <br /><span className="text-navy/60 font-medium text-[11px] sm:text-xs">{location}</span></span>
               </div>
               {selectedAddOn && experience && (
                 <div className="flex justify-between items-start border-b border-navy/5 pb-3">
@@ -532,7 +589,7 @@ export default function BookUs() {
               )}
               <div className="flex justify-between items-start border-b border-navy/5 pb-3">
                 <span className="text-navy/50 font-semibold uppercase tracking-wider text-[10px] sm:text-xs">Date & Group</span>
-                <span className="font-bold text-navy text-right leading-tight max-w-[60%]">{formatDateToDDMMYYYY(date)} <br/><span className="text-navy/60 font-medium text-[11px] sm:text-xs">{participants.length} Person{participants.length > 1 ? 's' : ''}</span></span>
+                <span className="font-bold text-navy text-right leading-tight max-w-[60%]">{formatDateToDDMMYYYY(date)} <br /><span className="text-navy/60 font-medium text-[11px] sm:text-xs">{participants.length} Person{participants.length > 1 ? 's' : ''}</span></span>
               </div>
 
               {!isDirect && (
@@ -564,7 +621,7 @@ export default function BookUs() {
 
               <div className="flex justify-between items-start border-t border-navy/10 pt-4 mt-2">
                 <span className="text-navy/50 font-semibold uppercase tracking-wider text-[10px] sm:text-xs">Contact Info</span>
-                <span className="font-bold text-navy text-right leading-tight max-w-[60%]">{contact.email} <br/><span className="text-navy/60 font-medium text-[11px] sm:text-xs">{contact.phone || 'N/A'}</span></span>
+                <span className="font-bold text-navy text-right leading-tight max-w-[60%]">{contact.email} <br /><span className="text-navy/60 font-medium text-[11px] sm:text-xs">{contact.phone || 'N/A'}</span></span>
               </div>
             </div>
           </div>
@@ -594,7 +651,7 @@ export default function BookUs() {
 
       {/* 1. HEADER VIDEO HERO (DYNAMIC COMPILED NIGHT DIVE VIDEO - DESKTOP ONLY) */}
       <section className="hidden sm:flex relative h-[56vh] min-h-[420px] lg:h-[60vh] lg:min-h-[460px] w-full items-center justify-center overflow-hidden">
-        <div 
+        <div
           className="absolute inset-0 z-0 overflow-hidden"
           style={{
             maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 40%, rgba(0,0,0,0.5) 75%, rgba(0,0,0,0) 100%)',
@@ -615,12 +672,11 @@ export default function BookUs() {
         </div>
 
         {/* Bottom Ultra-Smooth Dissolve & Merge Layer */}
-        <div 
-          className={`absolute bottom-0 inset-x-0 h-28 sm:h-36 lg:h-44 pointer-events-none z-[5] transition-colors duration-500 ${
-            isNightDive 
-              ? 'bg-gradient-to-t from-[#0b1726] via-[#0b1726]/85 via-45% to-transparent' 
+        <div
+          className={`absolute bottom-0 inset-x-0 h-28 sm:h-36 lg:h-44 pointer-events-none z-[5] transition-colors duration-500 ${isNightDive
+              ? 'bg-gradient-to-t from-[#0b1726] via-[#0b1726]/85 via-45% to-transparent'
               : 'bg-gradient-to-t from-[#FAFAFA] via-[#FAFAFA]/90 via-45% to-transparent'
-          }`} 
+            }`}
         />
 
         <div className="relative z-10 flex flex-col items-center text-center px-4 max-w-4xl mx-auto pt-4 sm:pt-6">
@@ -649,389 +705,108 @@ export default function BookUs() {
       <div className="mx-auto max-w-[1600px] px-3 xs:px-4 sm:px-6 lg:px-8 pt-[74px] sm:pt-6 pb-28 sm:pb-40 w-full min-w-0 relative z-20">
         {/* Responsive Grid Layout (Desktop: Form + Map side-by-side; Mobile: Form on top, Map right below) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 xl:gap-10 items-start">
-          
+
           {/* Column 1: 4-Step Booking Wizard */}
           <div className="lg:col-span-6 xl:col-span-5 w-full min-w-0">
             <div className="flex flex-col w-full min-w-0">
 
-            {/* Step Indicator Bar - Desktop Full Version */}
-            <div className="hidden sm:flex items-center justify-between mb-8 bg-white/90 backdrop-blur-xl p-5 rounded-3xl border border-navy/10 shadow-sm overflow-x-auto scrollbar-none">
-              {(((!experience && Boolean(selectedAddOn)) || isDirectActivity(experience))
-                ? [
+              {/* Step Indicator Bar - Desktop Full Version */}
+              <div className="hidden sm:flex items-center justify-between mb-8 bg-white/90 backdrop-blur-xl p-5 rounded-3xl border border-navy/10 shadow-sm overflow-x-auto scrollbar-none">
+                {(((!experience && Boolean(selectedAddOn)) || isDirectActivity(experience))
+                  ? [
                     { num: 1, title: 'Location & Experience' },
                     { num: 4, title: 'Contact Info' },
                   ]
-                : [
+                  : [
                     { num: 1, title: 'Location & Experience' },
                     { num: 2, title: 'Participant Details' },
                     { num: 3, title: 'Matching Programs' },
                     { num: 4, title: 'Contact Info' },
                   ]
-              ).map((s, idx, arr) => (
-                <div key={s.num} className="flex items-center gap-2.5 shrink-0">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${currentStep === s.num
-                    ? 'bg-navy text-white shadow-md ring-2 ring-navy/20'
-                    : currentStep > s.num
-                      ? 'bg-emerald-500 text-white'
-                      : 'bg-[#F0F2F5] text-navy/50'
-                    }`}>
-                    {currentStep > s.num ? '✓' : idx + 1}
+                ).map((s, idx, arr) => (
+                  <div key={s.num} className="flex items-center gap-2.5 shrink-0">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${currentStep === s.num
+                      ? 'bg-navy text-white shadow-md ring-2 ring-navy/20'
+                      : currentStep > s.num
+                        ? 'bg-emerald-500 text-white'
+                        : 'bg-[#F0F2F5] text-navy/50'
+                      }`}>
+                      {currentStep > s.num ? '✓' : idx + 1}
+                    </div>
+                    <span className={`text-xs font-bold whitespace-nowrap ${currentStep === s.num ? 'text-navy font-bold' : 'text-navy/40'}`}>
+                      {s.title}
+                    </span>
+                    {idx < arr.length - 1 && <span className="text-navy/20 text-xs mx-1">→</span>}
                   </div>
-                  <span className={`text-xs font-bold whitespace-nowrap ${currentStep === s.num ? 'text-navy font-bold' : 'text-navy/40'}`}>
-                    {s.title}
-                  </span>
-                  {idx < arr.length - 1 && <span className="text-navy/20 text-xs mx-1">→</span>}
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
 
-            <form onSubmit={handleSubmit} className="flex-1 flex flex-col bg-white p-4 sm:p-10 rounded-2xl sm:rounded-[36px] border border-navy/10 shadow-sm sm:shadow-card w-full min-w-0 max-w-full min-h-[auto] sm:min-h-[620px] justify-between">
-              <div className="flex-1 space-y-3.5 sm:space-y-6">
+              <form onSubmit={handleSubmit} className="flex-1 flex flex-col bg-white p-4 sm:p-10 rounded-2xl sm:rounded-[36px] border border-navy/10 shadow-sm sm:shadow-card w-full min-w-0 max-w-full min-h-[auto] sm:min-h-[620px] justify-between">
+                <div className="flex-1 space-y-3.5 sm:space-y-6">
 
-                {/* Mobile Step Header (Matching User Reference Image) */}
-                {(() => {
-                  const isDirect = (!experience && Boolean(selectedAddOn)) || isDirectActivity(experience)
-                  const totalSteps = isDirect ? 2 : 4
-                  const displayStep = isDirect ? (currentStep === 4 ? 2 : 1) : currentStep
-                  return (
-                    <div className="sm:hidden pb-3.5 mb-1 border-b border-navy/5">
-                      <div className="flex items-center justify-between gap-2">
-                        <div className="flex items-center gap-3 min-w-0">
-                          <div className="w-10 h-10 rounded-full bg-navy text-white text-base font-bold flex items-center justify-center shrink-0 shadow-md">
-                            {displayStep}
-                          </div>
-                          <div className="min-w-0">
-                            <span className="text-[10px] font-extrabold uppercase tracking-wider text-blue-600 block leading-tight">
-                              STEP {displayStep} OF {totalSteps}
-                            </span>
-                            <h2 className="text-base font-extrabold text-navy truncate block mt-0.5 leading-tight">
-                              {currentStep === 1 && 'Location & Experience'}
-                              {currentStep === 2 && 'Participant Details'}
-                              {currentStep === 3 && 'Matching Programs'}
-                              {currentStep === 4 && 'Contact & Details'}
-                            </h2>
-                            <p className="text-[11px] font-medium text-navy/60 truncate mt-0.5 leading-tight">
-                              {currentStep === 1 && 'Where, what, and when would you like to book?'}
-                              {currentStep === 2 && 'Add names and diving levels for your group'}
-                              {currentStep === 3 && 'Choose your preferred dive or course program'}
-                              {currentStep === 4 && 'Please provide your contact information'}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-1.5 shrink-0 pl-1">
-                          {(isDirect ? [1, 4] : [1, 2, 3, 4]).map((s) => (
-                            <span
-                              key={s}
-                              className={`h-2 rounded-full transition-all duration-300 ${
-                                currentStep === s
-                                  ? 'w-7 bg-navy'
-                                  : currentStep > s
-                                  ? 'w-2 bg-navy'
-                                  : 'w-2 bg-slate-300'
-                              }`}
-                            />
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  )
-                })()}
-
-                {/* STEP 1: Location, Experience & Date */}
-                {currentStep === 1 && (
-                  <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="space-y-3.5 sm:space-y-6">
-                    {/* Desktop Step 1 Header */}
-                    <div className="hidden sm:block">
-                      <span className="text-[9px] sm:text-xs font-bold uppercase tracking-widest text-accent mb-0.5 block">
-                        Step 1 of {((!experience && Boolean(selectedAddOn)) || isDirectActivity(experience)) ? 2 : 4}
-                      </span>
-                      <h3 className="font-heading text-lg sm:text-3xl font-bold text-navy">Location & Experience</h3>
-                      <p className="text-[10px] sm:text-xs text-navy/60 mt-0.5">Where, what, and when would you like to book?</p>
-                    </div>
-
-                    {/* MOBILE VERSION: Clean Form Rows with Left Icons (Matching Mockup Screenshot) */}
-                    <div className="sm:hidden space-y-3.5">
-                      {/* 1. SELECT COUNTRY */}
-                      <div className="flex items-start gap-3">
-                        <div className="mt-5 shrink-0 w-6 flex items-center justify-center text-navy">
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
-                            <circle cx="12" cy="10" r="3" />
-                          </svg>
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <label className="mb-1 block text-[10px] font-extrabold text-[#001e3d] uppercase tracking-wider">
-                            SELECT COUNTRY
-                          </label>
-                          <div className="relative">
-                            <select
-                              value={country}
-                              onChange={(e) => handleCountryChange(e.target.value)}
-                              required
-                              className="w-full rounded-xl bg-[#EEF5FB] px-3.5 py-3 pr-9 text-xs font-semibold text-navy outline-none focus:ring-2 focus:ring-accent/40 appearance-none cursor-pointer"
-                            >
-                              <option value="">Select a country</option>
-                              {countries.map((c) => (
-                                <option key={c} value={c}>{c}</option>
-                              ))}
-                            </select>
-                            <div className="pointer-events-none absolute inset-y-0 right-3.5 flex items-center text-navy/70">
-                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                <polyline points="6 9 12 15 18 9" />
-                              </svg>
+                  {/* Mobile Step Header (Matching User Reference Image) */}
+                  {(() => {
+                    const isDirect = (!experience && Boolean(selectedAddOn)) || isDirectActivity(experience)
+                    const totalSteps = isDirect ? 2 : 4
+                    const displayStep = isDirect ? (currentStep === 4 ? 2 : 1) : currentStep
+                    return (
+                      <div className="sm:hidden pb-3.5 mb-1 border-b border-navy/5">
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-3 min-w-0">
+                            <div className="w-10 h-10 rounded-full bg-navy text-white text-base font-bold flex items-center justify-center shrink-0 shadow-md">
+                              {displayStep}
                             </div>
-                          </div>
-                          <div className="mt-1 flex justify-end">
-                            <a href="#dive-explorer-map" className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:text-blue-700 transition">
-                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21" />
-                                <line x1="9" y1="3" x2="9" y2="18" />
-                                <line x1="15" y1="6" x2="15" y2="21" />
-                              </svg>
-                              <span>Or choose directly on map below ↓</span>
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* 2. DIVE DESTINATION / ISLAND / RESORT */}
-                      <div className="flex items-start gap-3">
-                        <div className="mt-5 shrink-0 w-6 flex items-center justify-center text-navy">
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M13 8c0-2.76-2.46-5-5.5-5S2 5.24 2 8h11Z" />
-                            <path d="M13 7.14A5.82 5.82 0 0 1 16.5 6c3.04 0 5.5 2.24 5.5 5h-9" />
-                            <path d="M5.8 11.5a5.5 5.5 0 0 0 5.2 3.5" />
-                            <path d="M11 15c.5 2.5 1.5 5 2 6" />
-                          </svg>
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <label className="mb-1 block text-[10px] font-extrabold text-[#001e3d] uppercase tracking-wider">
-                            DIVE DESTINATION / ISLAND / RESORT
-                          </label>
-                          <div className="relative">
-                            <input
-                              type="text"
-                              value={location}
-                              onChange={(e) => {
-                                setLocation(e.target.value)
-                                setLocationId(e.target.value)
-                                setStepError('')
-                              }}
-                              placeholder={country ? `e.g. Popular dive spot in ${country}` : 'Select a country first or enter dive destination'}
-                              required
-                              className="w-full rounded-xl bg-[#EEF5FB] px-3.5 py-3 pr-9 text-xs font-semibold text-navy outline-none focus:ring-2 focus:ring-accent/40 placeholder:text-navy/50"
-                            />
-                            <div className="pointer-events-none absolute inset-y-0 right-3.5 flex items-center text-navy/70">
-                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                <polyline points="6 9 12 15 18 9" />
-                              </svg>
-                            </div>
-                          </div>
-                          {country && POPULAR_DESTINATIONS[country] && (
-                            <div className="mt-2">
-                              <span className="text-[10px] font-bold text-navy/50 uppercase tracking-wider block mb-1">
-                                Popular in {country}:
+                            <div className="min-w-0">
+                              <span className="text-[10px] font-extrabold uppercase tracking-wider text-blue-600 block leading-tight">
+                                STEP {displayStep} OF {totalSteps}
                               </span>
-                              <div className="flex flex-wrap gap-1.5">
-                                {POPULAR_DESTINATIONS[country].map((spot) => (
-                                  <button
-                                    key={spot}
-                                    type="button"
-                                    onClick={() => {
-                                      triggerHaptic(5)
-                                      setLocation(spot)
-                                      setLocationId(spot)
-                                      setStepError('')
-                                    }}
-                                    className={`px-2 py-0.5 rounded-full text-[10px] font-bold transition active:scale-95 cursor-pointer ${
-                                      location === spot
-                                        ? 'bg-navy text-accent shadow-xs'
-                                        : 'bg-navy/5 hover:bg-navy/10 text-navy'
-                                    }`}
-                                  >
-                                    {spot}
-                                  </button>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* 3. SELECT YOUR EXPERIENCE */}
-                      <div className="flex items-start gap-3">
-                        <div className="mt-5 shrink-0 w-6 flex items-center justify-center text-navy">
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                          </svg>
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <label className="mb-1 block text-[10px] font-extrabold text-[#001e3d] uppercase tracking-wider">
-                            SELECT YOUR EXPERIENCE
-                          </label>
-                          <div className="relative">
-                            <select
-                              value={experience}
-                              onChange={(e) => handleExperienceChange(e.target.value)}
-                              className={`w-full rounded-xl bg-[#EEF5FB] px-3.5 py-3 pr-9 text-xs font-semibold outline-none focus:ring-2 focus:ring-accent/40 appearance-none cursor-pointer ${
-                                !experience ? 'text-navy/50' : 'text-navy'
-                              }`}
-                            >
-                              <option value="">Select Your Experience</option>
-                              {EXPERIENCE_OPTIONS.map((exp) => (
-                                <option key={exp} value={exp}>{exp}</option>
-                              ))}
-                            </select>
-                            <div className="pointer-events-none absolute inset-y-0 right-3.5 flex items-center text-navy/70">
-                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                <polyline points="6 9 12 15 18 9" />
-                              </svg>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* 4. SELECT YOUR ADD ONS */}
-                      <div className="flex items-start gap-3">
-                        <div className="mt-5 shrink-0 w-6 flex items-center justify-center text-navy">
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                            <circle cx="12" cy="12" r="10" />
-                            <line x1="12" y1="8" x2="12" y2="16" />
-                            <line x1="8" y1="12" x2="16" y2="12" />
-                          </svg>
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <label className="mb-1 block text-[10px] font-extrabold text-[#001e3d] uppercase tracking-wider">
-                            SELECT YOUR ADD ONS
-                          </label>
-                          <div className="relative">
-                            <select
-                              value={selectedAddOn}
-                              onChange={(e) => handleAddOnChange(e.target.value)}
-                              className={`w-full rounded-xl bg-[#EEF5FB] px-3.5 py-3 pr-9 text-xs font-semibold outline-none focus:ring-2 focus:ring-accent/40 appearance-none cursor-pointer ${
-                                !selectedAddOn ? 'text-navy/50' : 'text-navy'
-                              }`}
-                            >
-                              <option value="">Select Your Add Ons</option>
-                              {ADD_ON_OPTIONS.map((addOn) => (
-                                <option key={addOn} value={addOn}>{addOn}</option>
-                              ))}
-                            </select>
-                            <div className="pointer-events-none absolute inset-y-0 right-3.5 flex items-center text-navy/70">
-                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                <polyline points="6 9 12 15 18 9" />
-                              </svg>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* 5. PREFERRED DATE */}
-                      <div className="flex items-start gap-3">
-                        <div className="mt-5 shrink-0 w-6 flex items-center justify-center text-navy">
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                            <line x1="16" y1="2" x2="16" y2="6" />
-                            <line x1="8" y1="2" x2="8" y2="6" />
-                            <line x1="3" y1="10" x2="21" y2="10" />
-                          </svg>
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <label className="mb-1 block text-[10px] font-extrabold text-[#001e3d] uppercase tracking-wider">
-                            PREFERRED DATE
-                          </label>
-                          <div className="relative">
-                            <button
-                              type="button"
-                              ref={datePickerBtnMobileRef}
-                              onClick={() => setIsCalendarOpen((prev) => !prev)}
-                              className={`w-full rounded-xl bg-[#EEF5FB] px-3.5 py-3 pr-10 text-xs font-semibold text-left flex items-center justify-between outline-none focus:ring-2 cursor-pointer transition ${
-                                dateError ? 'border-2 border-red-500 focus:ring-red-300' : 'focus:ring-accent/40'
-                              }`}
-                            >
-                              <span className={date ? 'text-navy font-bold' : 'text-navy/50'}>
-                                {date ? formatDateToDDMMYYYY(date) : 'dd-mm-yyyy'}
-                              </span>
-                              <div className="pointer-events-none absolute inset-y-0 right-3.5 flex items-center text-navy/70">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                                  <line x1="16" y1="2" x2="16" y2="6" />
-                                  <line x1="8" y1="2" x2="8" y2="6" />
-                                  <line x1="3" y1="10" x2="21" y2="10" />
-                                </svg>
-                              </div>
-                            </button>
-
-                            <CompactTwoMonthCalendarPopover
-                              isOpen={isCalendarOpen}
-                              onClose={() => setIsCalendarOpen(false)}
-                              selectedDate={date}
-                              onSelectDate={(formattedDDMMYYYY, yyyyMmDd) => {
-                                setDate(yyyyMmDd)
-                                if (yyyyMmDd && (yyyyMmDd < cooldownMinDateStr || yyyyMmDd > maxDateStr)) {
-                                  setDateError('Please select a date after the 4-day cooldown period.')
-                                } else {
-                                  setDateError('')
-                                  setStepError('')
-                                }
-                                setIsCalendarOpen(false)
-                              }}
-                              minDate={cooldownMinDateStr}
-                              maxDate={maxDateStr}
-                              toggleBtnRef={datePickerBtnMobileRef}
-                            />
-
-                            {dateError && (
-                              <p className="mt-1 text-[10px] font-bold text-red-500 flex items-center gap-1.5">
-                                <span>{dateError}</span>
+                              <h2 className="text-base font-extrabold text-navy truncate block mt-0.5 leading-tight">
+                                {currentStep === 1 && 'Location & Experience'}
+                                {currentStep === 2 && 'Participant Details'}
+                                {currentStep === 3 && 'Matching Programs'}
+                                {currentStep === 4 && 'Contact & Details'}
+                              </h2>
+                              <p className="text-[11px] font-medium text-navy/60 truncate mt-0.5 leading-tight">
+                                {currentStep === 1 && 'Where, what, and when would you like to book?'}
+                                {currentStep === 2 && 'Add names and diving levels for your group'}
+                                {currentStep === 3 && 'Choose your preferred dive or course program'}
+                                {currentStep === 4 && 'Please provide your contact information'}
                               </p>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* 6. NUMBER OF PERSONS */}
-                      <div className="flex items-start gap-3">
-                        <div className="mt-5 shrink-0 w-6 flex items-center justify-center text-navy">
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                            <circle cx="9" cy="7" r="4" />
-                            <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                          </svg>
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <label className="mb-1 block text-[10px] font-extrabold text-[#001e3d] uppercase tracking-wider">
-                            NUMBER OF PERSONS
-                          </label>
-                          <div className="relative">
-                            <select
-                              value={groupSize}
-                              onChange={(e) => {
-                                setGroupSize(Number(e.target.value))
-                                setStepError('')
-                              }}
-                              className="w-full rounded-xl bg-[#EEF5FB] px-3.5 py-3 pr-9 text-xs font-semibold text-navy outline-none focus:ring-2 focus:ring-accent/40 appearance-none cursor-pointer"
-                            >
-                              {Array.from({ length: 20 }, (_, i) => i + 1).map((n) => (
-                                <option key={n} value={n}>{n}</option>
-                              ))}
-                            </select>
-                            <div className="pointer-events-none absolute inset-y-0 right-3.5 flex items-center text-navy/70">
-                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                <polyline points="6 9 12 15 18 9" />
-                              </svg>
                             </div>
                           </div>
+                          <div className="flex items-center gap-1.5 shrink-0 pl-1">
+                            {(isDirect ? [1, 4] : [1, 2, 3, 4]).map((s) => (
+                              <span
+                                key={s}
+                                className={`h-2 rounded-full transition-all duration-300 ${currentStep === s
+                                    ? 'w-7 bg-navy'
+                                    : currentStep > s
+                                      ? 'w-2 bg-navy'
+                                      : 'w-2 bg-slate-300'
+                                  }`}
+                              />
+                            ))}
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    )
+                  })()}
 
-                    {/* DESKTOP VERSION: Step 1 Fields (Preserved Exactly as Before) */}
-                    <div className="hidden sm:block space-y-6">
+                  {/* STEP 1: Location, Experience & Date */}
+                  {currentStep === 1 && (
+                    <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="space-y-3.5 sm:space-y-6">
+                      {/* Desktop Step 1 Header */}
+                      <div className="hidden sm:block">
+                        <span className="text-[9px] sm:text-xs font-bold uppercase tracking-widest text-accent mb-0.5 block">
+                          Step 1 of {((!experience && Boolean(selectedAddOn)) || isDirectActivity(experience)) ? 2 : 4}
+                        </span>
+                        <h3 className="font-heading text-lg sm:text-3xl font-bold text-navy">Location & Experience</h3>
+                        <p className="text-[10px] sm:text-xs text-navy/60 mt-0.5">Where, what, and when would you like to book?</p>
+                      </div>
+
                       {/* 1. SELECT DIVE COUNTRY */}
                       <div>
-                        <label className="mb-2 block text-xs font-bold text-navy/70 uppercase tracking-wider">
+                        <label className="mb-1 sm:mb-2 block text-[9px] sm:text-xs font-bold text-navy/70 uppercase tracking-wider">
                           Select Dive Country
                         </label>
                         <div className="relative">
@@ -1039,7 +814,7 @@ export default function BookUs() {
                             value={country}
                             onChange={(e) => handleCountryChange(e.target.value)}
                             required
-                            className="w-full rounded-2xl bg-[#F0F2F5] px-5 py-4 pr-10 text-sm font-bold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition cursor-pointer appearance-none"
+                            className="w-full rounded-lg sm:rounded-2xl bg-[#F0F2F5] px-3 py-2 sm:px-5 sm:py-4 pr-8 sm:pr-10 text-[11px] sm:text-sm font-semibold sm:font-bold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition cursor-pointer appearance-none"
                           >
                             <option value="">Select a country</option>
                             {countries.map((c) => (
@@ -1048,8 +823,8 @@ export default function BookUs() {
                               </option>
                             ))}
                           </select>
-                          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-navy/60">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 sm:pr-4 text-navy/60">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="sm:w-4 sm:h-4">
                               <polyline points="6 9 12 15 18 9" />
                             </svg>
                           </div>
@@ -1058,7 +833,7 @@ export default function BookUs() {
 
                       {/* 2. SELECT DIVE LOCATION */}
                       <div>
-                        <label className="mb-2 block text-xs font-bold text-navy/70 uppercase tracking-wider">
+                        <label className="mb-1 sm:mb-2 block text-[9px] sm:text-xs font-bold text-navy/70 uppercase tracking-wider">
                           Dive Destination / Island / Resort
                         </label>
                         <input
@@ -1071,7 +846,7 @@ export default function BookUs() {
                           }}
                           placeholder={country ? `e.g. Popular dive spot, island, or resort in ${country}` : 'Select a country first or enter dive destination'}
                           required
-                          className="w-full rounded-2xl bg-[#F0F2F5] px-5 py-4 text-sm font-bold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition placeholder:text-navy/40"
+                          className="w-full rounded-lg sm:rounded-2xl bg-[#F0F2F5] px-3 py-2 sm:px-5 sm:py-4 text-[11px] sm:text-sm font-semibold sm:font-bold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition placeholder:text-navy/40"
                         />
 
                         {/* Popular Quick-Select Destination Tags */}
@@ -1080,7 +855,7 @@ export default function BookUs() {
                             <span className="text-[10px] font-bold text-navy/50 uppercase tracking-wider block mb-1.5">
                               Popular in {country}:
                             </span>
-                            <div className="flex flex-wrap gap-2">
+                            <div className="flex flex-wrap gap-1.5 sm:gap-2">
                               {POPULAR_DESTINATIONS[country].map((spot) => (
                                 <button
                                   key={spot}
@@ -1091,11 +866,10 @@ export default function BookUs() {
                                     setLocationId(spot)
                                     setStepError('')
                                   }}
-                                  className={`px-3 py-1.5 rounded-full text-xs font-bold transition active:scale-95 cursor-pointer ${
-                                    location === spot
+                                  className={`px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-bold transition active:scale-95 cursor-pointer ${location === spot
                                       ? 'bg-navy text-accent shadow-sm ring-1 ring-accent/30'
                                       : 'bg-navy/5 hover:bg-navy/10 text-navy'
-                                  }`}
+                                    }`}
                                 >
                                   {spot}
                                 </button>
@@ -1114,9 +888,8 @@ export default function BookUs() {
                           <select
                             value={experience}
                             onChange={(e) => handleExperienceChange(e.target.value)}
-                            className={`w-full rounded-2xl bg-[#F0F2F5] px-5 py-4 pr-10 text-sm font-bold outline-none focus:ring-2 focus:ring-accent/50 transition cursor-pointer appearance-none ${
-                              !experience ? 'text-navy/40' : 'text-navy'
-                            }`}
+                            className={`w-full rounded-2xl bg-[#F0F2F5] px-5 py-4 pr-10 text-sm font-bold outline-none focus:ring-2 focus:ring-accent/50 transition cursor-pointer appearance-none ${!experience ? 'text-navy/40' : 'text-navy'
+                              }`}
                           >
                             <option value="">
                               Select Your Experience
@@ -1144,9 +917,8 @@ export default function BookUs() {
                           <select
                             value={selectedAddOn}
                             onChange={(e) => handleAddOnChange(e.target.value)}
-                            className={`w-full rounded-2xl bg-[#F0F2F5] px-5 py-4 pr-10 text-sm font-bold outline-none focus:ring-2 focus:ring-accent/50 transition cursor-pointer appearance-none ${
-                              !selectedAddOn ? 'text-navy/40' : 'text-navy'
-                            }`}
+                            className={`w-full rounded-2xl bg-[#F0F2F5] px-5 py-4 pr-10 text-sm font-bold outline-none focus:ring-2 focus:ring-accent/50 transition cursor-pointer appearance-none ${!selectedAddOn ? 'text-navy/40' : 'text-navy'
+                              }`}
                           >
                             <option value="">
                               Select Your Add Ons
@@ -1210,7 +982,7 @@ export default function BookUs() {
 
                           {dateError && (
                             <p className="mt-1 text-xs font-bold text-red-500 flex items-center gap-1.5">
-                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" /></svg>
                               <span>{dateError}</span>
                             </p>
                           )}
@@ -1320,7 +1092,7 @@ export default function BookUs() {
                             {/* Before age is entered */}
                             {p.age === '' && (
                               <div className="rounded-lg sm:rounded-2xl bg-navy/[0.03] border border-navy/10 p-2.5 sm:p-4 text-[10px] sm:text-xs font-medium text-navy/70 flex items-center gap-2">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-navy/50"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-navy/50"><circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" /></svg>
                                 <span>Enter age to see available programs.</span>
                               </div>
                             )}
@@ -1328,7 +1100,7 @@ export default function BookUs() {
                             {/* Invalid age notice */}
                             {p.age !== '' && !isAgeValid && (
                               <div className="rounded-lg sm:rounded-2xl bg-red-50 border border-red-200 p-2.5 sm:p-4 text-[10px] sm:text-xs font-medium text-red-600 flex items-start gap-2">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-red-600 mt-0.5"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-red-600 mt-0.5"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" /></svg>
                                 <div>
                                   <span className="font-bold block mb-0.5">
                                     {ageNum < 8 ? 'Minimum Age Requirement (8 Years)' : 'Maximum Age Limit (110 Years)'}
@@ -1564,7 +1336,7 @@ export default function BookUs() {
                                       </div>
                                     )
                                   })}
-                                  </div>
+                                </div>
                                 {['fun-day-dive', 'fun-dawn-dive', 'fun-night-dive'].includes(p.selectedProgram) && (
                                   <div className="mt-3.5 pt-3.5 border-t border-navy/5">
                                     <label className="text-[9px] sm:text-xs font-bold text-navy/70 uppercase tracking-wider mb-2 block">
@@ -1660,75 +1432,76 @@ export default function BookUs() {
                   </motion.div>
                 )}
 
-              </div>
+            </div>
 
-              {/* Inline Step Error Message */}
-              {stepError && (
-                <div className="mt-3 p-2.5 sm:p-3.5 rounded-lg sm:rounded-2xl bg-red-50 border border-red-200 text-red-600 text-[11px] sm:text-xs font-bold flex items-center gap-2">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-red-600"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                  <span>{stepError}</span>
-                </div>
+            {/* Inline Step Error Message */}
+            {stepError && (
+              <div className="mt-3 p-2.5 sm:p-3.5 rounded-lg sm:rounded-2xl bg-red-50 border border-red-200 text-red-600 text-[11px] sm:text-xs font-bold flex items-center gap-2">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-red-600"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" /></svg>
+                <span>{stepError}</span>
+              </div>
+            )}
+
+            {/* Navigation Controls */}
+            <div className="pt-3.5 sm:pt-6 mt-3.5 sm:mt-6 border-t border-navy/5 flex items-center justify-between gap-3">
+              {currentStep > 1 ? (
+                <button
+                  type="button"
+                  onClick={handlePrevStep}
+                  className="rounded-full px-3.5 py-2 sm:px-6 sm:py-3.5 text-[11px] sm:text-sm font-bold text-navy hover:bg-[#F0F2F5] active:scale-95 transition cursor-pointer flex items-center gap-1.5"
+                >
+                  <span>← Back</span>
+                </button>
+              ) : <div />}
+
+              {currentStep < 4 ? (
+                <button
+                  type="button"
+                  onClick={handleNextStep}
+                  className="rounded-full bg-navy hover:!bg-accent hover:!text-navy active:scale-95 px-4 py-2 sm:px-8 sm:py-4 text-xs sm:text-sm font-bold text-white transition-all duration-200 shadow-md ml-auto cursor-pointer flex items-center gap-2"
+                >
+                  <span>Continue →</span>
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="rounded-full bg-accent hover:!bg-navy hover:!text-white px-4 py-2 sm:px-8 sm:py-4 text-xs sm:text-sm font-extrabold text-[#001e3d] transition-all duration-200 shadow-md ml-auto cursor-pointer border border-[#FFCD00] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <span className="w-3.5 h-3.5 border-2 border-navy border-t-transparent rounded-full animate-spin inline-block" />
+                      <span>Confirming...</span>
+                    </>
+                  ) : (
+                    <span>Confirm Booking Request</span>
+                  )}
+                </button>
               )}
-
-              {/* Navigation Controls */}
-              <div className="pt-3.5 sm:pt-6 mt-3.5 sm:mt-6 border-t border-navy/5 flex items-center justify-between gap-3">
-                {currentStep > 1 ? (
-                  <button
-                    type="button"
-                    onClick={handlePrevStep}
-                    className="rounded-full px-3.5 py-2 sm:px-6 sm:py-3.5 text-[11px] sm:text-sm font-bold text-navy hover:bg-[#F0F2F5] active:scale-95 transition cursor-pointer flex items-center gap-1.5"
-                  >
-                    <span>← Back</span>
-                  </button>
-                ) : <div />}
-
-                {currentStep < 4 ? (
-                  <button
-                    type="button"
-                    onClick={handleNextStep}
-                    className="rounded-full bg-navy hover:!bg-accent hover:!text-navy active:scale-95 px-4 py-2 sm:px-8 sm:py-4 text-xs sm:text-sm font-bold text-white transition-all duration-200 shadow-md ml-auto cursor-pointer flex items-center gap-2"
-                  >
-                    <span>Continue →</span>
-                  </button>
-                ) : (
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="rounded-full bg-accent hover:!bg-navy hover:!text-white px-4 py-2 sm:px-8 sm:py-4 text-xs sm:text-sm font-extrabold text-[#001e3d] transition-all duration-200 shadow-md ml-auto cursor-pointer border border-[#FFCD00] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <span className="w-3.5 h-3.5 border-2 border-navy border-t-transparent rounded-full animate-spin inline-block" />
-                        <span>Confirming...</span>
-                      </>
-                    ) : (
-                      <span>Confirm Booking Request</span>
-                    )}
-                  </button>
-                )}
-              </div>
-            </form>
-          </div>
+            </div>
+          </form>
         </div>
-
-        {/* Column 2: Interactive 2D Worldwide Dive Map (Beside Booking Form on Desktop, Directly Below on Mobile) */}
-        <div id="dive-explorer-map" className="lg:col-span-6 xl:col-span-7 w-full min-w-0 lg:sticky lg:top-28 self-start mt-6 sm:mt-10 lg:mt-0">
-          <DiveExplorerMap
-            onSelectSite={handleMapSelectSite}
-            onBookSite={handleMapSelectSite}
-            onSelectCountry={handleMapSelectCountry}
-            selectedCountry={country}
-            selectedSite={location}
-            selectedSiteId={locationId}
-            title="Dive Explorer"
-            subtitle="Explore 3,500+ worldwide dive sites on this interactive 2D map. Click any site to auto-fill your booking location!"
-            showHeading={true}
-          />
-        </div>
-
       </div>
+
+      {/* Column 2: Interactive 2D Worldwide Dive Map (Beside Booking Form on Desktop, Directly Below on Mobile) */}
+      <div id="dive-explorer-map" className="lg:col-span-6 xl:col-span-7 w-full min-w-0 lg:sticky lg:top-28 self-start mt-6 sm:mt-10 lg:mt-0">
+        <DiveExplorerMap
+          onSelectSite={handleMapSelectSite}
+          onBookSite={handleMapSelectSite}
+          onSelectCountry={handleMapSelectCountry}
+          selectedCountry={country}
+          selectedIsland={island}
+          selectedSite={location}
+          selectedSiteId={locationId}
+          title="Dive Explorer"
+          subtitle="Explore 3,500+ worldwide dive sites on this interactive 2D map. Click any site to auto-fill your booking location!"
+          showHeading={true}
+        />
+      </div>
+
     </div>
-  </div>
+    </div >
+  </div >
   )
 }
 

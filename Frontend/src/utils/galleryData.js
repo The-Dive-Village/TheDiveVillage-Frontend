@@ -77,7 +77,7 @@ export const GALLERY_ITEMS = [
     "id": "gallery-item-8",
     "type": "video",
     "src": "https://res.cloudinary.com/qvbunv8y/video/upload/v1791458106/TDV-Media/Extras%20for%20Gallery/Hawksbill_Sea_Turtle_2.mp4",
-    "title": "Hawksbill Sea Turtle (2)",
+    "title": "Hawksbill Sea Turtle",
     "category": "marine",
     "filename": "Hawksbill Sea Turtle (2).mp4"
   },
@@ -85,7 +85,7 @@ export const GALLERY_ITEMS = [
     "id": "gallery-item-9",
     "type": "video",
     "src": "https://res.cloudinary.com/qvbunv8y/video/upload/v1791458108/TDV-Media/Extras%20for%20Gallery/Hawksbill_Sea_Turtle_3.mp4",
-    "title": "Hawksbill Sea Turtle (3)",
+    "title": "Hawksbill Sea Turtle",
     "category": "marine",
     "filename": "Hawksbill Sea Turtle (3).mp4"
   },
@@ -117,7 +117,7 @@ export const GALLERY_ITEMS = [
     "id": "gallery-item-13",
     "type": "video",
     "src": "https://res.cloudinary.com/qvbunv8y/video/upload/v1791458144/TDV-Media/Extras%20for%20Gallery/Manta_Ray_2.mp4",
-    "title": "Manta Ray (2)",
+    "title": "Manta Ray",
     "category": "marine",
     "filename": "Manta Ray (2).mp4"
   },
@@ -157,7 +157,7 @@ export const GALLERY_ITEMS = [
     "id": "gallery-item-18",
     "type": "video",
     "src": "https://res.cloudinary.com/qvbunv8y/video/upload/v1791458213/TDV-Media/Extras%20for%20Gallery/Whale_Shark_2.mp4",
-    "title": "Whale Shark (2)",
+    "title": "Whale Shark",
     "category": "marine",
     "filename": "Whale Shark (2).mp4"
   },
@@ -269,7 +269,7 @@ export const GALLERY_ITEMS = [
     "id": "gallery-item-32",
     "type": "image",
     "src": "https://res.cloudinary.com/qvbunv8y/image/upload/v1791458093/TDV-Media/Extras%20for%20Gallery/Feather_Star_2.webp",
-    "title": "Feather Star (2)",
+    "title": "Feather Star",
     "category": "marine",
     "filename": "Feather Star (2).webp"
   },
@@ -285,7 +285,7 @@ export const GALLERY_ITEMS = [
     "id": "gallery-item-34",
     "type": "image",
     "src": "https://res.cloudinary.com/qvbunv8y/image/upload/v1791458095/TDV-Media/Extras%20for%20Gallery/FeatherStar_3.webp",
-    "title": "FeatherStar (3)",
+    "title": "Feather Star",
     "category": "marine",
     "filename": "FeatherStar (3).webp"
   },
@@ -365,7 +365,7 @@ export const GALLERY_ITEMS = [
     "id": "gallery-item-44",
     "type": "image",
     "src": "https://res.cloudinary.com/qvbunv8y/image/upload/v1791458189/TDV-Media/Extras%20for%20Gallery/Scubadiving_2.webp",
-    "title": "Scubadiving (2)",
+    "title": "Scubadiving",
     "category": "marine",
     "filename": "Scubadiving (2).webp"
   },
