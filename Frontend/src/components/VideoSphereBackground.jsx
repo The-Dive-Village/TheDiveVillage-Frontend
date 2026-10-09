@@ -533,69 +533,111 @@ export default function VideoSphereBackground() {
     }
   }, [isNightDive])
 
-  // Automatic ambient audio playback with robust browser autoplay policy handling
+  // Automatic ambient audio playback with aggressive browser autoplay & unlock handling
   useEffect(() => {
     const audio = audioRef.current
     if (!audio) return
 
     let isCleanedUp = false
+
+    // Real browser-recognized user activation events
     const validUnlockEvents = [
-      'click',
       'pointerdown',
+      'pointerup',
       'touchstart',
-      'keydown',
-      'mousemove',
-      'wheel',
-      'scroll'
+      'touchend',
+      'mousedown',
+      'mouseup',
+      'click',
+      'keydown'
     ]
 
     const removeUnlockListeners = () => {
       validUnlockEvents.forEach((evt) => {
-        window.removeEventListener(evt, handleFirstInteraction, true)
+        window.removeEventListener(evt, unlockHandler, true)
+        document.removeEventListener(evt, unlockHandler, true)
       })
+      window.removeEventListener('scroll', unlockHandler, true)
+      window.removeEventListener('tdv-unlock-audio', unlockHandler)
     }
 
-    let playAttemptInProgress = false
-    const startAudio = () => {
-      if (isCleanedUp || isMutedRef.current || playAttemptInProgress) return
+    const tryPlayUnmuted = () => {
+      if (isCleanedUp || isMutedRef.current) return Promise.reject()
+      const el = audioRef.current
+      if (!el) return Promise.reject()
+      el.muted = false
+      el.volume = 0.5
+      const p = el.play()
+      if (p !== undefined) {
+        return p.then(() => {
+          removeUnlockListeners()
+          return true
+        })
+      }
+      return Promise.resolve(true)
+    }
+
+    const startAudioImmediate = () => {
+      if (isCleanedUp || isMutedRef.current) return
       const el = audioRef.current
       if (!el) return
 
-      playAttemptInProgress = true
+      // First attempt unmuted playback directly on load
+      tryPlayUnmuted().catch(() => {
+        // If unmuted playback is blocked by browser autoplay policy:
+        // Immediately start playback muted so the stream decodes and buffers in background
+        if (!isCleanedUp && !isMutedRef.current && el) {
+          el.muted = true
+          el.play().catch(() => {})
+        }
+      })
+    }
+
+    const unlockHandler = () => {
+      if (isCleanedUp || isMutedRef.current) return
+      const el = audioRef.current
+      if (!el) return
+
+      // Synchronously unmute and play inside user activation event stack
       el.muted = false
       el.volume = 0.5
       const p = el.play()
       if (p !== undefined) {
         p.then(() => {
-          playAttemptInProgress = false
           removeUnlockListeners()
-        }).catch(() => {
-          // Autoplay blocked by browser policy; silently wait for user interaction to unlock
-          playAttemptInProgress = false
-        })
+        }).catch(() => {})
       } else {
-        playAttemptInProgress = false
+        removeUnlockListeners()
       }
     }
 
-    const handleFirstInteraction = () => {
-      startAudio()
-    }
-
     if (!isMuted) {
-      // 1. Initial attempt
-      startAudio()
+      // 1. Immediate play attempt right on component mount
+      startAudioImmediate()
 
-      // 2. Focused unlock listeners on user interaction
+      // 2. Also retry when audio metadata or enough buffer is loaded
+      const handleCanPlay = () => {
+        if (audio.paused && !isMutedRef.current) {
+          startAudioImmediate()
+        }
+      }
+      audio.addEventListener('canplay', handleCanPlay, { once: true })
+      audio.addEventListener('loadedmetadata', handleCanPlay, { once: true })
+
+      // 3. User interaction capture listeners across window & document
       validUnlockEvents.forEach((evt) => {
-        window.addEventListener(evt, handleFirstInteraction, { capture: true, passive: true })
+        window.addEventListener(evt, unlockHandler, { capture: true, passive: true })
+        document.addEventListener(evt, unlockHandler, { capture: true, passive: true })
       })
+      window.addEventListener('scroll', unlockHandler, { capture: true, passive: true })
 
-      audio.addEventListener('canplaythrough', startAudio, { once: true })
+      // 4. Custom event for preloader completion or manual trigger
+      window.addEventListener('tdv-unlock-audio', unlockHandler)
 
       return () => {
         isCleanedUp = true
-        audio.removeEventListener('canplaythrough', startAudio)
+        audio.removeEventListener('canplay', handleCanPlay)
+        audio.removeEventListener('loadedmetadata', handleCanPlay)
         removeUnlockListeners()
       }
     } else {
@@ -657,7 +699,7 @@ export default function VideoSphereBackground() {
 
   return (
     <>
-      <audio ref={audioRef} src={underwaterAudio} loop preload="auto" playsInline />
+      <audio ref={audioRef} src={underwaterAudio} loop autoPlay preload="auto" playsInline />
       <div className="fixed inset-0 -z-10 pointer-events-none">
         <div
           className="h-full w-full overflow-hidden relative"

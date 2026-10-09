@@ -629,47 +629,15 @@ export default function DiveExplorerMap({
 
   return (
     <div
-      className={`flex flex-col bg-white rounded-3xl sm:rounded-[36px] border border-navy/10 shadow-card overflow-hidden w-full normal-cursor ${className}`}
+      className={`w-full normal-cursor ${className}`}
       data-normal-cursor
       data-dive-map="true"
     >
-      {/* Optional Header Banner */}
-      {showHeading && (
-        <div className="px-5 py-4 sm:px-7 sm:py-5 border-b border-navy/10 bg-white flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-[10px] font-bold uppercase tracking-widest text-accent">Worldwide 2D Map</span>
-            </div>
-            <h2 className="font-heading text-lg sm:text-2xl font-bold text-navy mt-0.5">{title}</h2>
-            <p className="text-xs text-navy/70 mt-0.5 max-w-xl">{subtitle}</p>
-          </div>
-
-          <div className="flex items-center gap-2 shrink-0">
-
-            <button
-              type="button"
-              onClick={handleResetWorldView}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-navy/5 hover:bg-navy hover:text-white border border-navy/15 text-navy text-xs font-bold transition shadow-xs cursor-pointer active:scale-95"
-              title="Reset map view to the whole world"
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <circle cx="12" cy="12" r="10" />
-                <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
-                <path d="M2 12h20" />
-              </svg>
-              <span>World View</span>
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Control Bar: Search & Country / Natural Type Filters */}
-      <div className="p-3 sm:p-4 bg-slate-50/70 border-b border-navy/10 flex flex-col md:flex-row gap-2.5 items-stretch md:items-center justify-between">
-        {/* Search Input */}
-        <div className="relative flex-1 min-w-[200px]">
-          <span className="absolute inset-y-0 left-3.5 flex items-center pointer-events-none text-navy/40">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+      {/* Mobile Standalone Search Bar Pill (Matching user mockup) */}
+      <div className="sm:hidden mb-3.5">
+        <div className="relative w-full">
+          <span className="absolute inset-y-0 left-3.5 flex items-center pointer-events-none text-slate-400">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <circle cx="11" cy="11" r="8" />
               <line x1="21" y1="21" x2="16.65" y2="16.65" />
             </svg>
@@ -679,70 +647,132 @@ export default function DiveExplorerMap({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search dive site by name..."
-            className="w-full pl-10 pr-8 py-2.5 rounded-2xl bg-white border border-navy/15 text-xs sm:text-sm font-semibold text-navy placeholder:text-navy/40 outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition shadow-xs"
+            className="w-full pl-10 pr-9 py-3 rounded-full bg-white border border-slate-200/90 text-xs font-semibold text-slate-800 placeholder:text-slate-400 outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition shadow-xs"
           />
           {searchQuery && (
             <button
               type="button"
               onClick={() => setSearchQuery('')}
-              className="absolute inset-y-0 right-3 flex items-center text-navy/40 hover:text-navy text-xs font-bold cursor-pointer"
+              className="absolute inset-y-0 right-3.5 flex items-center text-slate-400 hover:text-navy text-xs font-bold"
               aria-label="Clear search"
             >
               ✕
             </button>
           )}
         </div>
-
-        {/* Dropdowns & Filter Controls */}
-        <div className="flex flex-wrap items-center gap-2">
-          {/* Country Filter */}
-          <div className="relative">
-            <select
-              value={selectedCountry || 'all'}
-              onChange={(e) => handleDropdownCountryChange(e.target.value)}
-              className="appearance-none pl-3.5 pr-8 py-2.5 rounded-2xl bg-white border border-navy/15 text-xs font-bold text-navy outline-none focus:border-accent cursor-pointer shadow-xs max-w-[170px] sm:max-w-[200px] truncate"
-              aria-label="Select country"
-            >
-              <option value="all">All Countries ({countriesList.length})</option>
-              {countriesList.map((c) => (
-                <option key={c} value={c}>{c}</option>
-              ))}
-            </select>
-            <div className="pointer-events-none absolute inset-y-0 right-2.5 flex items-center text-navy/50">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path d="m6 9 6 6 6-6" />
-              </svg>
-            </div>
-          </div>
-
-          {/* Reset button if filtered */}
-          {(selectedCountry || searchQuery) && (
-            <button
-              type="button"
-              onClick={handleResetWorldView}
-              className="px-3 py-2 rounded-2xl bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold transition border border-rose-200 shadow-xs cursor-pointer"
-            >
-              Reset
-            </button>
-          )}
-
-          {/* Result Count Badge */}
-          <div className="ml-auto md:ml-0 text-[11px] font-bold text-navy/70 bg-white px-3 py-2 rounded-2xl border border-navy/10 shadow-xs whitespace-nowrap">
-            {selectedCountry ? (
-              <span><strong className="text-navy">{countrySitesGeoJSON.features.length}</strong> sites in {selectedCountry}</span>
-            ) : (
-              <span><strong className="text-navy">{countryCentroids.length}</strong> countries • <strong className="text-navy">{allSites.length.toLocaleString()}</strong> sites</span>
-            )}
-          </div>
-        </div>
       </div>
 
-      {/* Main Map Container */}
-      <div
-        className="relative w-full h-[400px] xs:h-[460px] sm:h-[540px] lg:h-[600px] bg-[#1a75bb] overflow-hidden normal-cursor"
-        data-normal-cursor
-        data-dive-map="true"
-      >
+      {/* Main Map Card */}
+      <div className="flex flex-col bg-white rounded-3xl sm:rounded-[36px] border border-navy/10 shadow-card overflow-hidden w-full">
+        {/* Optional Header Banner (Desktop Only) */}
+        {showHeading && (
+          <div className="hidden sm:flex px-5 py-4 sm:px-7 sm:py-5 border-b border-navy/10 bg-white flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="text-[10px] font-bold uppercase tracking-widest text-accent">Worldwide 2D Map</span>
+              </div>
+              <h2 className="font-heading text-lg sm:text-2xl font-bold text-navy mt-0.5">{title}</h2>
+              <p className="text-xs text-navy/70 mt-0.5 max-w-xl">{subtitle}</p>
+            </div>
+
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                type="button"
+                onClick={handleResetWorldView}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-navy/5 hover:bg-navy hover:text-white border border-navy/15 text-navy text-xs font-bold transition shadow-xs cursor-pointer active:scale-95"
+                title="Reset map view to the whole world"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
+                  <path d="M2 12h20" />
+                </svg>
+                <span>World View</span>
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Desktop Control Bar: Search & Country / Natural Type Filters */}
+        <div className="hidden sm:flex p-4 bg-slate-50/70 border-b border-navy/10 flex-col md:flex-row gap-2.5 items-stretch md:items-center justify-between">
+          {/* Search Input */}
+          <div className="relative flex-1 min-w-[200px]">
+            <span className="absolute inset-y-0 left-3.5 flex items-center pointer-events-none text-navy/40">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+            </span>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search dive site by name..."
+              className="w-full pl-10 pr-8 py-2.5 rounded-full bg-white border border-slate-200/90 text-sm font-semibold text-slate-800 placeholder:text-slate-400 outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition shadow-xs"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery('')}
+                className="absolute inset-y-0 right-3 flex items-center text-navy/40 hover:text-navy text-xs font-bold cursor-pointer"
+                aria-label="Clear search"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+
+          {/* Dropdowns & Filter Controls (Desktop Only) */}
+          <div className="flex flex-wrap items-center gap-2">
+            {/* Country Filter */}
+            <div className="relative">
+              <select
+                value={selectedCountry || 'all'}
+                onChange={(e) => handleDropdownCountryChange(e.target.value)}
+                className="appearance-none pl-3.5 pr-8 py-2.5 rounded-2xl bg-white border border-navy/15 text-xs font-bold text-navy outline-none focus:border-accent cursor-pointer shadow-xs max-w-[170px] sm:max-w-[200px] truncate"
+                aria-label="Select country"
+              >
+                <option value="all">All Countries ({countriesList.length})</option>
+                {countriesList.map((c) => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
+              <div className="pointer-events-none absolute inset-y-0 right-2.5 flex items-center text-navy/50">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </div>
+            </div>
+
+            {/* Reset button if filtered */}
+            {(selectedCountry || searchQuery) && (
+              <button
+                type="button"
+                onClick={handleResetWorldView}
+                className="px-3 py-2 rounded-2xl bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold transition border border-rose-200 shadow-xs cursor-pointer"
+              >
+                Reset
+              </button>
+            )}
+
+            {/* Result Count Badge */}
+            <div className="ml-auto md:ml-0 text-[11px] font-bold text-navy/70 bg-white px-3 py-2 rounded-2xl border border-navy/10 shadow-xs whitespace-nowrap">
+              {selectedCountry ? (
+                <span><strong className="text-navy">{countrySitesGeoJSON.features.length}</strong> sites in {selectedCountry}</span>
+              ) : (
+                <span><strong className="text-navy">{countryCentroids.length}</strong> countries • <strong className="text-navy">{allSites.length.toLocaleString()}</strong> sites</span>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Main Map Container */}
+        <div
+          className="relative w-full h-[400px] xs:h-[460px] sm:h-[540px] lg:h-[600px] bg-[#1a75bb] overflow-hidden normal-cursor"
+          data-normal-cursor
+          data-dive-map="true"
+        >
         {/* MapLibre Canvas Container */}
         <div
           ref={mapContainerRef}
@@ -809,20 +839,39 @@ export default function DiveExplorerMap({
           </div>
         )}
 
-        {/* Floating Reset Button inside Map (bottom-left) */}
+        {/* Floating Controls inside Map (Matching mockup: crosshair on left, map on right) */}
         <div className="absolute bottom-5 left-4 z-10 flex flex-col gap-2">
           <button
             type="button"
             onClick={handleResetWorldView}
-            className="bg-white/95 hover:bg-white text-navy font-bold text-xs px-3.5 py-2 rounded-2xl shadow-float border border-navy/15 flex items-center gap-1.5 transition active:scale-95 cursor-pointer backdrop-blur-md"
-            title="Reset map view"
+            className="w-10 h-10 rounded-full bg-white text-navy shadow-float border border-navy/15 flex items-center justify-center transition active:scale-95 cursor-pointer backdrop-blur-md"
+            title="Reset Map / Recenter"
+            aria-label="Reset Map"
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <circle cx="12" cy="12" r="10" />
-              <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
-              <path d="M2 12h20" />
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+              <circle cx="12" cy="12" r="7" />
+              <circle cx="12" cy="12" r="2" />
+              <line x1="12" y1="2" x2="12" y2="5" />
+              <line x1="12" y1="19" x2="12" y2="22" />
+              <line x1="2" y1="12" x2="5" y2="12" />
+              <line x1="19" y1="12" x2="22" y2="12" />
             </svg>
-            <span className="hidden sm:inline">Reset World View</span>
+          </button>
+        </div>
+
+        <div className="absolute bottom-5 right-4 z-10">
+          <button
+            type="button"
+            onClick={handleResetWorldView}
+            className="w-10 h-10 rounded-full bg-[#001e3d] text-white shadow-float flex items-center justify-center transition active:scale-95 cursor-pointer"
+            title="World View"
+            aria-label="World View"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21" />
+              <line x1="9" y1="3" x2="9" y2="18" />
+              <line x1="15" y1="6" x2="15" y2="21" />
+            </svg>
           </button>
         </div>
 
@@ -913,5 +962,6 @@ export default function DiveExplorerMap({
         <span className="text-navy/40">OpenFreeMap Liberty • MapLibre GL</span>
       </div>
     </div>
-  )
+  </div>
+)
 }

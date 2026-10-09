@@ -53,7 +53,6 @@ export default function BookUs() {
   const initialSite = searchParams.get('site') || ''
 
   const [currentStep, setCurrentStep] = useState(1)
-  const [activeMobileTab, setActiveMobileTab] = useState('form')
 
   // Today, 4-day preparation cooldown minimum date, & 1 year max date bounds
   const todayStr = useMemo(() => new Date().toISOString().split('T')[0], [])
@@ -84,6 +83,7 @@ export default function BookUs() {
   const [groupSize, setGroupSize] = useState(1)
   const [isCalendarOpen, setIsCalendarOpen] = useState(false)
   const datePickerBtnRef = useRef(null)
+  const datePickerBtnMobileRef = useRef(null)
 
   const handleMapSelectCountry = useCallback((newCountry) => {
     if (newCountry) {
@@ -592,8 +592,8 @@ export default function BookUs() {
         canonicalUrl="https://thedivevillage.com/book-us"
       />
 
-      {/* 1. HEADER VIDEO HERO (DYNAMIC COMPILED NIGHT DIVE VIDEO) */}
-      <section className="relative h-[56vh] min-h-[420px] lg:h-[60vh] lg:min-h-[460px] w-full flex items-center justify-center overflow-hidden">
+      {/* 1. HEADER VIDEO HERO (DYNAMIC COMPILED NIGHT DIVE VIDEO - DESKTOP ONLY) */}
+      <section className="hidden sm:flex relative h-[56vh] min-h-[420px] lg:h-[60vh] lg:min-h-[460px] w-full items-center justify-center overflow-hidden">
         <div 
           className="absolute inset-0 z-0 overflow-hidden"
           style={{
@@ -646,82 +646,13 @@ export default function BookUs() {
       </section>
 
       {/* 2. MAIN 4-STEP BOOKING WIZARD & 2D DIVE EXPLORER MAP */}
-      <div className="mx-auto max-w-[1600px] px-3 xs:px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-28 sm:pb-40 w-full min-w-0 relative z-20">
-        {/* Mobile View Switcher Tabs (Visible on < lg screens) */}
-        <div className="lg:hidden flex items-center justify-center mb-5">
-          <div className="inline-flex p-1 rounded-2xl bg-white border border-navy/15 shadow-sm">
-            <button
-              type="button"
-              onClick={() => setActiveMobileTab('form')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
-                activeMobileTab === 'form'
-                  ? 'bg-navy text-white shadow-xs'
-                  : 'text-navy hover:text-accent'
-              }`}
-            >
-              <span>📋 Booking Form</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveMobileTab('map')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
-                activeMobileTab === 'map'
-                  ? 'bg-navy text-white shadow-xs'
-                  : 'text-navy hover:text-accent'
-              }`}
-            >
-              <span>🗺️ Dive Explorer Map</span>
-            </button>
-          </div>
-        </div>
-
-        {/* 2-Column Responsive Grid Layout (Desktop: Form + Map side-by-side) */}
+      <div className="mx-auto max-w-[1600px] px-3 xs:px-4 sm:px-6 lg:px-8 pt-[74px] sm:pt-6 pb-28 sm:pb-40 w-full min-w-0 relative z-20">
+        {/* Responsive Grid Layout (Desktop: Form + Map side-by-side; Mobile: Form on top, Map right below) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 xl:gap-10 items-start">
           
           {/* Column 1: 4-Step Booking Wizard */}
-          <div className={`lg:col-span-6 xl:col-span-5 w-full min-w-0 ${activeMobileTab === 'map' ? 'hidden lg:block' : 'block'}`}>
+          <div className="lg:col-span-6 xl:col-span-5 w-full min-w-0">
             <div className="flex flex-col w-full min-w-0">
-
-            {/* Step Indicator Bar - Mobile Compact Version */}
-            {(() => {
-              const isDirect = (!experience && Boolean(selectedAddOn)) || isDirectActivity(experience)
-              const totalSteps = isDirect ? 2 : 4
-              const displayStep = isDirect ? (currentStep === 4 ? 2 : 1) : currentStep
-              return (
-                <div className="sm:hidden flex items-center justify-between mb-3.5 bg-white/95 backdrop-blur-xl p-3 rounded-2xl border border-navy/10 shadow-sm w-full min-w-0">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <div className="w-6 h-6 rounded-full bg-navy text-white text-[11px] font-bold flex items-center justify-center shrink-0 shadow-sm">
-                      {displayStep}
-                    </div>
-                    <div className="min-w-0">
-                      <span className="text-[9px] uppercase font-bold tracking-wider text-accent block leading-none">
-                        Step {displayStep} of {totalSteps}
-                      </span>
-                      <span className="text-xs font-bold text-navy truncate block mt-0.5">
-                        {currentStep === 1 && 'Location & Experience'}
-                        {currentStep === 2 && 'Participant Details'}
-                        {currentStep === 3 && 'Matching Programs'}
-                        {currentStep === 4 && 'Contact Info'}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-1.5 shrink-0">
-                    {(isDirect ? [1, 4] : [1, 2, 3, 4]).map((s, idx) => (
-                      <div
-                        key={s}
-                        className={`h-1.5 rounded-full transition-all duration-300 ${
-                          currentStep === s
-                            ? 'w-5 bg-navy'
-                            : currentStep > s
-                            ? 'w-2 bg-emerald-500'
-                            : 'w-2 bg-navy/20'
-                        }`}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )
-            })()}
 
             {/* Step Indicator Bar - Desktop Full Version */}
             <div className="hidden sm:flex items-center justify-between mb-8 bg-white/90 backdrop-blur-xl p-5 rounded-3xl border border-navy/10 shadow-sm overflow-x-auto scrollbar-none">
@@ -754,13 +685,63 @@ export default function BookUs() {
               ))}
             </div>
 
-            <form onSubmit={handleSubmit} className="flex-1 flex flex-col bg-white p-3.5 xs:p-5 sm:p-10 rounded-2xl sm:rounded-[36px] border border-navy/5 shadow-card w-full min-w-0 max-w-full min-h-[560px] sm:min-h-[620px] justify-between">
+            <form onSubmit={handleSubmit} className="flex-1 flex flex-col bg-white p-4 sm:p-10 rounded-2xl sm:rounded-[36px] border border-navy/10 shadow-sm sm:shadow-card w-full min-w-0 max-w-full min-h-[auto] sm:min-h-[620px] justify-between">
               <div className="flex-1 space-y-3.5 sm:space-y-6">
+
+                {/* Mobile Step Header (Matching User Reference Image) */}
+                {(() => {
+                  const isDirect = (!experience && Boolean(selectedAddOn)) || isDirectActivity(experience)
+                  const totalSteps = isDirect ? 2 : 4
+                  const displayStep = isDirect ? (currentStep === 4 ? 2 : 1) : currentStep
+                  return (
+                    <div className="sm:hidden pb-3.5 mb-1 border-b border-navy/5">
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-10 h-10 rounded-full bg-navy text-white text-base font-bold flex items-center justify-center shrink-0 shadow-md">
+                            {displayStep}
+                          </div>
+                          <div className="min-w-0">
+                            <span className="text-[10px] font-extrabold uppercase tracking-wider text-blue-600 block leading-tight">
+                              STEP {displayStep} OF {totalSteps}
+                            </span>
+                            <h2 className="text-base font-extrabold text-navy truncate block mt-0.5 leading-tight">
+                              {currentStep === 1 && 'Location & Experience'}
+                              {currentStep === 2 && 'Participant Details'}
+                              {currentStep === 3 && 'Matching Programs'}
+                              {currentStep === 4 && 'Contact & Details'}
+                            </h2>
+                            <p className="text-[11px] font-medium text-navy/60 truncate mt-0.5 leading-tight">
+                              {currentStep === 1 && 'Where, what, and when would you like to book?'}
+                              {currentStep === 2 && 'Add names and diving levels for your group'}
+                              {currentStep === 3 && 'Choose your preferred dive or course program'}
+                              {currentStep === 4 && 'Please provide your contact information'}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-1.5 shrink-0 pl-1">
+                          {(isDirect ? [1, 4] : [1, 2, 3, 4]).map((s) => (
+                            <span
+                              key={s}
+                              className={`h-2 rounded-full transition-all duration-300 ${
+                                currentStep === s
+                                  ? 'w-7 bg-navy'
+                                  : currentStep > s
+                                  ? 'w-2 bg-navy'
+                                  : 'w-2 bg-slate-300'
+                              }`}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })()}
 
                 {/* STEP 1: Location, Experience & Date */}
                 {currentStep === 1 && (
                   <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="space-y-3.5 sm:space-y-6">
-                    <div>
+                    {/* Desktop Step 1 Header */}
+                    <div className="hidden sm:block">
                       <span className="text-[9px] sm:text-xs font-bold uppercase tracking-widest text-accent mb-0.5 block">
                         Step 1 of {((!experience && Boolean(selectedAddOn)) || isDirectActivity(experience)) ? 2 : 4}
                       </span>
@@ -768,221 +749,502 @@ export default function BookUs() {
                       <p className="text-[10px] sm:text-xs text-navy/60 mt-0.5">Where, what, and when would you like to book?</p>
                     </div>
 
-                    {/* 1. SELECT DIVE COUNTRY */}
-                    <div>
-                      <label className="mb-1 sm:mb-2 block text-[9px] sm:text-xs font-bold text-navy/70 uppercase tracking-wider">
-                        Select Dive Country
-                      </label>
-                      <div className="relative">
-                        <select
-                          value={country}
-                          onChange={(e) => handleCountryChange(e.target.value)}
-                          required
-                          className="w-full rounded-lg sm:rounded-2xl bg-[#F0F2F5] px-3 py-2 sm:px-5 sm:py-4 pr-8 sm:pr-10 text-[11px] sm:text-sm font-semibold sm:font-bold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition cursor-pointer appearance-none"
-                        >
-                          <option value="">Select a country</option>
-                          {countries.map((c) => (
-                            <option key={c} value={c}>
-                              {c}
-                            </option>
-                          ))}
-                        </select>
-                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 sm:pr-4 text-navy/60">
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="sm:w-4 sm:h-4">
-                            <polyline points="6 9 12 15 18 9" />
+                    {/* MOBILE VERSION: Clean Form Rows with Left Icons (Matching Mockup Screenshot) */}
+                    <div className="sm:hidden space-y-3.5">
+                      {/* 1. SELECT COUNTRY */}
+                      <div className="flex items-start gap-3">
+                        <div className="mt-5 shrink-0 w-6 flex items-center justify-center text-navy">
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+                            <circle cx="12" cy="10" r="3" />
                           </svg>
                         </div>
-                      </div>
-                    </div>
-
-                    {/* 2. SELECT DIVE LOCATION */}
-                    <div>
-                      <label className="mb-1 sm:mb-2 block text-[9px] sm:text-xs font-bold text-navy/70 uppercase tracking-wider">
-                        Dive Destination / Island / Resort
-                      </label>
-                      <input
-                        type="text"
-                        value={location}
-                        onChange={(e) => {
-                          setLocation(e.target.value)
-                          setLocationId(e.target.value)
-                          setStepError('')
-                        }}
-                        placeholder={country ? `e.g. Popular dive spot, island, or resort in ${country}` : 'Select a country first or enter dive destination'}
-                        required
-                        className="w-full rounded-lg sm:rounded-2xl bg-[#F0F2F5] px-3 py-2 sm:px-5 sm:py-4 text-[11px] sm:text-sm font-semibold sm:font-bold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition placeholder:text-navy/40"
-                      />
-
-                      {/* Popular Quick-Select Destination Tags */}
-                      {country && POPULAR_DESTINATIONS[country] && (
-                        <div className="mt-2.5">
-                          <span className="text-[10px] font-bold text-navy/50 uppercase tracking-wider block mb-1.5">
-                            Popular in {country}:
-                          </span>
-                          <div className="flex flex-wrap gap-1.5 sm:gap-2">
-                            {POPULAR_DESTINATIONS[country].map((spot) => (
-                              <button
-                                key={spot}
-                                type="button"
-                                onClick={() => {
-                                  triggerHaptic(5)
-                                  setLocation(spot)
-                                  setLocationId(spot)
-                                  setStepError('')
-                                }}
-                                className={`px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-bold transition active:scale-95 cursor-pointer ${
-                                  location === spot
-                                    ? 'bg-navy text-accent shadow-sm ring-1 ring-accent/30'
-                                    : 'bg-navy/5 hover:bg-navy/10 text-navy'
-                                }`}
-                              >
-                                {spot}
-                              </button>
-                            ))}
+                        <div className="flex-1 min-w-0">
+                          <label className="mb-1 block text-[10px] font-extrabold text-[#001e3d] uppercase tracking-wider">
+                            SELECT COUNTRY
+                          </label>
+                          <div className="relative">
+                            <select
+                              value={country}
+                              onChange={(e) => handleCountryChange(e.target.value)}
+                              required
+                              className="w-full rounded-xl bg-[#EEF5FB] px-3.5 py-3 pr-9 text-xs font-semibold text-navy outline-none focus:ring-2 focus:ring-accent/40 appearance-none cursor-pointer"
+                            >
+                              <option value="">Select a country</option>
+                              {countries.map((c) => (
+                                <option key={c} value={c}>{c}</option>
+                              ))}
+                            </select>
+                            <div className="pointer-events-none absolute inset-y-0 right-3.5 flex items-center text-navy/70">
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <polyline points="6 9 12 15 18 9" />
+                              </svg>
+                            </div>
+                          </div>
+                          <div className="mt-1 flex justify-end">
+                            <a href="#dive-explorer-map" className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:text-blue-700 transition">
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21" />
+                                <line x1="9" y1="3" x2="9" y2="18" />
+                                <line x1="15" y1="6" x2="15" y2="21" />
+                              </svg>
+                              <span>Or choose directly on map below ↓</span>
+                            </a>
                           </div>
                         </div>
-                      )}
-                    </div>
+                      </div>
 
-                    {/* 3. SELECT YOUR EXPERIENCE */}
-                    <div>
-                      <label className="mb-1 sm:mb-2 block text-[9px] sm:text-xs font-bold text-navy/70 uppercase tracking-wider">
-                        Select Your Experience
-                      </label>
-                      <div className="relative">
-                        <select
-                          value={experience}
-                          onChange={(e) => handleExperienceChange(e.target.value)}
-                          className={`w-full rounded-lg sm:rounded-2xl bg-[#F0F2F5] px-3 py-2 sm:px-5 sm:py-4 pr-8 sm:pr-10 text-[11px] sm:text-sm font-semibold sm:font-bold outline-none focus:ring-2 focus:ring-accent/50 transition cursor-pointer appearance-none ${
-                            !experience ? 'text-navy/40' : 'text-navy'
-                          }`}
-                        >
-                          <option value="">
-                            Select Your Experience
-                          </option>
-                          {EXPERIENCE_OPTIONS.map((exp) => (
-                            <option key={exp} value={exp}>
-                              {exp}
-                            </option>
-                          ))}
-                        </select>
-                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 sm:pr-4 text-navy/60">
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="sm:w-4 sm:h-4">
-                            <polyline points="6 9 12 15 18 9" />
+                      {/* 2. DIVE DESTINATION / ISLAND / RESORT */}
+                      <div className="flex items-start gap-3">
+                        <div className="mt-5 shrink-0 w-6 flex items-center justify-center text-navy">
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M13 8c0-2.76-2.46-5-5.5-5S2 5.24 2 8h11Z" />
+                            <path d="M13 7.14A5.82 5.82 0 0 1 16.5 6c3.04 0 5.5 2.24 5.5 5h-9" />
+                            <path d="M5.8 11.5a5.5 5.5 0 0 0 5.2 3.5" />
+                            <path d="M11 15c.5 2.5 1.5 5 2 6" />
                           </svg>
                         </div>
-                      </div>
-                    </div>
-
-                    {/* 4. SELECT YOUR ADD ONS */}
-                    <div>
-                      <label className="mb-1 sm:mb-2 block text-[9px] sm:text-xs font-bold text-navy/70 uppercase tracking-wider">
-                        SELECT YOUR ADD ONS
-                      </label>
-                      <div className="relative">
-                        <select
-                          value={selectedAddOn}
-                          onChange={(e) => handleAddOnChange(e.target.value)}
-                          className={`w-full rounded-lg sm:rounded-2xl bg-[#F0F2F5] px-3 py-2 sm:px-5 sm:py-4 pr-8 sm:pr-10 text-[11px] sm:text-sm font-semibold sm:font-bold outline-none focus:ring-2 focus:ring-accent/50 transition cursor-pointer appearance-none ${
-                            !selectedAddOn ? 'text-navy/40' : 'text-navy'
-                          }`}
-                        >
-                          <option value="">
-                            Select Your Add Ons
-                          </option>
-                          {ADD_ON_OPTIONS.map((addOn) => (
-                            <option key={addOn} value={addOn}>
-                              {addOn}
-                            </option>
-                          ))}
-                        </select>
-                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 sm:pr-4 text-navy/60">
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="sm:w-4 sm:h-4">
-                            <polyline points="6 9 12 15 18 9" />
-                          </svg>
+                        <div className="flex-1 min-w-0">
+                          <label className="mb-1 block text-[10px] font-extrabold text-[#001e3d] uppercase tracking-wider">
+                            DIVE DESTINATION / ISLAND / RESORT
+                          </label>
+                          <div className="relative">
+                            <input
+                              type="text"
+                              value={location}
+                              onChange={(e) => {
+                                setLocation(e.target.value)
+                                setLocationId(e.target.value)
+                                setStepError('')
+                              }}
+                              placeholder={country ? `e.g. Popular dive spot in ${country}` : 'Select a country first or enter dive destination'}
+                              required
+                              className="w-full rounded-xl bg-[#EEF5FB] px-3.5 py-3 pr-9 text-xs font-semibold text-navy outline-none focus:ring-2 focus:ring-accent/40 placeholder:text-navy/50"
+                            />
+                            <div className="pointer-events-none absolute inset-y-0 right-3.5 flex items-center text-navy/70">
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <polyline points="6 9 12 15 18 9" />
+                              </svg>
+                            </div>
+                          </div>
+                          {country && POPULAR_DESTINATIONS[country] && (
+                            <div className="mt-2">
+                              <span className="text-[10px] font-bold text-navy/50 uppercase tracking-wider block mb-1">
+                                Popular in {country}:
+                              </span>
+                              <div className="flex flex-wrap gap-1.5">
+                                {POPULAR_DESTINATIONS[country].map((spot) => (
+                                  <button
+                                    key={spot}
+                                    type="button"
+                                    onClick={() => {
+                                      triggerHaptic(5)
+                                      setLocation(spot)
+                                      setLocationId(spot)
+                                      setStepError('')
+                                    }}
+                                    className={`px-2 py-0.5 rounded-full text-[10px] font-bold transition active:scale-95 cursor-pointer ${
+                                      location === spot
+                                        ? 'bg-navy text-accent shadow-xs'
+                                        : 'bg-navy/5 hover:bg-navy/10 text-navy'
+                                    }`}
+                                  >
+                                    {spot}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          )}
                         </div>
                       </div>
-                    </div>
 
-                    {/* 5. PREFERRED DATE & NUMBER OF PEOPLE */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6">
-                      <div className="relative">
-                        <label className="mb-1 sm:mb-2 block text-[9px] sm:text-xs font-bold text-navy/70 uppercase tracking-wider">
-                          Preferred Date
-                        </label>
-                        <button
-                          type="button"
-                          ref={datePickerBtnRef}
-                          onClick={() => setIsCalendarOpen((prev) => !prev)}
-                          className={`w-full rounded-lg sm:rounded-2xl bg-[#F0F2F5] px-3 py-2 sm:px-5 sm:py-4 text-[11px] sm:text-sm font-semibold sm:font-bold text-navy outline-none text-left flex items-center justify-between transition cursor-pointer focus:ring-2 ${dateError ? 'border-2 border-red-500 focus:ring-red-300' : 'focus:ring-accent/50'
-                            }`}
-                        >
-                          <span className={date ? 'text-navy' : 'text-navy/40'}>
-                            {date ? formatDateToDDMMYYYY(date) : 'dd-mm-yyyy'}
-                          </span>
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-navy/60 shrink-0 sm:w-[18px] sm:h-[18px]">
+                      {/* 3. SELECT YOUR EXPERIENCE */}
+                      <div className="flex items-start gap-3">
+                        <div className="mt-5 shrink-0 w-6 flex items-center justify-center text-navy">
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                          </svg>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <label className="mb-1 block text-[10px] font-extrabold text-[#001e3d] uppercase tracking-wider">
+                            SELECT YOUR EXPERIENCE
+                          </label>
+                          <div className="relative">
+                            <select
+                              value={experience}
+                              onChange={(e) => handleExperienceChange(e.target.value)}
+                              className={`w-full rounded-xl bg-[#EEF5FB] px-3.5 py-3 pr-9 text-xs font-semibold outline-none focus:ring-2 focus:ring-accent/40 appearance-none cursor-pointer ${
+                                !experience ? 'text-navy/50' : 'text-navy'
+                              }`}
+                            >
+                              <option value="">Select Your Experience</option>
+                              {EXPERIENCE_OPTIONS.map((exp) => (
+                                <option key={exp} value={exp}>{exp}</option>
+                              ))}
+                            </select>
+                            <div className="pointer-events-none absolute inset-y-0 right-3.5 flex items-center text-navy/70">
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <polyline points="6 9 12 15 18 9" />
+                              </svg>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 4. SELECT YOUR ADD ONS */}
+                      <div className="flex items-start gap-3">
+                        <div className="mt-5 shrink-0 w-6 flex items-center justify-center text-navy">
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="12" y1="8" x2="12" y2="16" />
+                            <line x1="8" y1="12" x2="16" y2="12" />
+                          </svg>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <label className="mb-1 block text-[10px] font-extrabold text-[#001e3d] uppercase tracking-wider">
+                            SELECT YOUR ADD ONS
+                          </label>
+                          <div className="relative">
+                            <select
+                              value={selectedAddOn}
+                              onChange={(e) => handleAddOnChange(e.target.value)}
+                              className={`w-full rounded-xl bg-[#EEF5FB] px-3.5 py-3 pr-9 text-xs font-semibold outline-none focus:ring-2 focus:ring-accent/40 appearance-none cursor-pointer ${
+                                !selectedAddOn ? 'text-navy/50' : 'text-navy'
+                              }`}
+                            >
+                              <option value="">Select Your Add Ons</option>
+                              {ADD_ON_OPTIONS.map((addOn) => (
+                                <option key={addOn} value={addOn}>{addOn}</option>
+                              ))}
+                            </select>
+                            <div className="pointer-events-none absolute inset-y-0 right-3.5 flex items-center text-navy/70">
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <polyline points="6 9 12 15 18 9" />
+                              </svg>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 5. PREFERRED DATE */}
+                      <div className="flex items-start gap-3">
+                        <div className="mt-5 shrink-0 w-6 flex items-center justify-center text-navy">
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                             <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
                             <line x1="16" y1="2" x2="16" y2="6" />
                             <line x1="8" y1="2" x2="8" y2="6" />
                             <line x1="3" y1="10" x2="21" y2="10" />
                           </svg>
-                        </button>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <label className="mb-1 block text-[10px] font-extrabold text-[#001e3d] uppercase tracking-wider">
+                            PREFERRED DATE
+                          </label>
+                          <div className="relative">
+                            <button
+                              type="button"
+                              ref={datePickerBtnMobileRef}
+                              onClick={() => setIsCalendarOpen((prev) => !prev)}
+                              className={`w-full rounded-xl bg-[#EEF5FB] px-3.5 py-3 pr-10 text-xs font-semibold text-left flex items-center justify-between outline-none focus:ring-2 cursor-pointer transition ${
+                                dateError ? 'border-2 border-red-500 focus:ring-red-300' : 'focus:ring-accent/40'
+                              }`}
+                            >
+                              <span className={date ? 'text-navy font-bold' : 'text-navy/50'}>
+                                {date ? formatDateToDDMMYYYY(date) : 'dd-mm-yyyy'}
+                              </span>
+                              <div className="pointer-events-none absolute inset-y-0 right-3.5 flex items-center text-navy/70">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                                  <line x1="16" y1="2" x2="16" y2="6" />
+                                  <line x1="8" y1="2" x2="8" y2="6" />
+                                  <line x1="3" y1="10" x2="21" y2="10" />
+                                </svg>
+                              </div>
+                            </button>
 
-                        <CompactTwoMonthCalendarPopover
-                          isOpen={isCalendarOpen}
-                          onClose={() => setIsCalendarOpen(false)}
-                          selectedDate={date}
-                          onSelectDate={(formattedDDMMYYYY, yyyyMmDd) => {
-                            setDate(yyyyMmDd)
-                            if (yyyyMmDd && (yyyyMmDd < cooldownMinDateStr || yyyyMmDd > maxDateStr)) {
-                              setDateError('Please select a date after the 4-day cooldown period.')
-                            } else {
-                              setDateError('')
-                              setStepError('')
-                            }
-                            setIsCalendarOpen(false)
-                          }}
-                          minDate={cooldownMinDateStr}
-                          maxDate={maxDateStr}
-                          toggleBtnRef={datePickerBtnRef}
-                        />
+                            <CompactTwoMonthCalendarPopover
+                              isOpen={isCalendarOpen}
+                              onClose={() => setIsCalendarOpen(false)}
+                              selectedDate={date}
+                              onSelectDate={(formattedDDMMYYYY, yyyyMmDd) => {
+                                setDate(yyyyMmDd)
+                                if (yyyyMmDd && (yyyyMmDd < cooldownMinDateStr || yyyyMmDd > maxDateStr)) {
+                                  setDateError('Please select a date after the 4-day cooldown period.')
+                                } else {
+                                  setDateError('')
+                                  setStepError('')
+                                }
+                                setIsCalendarOpen(false)
+                              }}
+                              minDate={cooldownMinDateStr}
+                              maxDate={maxDateStr}
+                              toggleBtnRef={datePickerBtnMobileRef}
+                            />
 
-                        {dateError && (
-                          <p className="mt-1 text-[10px] sm:text-xs font-bold text-red-500 flex items-center gap-1.5">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                            <span>{dateError}</span>
-                          </p>
-                        )}
+                            {dateError && (
+                              <p className="mt-1 text-[10px] font-bold text-red-500 flex items-center gap-1.5">
+                                <span>{dateError}</span>
+                              </p>
+                            )}
+                          </div>
+                        </div>
                       </div>
 
+                      {/* 6. NUMBER OF PERSONS */}
+                      <div className="flex items-start gap-3">
+                        <div className="mt-5 shrink-0 w-6 flex items-center justify-center text-navy">
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                            <circle cx="9" cy="7" r="4" />
+                            <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                          </svg>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <label className="mb-1 block text-[10px] font-extrabold text-[#001e3d] uppercase tracking-wider">
+                            NUMBER OF PERSONS
+                          </label>
+                          <div className="relative">
+                            <select
+                              value={groupSize}
+                              onChange={(e) => {
+                                setGroupSize(Number(e.target.value))
+                                setStepError('')
+                              }}
+                              className="w-full rounded-xl bg-[#EEF5FB] px-3.5 py-3 pr-9 text-xs font-semibold text-navy outline-none focus:ring-2 focus:ring-accent/40 appearance-none cursor-pointer"
+                            >
+                              {Array.from({ length: 20 }, (_, i) => i + 1).map((n) => (
+                                <option key={n} value={n}>{n}</option>
+                              ))}
+                            </select>
+                            <div className="pointer-events-none absolute inset-y-0 right-3.5 flex items-center text-navy/70">
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <polyline points="6 9 12 15 18 9" />
+                              </svg>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* DESKTOP VERSION: Step 1 Fields (Preserved Exactly as Before) */}
+                    <div className="hidden sm:block space-y-6">
+                      {/* 1. SELECT DIVE COUNTRY */}
                       <div>
-                        <label className="mb-1 sm:mb-2 block text-[9px] sm:text-xs font-bold text-navy/70 uppercase tracking-wider">
-                          Number of Persons
+                        <label className="mb-2 block text-xs font-bold text-navy/70 uppercase tracking-wider">
+                          Select Dive Country
+                        </label>
+                        <div className="relative">
+                          <select
+                            value={country}
+                            onChange={(e) => handleCountryChange(e.target.value)}
+                            required
+                            className="w-full rounded-2xl bg-[#F0F2F5] px-5 py-4 pr-10 text-sm font-bold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition cursor-pointer appearance-none"
+                          >
+                            <option value="">Select a country</option>
+                            {countries.map((c) => (
+                              <option key={c} value={c}>
+                                {c}
+                              </option>
+                            ))}
+                          </select>
+                          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-navy/60">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="6 9 12 15 18 9" />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 2. SELECT DIVE LOCATION */}
+                      <div>
+                        <label className="mb-2 block text-xs font-bold text-navy/70 uppercase tracking-wider">
+                          Dive Destination / Island / Resort
                         </label>
                         <input
                           type="text"
-                          inputMode="numeric"
-                          pattern="[0-9]*"
-                          value={groupSize}
+                          value={location}
                           onChange={(e) => {
-                            const raw = e.target.value.replace(/[^0-9]/g, '')
-                            setGroupSize(raw)
+                            setLocation(e.target.value)
+                            setLocationId(e.target.value)
                             setStepError('')
                           }}
-                          onBlur={() => {
-                            const val = parseInt(groupSize, 10)
-                            if (isNaN(val) || val < 1) {
-                              setGroupSize(1)
-                            } else if (val > 20) {
-                              setGroupSize(20)
-                            } else {
-                              setGroupSize(val)
-                            }
-                          }}
-                          placeholder="1"
+                          placeholder={country ? `e.g. Popular dive spot, island, or resort in ${country}` : 'Select a country first or enter dive destination'}
                           required
-                          className="w-full rounded-lg sm:rounded-2xl bg-[#F0F2F5] px-3 py-2 sm:px-5 sm:py-4 text-[11px] sm:text-sm font-semibold sm:font-bold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition"
+                          className="w-full rounded-2xl bg-[#F0F2F5] px-5 py-4 text-sm font-bold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition placeholder:text-navy/40"
                         />
+
+                        {/* Popular Quick-Select Destination Tags */}
+                        {country && POPULAR_DESTINATIONS[country] && (
+                          <div className="mt-2.5">
+                            <span className="text-[10px] font-bold text-navy/50 uppercase tracking-wider block mb-1.5">
+                              Popular in {country}:
+                            </span>
+                            <div className="flex flex-wrap gap-2">
+                              {POPULAR_DESTINATIONS[country].map((spot) => (
+                                <button
+                                  key={spot}
+                                  type="button"
+                                  onClick={() => {
+                                    triggerHaptic(5)
+                                    setLocation(spot)
+                                    setLocationId(spot)
+                                    setStepError('')
+                                  }}
+                                  className={`px-3 py-1.5 rounded-full text-xs font-bold transition active:scale-95 cursor-pointer ${
+                                    location === spot
+                                      ? 'bg-navy text-accent shadow-sm ring-1 ring-accent/30'
+                                      : 'bg-navy/5 hover:bg-navy/10 text-navy'
+                                  }`}
+                                >
+                                  {spot}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* 3. SELECT YOUR EXPERIENCE */}
+                      <div>
+                        <label className="mb-2 block text-xs font-bold text-navy/70 uppercase tracking-wider">
+                          Select Your Experience
+                        </label>
+                        <div className="relative">
+                          <select
+                            value={experience}
+                            onChange={(e) => handleExperienceChange(e.target.value)}
+                            className={`w-full rounded-2xl bg-[#F0F2F5] px-5 py-4 pr-10 text-sm font-bold outline-none focus:ring-2 focus:ring-accent/50 transition cursor-pointer appearance-none ${
+                              !experience ? 'text-navy/40' : 'text-navy'
+                            }`}
+                          >
+                            <option value="">
+                              Select Your Experience
+                            </option>
+                            {EXPERIENCE_OPTIONS.map((exp) => (
+                              <option key={exp} value={exp}>
+                                {exp}
+                              </option>
+                            ))}
+                          </select>
+                          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-navy/60">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="6 9 12 15 18 9" />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 4. SELECT YOUR ADD ONS */}
+                      <div>
+                        <label className="mb-2 block text-xs font-bold text-navy/70 uppercase tracking-wider">
+                          SELECT YOUR ADD ONS
+                        </label>
+                        <div className="relative">
+                          <select
+                            value={selectedAddOn}
+                            onChange={(e) => handleAddOnChange(e.target.value)}
+                            className={`w-full rounded-2xl bg-[#F0F2F5] px-5 py-4 pr-10 text-sm font-bold outline-none focus:ring-2 focus:ring-accent/50 transition cursor-pointer appearance-none ${
+                              !selectedAddOn ? 'text-navy/40' : 'text-navy'
+                            }`}
+                          >
+                            <option value="">
+                              Select Your Add Ons
+                            </option>
+                            {ADD_ON_OPTIONS.map((addOn) => (
+                              <option key={addOn} value={addOn}>
+                                {addOn}
+                              </option>
+                            ))}
+                          </select>
+                          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-navy/60">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="6 9 12 15 18 9" />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 5. PREFERRED DATE & NUMBER OF PEOPLE */}
+                      <div className="grid grid-cols-2 gap-6">
+                        <div className="relative">
+                          <label className="mb-2 block text-xs font-bold text-navy/70 uppercase tracking-wider">
+                            Preferred Date
+                          </label>
+                          <button
+                            type="button"
+                            ref={datePickerBtnRef}
+                            onClick={() => setIsCalendarOpen((prev) => !prev)}
+                            className={`w-full rounded-2xl bg-[#F0F2F5] px-5 py-4 text-sm font-bold text-navy outline-none text-left flex items-center justify-between transition cursor-pointer focus:ring-2 ${dateError ? 'border-2 border-red-500 focus:ring-red-300' : 'focus:ring-accent/50'
+                              }`}
+                          >
+                            <span className={date ? 'text-navy' : 'text-navy/40'}>
+                              {date ? formatDateToDDMMYYYY(date) : 'dd-mm-yyyy'}
+                            </span>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-navy/60 shrink-0">
+                              <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                              <line x1="16" y1="2" x2="16" y2="6" />
+                              <line x1="8" y1="2" x2="8" y2="6" />
+                              <line x1="3" y1="10" x2="21" y2="10" />
+                            </svg>
+                          </button>
+
+                          <CompactTwoMonthCalendarPopover
+                            isOpen={isCalendarOpen}
+                            onClose={() => setIsCalendarOpen(false)}
+                            selectedDate={date}
+                            onSelectDate={(formattedDDMMYYYY, yyyyMmDd) => {
+                              setDate(yyyyMmDd)
+                              if (yyyyMmDd && (yyyyMmDd < cooldownMinDateStr || yyyyMmDd > maxDateStr)) {
+                                setDateError('Please select a date after the 4-day cooldown period.')
+                              } else {
+                                setDateError('')
+                                setStepError('')
+                              }
+                              setIsCalendarOpen(false)
+                            }}
+                            minDate={cooldownMinDateStr}
+                            maxDate={maxDateStr}
+                            toggleBtnRef={datePickerBtnRef}
+                          />
+
+                          {dateError && (
+                            <p className="mt-1 text-xs font-bold text-red-500 flex items-center gap-1.5">
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                              <span>{dateError}</span>
+                            </p>
+                          )}
+                        </div>
+
+                        <div>
+                          <label className="mb-2 block text-xs font-bold text-navy/70 uppercase tracking-wider">
+                            Number of Persons
+                          </label>
+                          <input
+                            type="text"
+                            inputMode="numeric"
+                            pattern="[0-9]*"
+                            value={groupSize}
+                            onChange={(e) => {
+                              const raw = e.target.value.replace(/[^0-9]/g, '')
+                              setGroupSize(raw)
+                              setStepError('')
+                            }}
+                            onBlur={() => {
+                              const val = parseInt(groupSize, 10)
+                              if (isNaN(val) || val < 1) {
+                                setGroupSize(1)
+                              } else if (val > 20) {
+                                setGroupSize(20)
+                              } else {
+                                setGroupSize(val)
+                              }
+                            }}
+                            placeholder="1"
+                            required
+                            className="w-full rounded-2xl bg-[#F0F2F5] px-5 py-4 text-sm font-bold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition"
+                          />
+                        </div>
                       </div>
                     </div>
                   </motion.div>
@@ -991,7 +1253,7 @@ export default function BookUs() {
                 {/* STEP 2: Name, Age & Certification Eligibility for Each Person */}
                 {currentStep === 2 && (
                   <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="space-y-3.5 sm:space-y-6">
-                    <div>
+                    <div className="hidden sm:block">
                       <span className="text-[9px] sm:text-xs font-bold uppercase tracking-widest text-accent mb-0.5 block">Step 2 of 4</span>
                       <h3 className="font-heading text-lg sm:text-3xl font-bold text-navy">Participant Details</h3>
                       <p className="text-[10px] sm:text-xs text-navy/60 mt-0.5">Enter age and prior certification level for each person for {experience}.</p>
@@ -1191,7 +1453,7 @@ export default function BookUs() {
                 {/* STEP 3: Matching Programs Selection */}
                 {currentStep === 3 && (
                   <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="space-y-3.5 sm:space-y-6">
-                    <div>
+                    <div className="hidden sm:block">
                       <span className="text-[9px] sm:text-xs font-bold uppercase tracking-widest text-accent mb-0.5 block">Step 3 of 4</span>
                       <h3 className="font-heading text-lg sm:text-3xl font-bold text-navy">Eligible Programs & Courses</h3>
                       <p className="text-[10px] sm:text-xs text-navy/60 mt-0.5">Select a program for each person for {experience}.</p>
@@ -1338,7 +1600,7 @@ export default function BookUs() {
                 {/* STEP 4: Contact Details & Special Requests */}
                 {currentStep === 4 && (
                   <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="space-y-3.5 sm:space-y-6">
-                    <div>
+                    <div className="hidden sm:block">
                       <span className="text-[9px] sm:text-xs font-bold uppercase tracking-widest text-accent mb-0.5 block">
                         Step {((!experience && Boolean(selectedAddOn)) || isDirectActivity(experience)) ? 2 : 4} of {((!experience && Boolean(selectedAddOn)) || isDirectActivity(experience)) ? 2 : 4}
                       </span>
@@ -1449,8 +1711,8 @@ export default function BookUs() {
           </div>
         </div>
 
-        {/* Column 2: Interactive 2D Worldwide Dive Map (Beside Booking Form) */}
-        <div className={`lg:col-span-6 xl:col-span-7 w-full min-w-0 lg:sticky lg:top-28 self-start ${activeMobileTab === 'form' ? 'hidden lg:block' : 'block'}`}>
+        {/* Column 2: Interactive 2D Worldwide Dive Map (Beside Booking Form on Desktop, Directly Below on Mobile) */}
+        <div id="dive-explorer-map" className="lg:col-span-6 xl:col-span-7 w-full min-w-0 lg:sticky lg:top-28 self-start mt-6 sm:mt-10 lg:mt-0">
           <DiveExplorerMap
             onSelectSite={handleMapSelectSite}
             onBookSite={handleMapSelectSite}

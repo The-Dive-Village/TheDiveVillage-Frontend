@@ -586,7 +586,9 @@ function GroupGallerySection() {
               triggerHaptic(8)
               setSelectedPhoto(photo)
             }}
-            className="group relative aspect-[4/3] rounded-2xl overflow-hidden bg-white cursor-pointer shadow-sm hover:shadow-float transition duration-300 border border-navy/5"
+            className={`group relative aspect-[4/3] rounded-2xl overflow-hidden bg-white cursor-pointer shadow-sm hover:shadow-float transition duration-300 border border-navy/5 ${
+              idx === 8 ? 'hidden sm:block' : ''
+            }`}
           >
             <img
               src={photo.src}

@@ -134,6 +134,9 @@ export default function Preloader({ onComplete }) {
 
       if (targetProgress >= 100 && !completed) {
         completed = true
+        try {
+          window.dispatchEvent(new Event('tdv-unlock-audio'))
+        } catch (_) {}
         setTimeout(() => {
           if (onComplete) onComplete()
         }, 200)
@@ -150,10 +153,18 @@ export default function Preloader({ onComplete }) {
     }
   }, [onComplete])
 
+  const handleUnlockAudio = () => {
+    try {
+      window.dispatchEvent(new Event('tdv-unlock-audio'))
+    } catch (_) {}
+  }
+
   return (
     <motion.div
       initial={{ y: 0 }}
       exit={{ y: '-100%', transition: { duration: 0.85, ease: [0.76, 0, 0.24, 1] } }}
+      onClick={handleUnlockAudio}
+      onTouchStart={handleUnlockAudio}
       className="fixed inset-0 z-[99999] bg-white flex flex-col items-center justify-center p-6 select-none font-body shadow-2xl"
     >
       {/* Diver Graphic / Video Animation with clean background keying */}
