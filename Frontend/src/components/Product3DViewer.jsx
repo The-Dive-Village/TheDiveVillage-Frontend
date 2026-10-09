@@ -184,7 +184,7 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
         src={src ? src : undefined}
         alt={alt}
         auto-rotate={autoRotate ? true : undefined}
-        rotation-per-second="35deg"
+        rotation-per-second="25deg"
         camera-controls
         disable-zoom
         disable-pan

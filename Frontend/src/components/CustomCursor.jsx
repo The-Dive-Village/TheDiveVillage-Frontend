@@ -29,14 +29,30 @@ export default function CustomCursor() {
     let isOverNormalCursor = false
     let lastCheckTime = 0
 
+    const isPointInsideGlobe = (x, y) => {
+      if (x < 0 || y < 0) return false
+      const globeEls = document.querySelectorAll('#dive-map-container, [data-globe], .cesium-widget, .cesium-viewer')
+      for (let i = 0; i < globeEls.length; i++) {
+        const rect = globeEls[i].getBoundingClientRect()
+        if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
+          return true
+        }
+      }
+      return false
+    }
+
     const checkNormalCursor = (target) => {
-      if (!target || !(target instanceof Element)) return false
-      return !!target.closest('input, textarea, select, [contenteditable="true"], .normal-cursor, [data-normal-cursor]')
+      if (!target) return false
+      const el = target instanceof Element ? target : target.parentElement
+      if (!el || !(el instanceof Element)) return false
+      return !!el.closest('input, textarea, select, [contenteditable="true"], .normal-cursor, [data-normal-cursor], #dive-map-container, [data-globe], .cesium-widget, .cesium-viewer, model-viewer')
     }
 
     const checkInteractive = (target) => {
-      if (!target || !(target instanceof Element)) return false
-      return !!target.closest('a, button, input, select, textarea, [role="button"], .cursor-pointer, [data-cursor-interactive], label')
+      if (!target) return false
+      const el = target instanceof Element ? target : target.parentElement
+      if (!el || !(el instanceof Element)) return false
+      return !!el.closest('a, button, input, select, textarea, [role="button"], .cursor-pointer, [data-cursor-interactive], label')
     }
 
     const checkRadiusForInteractive = (x, y) => {
@@ -105,8 +121,13 @@ export default function CustomCursor() {
       if (now - lastCheckTime >= 32 && latestX >= 0 && latestY >= 0) { // Limit to ~30fps for radius checks
         lastCheckTime = now
         const elUnderPoint = document.elementFromPoint(latestX, latestY) || currentTarget
-        if (elUnderPoint) {
-          isOverNormalCursor = checkNormalCursor(elUnderPoint)
+        isOverNormalCursor = checkNormalCursor(elUnderPoint) || isPointInsideGlobe(latestX, latestY)
+        if (isOverNormalCursor) {
+          if (isHoveringInteractive) {
+            isHoveringInteractive = false
+            setIsHovering(false)
+          }
+        } else {
           const hovering = checkRadiusForInteractive(latestX, latestY)
           if (hovering !== isHoveringInteractive) {
             isHoveringInteractive = hovering
@@ -124,17 +145,32 @@ export default function CustomCursor() {
       latestX = e.clientX
       latestY = e.clientY
       currentTarget = e.target
-      isOverNormalCursor = checkNormalCursor(e.target)
+      isOverNormalCursor = checkNormalCursor(e.target) || isPointInsideGlobe(latestX, latestY)
 
-      if (isHidden) {
-        isHidden = false
-      }
+      if (isOverNormalCursor) {
+        if (isHoveringInteractive) {
+          isHoveringInteractive = false
+          setIsHovering(false)
+        }
+        if (cursorRef.current) {
+          cursorRef.current.style.opacity = '0'
+          cursorRef.current.style.visibility = 'hidden'
+        }
+      } else {
+        if (isHidden) {
+          isHidden = false
+        }
+        if (cursorRef.current) {
+          cursorRef.current.style.opacity = '1'
+          cursorRef.current.style.visibility = 'visible'
+        }
 
-      // 0ms Instant Response ONLY if directly on a button to avoid CPU load
-      if (e.target && checkInteractive(e.target)) {
-        if (!isHoveringInteractive) {
-          isHoveringInteractive = true
-          setIsHovering(true)
+        // 0ms Instant Response ONLY if directly on a button and not over globe/normal cursor
+        if (e.target && checkInteractive(e.target)) {
+          if (!isHoveringInteractive) {
+            isHoveringInteractive = true
+            setIsHovering(true)
+          }
         }
       }
     }
@@ -142,9 +178,11 @@ export default function CustomCursor() {
     const onScroll = () => {
       if (latestX >= 0 && latestY >= 0) {
         const el = document.elementFromPoint(latestX, latestY)
-        if (el) {
-          currentTarget = el
-          isOverNormalCursor = checkNormalCursor(el)
+        currentTarget = el
+        isOverNormalCursor = checkNormalCursor(el) || isPointInsideGlobe(latestX, latestY)
+        if (isOverNormalCursor && cursorRef.current) {
+          cursorRef.current.style.opacity = '0'
+          cursorRef.current.style.visibility = 'hidden'
         }
       }
     }
@@ -158,11 +196,18 @@ export default function CustomCursor() {
       setIsHovering(false)
     }
 
-    const onMouseEnter = () => {
+    const onMouseEnter = (e) => {
       isHidden = false
+      const target = e?.target || document.elementFromPoint(latestX, latestY)
+      isOverNormalCursor = checkNormalCursor(target) || isPointInsideGlobe(latestX, latestY)
       if (cursorRef.current) {
-        cursorRef.current.style.opacity = '1'
-        cursorRef.current.style.visibility = 'visible'
+        if (isOverNormalCursor) {
+          cursorRef.current.style.opacity = '0'
+          cursorRef.current.style.visibility = 'hidden'
+        } else {
+          cursorRef.current.style.opacity = '1'
+          cursorRef.current.style.visibility = 'visible'
+        }
       }
     }
 
@@ -173,9 +218,11 @@ export default function CustomCursor() {
       }
     }
 
-    // Listener setups
-    const eventType = window.PointerEvent ? 'pointermove' : 'mousemove'
-    window.addEventListener(eventType, onMouseMove, { passive: true })
+    // Listener setups with capture to ensure priority over canvas libraries
+    window.addEventListener('pointermove', onMouseMove, { capture: true, passive: true })
+    window.addEventListener('mousemove', onMouseMove, { capture: true, passive: true })
+    window.addEventListener('pointerdown', onMouseMove, { capture: true, passive: true })
+    window.addEventListener('pointerup', onMouseMove, { capture: true, passive: true })
     window.addEventListener('scroll', onScroll, { passive: true })
     window.addEventListener('mouseleave', onMouseLeave)
     window.addEventListener('mouseenter', onMouseEnter)
@@ -198,7 +245,10 @@ export default function CustomCursor() {
 
     return () => {
       if (rafId) cancelAnimationFrame(rafId)
-      window.removeEventListener(eventType, onMouseMove)
+      window.removeEventListener('pointermove', onMouseMove, { capture: true })
+      window.removeEventListener('mousemove', onMouseMove, { capture: true })
+      window.removeEventListener('pointerdown', onMouseMove, { capture: true })
+      window.removeEventListener('pointerup', onMouseMove, { capture: true })
       window.removeEventListener('scroll', onScroll)
       window.removeEventListener('mouseleave', onMouseLeave)
       window.removeEventListener('mouseenter', onMouseEnter)

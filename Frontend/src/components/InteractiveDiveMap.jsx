@@ -140,7 +140,7 @@ export default function InteractiveDiveMap({
           pitch: window.Cesium.Math.toRadians(-90),
           roll: 0.0
         },
-        duration: 0.8,
+        duration: 2.4,
         complete: () => {
           if (currentVersion === cameraTransactionVersionRef.current) {
             isProgrammaticFlightRef.current = false
@@ -289,7 +289,7 @@ export default function InteractiveDiveMap({
           pitch: window.Cesium.Math.toRadians(-88),
           roll: 0.0
         },
-        duration: 0.8,
+        duration: 2.4,
         complete: () => {
           if (currentVersion === cameraTransactionVersionRef.current) {
             isProgrammaticFlightRef.current = false
@@ -329,7 +329,7 @@ export default function InteractiveDiveMap({
           pitch: window.Cesium.Math.toRadians(-75),
           roll: 0.0
         },
-        duration: 0.8,
+        duration: 2.0,
         complete: () => {
           if (currentVersion === cameraTransactionVersionRef.current) {
             isProgrammaticFlightRef.current = false
@@ -598,7 +598,7 @@ export default function InteractiveDiveMap({
             return
           }
           if (Date.now() - lastInteractionTimeRef.current > 3500) {
-            viewer.camera.rotate(Cesium.Cartesian3.UNIT_Z, -0.00025)
+            viewer.camera.rotate(Cesium.Cartesian3.UNIT_Z, -0.0001)
           }
 
           // 3. Camera bounds & initial world-view camera restoration
@@ -828,7 +828,7 @@ export default function InteractiveDiveMap({
                     setPopupSite(loc)
                     setIsPopupOpen(true)
                     onLocationSelectRef.current?.(loc)
-                    flyToLocationPoint(loc)
+                    // View box appears right there without zooming out or resetting camera altitude
                   }
                   return
                 }
@@ -885,19 +885,61 @@ export default function InteractiveDiveMap({
           if (!currentViewer || currentViewer.isDestroyed() || !window.Cesium) return
 
           const camera = currentViewer.camera
+          const scene = currentViewer.scene
           const height = camera.positionCartographic ? camera.positionCartographic.height : 10000000
-          const minDist = currentViewer.scene.screenSpaceCameraController.minimumZoomDistance || 15000
-          const maxDist = currentViewer.scene.screenSpaceCameraController.maximumZoomDistance || 25000000
+          const minDist = scene.screenSpaceCameraController.minimumZoomDistance || 15000
+          const maxDist = scene.screenSpaceCameraController.maximumZoomDistance || 25000000
 
           // Smooth exponential zoom factor based on altitude
           const zoomFactor = Math.min(Math.max(height * 0.002, 500), 500000)
-          const zoomAmount = e.deltaY * zoomFactor
+          const zoomAmount = Math.abs(e.deltaY) * zoomFactor
 
-          if (zoomAmount < 0) {
+          if (e.deltaY < 0) {
+            // Zoom IN towards cursor & pan target region towards screen center
             const maxAllowedZoomIn = Math.max(0, height - minDist)
-            const actualZoom = Math.min(Math.abs(zoomAmount), maxAllowedZoomIn)
-            if (actualZoom > 0) camera.zoomIn(actualZoom)
-          } else if (zoomAmount > 0) {
+            const actualZoom = Math.min(zoomAmount, maxAllowedZoomIn)
+
+            if (actualZoom > 0) {
+              const rect = containerEl.getBoundingClientRect()
+              const mouseWindowPos = new window.Cesium.Cartesian2(e.clientX - rect.left, e.clientY - rect.top)
+              const ray = camera.getPickRay(mouseWindowPos)
+              let targetPoint = null
+              if (ray) {
+                targetPoint = scene.globe.pick(ray, scene)
+                if (!targetPoint) {
+                  targetPoint = camera.pickEllipsoid(mouseWindowPos, scene.globe.ellipsoid)
+                }
+              }
+
+              if (targetPoint) {
+                // Vector from camera to target point on globe
+                const toTarget = window.Cesium.Cartesian3.subtract(
+                  targetPoint,
+                  camera.position,
+                  new window.Cesium.Cartesian3()
+                )
+                const distToTarget = window.Cesium.Cartesian3.magnitude(toTarget)
+                const step = Math.min(actualZoom, distToTarget * 0.6)
+
+                if (step > 0) {
+                  const moveDir = window.Cesium.Cartesian3.normalize(toTarget, new window.Cesium.Cartesian3())
+                  const moveVec = window.Cesium.Cartesian3.multiplyByScalar(
+                    moveDir,
+                    step,
+                    new window.Cesium.Cartesian3()
+                  )
+                  camera.position = window.Cesium.Cartesian3.add(
+                    camera.position,
+                    moveVec,
+                    new window.Cesium.Cartesian3()
+                  )
+                }
+              } else {
+                camera.zoomIn(actualZoom)
+              }
+            }
+          } else if (e.deltaY > 0) {
+            // Zoom OUT smoothly
             const maxAllowedZoomOut = Math.max(0, maxDist - height)
             const actualZoom = Math.min(zoomAmount, maxAllowedZoomOut)
             if (actualZoom > 0) camera.zoomOut(actualZoom)
@@ -940,10 +982,37 @@ export default function InteractiveDiveMap({
               const zoomDelta = -distanceDelta * zoomFactor
 
               if (zoomDelta < 0) {
-                // Fingers moving apart (pinch out) -> Zoom In
+                // Fingers moving apart (pinch out) -> Zoom In towards touch midpoint
                 const maxAllowedZoomIn = Math.max(0, height - minDist)
                 const actualZoom = Math.min(Math.abs(zoomDelta), maxAllowedZoomIn)
-                if (actualZoom > 0) camera.zoomIn(actualZoom)
+                if (actualZoom > 0) {
+                  const rect = containerEl.getBoundingClientRect()
+                  const touchPos = new window.Cesium.Cartesian2(currentX - rect.left, currentY - rect.top)
+                  const ray = camera.getPickRay(touchPos)
+                  let targetPoint = null
+                  if (ray) {
+                    targetPoint = currentViewer.scene.globe.pick(ray, currentViewer.scene)
+                    if (!targetPoint) {
+                      targetPoint = camera.pickEllipsoid(touchPos, currentViewer.scene.globe.ellipsoid)
+                    }
+                  }
+                  if (targetPoint) {
+                    const toTarget = window.Cesium.Cartesian3.subtract(
+                      targetPoint,
+                      camera.position,
+                      new window.Cesium.Cartesian3()
+                    )
+                    const distToTarget = window.Cesium.Cartesian3.magnitude(toTarget)
+                    const step = Math.min(actualZoom, distToTarget * 0.6)
+                    if (step > 0) {
+                      const moveDir = window.Cesium.Cartesian3.normalize(toTarget, new window.Cesium.Cartesian3())
+                      const moveVec = window.Cesium.Cartesian3.multiplyByScalar(moveDir, step, new window.Cesium.Cartesian3())
+                      camera.position = window.Cesium.Cartesian3.add(camera.position, moveVec, new window.Cesium.Cartesian3())
+                    }
+                  } else {
+                    camera.zoomIn(actualZoom)
+                  }
+                }
               } else if (zoomDelta > 0) {
                 // Fingers moving together (pinch in) -> Zoom Out
                 const maxAllowedZoomOut = Math.max(0, maxDist - height)
@@ -1250,7 +1319,7 @@ export default function InteractiveDiveMap({
   }, [selectedCountry])
 
   return (
-    <div id="dive-map-container" className="relative w-full h-full min-h-[450px] overflow-hidden bg-[#021426] pointer-events-auto">
+    <div id="dive-map-container" data-globe="true" className="normal-cursor relative w-full h-full min-h-[450px] overflow-hidden bg-[#021426] pointer-events-auto">
       {/* Cleanup Cesium UI */}
       <style>{`
         .cesium-viewer-bottom,
@@ -1424,8 +1493,8 @@ function GlobeJoystick({ viewerRef }) {
         const vx = velocityRef.current.x
         const vy = velocityRef.current.y
         if (Math.abs(vx) > 0.001 || Math.abs(vy) > 0.001) {
-          viewerRef.current.camera.rotateLeft(vx * 0.015)
-          viewerRef.current.camera.rotateUp(vy * 0.015)
+          viewerRef.current.camera.rotateLeft(vx * 0.007)
+          viewerRef.current.camera.rotateUp(vy * 0.007)
         }
       }
       animFrameId.current = requestAnimationFrame(tick)

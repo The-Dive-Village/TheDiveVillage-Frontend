@@ -474,7 +474,7 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
                   reveal="auto"
                   auto-rotate
                   auto-rotate-delay="0"
-                  rotation-per-second="150deg"
+                  rotation-per-second="28deg"
                   camera-orbit="0deg 75deg 120%"
                   camera-target="auto auto auto"
                   disable-zoom

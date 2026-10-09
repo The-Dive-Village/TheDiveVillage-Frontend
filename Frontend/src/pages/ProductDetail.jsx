@@ -330,9 +330,11 @@ export default function ProductDetail() {
               className="w-full rounded-[28px] overflow-hidden bg-white border border-navy/10 h-[380px] xs:h-[420px] sm:h-[480px] lg:h-[500px] relative shadow-card group"
             >
               {activeMedia?.type === 'glb' ? (
-                <Product3DViewer key={activeMedia.src} src={activeMedia.src} alt={product.title} productId={product.id} />
+                <div className="w-full h-full rounded-[28px] overflow-hidden">
+                  <Product3DViewer key={activeMedia.src} src={activeMedia.src} alt={product.title} productId={product.id} />
+                </div>
               ) : activeMedia?.type === 'video' ? (
-                <>
+                <div className="w-full h-full rounded-[28px] overflow-hidden">
                   <LazyVideo
                     src={activeMedia.src}
                     controls
@@ -342,7 +344,7 @@ export default function ProductDetail() {
                     playsInline
                     className="w-full h-full object-cover rounded-[28px]"
                   />
-                </>
+                </div>
               ) : (
                 <InteractiveProductImage
                   src={activeMedia?.src || product.image}
@@ -945,13 +947,44 @@ export default function ProductDetail() {
 function InteractiveProductImage({ src, alt, onOpenFloating }) {
   const [scale, setScale] = useState(1)
   const [position, setPosition] = useState({ x: 0, y: 0 })
+  const [isHovered, setIsHovered] = useState(false)
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
+  const [containerDimensions, setContainerDimensions] = useState({ width: 500, height: 500 })
   const containerRef = useRef(null)
+
+  const ZOOM_FACTOR = 2.5
+  // Square magnifying view box dimension (substantially enlarged, responsive up to 300px)
+  const LENS_SIZE = Math.max(240, Math.min(300, Math.floor(Math.min(containerDimensions.width || 500, containerDimensions.height || 500) * 0.72)))
 
   const startDist = useRef(0)
   const startScale = useRef(1)
   const startPos = useRef({ x: 0, y: 0 })
   const startTouch = useRef({ x: 0, y: 0 })
   const isDragging = useRef(false)
+
+  const handleMouseEnter = () => {
+    if (!containerRef.current) return
+    const rect = containerRef.current.getBoundingClientRect()
+    setContainerDimensions({ width: rect.width, height: rect.height })
+    setIsHovered(true)
+  }
+
+  const handleMouseLeave = () => {
+    setIsHovered(false)
+  }
+
+  const handleMouseMove = (e) => {
+    if (!containerRef.current) return
+    const rect = containerRef.current.getBoundingClientRect()
+    setContainerDimensions({ width: rect.width, height: rect.height })
+
+    const rawX = e.clientX - rect.left
+    const rawY = e.clientY - rect.top
+    const x = Math.max(0, Math.min(rect.width, rawX))
+    const y = Math.max(0, Math.min(rect.height, rawY))
+
+    setMousePos({ x, y })
+  }
 
   const handleTouchStart = (e) => {
     if (e.touches.length === 2) {
@@ -996,33 +1029,87 @@ function InteractiveProductImage({ src, alt, onOpenFloating }) {
     }
   }
 
+  // Magnifier lens position centered at cursor (clamped strictly within image card boundaries)
+  const halfLens = LENS_SIZE / 2
+  const lensLeft = Math.max(0, Math.min(containerDimensions.width - LENS_SIZE, mousePos.x - halfLens))
+  const lensTop = Math.max(0, Math.min(containerDimensions.height - LENS_SIZE, mousePos.y - halfLens))
+
+  // Exact optical magnification inside the lens
+  const imgLeft = -lensLeft - mousePos.x * (ZOOM_FACTOR - 1)
+  const imgTop = -lensTop - mousePos.y * (ZOOM_FACTOR - 1)
+
   return (
     <div
       ref={containerRef}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onMouseMove={handleMouseMove}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
       onClick={() => onOpenFloating && onOpenFloating(src)}
-      className="w-full h-full flex items-center justify-center overflow-hidden touch-none relative select-none cursor-zoom-in group/img"
+      data-normal-cursor="true"
+      className="normal-cursor w-full h-full rounded-[28px] overflow-hidden flex items-center justify-center touch-none relative select-none cursor-crosshair group/img bg-white"
     >
+      {/* Base Product Image */}
       <img
         src={src}
         alt={alt}
-        className="w-full h-full object-contain p-6 pointer-events-none select-none transition-transform duration-300 group-hover/img:scale-105"
+        className="w-full h-full object-contain p-6 pointer-events-none select-none transition-transform duration-300"
         style={{
           transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
         }}
         draggable={false}
       />
 
-      {/* Floating Window Hint Button */}
+      {/* On-Image Magnifier Square Lens (Clean, enlarged square view box without any text or shapes) */}
+      {isHovered && (
+        <div
+          className="pointer-events-none absolute z-30 rounded-lg border-[3px] border-white shadow-[0_20px_50px_rgba(0,30,61,0.45),0_0_0_1px_rgba(0,0,0,0.12)] overflow-hidden bg-white select-none transition-opacity duration-150"
+          style={{
+            width: `${LENS_SIZE}px`,
+            height: `${LENS_SIZE}px`,
+            left: `${lensLeft}px`,
+            top: `${lensTop}px`,
+          }}
+        >
+          {/* Zoomed Image Inside the Square View Box */}
+          <div className="relative w-full h-full overflow-hidden bg-white">
+            <img
+              src={src}
+              alt={alt}
+              className="absolute max-w-none pointer-events-none select-none"
+              style={{
+                width: `${containerDimensions.width * ZOOM_FACTOR}px`,
+                height: `${containerDimensions.height * ZOOM_FACTOR}px`,
+                objectFit: 'contain',
+                padding: `${24 * ZOOM_FACTOR}px`,
+                left: `${imgLeft}px`,
+                top: `${imgTop}px`,
+              }}
+              draggable={false}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Hint Badge when Not Hovered */}
+      <div className={`absolute bottom-4 left-1/2 -translate-x-1/2 z-10 px-3.5 py-1.5 rounded-full bg-white/95 backdrop-blur-md text-navy text-[11px] font-bold shadow-md border border-navy/10 pointer-events-none flex items-center gap-2 transition-opacity duration-200 ${isHovered ? 'opacity-0' : 'opacity-90'}`}>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-accent">
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <span>Hover to Magnify</span>
+      </div>
+
+      {/* Floating Window Lightbox Button */}
       <button
         type="button"
         onClick={(e) => {
           e.stopPropagation()
           if (onOpenFloating) onOpenFloating(src)
         }}
-        className="absolute top-3.5 right-3.5 w-8 h-8 rounded-full bg-white/90 hover:bg-white text-navy/80 hover:text-accent shadow-md border border-navy/10 flex items-center justify-center transition hover:scale-110 active:scale-95 cursor-pointer z-10"
+        className="absolute top-3.5 right-3.5 w-8 h-8 rounded-full bg-white/90 hover:bg-[#FFCD00] text-navy hover:text-[#001e3d] shadow-md border border-navy/10 flex items-center justify-center transition hover:scale-110 active:scale-95 cursor-pointer z-30"
         title="Open in floating window"
         aria-label="Expand image in floating window"
       >

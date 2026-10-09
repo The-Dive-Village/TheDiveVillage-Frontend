@@ -1471,7 +1471,7 @@ export default function BookUs() {
           </div>
 
           {/* Interactive Globe Map Column with Desktop Sticky Pinning */}
-          <div className="lg:col-span-5 lg:sticky lg:top-28 lg:self-start relative w-full min-w-0 max-w-full mx-auto h-[500px] xs:h-[540px] sm:h-[580px] lg:h-[calc(100vh-8.5rem)] min-h-[480px] sm:min-h-[520px] rounded-2xl sm:rounded-[36px] overflow-hidden bg-navy flex flex-col pt-4 sm:pt-6 shadow-card border border-navy/10 mt-6 lg:mt-0">
+          <div data-globe="true" className="normal-cursor lg:col-span-5 lg:sticky lg:top-28 lg:self-start relative w-full min-w-0 max-w-full mx-auto h-[500px] xs:h-[540px] sm:h-[580px] lg:h-[calc(100vh-8.5rem)] min-h-[480px] sm:min-h-[520px] rounded-2xl sm:rounded-[36px] overflow-hidden bg-navy flex flex-col pt-4 sm:pt-6 shadow-card border border-navy/10 mt-6 lg:mt-0">
             <div className="text-center px-4 z-10 mb-2 pointer-events-none">
               <span className="text-accent text-[10px] font-bold uppercase tracking-widest">Interactive 3D Globe</span>
               <h3 className="font-heading text-xl sm:text-2xl font-bold text-white">Select Dive Location</h3>

@@ -101,7 +101,7 @@
   }
 
   .hide-cursors,
-  .hide-cursors *:not(input):not(textarea):not(select):not([contenteditable="true"]):not(.normal-cursor):not(.normal-cursor *) {
+  .hide-cursors *:not(input):not(textarea):not(select):not([contenteditable="true"]):not(.normal-cursor):not(.normal-cursor *):not(#dive-map-container):not(#dive-map-container *):not([data-globe]):not([data-globe] *):not(.cesium-widget):not(.cesium-widget *) {
     cursor: none !important;
   }
 
@@ -130,6 +130,49 @@
   .hide-cursors .normal-cursor [role="button"],
   .hide-cursors .normal-cursor .cursor-pointer {
     cursor: pointer !important;
+  }
+
+  /* Restore natural default & grab cursors for 3D globe */
+  .hide-cursors #dive-map-container,
+  .hide-cursors #dive-map-container *,
+  .hide-cursors [data-globe],
+  .hide-cursors [data-globe] *,
+  .hide-cursors .cesium-viewer,
+  .hide-cursors .cesium-viewer *,
+  .hide-cursors .cesium-widget,
+  .hide-cursors .cesium-widget * {
+    cursor: default;
+  }
+
+  .hide-cursors #dive-map-container canvas,
+  .hide-cursors [data-globe] canvas,
+  .hide-cursors .cesium-widget canvas {
+    cursor: default;
+  }
+
+  .hide-cursors #dive-map-container canvas:active,
+  .hide-cursors [data-globe] canvas:active,
+  .hide-cursors .cesium-widget canvas:active {
+    cursor: grabbing !important;
+  }
+
+  .hide-cursors #dive-map-container button,
+  .hide-cursors #dive-map-container a,
+  .hide-cursors #dive-map-container [role="button"],
+  .hide-cursors #dive-map-container .cursor-pointer,
+  .hide-cursors [data-globe] button,
+  .hide-cursors [data-globe] a {
+    cursor: pointer !important;
+  }
+
+  .hide-cursors #dive-map-container .cursor-grab,
+  .hide-cursors [data-globe] .cursor-grab {
+    cursor: grab !important;
+  }
+
+  .hide-cursors #dive-map-container .cursor-grabbing,
+  .hide-cursors [data-globe] .cursor-grabbing {
+    cursor: grabbing !important;
   }
 
   /* Magnetic button hover effect when cursor is within proximity radius */

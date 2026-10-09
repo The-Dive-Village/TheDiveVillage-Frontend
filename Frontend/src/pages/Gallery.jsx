@@ -278,7 +278,7 @@ export default function Gallery() {
       <AnimatePresence>
         {selectedMediaIndex !== null && currentItem && (
           <div 
-            className="fixed inset-0 z-[100] flex flex-col items-center justify-end pt-[56px] xs:pt-[60px] sm:pt-[70px] lg:pt-[76px] pb-1.5 sm:pb-2 px-2 sm:px-4 bg-black/85 backdrop-blur-sm"
+            className="fixed inset-0 z-[100] flex flex-col items-center justify-end pt-[56px] xs:pt-[60px] sm:pt-[70px] lg:pt-[76px] pb-1.5 sm:pb-2 px-2 sm:px-4 bg-black/90 backdrop-blur-sm overflow-hidden"
             onClick={() => setSelectedMediaIndex(null)}
             onTouchStart={handleLightboxTouchStart}
             onTouchEnd={handleLightboxTouchEnd}
@@ -289,7 +289,7 @@ export default function Gallery() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.97, y: 10 }}
               transition={{ duration: 0.2 }}
-              className="relative bg-navy rounded-2xl sm:rounded-3xl shadow-2xl p-2 sm:p-3.5 max-w-4xl sm:max-w-5xl lg:max-w-6xl w-full h-full flex flex-col gap-2 select-none border border-white/15 overflow-hidden"
+              className="relative bg-navy rounded-2xl sm:rounded-3xl shadow-2xl p-2 sm:p-3.5 max-w-4xl sm:max-w-5xl lg:max-w-6xl w-full h-full max-h-full flex flex-col gap-2 select-none border border-white/15 overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Floating Top-Right Close Button */}
@@ -302,7 +302,7 @@ export default function Gallery() {
                 ✕
               </button>
 
-              {/* Media Display Area (Expands Dynamically to Fill Vertical Room) */}
+              {/* Media Display Area (Fit to Window Size, No Overflow, No Crop) */}
               <div className="relative flex-1 min-h-0 w-full flex items-center justify-center overflow-hidden rounded-xl sm:rounded-2xl bg-black/95">
                 {/* Previous Media Arrow */}
                 <button
@@ -335,14 +335,15 @@ export default function Gallery() {
                     autoPlay
                     loop
                     playsInline
-                    className="w-full h-full object-contain"
+                    className="w-full h-full max-w-full max-h-full object-contain flex items-center justify-center"
                   />
                 ) : (
                   <img
                     src={currentItem.src}
                     alt={currentItem.title || 'Gallery visual'}
                     draggable={false}
-                    className="w-full h-full object-contain select-none"
+                    className="w-full h-full max-w-full max-h-full object-contain select-none m-auto"
+                    style={{ maxWidth: '100%', maxHeight: '100%' }}
                   />
                 )}
               </div>

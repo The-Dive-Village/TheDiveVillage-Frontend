@@ -103,7 +103,7 @@ export default function LazyVideo({
           onTimeUpdate={(e) => {
             if (e.currentTarget.currentTime > 0) setIsLoaded(true)
           }}
-          className={`w-full h-full object-cover transition-opacity duration-300 ${
+          className={`w-full h-full ${className.includes('object-contain') ? 'object-contain' : 'object-cover'} transition-opacity duration-300 ${
             isLoaded || !poster ? 'opacity-100 relative z-10' : 'opacity-0 relative z-0'
           }`}
           {...props}
@@ -113,7 +113,7 @@ export default function LazyVideo({
         <img
           src={poster}
           alt=""
-          className="absolute inset-0 w-full h-full object-cover z-0"
+          className={`absolute inset-0 w-full h-full ${className.includes('object-contain') ? 'object-contain' : 'object-cover'} z-0`}
         />
       )}
     </div>
