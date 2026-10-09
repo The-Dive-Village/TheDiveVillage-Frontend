@@ -35,7 +35,7 @@ export default function CustomCursor() {
       if (!target) return false
       const el = target instanceof Element ? target : target.parentElement
       if (!el || !(el instanceof Element)) return false
-      return !!el.closest('input, textarea, select, [contenteditable="true"], .normal-cursor, [data-normal-cursor], model-viewer')
+      return !!el.closest('input, textarea, select, [contenteditable="true"], .normal-cursor, [data-normal-cursor], model-viewer, .maplibregl-map, .maplibregl-canvas, .maplibregl-canvas-container, [data-dive-map]')
     }
 
     const checkInteractive = (target) => {

@@ -39,6 +39,7 @@ const Snorkeling = lazyWithRetry(() => import('../pages/Snorkeling'))
 const Surfing = lazyWithRetry(() => import('../pages/Surfing'))
 const Gallery = lazyWithRetry(() => import('../pages/Gallery'))
 const BookUs = lazyWithRetry(() => import('../pages/BookUs'))
+const DiveExplorer = lazyWithRetry(() => import('../pages/DiveExplorer'))
 const Shop = lazyWithRetry(() => import('../pages/Shop'))
 const ProductDetail = lazyWithRetry(() => import('../pages/ProductDetail'))
 const Cart = lazyWithRetry(() => import('../pages/Cart'))
@@ -97,6 +98,7 @@ export default function AppRouter() {
         <Route path="freediving" element={<PageLiquid><Surfing /></PageLiquid>} />
         <Route path="gallery" element={<PageLiquid><Gallery /></PageLiquid>} />
         <Route path="book-us" element={<PageLiquid><BookUs /></PageLiquid>} />
+        <Route path="dive-explorer" element={<PageLiquid><DiveExplorer /></PageLiquid>} />
         <Route path="shop" element={<PageLiquid><Shop /></PageLiquid>} />
         <Route path="shop/:id" element={<PageLiquid><ProductDetail /></PageLiquid>} />
         <Route path="cart" element={<PageLiquid><Cart /></PageLiquid>} />

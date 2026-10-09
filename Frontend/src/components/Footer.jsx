@@ -8,6 +8,7 @@ const QUICK = [
   { to: '/about', label: 'About Us' },
   { to: '/book-us', label: 'Book Us' },
   { to: '/services', label: 'Services' },
+  { to: '/dive-explorer', label: 'Dive Explorer' },
   { to: '/gallery', label: 'Gallery' },
   { to: '/shop', label: 'Shop' },
   { to: '/contact', label: 'Contact Us' },

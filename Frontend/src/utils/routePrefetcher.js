@@ -5,6 +5,7 @@
  */
 const routeLoaders = {
   '/book-us': () => import('../pages/BookUs'),
+  '/dive-explorer': () => import('../pages/DiveExplorer'),
   '/about': () => import('../pages/About'),
   '/services': () => import('../pages/Services'),
   '/our-services': () => import('../pages/Services'),

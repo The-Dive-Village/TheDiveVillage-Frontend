@@ -32,6 +32,7 @@ export default function CommandPalette({ isOpen, onClose }) {
     list.push(
       { id: 'page-home', type: 'page', title: 'Home Page', subtitle: 'Welcome to The Dive Village', url: '/', iconKey: 'home', category: 'Pages' },
       { id: 'page-book', type: 'page', title: 'Book A Dive / Course', subtitle: 'Online Dive Booking Wizard', url: '/book-us', iconKey: 'globe', category: 'Pages' },
+      { id: 'page-dive-explorer', type: 'page', title: 'Dive Explorer (2D Map)', subtitle: 'Interactive worldwide dive sites & reefs', url: '/dive-explorer', iconKey: 'globe', category: 'Pages' },
       { id: 'page-services', type: 'page', title: 'Services & Expeditions', subtitle: 'Scuba Diving, Freediving, Surfing', url: '/services', iconKey: 'services', category: 'Pages' },
       { id: 'page-shop', type: 'page', title: 'Shop & Merchandise', subtitle: 'Apparel, Dry Bags, Rashguards & Gear', url: '/shop', iconKey: 'shop', category: 'Pages' },
       { id: 'page-gallery', type: 'page', title: 'Visual Gallery & Lightbox', subtitle: 'Underwater wildlife photos & videos', url: '/gallery', iconKey: 'gallery', category: 'Pages' },

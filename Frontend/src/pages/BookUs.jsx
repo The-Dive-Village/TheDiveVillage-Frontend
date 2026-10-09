@@ -26,6 +26,7 @@ import PhoneInput from 'react-phone-number-input'
 import turtleAnnaVideo from '../assets/Media/Background/Turtle.mp4'
 import compiledNightDiveVideo from '../assets/Media/Background/Night Dive.mp4'
 import useNightDive from '../hooks/useNightDive'
+import DiveExplorerMap from '../components/DiveExplorerMap'
 
 // Curated popular dive hubs for quick selection
 const POPULAR_DESTINATIONS = {
@@ -48,8 +49,11 @@ export default function BookUs() {
   const isNightDive = useNightDive()
   const [searchParams] = useSearchParams()
   const initialProgram = searchParams.get('program') || ''
+  const initialCountry = searchParams.get('country') || ''
+  const initialSite = searchParams.get('site') || ''
 
   const [currentStep, setCurrentStep] = useState(1)
+  const [activeMobileTab, setActiveMobileTab] = useState('form')
 
   // Today, 4-day preparation cooldown minimum date, & 1 year max date bounds
   const todayStr = useMemo(() => new Date().toISOString().split('T')[0], [])
@@ -68,10 +72,10 @@ export default function BookUs() {
   }, [])
 
   // Step 1: Country, Location, Experience, Date & Group Size
-  const [country, setCountry] = useState('')
+  const [country, setCountry] = useState(initialCountry)
   const [selectedLocation, setSelectedLocation] = useState(null)
-  const [locationId, setLocationId] = useState('')
-  const [location, setLocation] = useState('')
+  const [locationId, setLocationId] = useState(initialSite)
+  const [location, setLocation] = useState(initialSite)
   const [experience, setExperience] = useState('')
   const [selectedAddOn, setSelectedAddOn] = useState('')
   const [date, setDate] = useState('')
@@ -80,6 +84,36 @@ export default function BookUs() {
   const [groupSize, setGroupSize] = useState(1)
   const [isCalendarOpen, setIsCalendarOpen] = useState(false)
   const datePickerBtnRef = useRef(null)
+
+  const handleMapSelectCountry = useCallback((newCountry) => {
+    if (newCountry) {
+      setCountry(newCountry)
+      setSelectedLocation(null)
+      setLocation('')
+      setLocationId('')
+    } else {
+      setCountry('')
+      setSelectedLocation(null)
+      setLocation('')
+      setLocationId('')
+    }
+    setStepError('')
+    triggerHaptic(5)
+  }, [])
+
+  const handleMapSelectSite = useCallback((site) => {
+    if (!site) return
+    if (site.country && site.country !== 'International Waters') {
+      setCountry(site.country)
+    }
+    if (site.siteName) {
+      setLocation(site.siteName)
+      setLocationId(site.id || site.siteName)
+    }
+    setStepError('')
+    triggerSuccessHaptic()
+    setActiveMobileTab('form')
+  }, [])
 
   const formatDateToDDMMYYYY = (dateStr) => {
     if (!dateStr) return ''
@@ -611,10 +645,42 @@ export default function BookUs() {
         </div>
       </section>
 
-      {/* 2. MAIN 4-STEP BOOKING WIZARD */}
-      <div className="mx-auto max-w-4xl px-3 xs:px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-28 sm:pb-40 w-full min-w-0 relative z-20">
-        {/* Main 4-Step Layout */}
-        <div className="flex flex-col w-full min-w-0 mx-auto">
+      {/* 2. MAIN 4-STEP BOOKING WIZARD & 2D DIVE EXPLORER MAP */}
+      <div className="mx-auto max-w-[1600px] px-3 xs:px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-28 sm:pb-40 w-full min-w-0 relative z-20">
+        {/* Mobile View Switcher Tabs (Visible on < lg screens) */}
+        <div className="lg:hidden flex items-center justify-center mb-5">
+          <div className="inline-flex p-1 rounded-2xl bg-white border border-navy/15 shadow-sm">
+            <button
+              type="button"
+              onClick={() => setActiveMobileTab('form')}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                activeMobileTab === 'form'
+                  ? 'bg-navy text-white shadow-xs'
+                  : 'text-navy hover:text-accent'
+              }`}
+            >
+              <span>📋 Booking Form</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveMobileTab('map')}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                activeMobileTab === 'map'
+                  ? 'bg-navy text-white shadow-xs'
+                  : 'text-navy hover:text-accent'
+              }`}
+            >
+              <span>🗺️ Dive Explorer Map</span>
+            </button>
+          </div>
+        </div>
+
+        {/* 2-Column Responsive Grid Layout (Desktop: Form + Map side-by-side) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 xl:gap-10 items-start">
+          
+          {/* Column 1: 4-Step Booking Wizard */}
+          <div className={`lg:col-span-6 xl:col-span-5 w-full min-w-0 ${activeMobileTab === 'map' ? 'hidden lg:block' : 'block'}`}>
+            <div className="flex flex-col w-full min-w-0">
 
             {/* Step Indicator Bar - Mobile Compact Version */}
             {(() => {
@@ -1382,7 +1448,25 @@ export default function BookUs() {
             </form>
           </div>
         </div>
+
+        {/* Column 2: Interactive 2D Worldwide Dive Map (Beside Booking Form) */}
+        <div className={`lg:col-span-6 xl:col-span-7 w-full min-w-0 lg:sticky lg:top-28 self-start ${activeMobileTab === 'form' ? 'hidden lg:block' : 'block'}`}>
+          <DiveExplorerMap
+            onSelectSite={handleMapSelectSite}
+            onBookSite={handleMapSelectSite}
+            onSelectCountry={handleMapSelectCountry}
+            selectedCountry={country}
+            selectedSite={location}
+            selectedSiteId={locationId}
+            title="Dive Explorer"
+            subtitle="Explore 3,500+ worldwide dive sites on this interactive 2D map. Click any site to auto-fill your booking location!"
+            showHeading={true}
+          />
+        </div>
+
       </div>
+    </div>
+  </div>
   )
 }
 
