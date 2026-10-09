@@ -1,6 +1,6 @@
-export default function ThemeToggle({ isNightDive }) {
+export default function ThemeToggle({ isNightDive, className = '' }) {
   return (
-    <span className="switch hidden lg:inline-block !m-0 pointer-events-none" style={{ fontSize: '14px' }}>
+    <span className={`switch !m-0 pointer-events-none inline-block ${className}`} style={{ fontSize: '14px' }}>
       <input 
         className="switch__input pointer-events-none" 
         type="checkbox" 

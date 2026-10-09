@@ -72,9 +72,14 @@
 
   /* Prevent iOS Safari from auto-zooming on input focus & ensure comfortable tap targets */
   @media screen and (max-width: 768px) {
-    input, select, textarea {
+    input, select:not(.mobile-sort-select), textarea {
       font-size: 16px !important;
     }
+  }
+
+  .mobile-sort-select,
+  .mobile-sort-select option {
+    font-size: 11px !important;
   }
 
   /* Fast responsive touch action for interactive elements */

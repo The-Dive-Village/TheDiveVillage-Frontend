@@ -87,8 +87,8 @@ export default function LazyVideo({
       {isInView && src && (
         <video
           ref={videoRef}
-          src={src}
-          poster={poster}
+          src={src || null}
+          poster={poster || null}
           autoPlay={autoPlay}
           loop={loop}
           muted={muted}
@@ -111,7 +111,7 @@ export default function LazyVideo({
       )}
       {!isLoaded && poster && (
         <img
-          src={poster}
+          src={poster || null}
           alt=""
           className={`absolute inset-0 w-full h-full ${className.includes('object-contain') ? 'object-contain' : 'object-cover'} z-0`}
         />

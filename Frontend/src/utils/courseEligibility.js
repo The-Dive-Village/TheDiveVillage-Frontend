@@ -1525,6 +1525,7 @@ export function validateParticipantBooking(participant, experience = 'Scuba Divi
     }
   }
 
+  const courseSl = course.slNumber !== undefined && course.slNumber !== null ? course.slNumber : null
   const courseParsed = parseProgressionLevel(course.slNumber)
   const courseBaseLevel = courseParsed ? courseParsed.baseLevel : courseSl
   const isInitialScuba = normExp === 'scuba' && !hasCert && (courseBaseLevel === 0 || courseBaseLevel === 1)

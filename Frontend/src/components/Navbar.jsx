@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import { Link, NavLink, useLocation } from 'react-router'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import Logo from './Logo'
+import LogoImg from '../assets/Logo.png'
 import ThemeToggle from './ThemeToggle'
 import ViberQRModal from './ViberQRModal'
 import { useCart } from '../hooks/useCart'
@@ -64,8 +65,43 @@ export default function Navbar() {
   const btnText = 'text-white'
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-[9999] w-full pointer-events-none flex flex-col items-center pt-0 px-2 sm:px-4 lg:px-8">
-      <div className={`pointer-events-auto mx-auto flex justify-between sm:grid sm:grid-cols-[1fr_auto_1fr] h-[52px] sm:h-[64px] lg:h-[68px] w-full max-w-7xl 2xl:max-w-[1700px] items-center rounded-b-2xl sm:rounded-b-3xl ${containerGlass} px-3 xs:px-4 sm:px-8 lg:px-12 transition-all duration-300`}>
+    <header className="fixed top-0 left-0 right-0 z-[9999] w-full pointer-events-none flex flex-col items-center pt-2.5 sm:pt-0 px-3 xs:px-4 sm:px-4 lg:px-8">
+      {/* MOBILE TOOLBAR (sm:hidden - Exact match to design) */}
+      <div className={`sm:hidden pointer-events-auto mx-auto flex h-[54px] w-full items-center justify-between rounded-2xl ${containerGlass} px-3 transition-all duration-300`}>
+        {/* Left: Hamburger Menu Button */}
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          className="flex h-9 w-9 items-center justify-center text-white transition active:scale-95 cursor-pointer"
+          aria-label="Toggle menu"
+          aria-expanded={open}
+        >
+          {open ? <CloseIcon /> : <MenuIcon />}
+        </button>
+
+        {/* Center: Brand Logo Image Only (Mobile Only) */}
+        <Link to="/" className="flex items-center justify-center group focus:outline-none" aria-label="The Dive Village">
+          <img
+            src={LogoImg}
+            alt="The Dive Village"
+            className="h-7 xs:h-8 w-auto object-contain invert brightness-0 transition duration-300 group-hover:scale-105"
+          />
+        </Link>
+
+        {/* Right: Neomorphism Night Dive Toggle (Mobile Only - no text) */}
+        <button
+          type="button"
+          onClick={toggleNightDive}
+          className="flex items-center justify-center cursor-pointer transition active:scale-95 p-1 shrink-0 rounded-full focus:outline-none"
+          aria-label="Toggle Night Dive mode"
+          title={isNightDive ? 'Day Dive' : 'Night Dive'}
+        >
+          <ThemeToggle isNightDive={isNightDive} className="inline-block" />
+        </button>
+      </div>
+
+      {/* DESKTOP TOOLBAR (hidden sm:grid - 100% Preserved) */}
+      <div className={`hidden sm:grid pointer-events-auto mx-auto sm:grid-cols-[1fr_auto_1fr] h-[64px] lg:h-[68px] w-full max-w-7xl 2xl:max-w-[1700px] items-center rounded-b-2xl sm:rounded-b-3xl ${containerGlass} sm:px-8 lg:px-12 transition-all duration-300`}>
 
         {/* Left Side: Home, Book Us, Shop (desktop) */}
         <div className="flex items-center justify-start gap-4 sm:gap-4 lg:gap-8 pl-1 sm:pl-2">
@@ -115,7 +151,7 @@ export default function Navbar() {
           </NavLink>
         </div>
 
-        {/* Middle: Logo (Desktop Only - hidden on mobile) */}
+        {/* Middle: Logo (Desktop Only) */}
         <div className="hidden sm:flex justify-center items-center px-1.5 sm:px-3 shrink-0">
           <Logo light={true} compact={true} className="[&>img]:h-8 xs:[&>img]:h-9 sm:[&>img]:h-11 lg:[&>img]:h-13" />
         </div>
@@ -140,7 +176,7 @@ export default function Navbar() {
             className={`hidden sm:flex h-8.5 w-8.5 sm:h-10 sm:w-auto items-center justify-center gap-1.5 rounded-xl border ${borderColor} ${btnBg} backdrop-blur-md px-2 sm:px-3 ${btnText} transition duration-300 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] shrink-0 cursor-pointer shadow-sm active:scale-95`}
             aria-label="Toggle Night Dive mode"
           >
-            <ThemeToggle isNightDive={isNightDive} />
+            <ThemeToggle isNightDive={isNightDive} className="hidden lg:inline-block" />
             <span className="hidden sm:inline text-xs sm:text-sm font-bold tracking-wide whitespace-nowrap select-none">
               {isNightDive ? 'Day Dive' : 'Night Dive'}
             </span>
@@ -259,9 +295,21 @@ export default function Navbar() {
                   }}
                   className="rounded-xl px-4 py-3 font-heading text-[15px] font-bold transition duration-hover text-left text-white hover:bg-white/10 cursor-pointer flex items-center gap-2"
                 >
-                  <ThemeToggle isNightDive={isNightDive} />
+                  <ThemeToggle isNightDive={isNightDive} className="inline-block" />
                   <span>{isNightDive ? 'Switch to Day Dive' : 'Switch to Night Dive'}</span>
                 </button>
+                <Link
+                  to={isAuthenticated ? '/dashboard/profile' : '/login'}
+                  onClick={() => setOpen(false)}
+                  className="rounded-xl px-4 py-3 font-heading text-[15px] font-bold transition duration-hover text-left flex items-center gap-2.5 text-white hover:bg-white/10"
+                >
+                  {user?.photoURL ? (
+                    <img src={user.photoURL} alt="Profile" className="h-5 w-5 rounded-full object-cover shrink-0" />
+                  ) : (
+                    <UserIcon />
+                  )}
+                  <span>{isAuthenticated ? (user?.displayName || 'My Profile') : 'Login / Register'}</span>
+                </Link>
               </nav>
             </div>
           </motion.div>
@@ -381,10 +429,10 @@ function CallModal({ isOpen, onClose, onOpenViberQr }) {
       )
     },
     {
-      id: 'messenger',
-      title: 'Facebook Messenger',
-      subtitle: 'Message us on Facebook',
-      href: 'https://m.me/IamSanjeevbajaj',
+      id: 'facebook',
+      title: 'Facebook',
+      subtitle: 'Connect on Facebook',
+      href: 'https://www.facebook.com/profile.php?id=61595366960524',
       icon: (
         <svg className="w-5 h-5 text-navy" fill="currentColor" viewBox="0 0 24 24">
           <path d="M12 0C5.373 0 0 4.974 0 11.111c0 3.497 1.745 6.616 4.472 8.652V24l4.074-2.238c1.099.304 2.262.47 3.454.47 6.627 0 12-4.975 12-11.121C24 4.974 18.627 0 12 0zm1.191 14.963l-3.055-3.26-5.963 3.26 6.559-6.963 3.13 3.259 5.889-3.259-6.56 6.963z" />

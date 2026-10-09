@@ -77,7 +77,7 @@ function DiverAnimation({ src, className }) {
     <>
       <video
         ref={videoRef}
-        src={src}
+        src={src || null}
         autoPlay
         loop
         muted

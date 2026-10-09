@@ -61,7 +61,7 @@ export default function ServiceDetail() {
       />
       
       {/* 1. HERO BANNER */}
-      <div className="relative w-full min-h-[60vh] sm:min-h-[75vh] bg-navy overflow-hidden flex flex-col justify-end pt-32 pb-24 sm:pb-36">
+      <div className="relative w-full min-h-[60vh] sm:min-h-[75vh] bg-navy overflow-hidden flex flex-col justify-end pt-32 pb-20 sm:pb-32">
         {activeHeroVideo ? (
           <LazyVideo
             key={activeHeroVideo}
@@ -81,19 +81,22 @@ export default function ServiceDetail() {
             muted
             playsInline
             preload="auto"
-            className="absolute inset-0 w-full h-full object-cover opacity-100 transition-opacity duration-500"
+            className="absolute inset-0 w-full h-full object-cover opacity-75 md:opacity-75 transition-opacity duration-500"
           />
         ) : (
           <SafeImage
             key={activeHeroImage}
             src={activeHeroImage}
             alt={activeHeroTitle}
-            className="absolute inset-0 w-full h-full object-cover opacity-100"
+            className="absolute inset-0 w-full h-full object-cover opacity-75 md:opacity-75 transition-opacity duration-500"
           />
         )}
         
-        {/* Short clean bottom gradient overlay right at the edge */}
-        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#FAFAFA] via-[#FAFAFA]/70 to-transparent pointer-events-none z-10" />
+        {/* Top gradient overlay for navbar contrast */}
+        <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-navy/90 via-navy/50 to-transparent pointer-events-none z-10" />
+        
+        {/* Bottom smooth fade into page background */}
+        <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-[#FAFAFA] via-[#FAFAFA]/80 via-navy/30 to-transparent pointer-events-none z-10" />
         
         <div className="relative z-20 w-full px-6 sm:px-12 lg:px-24 max-w-7xl mx-auto">
           <motion.div

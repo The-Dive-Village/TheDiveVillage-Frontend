@@ -569,9 +569,9 @@ export default function VideoSphereBackground() {
         p.then(() => {
           playAttemptInProgress = false
           removeUnlockListeners()
-        }).catch((err) => {
+        }).catch(() => {
+          // Autoplay blocked by browser policy; silently wait for user interaction to unlock
           playAttemptInProgress = false
-          console.debug('Autoplay unlock retry on next interaction:', err)
         })
       } else {
         playAttemptInProgress = false
@@ -583,34 +583,18 @@ export default function VideoSphereBackground() {
     }
 
     if (!isMuted) {
-      // 1. Immediate trigger on load
+      // 1. Initial attempt
       startAudio()
 
-      // 2. Focused unlock listeners
+      // 2. Focused unlock listeners on user interaction
       validUnlockEvents.forEach((evt) => {
         window.addEventListener(evt, handleFirstInteraction, { capture: true, passive: true })
       })
-
-      // 3. Continuous aggressive polling to bypass restrictions as soon as possible
-      let pollingTimer = setInterval(() => {
-        if (isCleanedUp || isMutedRef.current) {
-          clearInterval(pollingTimer)
-          return
-        }
-        const el = audioRef.current
-        if (el && el.paused) {
-          startAudio()
-        } else if (el && !el.paused) {
-          clearInterval(pollingTimer)
-          removeUnlockListeners()
-        }
-      }, 500)
 
       audio.addEventListener('canplaythrough', startAudio, { once: true })
 
       return () => {
         isCleanedUp = true
-        clearInterval(pollingTimer)
         audio.removeEventListener('canplaythrough', startAudio)
         removeUnlockListeners()
       }

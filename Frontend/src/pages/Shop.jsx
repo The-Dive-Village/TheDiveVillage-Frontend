@@ -20,8 +20,9 @@ const CATEGORIES = [
   { key: 'all', label: 'All Merchandise' },
   { key: 'Tops', label: 'Tops' },
   { key: 'Skin Wear', label: 'Skin Wear' },
+  { key: 'Accessories', label: 'Accessories' },
+  { key: 'Gear', label: 'Gear' },
   { key: 'Bottoms', label: 'Bottoms' },
-  { key: 'Accessories', label: 'Accessories & Bags' },
 ]
 
 export default function Shop() {
@@ -32,6 +33,8 @@ export default function Shop() {
   const [searchQuery, setSearchQuery] = useState('')
   const deferredSearchQuery = useDeferredValue(searchQuery)
   const [sortBy, setSortBy] = useState('featured')
+  const [priceFilter, setPriceFilter] = useState('all')
+  const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false)
   const [addedToast, setAddedToast] = useState(null)
   const { addItem, itemCount } = useCart()
   const { count: wishlistCount, toggle: toggleWishlist, isWishlisted } = useWishlist()
@@ -98,24 +101,35 @@ export default function Shop() {
     if (!Array.isArray(productsList)) return []
     return productsList.filter((product) => {
       if (!product) return false
-      const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory
+      const matchesCategory =
+        selectedCategory === 'all' ||
+        product.category?.toLowerCase() === selectedCategory.toLowerCase() ||
+        (selectedCategory === 'Gear' && (product.category === 'Accessories' || product.category === 'Wetsuits'))
+
       const titleOrName = (product.title || product.name || '')
       const desc = (product.description || '')
       const query = (deferredSearchQuery || '').toLowerCase()
       const matchesSearch =
         titleOrName.toLowerCase().includes(query) ||
         desc.toLowerCase().includes(query)
-      return matchesCategory && matchesSearch
+
+      let matchesPrice = true
+      const numPrice = Number(product.price) || 0
+      if (priceFilter === 'under-2500') matchesPrice = numPrice < 2500
+      else if (priceFilter === '2500-5000') matchesPrice = numPrice >= 2500 && numPrice <= 5000
+      else if (priceFilter === 'above-5000') matchesPrice = numPrice > 5000
+
+      return matchesCategory && matchesSearch && matchesPrice
     }).sort((a, b) => {
       if (sortBy === 'price-low') return (Number(a?.price) || 0) - (Number(b?.price) || 0)
       if (sortBy === 'price-high') return (Number(b?.price) || 0) - (Number(a?.price) || 0)
       if (sortBy === 'rating') return (Number(b?.rating) || 5) - (Number(a?.rating) || 5)
       return 0
     })
-  }, [productsList, selectedCategory, deferredSearchQuery, sortBy])
+  }, [productsList, selectedCategory, deferredSearchQuery, sortBy, priceFilter])
 
   return (
-    <div className="bg-[#FAFAFA] min-h-screen text-navy font-body pt-24 sm:pt-32 pb-24 overflow-x-hidden">
+    <div className="bg-[#FAFAFA] min-h-screen text-navy font-body pt-20 md:pt-32 pb-24 overflow-x-hidden">
       <SEOHead
         title="Dive Shop & Sustainable Marine Apparel | The Dive Village"
         description="Shop high-performance ocean gear, eco-friendly dive apparel, dive suits, and diving accessories. Designed for comfort, durability, and marine conservation."
@@ -139,8 +153,8 @@ export default function Shop() {
         )}
       </AnimatePresence>
 
-      {/* 1. HERO BANNER */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-10 sm:mb-12">
+      {/* 1. HERO BANNER (Desktop Only) */}
+      <section className="hidden md:block mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-10 sm:mb-12">
         <div className="relative rounded-[24px] sm:rounded-[36px] lg:rounded-[40px] overflow-hidden bg-[#001428] shadow-lift border border-white/10 w-full h-[190px] xs:h-[230px] sm:h-[280px] lg:h-[450px] flex items-center justify-end">
           <img
             src={bannerImg}
@@ -172,8 +186,134 @@ export default function Shop() {
         </div>
       </section>
 
-      {/* 2. STORE CONTROLS TOOLBAR IN BRAND BLUE */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-8">
+      {/* 2. MOBILE STORE CONTROLS (md:hidden - Matches Reference UI) */}
+      <section className="md:hidden px-3.5 mb-3">
+        {/* Search Bar */}
+        <div className="relative w-full">
+          <input
+            type="text"
+            placeholder="Search rash guards, suits, collectors..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full rounded-2xl border border-slate-300/80 bg-white pl-11 pr-9 py-2.5 xs:py-3 text-[14px] text-slate-800 placeholder:text-slate-400 focus:border-[#FFCD00] focus:outline-none shadow-sm transition"
+          />
+          <svg className="absolute left-3.5 top-3 xs:top-3.5 h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          {searchQuery && (
+            <button onClick={() => setSearchQuery('')} className="absolute right-3.5 top-3 xs:top-3.5 text-xs text-slate-400 hover:text-slate-600 font-bold cursor-pointer">
+              ✕
+            </button>
+          )}
+        </div>
+
+        {/* Row with Sort Box, Wishlist (Heart only), and Cart on the same line */}
+        <div className="flex items-center gap-2 xs:gap-2.5 mt-3">
+          {/* Sort Dropdown Box */}
+          <div className="relative flex-1 min-w-0">
+            <select
+              value={sortBy}
+              onChange={(e) => {
+                triggerHaptic(8)
+                setSortBy(e.target.value)
+              }}
+              style={{ fontSize: '11px' }}
+              className="mobile-sort-select w-full appearance-none rounded-2xl border border-slate-300/80 bg-white pl-3 pr-7 h-[42px] font-semibold text-slate-800 shadow-sm focus:outline-none cursor-pointer truncate"
+            >
+              <option value="featured" style={{ fontSize: '11px' }}>Featured / Newest</option>
+              <option value="price-low" style={{ fontSize: '11px' }}>Price: Low to High</option>
+              <option value="price-high" style={{ fontSize: '11px' }}>Price: High to Low</option>
+              <option value="rating" style={{ fontSize: '11px' }}>Highest Rated</option>
+            </select>
+            <svg className="pointer-events-none absolute right-2.5 top-3.5 h-4 w-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
+
+          {/* Wishlist Button: Heart Icon Only */}
+          <Link
+            to="/wishlist"
+            aria-label="Wishlist"
+            title="Wishlist"
+            className="relative h-[42px] w-[42px] rounded-2xl bg-white border border-slate-300/80 flex items-center justify-center text-slate-800 shadow-sm active:scale-95 transition shrink-0"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill={wishlistCount > 0 ? '#FFCD00' : 'none'} stroke={wishlistCount > 0 ? '#FFCD00' : 'currentColor'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+            </svg>
+            {wishlistCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-[#FFCD00] text-[#001e3d] text-[10px] font-extrabold min-w-[18px] h-[18px] px-1 rounded-full flex items-center justify-center shadow-sm">
+                {wishlistCount}
+              </span>
+            )}
+          </Link>
+
+          {/* Cart Button: Symbol + "Cart" */}
+          <Link
+            to="/cart"
+            className="h-[42px] px-3.5 xs:px-4 rounded-2xl bg-[#FFCD00] hover:bg-[#FFD700] flex items-center justify-center gap-1.5 text-slate-900 font-bold text-xs xs:text-sm shadow-sm active:scale-95 transition shrink-0"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <path d="M16 10a4 4 0 0 1-8 0" />
+            </svg>
+            <span>Cart</span>
+            {itemCount > 0 && (
+              <span className="bg-[#001e3d] text-[#FFCD00] text-[10px] font-extrabold px-1.5 py-0.5 rounded-full ml-0.5">
+                {itemCount}
+              </span>
+            )}
+          </Link>
+        </div>
+
+        {/* Category Pills Horizontal Scroll */}
+        <div className="flex gap-2 overflow-x-auto pb-1 mt-3.5 scrollbar-none items-center">
+          {CATEGORIES.map((cat) => (
+            <button
+              key={cat.key}
+              onClick={() => {
+                triggerHaptic(8)
+                setSelectedCategory(cat.key)
+              }}
+              className={`rounded-full px-4 py-2 text-xs font-bold whitespace-nowrap transition-all duration-200 cursor-pointer ${
+                selectedCategory === cat.key
+                  ? 'bg-[#FFCD00] text-slate-900 shadow-sm'
+                  : 'bg-white text-slate-700 border border-slate-300/80 hover:bg-slate-50'
+              }`}
+            >
+              {cat.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Product Count & Filter Button */}
+        <div className="flex items-center justify-between mt-3.5 mb-1 px-0.5">
+          <span className="text-sm font-semibold text-slate-600">
+            Showing {filteredProducts.length} product{filteredProducts.length !== 1 ? 's' : ''}
+          </span>
+          <button
+            type="button"
+            onClick={() => setIsFilterDrawerOpen(true)}
+            className="rounded-xl border border-slate-300/80 bg-white px-3.5 py-1.5 flex items-center gap-1.5 text-xs font-bold text-slate-800 shadow-sm active:scale-95 transition cursor-pointer"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="4" y1="21" x2="4" y2="14" />
+              <line x1="4" y1="10" x2="4" y2="3" />
+              <line x1="12" y1="21" x2="12" y2="12" />
+              <line x1="12" y1="8" x2="12" y2="3" />
+              <line x1="20" y1="21" x2="20" y2="16" />
+              <line x1="20" y1="12" x2="20" y2="3" />
+              <line x1="1" y1="14" x2="7" y2="14" />
+              <line x1="9" y1="8" x2="15" y2="8" />
+              <line x1="17" y1="16" x2="23" y2="16" />
+            </svg>
+            <span>Filter</span>
+          </button>
+        </div>
+      </section>
+
+      {/* 2. DESKTOP STORE CONTROLS TOOLBAR IN BRAND BLUE (hidden md:block - 100% Preserved) */}
+      <section className="hidden md:block mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-8">
         <div className="rounded-[28px] bg-white md:bg-[#003865] p-4 sm:p-6 shadow-card md:shadow-lift border border-navy/10 md:border-white/15 text-navy md:text-white flex flex-col md:flex-row gap-4 items-center justify-between backdrop-blur-xl transition-colors duration-300">
           <div className="relative w-full md:w-96">
             <input
@@ -257,8 +397,8 @@ export default function Shop() {
       </section>
 
       {/* 3. PRODUCT LISTINGS */}
-      <section className="mx-auto max-w-7xl px-3.5 sm:px-6 lg:px-8 py-8">
-        <div className="mb-6 flex justify-between items-center text-xs font-bold text-navy/60">
+      <section className="mx-auto max-w-7xl px-3 sm:px-6 lg:px-8 py-2 md:py-8">
+        <div className="hidden md:flex mb-6 justify-between items-center text-xs font-bold text-navy/60">
           <span>Showing {filteredProducts.length} product{filteredProducts.length !== 1 && 's'}</span>
           {selectedCategory !== 'all' && (
             <button onClick={() => { setSelectedCategory('all'); setSearchQuery('') }} className="text-accent hover:underline">Clear filters</button>
@@ -293,7 +433,129 @@ export default function Shop() {
       {/* 4. GROUP SHOWCASE & COMMUNITY GALLERY */}
       <GroupGallerySection />
 
+      {/* 5. MOBILE FILTER DRAWER MODAL (md:hidden) */}
+      <AnimatePresence>
+        {isFilterDrawerOpen && (
+          <div className="fixed inset-0 z-[9999] flex items-end justify-center">
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsFilterDrawerOpen(false)}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm cursor-pointer"
+            />
 
+            {/* Bottom Sheet */}
+            <motion.div
+              initial={{ y: '100%' }}
+              animate={{ y: 0 }}
+              exit={{ y: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              className="relative z-10 w-full max-w-lg rounded-t-3xl bg-white p-5 text-slate-800 shadow-2xl max-h-[85vh] overflow-y-auto"
+            >
+              {/* Handle */}
+              <div className="w-12 h-1 bg-slate-300 rounded-full mx-auto mb-4" />
+
+              <div className="flex items-center justify-between pb-3 border-b border-slate-200">
+                <div className="flex items-center gap-2">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="4" y1="21" x2="4" y2="14" /><line x1="4" y1="10" x2="4" y2="3" />
+                    <line x1="12" y1="21" x2="12" y2="12" /><line x1="12" y1="8" x2="12" y2="3" />
+                    <line x1="20" y1="21" x2="20" y2="16" /><line x1="20" y1="12" x2="20" y2="3" />
+                    <line x1="1" y1="14" x2="7" y2="14" /><line x1="9" y1="8" x2="15" y2="8" /><line x1="17" y1="16" x2="23" y2="16" />
+                  </svg>
+                  <h3 className="font-heading text-lg font-bold">Filter Products</h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsFilterDrawerOpen(false)}
+                  className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-bold hover:bg-slate-200 cursor-pointer"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* Categories */}
+              <div className="mt-4">
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-2">Category</span>
+                <div className="flex flex-wrap gap-2">
+                  {CATEGORIES.map((cat) => (
+                    <button
+                      key={cat.key}
+                      type="button"
+                      onClick={() => {
+                        triggerHaptic(8)
+                        setSelectedCategory(cat.key)
+                      }}
+                      className={`rounded-full px-3.5 py-1.5 text-xs font-bold transition cursor-pointer ${
+                        selectedCategory === cat.key
+                          ? 'bg-[#FFCD00] text-black shadow-sm'
+                          : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                      }`}
+                    >
+                      {cat.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Sort By */}
+              <div className="mt-5">
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-2">Sort By</span>
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    { val: 'featured', label: 'Featured / Newest' },
+                    { val: 'price-low', label: 'Price: Low to High' },
+                    { val: 'price-high', label: 'Price: High to Low' },
+                    { val: 'rating', label: 'Highest Rated' },
+                  ].map((opt) => (
+                    <button
+                      key={opt.val}
+                      type="button"
+                      onClick={() => {
+                        triggerHaptic(8)
+                        setSortBy(opt.val)
+                      }}
+                      className={`rounded-xl px-3 py-2 text-xs font-semibold text-left border transition cursor-pointer ${
+                        sortBy === opt.val
+                          ? 'border-[#FFCD00] bg-[#FFCD00]/20 text-slate-900 font-bold'
+                          : 'border-slate-200 bg-white text-slate-700'
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+
+              {/* Footer Buttons */}
+              <div className="mt-6 pt-4 border-t border-slate-200 grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedCategory('all')
+                    setPriceFilter('all')
+                    setSortBy('featured')
+                    setSearchQuery('')
+                  }}
+                  className="rounded-xl border border-slate-300 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 cursor-pointer"
+                >
+                  Reset All
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsFilterDrawerOpen(false)}
+                  className="rounded-xl bg-[#FFCD00] py-2.5 text-xs font-bold text-black shadow-sm hover:bg-[#FFD700] cursor-pointer"
+                >
+                  Apply ({filteredProducts.length})
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
@@ -464,6 +726,7 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
   const show3D = isHovered && hasHovered
 
   return (
+<<<<<<< Updated upstream
     <div
       onClick={() => navigate(`/shop/${product.id}`)}
       onMouseEnter={() => {
@@ -522,45 +785,172 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
                 </model-viewer>
               </div>
             )}
+=======
+    <>
+      {/* MOBILE PRODUCT CARD (md:hidden - Matches user reference screenshot) */}
+      <div
+        onClick={() => navigate(`/shop/${product.id}`)}
+        className="md:hidden group rounded-2xl bg-white border border-slate-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] p-2.5 xs:p-3 flex flex-col justify-between cursor-pointer relative transition active:scale-[0.99]"
+      >
+        {/* Wishlist Button (Top Right) */}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation()
+            onToggleWishlist(e)
+          }}
+          className="absolute top-2.5 right-2.5 z-10 w-7.5 h-7.5 xs:w-8 xs:h-8 rounded-full bg-slate-50/90 border border-slate-200/90 text-slate-700 flex items-center justify-center shadow-sm transition active:scale-90 hover:text-red-500 cursor-pointer"
+          aria-label="Wishlist"
+          title={isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}
+        >
+          <svg
+            className="w-3.5 h-3.5 xs:w-4 xs:h-4"
+            viewBox="0 0 24 24"
+            fill={isWishlisted ? '#FFCD00' : 'none'}
+            stroke={isWishlisted ? '#FFCD00' : 'currentColor'}
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+          </svg>
+        </button>
+
+        {/* Product Image */}
+        <div className="w-full aspect-[4/5] flex items-center justify-center p-2 mb-1 bg-white">
+          <img
+            src={product.image}
+            alt={product.title || product.name}
+            className="max-h-full max-w-full object-contain mx-auto"
+            loading="lazy"
+          />
+        </div>
+
+        {/* Info */}
+        <div className="flex flex-col flex-1 justify-between mb-2.5">
+          <div>
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 block mb-0.5">
+              {product.category || 'MERCH'}
+            </span>
+            <h3 className="font-bold text-slate-900 text-xs xs:text-[13px] leading-snug line-clamp-2 min-h-[32px]">
+              {product.title || product.name}
+            </h3>
+>>>>>>> Stashed changes
           </div>
         </div>
 
-        <div className="mb-2 sm:mb-4">
-          <span className="text-[9px] sm:text-[11px] font-bold uppercase tracking-wider text-accent block mb-0.5 sm:mb-1">{product.category}</span>
-          <h3 className="font-heading text-xs xs:text-sm sm:text-xl font-bold text-navy leading-tight sm:leading-snug group-hover:text-accent transition line-clamp-2 sm:line-clamp-none">{product.title}</h3>
-          <p className="text-[10px] sm:text-xs text-navy/70 line-clamp-1 sm:line-clamp-2 mt-1 sm:mt-2 leading-relaxed hidden xs:block">{product.description}</p>
-        </div>
+        {/* Add to Cart Yellow Button */}
+        <button
+          type="button"
+          onClick={(e) => onQuickAdd(product, e)}
+          className="w-full bg-[#FFCD00] hover:bg-[#FFD700] text-black font-bold py-2 xs:py-2.5 rounded-xl flex items-center justify-center gap-1.5 text-xs xs:text-sm active:scale-95 transition shadow-sm cursor-pointer"
+        >
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <path d="M16 10a4 4 0 0 1-8 0" />
+          </svg>
+          <span>Add to Cart</span>
+        </button>
       </div>
 
-      <div className="pt-2 sm:pt-4 border-t border-navy/10 flex items-center justify-between gap-1.5 sm:gap-3">
-        <span className="text-[9px] sm:text-[10px] text-emerald-600 font-bold hidden sm:inline">Inquire within</span>
-        <div className="flex items-center gap-1.5 sm:gap-2 ml-auto sm:ml-0">
-          <button
-            type="button"
-            onClick={onToggleWishlist}
-            className="w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-navy/10 hover:bg-navy border border-navy/20 text-navy hover:text-white flex items-center justify-center shadow-sm transition duration-200 hover:scale-110 active:scale-95 cursor-pointer shrink-0"
-            aria-label="Wishlist"
-            title={isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}
-          >
-            <svg
-              className="w-3.5 h-3.5 sm:w-[18px] sm:h-[18px]"
-              viewBox="0 0 24 24"
-              fill={isWishlisted ? '#FFCD00' : 'none'}
-              stroke={isWishlisted ? '#FFCD00' : 'currentColor'}
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+      {/* DESKTOP PRODUCT CARD (hidden md:flex - 100% Preserved) */}
+      <div
+        onClick={() => navigate(`/shop/${product.id}`)}
+        onMouseEnter={() => {
+          setIsHovered(true)
+          setHasHovered(true)
+        }}
+        onMouseLeave={() => setIsHovered(false)}
+        className="hidden md:flex group rounded-2xl sm:rounded-[32px] bg-white border border-navy/5 p-3 sm:p-6 shadow-card hover:shadow-float transition duration-300 flex-col justify-between cursor-pointer relative"
+      >
+        <div>
+          <div className="relative mb-3 sm:mb-5">
+            <div className="aspect-[4/5] w-full rounded-xl sm:rounded-2xl overflow-hidden bg-white flex items-center justify-center p-2.5 sm:p-4 relative">
+              {/* Low-contrast Skeleton Shimmer Placeholder */}
+              {!imgLoaded && (
+                <div className="absolute inset-0 skeleton-shimmer bg-navy/5 z-0" aria-hidden="true" />
+              )}
+              <img
+                src={product.image}
+                alt={product.title}
+                onLoad={() => setImgLoaded(true)}
+                className={`max-h-full max-w-full object-contain relative z-[1] ${!imgLoaded ? 'opacity-0' : show3D ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+              />
+              {product.glb && hasHovered && (
+                <div
+                  className={`absolute inset-0 w-full h-full z-10 bg-white flex items-center justify-center transition-opacity duration-300 cursor-grab active:cursor-grabbing ${show3D ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+                >
+                  <model-viewer
+                    ref={viewerRef}
+                    src={product.glb}
+                    alt={product.title}
+                    loading="eager"
+                    reveal="auto"
+                    auto-rotate
+                    auto-rotate-delay="0"
+                    rotation-per-second="28deg"
+                    camera-orbit="0deg 75deg 120%"
+                    camera-target="auto auto auto"
+                    disable-zoom
+                    disable-pan
+                    min-camera-orbit="auto 75deg auto"
+                    max-camera-orbit="auto 75deg auto"
+                    interaction-prompt="none"
+                    environment-image="neutral"
+                    exposure={product.id === 'product-dive-cap' || (typeof product.glb === 'string' && product.glb.toLowerCase().includes('cap')) ? '2.5' : '1.35'}
+                    shadow-intensity={product.id === 'product-dive-cap' || (typeof product.glb === 'string' && product.glb.toLowerCase().includes('cap')) ? '0.08' : '0.4'}
+                    shadow-softness="0.9"
+                    tone-mapping="commerce"
+                    bounds="tight"
+                    style={{ width: '100%', height: '100%' }}
+                  >
+                    <div slot="poster" className="w-full h-full flex items-center justify-center p-4 bg-transparent">
+                      <img src={product.image} alt={product.title} className="max-h-full max-w-full object-contain" />
+                    </div>
+                  </model-viewer>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="mb-2 sm:mb-4">
+            <span className="text-[9px] sm:text-[11px] font-bold uppercase tracking-wider text-accent block mb-0.5 sm:mb-1">{product.category}</span>
+            <h3 className="font-heading text-xs xs:text-sm sm:text-xl font-bold text-navy leading-tight sm:leading-snug group-hover:text-accent transition line-clamp-2 sm:line-clamp-none">{product.title}</h3>
+            <p className="text-[10px] sm:text-xs text-navy/70 line-clamp-1 sm:line-clamp-2 mt-1 sm:mt-2 leading-relaxed hidden xs:block">{product.description}</p>
+          </div>
+        </div>
+
+        <div className="pt-2 sm:pt-4 border-t border-navy/10 flex items-center justify-between gap-1.5 sm:gap-3">
+          <span className="text-[9px] sm:text-[10px] text-emerald-600 font-bold hidden sm:inline">Inquire within</span>
+          <div className="flex items-center gap-1.5 sm:gap-2 ml-auto sm:ml-0">
+            <button
+              type="button"
+              onClick={onToggleWishlist}
+              className="w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-navy/10 hover:bg-navy border border-navy/20 text-navy hover:text-white flex items-center justify-center shadow-sm transition duration-200 hover:scale-110 active:scale-95 cursor-pointer shrink-0"
+              aria-label="Wishlist"
+              title={isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}
             >
-              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-            </svg>
-          </button>
-          <button onClick={(e) => onQuickAdd(product, e)} className="rounded-full bg-navy text-white px-3 py-1.5 sm:px-5 sm:py-2.5 text-[10px] sm:text-xs font-bold hover:bg-accent hover:text-navy active:scale-95 transition shadow-sm flex items-center gap-1 cursor-pointer whitespace-nowrap">
-            <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" /><line x1="3" y1="6" x2="21" y2="6" /><path d="M16 10a4 4 0 0 1-8 0" /></svg>
-            Add
-          </button>
+              <svg
+                className="w-3.5 h-3.5 sm:w-[18px] sm:h-[18px]"
+                viewBox="0 0 24 24"
+                fill={isWishlisted ? '#FFCD00' : 'none'}
+                stroke={isWishlisted ? '#FFCD00' : 'currentColor'}
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+              </svg>
+            </button>
+            <button onClick={(e) => onQuickAdd(product, e)} className="rounded-full bg-navy text-white px-3 py-1.5 sm:px-5 sm:py-2.5 text-[10px] sm:text-xs font-bold hover:bg-accent hover:text-navy active:scale-95 transition shadow-sm flex items-center gap-1 cursor-pointer whitespace-nowrap">
+              <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" /><line x1="3" y1="6" x2="21" y2="6" /><path d="M16 10a4 4 0 0 1-8 0" /></svg>
+              Add
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }
 

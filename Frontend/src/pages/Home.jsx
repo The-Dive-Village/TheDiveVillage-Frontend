@@ -154,34 +154,29 @@ export default function Home() {
               transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
               className="pointer-events-auto"
             >
-              <h1 className="mt-2 sm:mt-5 font-heading text-[3.1rem] xs:text-[3.8rem] sm:text-[4.5rem] md:text-[5.5rem] lg:text-[7rem] font-bold uppercase tracking-tight sm:tracking-normal text-white leading-[0.92] flex flex-col drop-shadow-2xl">
-                <span className="block text-sm xs:text-base sm:text-lg font-bold tracking-[0.2em] mb-2 sm:mb-3 text-white/95">MORE THAN A DESTINATION</span>
-                <span className="block text-white mb-1 sm:mb-2">IT'S A</span>
+              <h1 className="mt-2 sm:mt-5 font-heading text-[3.2rem] xs:text-[3.9rem] sm:text-[4.5rem] md:text-[5.5rem] lg:text-[7rem] font-bold uppercase tracking-tight sm:tracking-normal text-white leading-[0.92] flex flex-col drop-shadow-2xl">
+                <span className="block text-xs xs:text-sm sm:text-lg font-bold tracking-[0.22em] mb-1.5 sm:mb-3 text-white/90">MORE THAN A DESTINATION</span>
+                <span className="block text-white mb-0.5 sm:mb-2">IT'S A</span>
                 <span className="block text-[#FFCD00]">COMMUNITY.</span>
               </h1>
-              <div className="mt-3.5 sm:mt-6 h-1 w-16 sm:w-20 bg-[#FFCD00]"></div>
-              <p className="mt-3.5 sm:mt-8 max-w-xs xs:max-w-sm sm:max-w-2xl text-[15px] xs:text-base sm:text-xl md:text-2xl font-medium text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] leading-snug sm:leading-relaxed text-left">
-                <span className="sm:hidden">
-                  The life-changing magic of the ocean<br />is a feeling to be shared.
-                </span>
-                <span className="hidden sm:inline">
-                  The life-changing magic of the ocean<br />is a feeling that is meant to be shared.
-                </span>
+              <div className="mt-2.5 sm:mt-6 h-1 w-12 sm:w-20 bg-[#FFCD00] rounded-full"></div>
+              <p className="mt-3.5 sm:mt-8 max-w-[280px] xs:max-w-sm sm:max-w-2xl text-[14px] xs:text-base sm:text-xl md:text-2xl font-normal sm:font-medium text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] leading-relaxed text-left">
+                The life-changing magic of the ocean is a feeling that is meant to be shared.
               </p>
-              <div className="mt-6 sm:mt-10 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-6">
+              <div className="mt-5 sm:mt-10 flex flex-col items-start gap-2.5 sm:flex-row sm:items-center sm:gap-6">
                 <Link
                   to="/book-us"
-                  className="w-fit inline-flex items-center justify-between gap-2.5 sm:gap-3 rounded-full bg-white/10 backdrop-blur-xl border border-white/40 px-5 xs:px-6 sm:px-8 py-3 sm:py-4 font-body text-xs sm:text-sm tracking-widest font-bold text-white uppercase shadow-[0_8px_32px_0_rgba(0,0,0,0.25)] transition-all duration-300 hover:scale-105 hover:bg-[#FFCD00] hover:text-navy hover:border-[#FFCD00] active:scale-95 group"
+                  className="w-[215px] xs:w-[235px] sm:w-fit inline-flex items-center justify-between gap-3 rounded-full bg-white/20 sm:bg-white/10 backdrop-blur-xl border border-white/40 px-5 xs:px-6 sm:px-8 py-3 sm:py-4 font-body text-xs sm:text-sm tracking-widest font-bold text-white uppercase shadow-[0_8px_32px_0_rgba(0,0,0,0.25)] transition-all duration-300 hover:scale-105 hover:bg-[#FFCD00] hover:text-navy hover:border-[#FFCD00] active:scale-95 group"
                 >
                   <span>Book Your Dive</span>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-1 shrink-0"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-1 shrink-0"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
                 </Link>
                 <Link
                   to="/shop"
-                  className="w-fit inline-flex items-center justify-between gap-2.5 sm:gap-3 rounded-full bg-white/10 backdrop-blur-xl border border-white/40 px-5 xs:px-6 sm:px-8 py-3 sm:py-4 font-body text-xs sm:text-sm tracking-widest font-bold text-white uppercase shadow-[0_8px_32px_0_rgba(0,0,0,0.25)] transition-all duration-300 hover:scale-105 hover:bg-[#FFCD00] hover:text-navy hover:border-[#FFCD00] active:scale-95 group"
+                  className="w-[215px] xs:w-[235px] sm:w-fit inline-flex items-center justify-between gap-3 rounded-full bg-[#001428]/55 sm:bg-white/10 backdrop-blur-xl border border-white/25 sm:border-white/40 px-5 xs:px-6 sm:px-8 py-3 sm:py-4 font-body text-xs sm:text-sm tracking-widest font-bold text-white uppercase shadow-[0_8px_32px_0_rgba(0,0,0,0.25)] transition-all duration-300 hover:scale-105 hover:bg-[#FFCD00] hover:text-navy hover:border-[#FFCD00] active:scale-95 group"
                 >
                   <span>Shop Merch</span>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-1 shrink-0"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-1 shrink-0"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
                 </Link>
               </div>
             </motion.div>
@@ -193,13 +188,14 @@ export default function Home() {
           initial={reduce ? false : { opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 1 }}
-          className="absolute bottom-2 left-0 right-0 w-full px-6 lg:px-12 flex items-center justify-center pointer-events-none text-white font-body text-xs tracking-widest font-bold uppercase opacity-80"
+          className="absolute bottom-2 left-0 right-0 w-full px-6 lg:px-12 flex items-center justify-center pointer-events-none text-white font-body text-xs tracking-widest font-bold uppercase opacity-90"
         >
           {/* Center: Scroll to explore */}
-          <div className="flex flex-col items-center gap-2">
-            <svg width="20" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="mb-1"><rect x="5" y="2" width="14" height="20" rx="7"></rect><path d="M12 6v4"></path></svg>
-            <span className="text-[10px] text-white/70">SCROLL TO EXPLORE</span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFCD00" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14"></path><path d="m19 12-7 7-7-7"></path></svg>
+          <div className="flex flex-col items-center gap-1.5 pointer-events-auto">
+            <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full border border-white/80 flex items-center justify-center text-white shadow-sm">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14"></path><path d="m19 12-7 7-7-7"></path></svg>
+            </div>
+            <span className="text-[8.5px] sm:text-[10px] tracking-[0.25em] text-white/90 font-bold uppercase">SCROLL TO EXPLORE</span>
           </div>
         </motion.div>
       </section >
