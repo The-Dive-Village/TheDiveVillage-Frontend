@@ -12,6 +12,12 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
     productId === 'product-dive-cap'
   )
 
+  const isBag = Boolean(
+    (src && (src.toLowerCase().includes('bag') || src.toLowerCase().includes('backpack'))) ||
+    (alt && (alt.toLowerCase().includes('bag') || alt.toLowerCase().includes('backpack'))) ||
+    productId === 'product-ocean-bag'
+  )
+
   useEffect(() => {
     const el = containerRef.current
     if (!el || typeof IntersectionObserver === 'undefined') return
@@ -89,7 +95,7 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
 
         // Moving fingers right turns model right, moving left turns left
         thetaDeg -= dx * 0.8
-        viewer.cameraOrbit = `${thetaDeg}deg 75deg 110%`
+        viewer.cameraOrbit = `${thetaDeg}deg 75deg ${isBag ? '125%' : '110%'}`
         if (typeof viewer.jumpCameraToGoal === 'function') {
           viewer.jumpCameraToGoal()
         }
@@ -110,7 +116,7 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
       if (Math.abs(e.deltaX) > 1 || (e.shiftKey && Math.abs(e.deltaY) > 1)) {
         const delta = e.shiftKey ? e.deltaY : e.deltaX
         thetaDeg = readCurrentTheta() + delta * 0.45
-        viewer.cameraOrbit = `${thetaDeg}deg 75deg 110%`
+        viewer.cameraOrbit = `${thetaDeg}deg 75deg ${isBag ? '125%' : '110%'}`
         if (typeof viewer.jumpCameraToGoal === 'function') {
           viewer.jumpCameraToGoal()
         }
@@ -133,7 +139,7 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
       viewer.removeEventListener('touchcancel', handleTouchEnd)
       viewer.removeEventListener('wheel', handleWheel)
     }
-  }, [scriptLoaded])
+  }, [scriptLoaded, isBag])
 
   // Apply non-glossy, soft matte finish and double-sided rendering to 3D materials
   useEffect(() => {
@@ -153,7 +159,7 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
 
             const pbr = mat.pbrMetallicRoughness
             if (pbr) {
-              pbr.setRoughnessFactor(isCap ? 0.65 : 0.82)
+              pbr.setRoughnessFactor(isCap ? 0.65 : isBag ? 0.75 : 0.82)
               pbr.setMetallicFactor(0.0)
             }
           })
@@ -171,12 +177,12 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
     return () => {
       viewer.removeEventListener('load', applyMatteAndDoubleSided)
     }
-  }, [src, scriptLoaded, isCap])
+  }, [src, scriptLoaded, isCap, isBag])
 
   return (
     <div 
       ref={containerRef}
-      className="relative w-full h-full min-h-[300px] sm:min-h-[340px] bg-gradient-to-b from-[#FFFFFF] via-[#F8FAFC] to-[#EDF2F7] rounded-[28px] overflow-hidden flex items-center justify-center select-none"
+      className="relative w-full h-full min-h-[300px] sm:min-h-[340px] bg-white rounded-[28px] overflow-hidden flex items-center justify-center select-none"
       style={{ contentVisibility: 'auto', containIntrinsicSize: '100% 340px' }}
     >
       <model-viewer
@@ -190,19 +196,19 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
         disable-pan
         touch-action="none"
         interaction-prompt="auto"
-        camera-orbit="0deg 75deg 110%"
+        camera-orbit={isBag ? "0deg 75deg 125%" : "0deg 75deg 110%"}
         camera-target="auto auto auto"
         min-camera-orbit="auto 75deg auto"
         max-camera-orbit="auto 75deg auto"
         environment-image="neutral"
-        exposure={isCap ? "2.5" : "1.4"}
-        shadow-intensity={isCap ? "0.08" : "0.35"}
+        exposure={isCap ? "2.5" : isBag ? "1.8" : "1.4"}
+        shadow-intensity={isCap ? "0.08" : isBag ? "0.2" : "0.35"}
         shadow-softness="0.9"
         tone-mapping="commerce"
         bounds="tight"
         style={{ width: '100%', height: '100%', minHeight: '340px' }}
       >
-        <div slot="poster" className="w-full h-full flex flex-col items-center justify-center bg-slate-100/80 backdrop-blur-sm">
+        <div slot="poster" className="w-full h-full flex flex-col items-center justify-center bg-white">
           <div className="w-9 h-9 border-4 border-navy border-t-transparent rounded-full animate-spin mb-2" />
           <span className="text-xs font-bold text-navy uppercase tracking-widest">Loading 3D Model...</span>
         </div>
