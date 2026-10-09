@@ -38,8 +38,9 @@ export default function Snorkeling() {
       <CourseTemplate
         heroVideo={turtleSnorkelVideo}
         heroImage={IMAGES.snorkelingHero}
-        titleTop="Explore the"
-        titleBottom="Shallow Reefs"
+        titleTop="SNORKELING"
+        titleBottom="PROGRAMS"
+        heroSubtitle="Explore shallow reefs, crystal-clear turquoise waters, and vibrant marine life with our marine experts."
         aboutSubtitle="What is Snorkeling"
         aboutTitle="The easiest way to discover the ocean"
         aboutText="Snorkeling allows you to glide along the surface and gaze into the vibrant marine world below without the need for heavy equipment or extensive training. It's the perfect family activity and a serene way to connect with nature."

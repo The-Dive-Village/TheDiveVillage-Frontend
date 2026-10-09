@@ -726,66 +726,6 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
   const show3D = isHovered && hasHovered
 
   return (
-<<<<<<< Updated upstream
-    <div
-      onClick={() => navigate(`/shop/${product.id}`)}
-      onMouseEnter={() => {
-        setIsHovered(true)
-        setHasHovered(true)
-      }}
-      onMouseLeave={() => setIsHovered(false)}
-      className="group rounded-2xl sm:rounded-[32px] bg-white border border-navy/5 p-3 sm:p-6 shadow-card hover:shadow-float transition duration-300 flex flex-col justify-between cursor-pointer relative"
-    >
-      <div>
-        <div className="relative mb-3 sm:mb-5">
-          <div className="aspect-[4/5] w-full rounded-xl sm:rounded-2xl overflow-hidden bg-white flex items-center justify-center p-2.5 sm:p-4 relative">
-            {/* Low-contrast Skeleton Shimmer Placeholder */}
-            {!imgLoaded && (
-              <div className="absolute inset-0 skeleton-shimmer bg-navy/5 z-0" aria-hidden="true" />
-            )}
-            <img
-              src={product.image}
-              alt={product.title}
-              onLoad={() => setImgLoaded(true)}
-              className={`max-h-full max-w-full object-contain relative z-[1] ${!imgLoaded ? 'opacity-0' : show3D ? 'opacity-0 pointer-events-none' : 'opacity-100'
-                }`}
-            />
-            {product.glb && hasHovered && (
-              <div
-                className={`absolute inset-0 w-full h-full z-10 bg-white flex items-center justify-center transition-opacity duration-300 cursor-grab active:cursor-grabbing ${show3D ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-                  }`}
-              >
-                <model-viewer
-                  ref={viewerRef}
-                  src={product.glb}
-                  alt={product.title}
-                  loading="eager"
-                  reveal="auto"
-                  auto-rotate
-                  auto-rotate-delay="0"
-                  rotation-per-second="28deg"
-                  camera-orbit={isBag ? "0deg 75deg 125%" : "0deg 75deg 110%"}
-                  camera-target="auto auto auto"
-                  disable-zoom
-                  disable-pan
-                  min-camera-orbit="auto 75deg auto"
-                  max-camera-orbit="auto 75deg auto"
-                  interaction-prompt="none"
-                  environment-image="neutral"
-                  exposure={isCap ? "2.5" : isBag ? "1.8" : "1.35"}
-                  shadow-intensity={isCap ? "0.08" : isBag ? "0.2" : "0.4"}
-                  shadow-softness="0.9"
-                  tone-mapping="commerce"
-                  bounds="tight"
-                  style={{ width: '100%', height: '100%' }}
-                >
-                  <div slot="poster" className="w-full h-full flex items-center justify-center p-4 bg-transparent">
-                    <img src={product.image} alt={product.title} className="max-h-full max-w-full object-contain" />
-                  </div>
-                </model-viewer>
-              </div>
-            )}
-=======
     <>
       {/* MOBILE PRODUCT CARD (md:hidden - Matches user reference screenshot) */}
       <div
@@ -835,7 +775,6 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
             <h3 className="font-bold text-slate-900 text-xs xs:text-[13px] leading-snug line-clamp-2 min-h-[32px]">
               {product.title || product.name}
             </h3>
->>>>>>> Stashed changes
           </div>
         </div>
 

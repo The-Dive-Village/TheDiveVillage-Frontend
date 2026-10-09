@@ -34,8 +34,9 @@ export default function Scuba() {
       <CourseTemplate
         heroVideo={scubaDiveVideo}
         heroImage={IMAGES.scubaHero}
-        titleTop="Dive into"
-        titleBottom="The Dive Village"
+        titleTop="SCUBA"
+        titleBottom="DIVING"
+        heroSubtitle="Select your training, certification level, and schedule. Our certified dive masters will guide your underwater journey."
         aboutSubtitle="About Us"
         aboutTitle="A Community for Ocean Lovers"
         aboutText="The Dive Village was born from a simple belief: that the life-changing magic of the Ocean is a feeling meant to be shared. Here, every dive holds a story, and every visitor who arrives leaves as a member of the Community."

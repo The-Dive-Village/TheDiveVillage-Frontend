@@ -128,18 +128,6 @@ export default function Wishlist() {
               {/* 2 in each row just like products page */}
               <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2.5 xs:gap-3 sm:gap-5">
                 {items.map((item) => (
-<<<<<<< Updated upstream
-                  <div key={item.id} className="py-6 first:pt-0 last:pb-0 flex flex-col sm:flex-row gap-4 sm:gap-6 items-start sm:items-center justify-between">
-                    
-                    <div className="flex gap-4 items-center flex-1 cursor-pointer" onClick={() => navigate(`/shop/${item.id}`)}>
-                      <div className="w-24 sm:w-28 h-28 sm:h-32 shrink-0 rounded-2xl overflow-hidden bg-white border border-navy/10 p-2 flex items-center justify-center">
-                        <img
-                          src={item.image}
-                          alt={item.title || item.name}
-                          className="max-h-full max-w-full object-contain"
-                        />
-                      </div>
-=======
                   <div
                     key={item.id}
                     onClick={() => navigate(`/shop/${item.id}`)}
@@ -182,7 +170,6 @@ export default function Wishlist() {
 
                     {/* Info */}
                     <div className="flex flex-col flex-1 justify-between mb-2.5">
->>>>>>> Stashed changes
                       <div>
                         <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 block mb-0.5">
                           {item.category || 'MERCH'}

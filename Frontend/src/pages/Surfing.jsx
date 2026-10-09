@@ -40,8 +40,9 @@ export default function Surfing() {
       <CourseTemplate
         heroVideo={freediveVideo}
         heroImage={IMAGES.surfingHero}
-        titleTop="Experience"
-        titleBottom="Breath-Hold Diving"
+        titleTop="FREEDIVING"
+        titleBottom="COURSES"
+        heroSubtitle="Master breath-hold diving techniques with certified instructors and experience pure freedom beneath the waves."
         aboutSubtitle="What is Freediving"
         aboutTitle="Connect with the ocean's raw energy"
         aboutText="Freediving teaches balance, patience, and a deep respect for the ocean's rhythm. Join us to experience the ultimate freedom on the water with just a single breath."

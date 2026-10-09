@@ -9,6 +9,7 @@ export default function CourseTemplate({
   heroVideo,
   titleTop,
   titleBottom,
+  heroSubtitle,
   aboutTitle,
   aboutSubtitle,
   aboutText,
@@ -29,10 +30,16 @@ export default function CourseTemplate({
   const reduce = useReducedMotion()
 
   return (
-    <div className="bg-[#f0f9ff] text-navy font-body overflow-x-hidden pt-16 sm:pt-[72px]">
-      {/* HERO SECTION */}
-      <section className="relative h-[80vh] min-h-[600px] w-full flex items-center justify-center overflow-hidden bg-navy">
-        <div className="absolute inset-0 z-0">
+    <div className="bg-[#FAFAFA] min-h-screen text-navy font-body overflow-x-clip" style={{ textShadow: 'none' }}>
+      {/* 1. HEADER VIDEO HERO (EXACT MATCH TO BOOK US DESIGN) */}
+      <section className="relative h-[56vh] min-h-[420px] lg:h-[60vh] lg:min-h-[460px] w-full flex items-center justify-center overflow-hidden">
+        <div 
+          className="absolute inset-0 z-0 overflow-hidden"
+          style={{
+            maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 40%, rgba(0,0,0,0.5) 75%, rgba(0,0,0,0) 100%)',
+            WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 40%, rgba(0,0,0,0.5) 75%, rgba(0,0,0,0) 100%)'
+          }}
+        >
           {heroVideo ? (
             <LazyVideo
               ref={(el) => {
@@ -49,68 +56,72 @@ export default function CourseTemplate({
               loop
               muted
               playsInline
-              className="w-full h-full object-cover"
+              onPlay={(e) => { e.currentTarget.playbackRate = 0.75 }}
+              className="w-full h-full object-cover scale-110 origin-center transition-all duration-700"
               poster={heroImage}
             />
           ) : (
-            <img src={heroImage} alt="Hero" className="w-full h-full object-cover" />
+            <img 
+              src={heroImage} 
+              alt={titleTop ? `${titleTop} ${titleBottom || ''}` : 'Hero'} 
+              className="w-full h-full object-cover scale-110 origin-center transition-all duration-700" 
+            />
           )}
-          <div className="absolute inset-0 bg-gradient-to-b from-navy/40 via-navy/20 to-navy/80"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-[#001428]/65 via-[#001428]/25 to-transparent pointer-events-none" />
         </div>
-        
-        <div className="relative z-10 flex flex-col items-center text-center px-4 max-w-4xl mx-auto">
+
+        {/* Bottom Ultra-Smooth Dissolve & Merge Layer */}
+        <div 
+          className="absolute bottom-0 inset-x-0 h-28 sm:h-36 lg:h-44 pointer-events-none z-[5] bg-gradient-to-t from-[#FAFAFA] via-[#FAFAFA]/90 via-45% to-transparent" 
+        />
+
+        <div className="relative z-10 flex flex-col items-center text-center px-4 max-w-4xl mx-auto pt-4 sm:pt-6">
           <motion.h1 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-4xl xs:text-5xl sm:text-7xl lg:text-8xl font-serif text-white tracking-tight leading-tight"
-            style={{ textShadow: '0 4px 20px rgba(0,0,0,0.4)' }}
+            transition={{ duration: 0.8, delay: 0.1 }}
+            className="font-heading text-5xl sm:text-7xl lg:text-8xl font-bold uppercase tracking-tight text-white leading-none drop-shadow-[0_4px_25px_rgba(0,0,0,0.6)]"
+            style={{ textShadow: '0 4px 20px rgba(0,0,0,0.3)' }}
           >
-            {titleTop} <br />
-            <span className="font-bold text-white/95">{titleBottom}</span>
+            {titleTop} {titleBottom && <span className="text-[#FFCD00]">{titleBottom}</span>}
           </motion.h1>
           
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.5, duration: 0.5 }}
-            className="mt-10 flex items-center gap-3 bg-white/15 backdrop-blur-md rounded-full px-6 py-3 border border-white/30 shadow-lg text-white font-bold text-xs sm:text-sm tracking-widest uppercase"
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="mt-6 text-base sm:text-xl font-medium text-white/90 max-w-xl leading-relaxed drop-shadow-md text-center"
           >
-            <span className="w-2.5 h-2.5 rounded-full bg-accent animate-pulse" />
-            <span>Certified Course Experience</span>
-          </motion.div>
+            {heroSubtitle || aboutSubtitle || 'Select your location, group size, participant details, and matching programs. Our dive masters will get back to you.'}
+          </motion.p>
         </div>
       </section>
 
-      {/* ABOUT US SECTION WITH WAVY BACKGROUND */}
-      <section className="relative py-24 sm:py-32">
-        <div className="absolute top-0 left-0 w-full overflow-hidden leading-none rotate-180 text-white">
-           <svg className="relative block w-[calc(149%+1.3px)] h-[120px]" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
-              <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" fill="currentColor"></path>
-           </svg>
-        </div>
-        
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-12 relative z-10">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+      {/* ABOUT US SECTION */}
+      <section className="relative pt-6 sm:pt-10 pb-20 sm:pb-28">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <div>
-              <span className="text-accent font-bold tracking-widest uppercase text-xs mb-4 block">{aboutSubtitle}</span>
-              <h2 className="font-serif text-4xl sm:text-5xl lg:text-6xl text-navy leading-[1.1] mb-6">
+              <span className="text-accent font-bold tracking-widest uppercase text-xs mb-3 block">{aboutSubtitle}</span>
+              <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-navy leading-[1.1] mb-6">
                 {aboutTitle}
               </h2>
             </div>
             <div>
-              <p className="text-navy/70 leading-relaxed text-lg mb-6">
+              <p className="text-navy/70 leading-relaxed text-base sm:text-lg mb-6">
                 {aboutText}
               </p>
-              <Link to={ctaLink} className="text-accent font-bold hover:text-navy transition">Learn More →</Link>
+              <Link to={ctaLink} className="text-accent font-bold hover:text-navy transition flex items-center gap-1.5">
+                Learn More <span>→</span>
+              </Link>
             </div>
           </div>
 
-          <div className="mt-12 sm:mt-20 grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 relative">
-            <div className="rounded-3xl overflow-hidden aspect-[4/3] shadow-xl transform sm:translate-y-12">
+          <div className="mt-12 sm:mt-16 grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 relative">
+            <div className="rounded-3xl overflow-hidden aspect-[4/3] shadow-xl">
               <img src={aboutImg1} alt="About 1" className="w-full h-full object-cover" />
             </div>
-            <div className="rounded-3xl overflow-hidden aspect-[4/3] shadow-xl transform sm:-translate-y-12">
+            <div className="rounded-3xl overflow-hidden aspect-[4/3] shadow-xl">
               <img src={aboutImg2} alt="About 2" className="w-full h-full object-cover" />
             </div>
           </div>
@@ -118,11 +129,11 @@ export default function CourseTemplate({
       </section>
 
       {/* TOURS CAROUSEL SECTION */}
-      <section className="relative py-24 sm:py-32 bg-white">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-16 flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <section className="relative py-20 sm:py-28 bg-white">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-12 sm:mb-16 flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
-            <span className="text-accent font-bold tracking-widest uppercase text-xs mb-4 block">{toursTitle}</span>
-            <h2 className="font-serif text-4xl sm:text-5xl text-navy leading-[1.1] max-w-md">
+            <span className="text-accent font-bold tracking-widest uppercase text-xs mb-3 block">{toursTitle}</span>
+            <h2 className="font-heading text-4xl sm:text-5xl font-bold text-navy leading-[1.1] max-w-md">
               {toursSubtitle}
             </h2>
           </div>
@@ -142,7 +153,7 @@ export default function CourseTemplate({
                 </div>
               </div>
               <div className="p-8 pt-10">
-                <h3 className="font-bold text-xl text-navy mb-2">{tour.title}</h3>
+                <h3 className="font-heading font-bold text-xl text-navy mb-2">{tour.title}</h3>
                 <p className="text-navy/60 text-sm mb-6">{tour.desc}</p>
                 <div className="flex items-center justify-between pt-6 border-t border-navy/10">
                   <div className="flex text-[#FFCD00] gap-0.5 text-sm items-center">
@@ -166,21 +177,15 @@ export default function CourseTemplate({
       </section>
 
       {/* STATS & PLUNGE SECTION */}
-      <section className="relative py-24 sm:py-32">
-        <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none text-white opacity-50 pointer-events-none">
-           <svg className="relative block w-[calc(149%+1.3px)] h-[120px]" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
-              <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" fill="currentColor"></path>
-           </svg>
-        </div>
-        
+      <section className="relative py-20 sm:py-28 bg-[#FAFAFA]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div className="order-2 lg:order-1">
-              <span className="text-accent font-bold tracking-widest uppercase text-xs mb-4 block">About Us</span>
-              <h2 className="font-serif text-5xl sm:text-6xl text-navy leading-[1.1] mb-6">
+              <span className="text-accent font-bold tracking-widest uppercase text-xs mb-3 block">About Us</span>
+              <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-navy leading-[1.1] mb-6">
                 {statsText}
               </h2>
-              <p className="text-navy/70 leading-relaxed text-lg mb-10 max-w-md">
+              <p className="text-navy/70 leading-relaxed text-base sm:text-lg mb-10 max-w-md">
                 {statsDesc}
               </p>
               <Button as={Link} to={ctaLink} variant="gold" className="shadow-md mb-16">
@@ -190,7 +195,7 @@ export default function CourseTemplate({
               <div className="grid grid-cols-3 gap-3 sm:gap-6 pt-6 sm:pt-10 border-t border-navy/10">
                 {stats.map((stat, i) => (
                   <div key={i}>
-                    <div className="font-serif text-2xl xs:text-3xl sm:text-4xl text-accent mb-1 sm:mb-2">{stat.value}</div>
+                    <div className="font-heading font-bold text-3xl sm:text-4xl text-accent mb-1 sm:mb-2">{stat.value}</div>
                     <div className="text-[10px] sm:text-xs font-bold text-navy/60 uppercase tracking-wide leading-tight">{stat.label}</div>
                   </div>
                 ))}
@@ -215,12 +220,12 @@ export default function CourseTemplate({
       </section>
 
       {/* FINAL CTA */}
-      <section className="relative py-32 bg-white text-center overflow-hidden">
+      <section className="relative py-24 sm:py-32 bg-white text-center overflow-hidden">
         <div className="mx-auto max-w-3xl px-4 relative z-10">
-          <h2 className="font-serif text-4xl sm:text-5xl text-accent leading-[1.1] mb-6">
+          <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-navy leading-[1.1] mb-6">
             {ctaTitle}
           </h2>
-          <p className="text-navy/70 leading-relaxed text-lg mb-10 max-w-md mx-auto">
+          <p className="text-navy/70 leading-relaxed text-base sm:text-lg mb-10 max-w-md mx-auto">
             {ctaDesc}
           </p>
           <Button as={Link} to={ctaLink} variant="gold" className="shadow-xl px-8 py-4 text-base">
