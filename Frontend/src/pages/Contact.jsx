@@ -2,8 +2,7 @@ import LazyVideo from '../components/LazyVideo'
 import { useState, useEffect } from 'react'
 import { Link, useSearchParams, useLocation } from 'react-router'
 import { motion, useReducedMotion } from 'framer-motion'
-import PhoneInput from 'react-phone-number-input'
-import 'react-phone-number-input/style.css'
+
 import { IMAGES, CAROUSEL_IMAGES, PANEL_IMAGES } from '../utils/images'
 import compiledNightDiveVideo from '../assets/Media/Background/Night Dive.mp4'
 import bookVideo from '../assets/Media/Background/baracuda_compressed.mp4'
@@ -217,14 +216,21 @@ export default function Contact() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div>
                 <label className="mb-1 sm:mb-1.5 block text-[9px] sm:text-xs font-bold text-navy/70 uppercase tracking-wider">Phone Number</label>
-                <PhoneInput
-                  defaultCountry="IN"
-                  placeholder="Phone number"
+                <input
+                  type="tel"
+                  inputMode="numeric"
+                  name="phone"
+                  placeholder="XXX XXX XXXX"
                   value={formData.phone}
-                  onChange={(val) => setFormData((prev) => ({ ...prev, phone: val }))}
-                  limitMaxLength={true}
-                  maxLength={15}
-                  className="w-full rounded-xl bg-[#F0F2F5] px-3.5 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm font-semibold text-navy outline-none focus-within:ring-2 focus-within:ring-accent/50 transition [&_.PhoneInputCountryIcon]:rounded-sm [&_.PhoneInputInput]:bg-transparent [&_.PhoneInputInput]:outline-none [&_.PhoneInputInput]:border-none [&_.PhoneInputCountrySelect]:outline-none [&_.PhoneInputCountryIcon--border]:border-none [&_.PhoneInputInput]:ml-2"
+                  maxLength={12}
+                  onChange={(e) => {
+                    const digits = e.target.value.replace(/\D/g, '').slice(0, 10)
+                    let formatted = digits
+                    if (digits.length > 6) formatted = digits.slice(0, 3) + ' ' + digits.slice(3, 6) + ' ' + digits.slice(6)
+                    else if (digits.length > 3) formatted = digits.slice(0, 3) + ' ' + digits.slice(3)
+                    setFormData((prev) => ({ ...prev, phone: formatted }))
+                  }}
+                  className="w-full rounded-xl bg-[#F0F2F5] px-3.5 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm font-semibold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition placeholder:text-navy/30"
                 />
               </div>
               <div>

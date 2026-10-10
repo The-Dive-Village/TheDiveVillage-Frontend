@@ -518,15 +518,18 @@ export default function ProductDetail() {
                         setSelectedColor(color)
                       }}
                       title={color.name}
-                      className={`w-9 h-9 rounded-full transition relative flex items-center justify-center cursor-pointer ${
+                      className={`w-9 h-9 rounded-full transition relative flex items-center justify-center cursor-pointer overflow-hidden ${
                         selectedColor.name === color.name
                           ? 'ring-2 ring-offset-2 ring-navy scale-105'
                           : 'opacity-80 hover:opacity-100 hover:scale-105'
                       }`}
-                      style={{ backgroundColor: color.hex }}
+                      style={color.hex2
+                        ? { background: `linear-gradient(135deg, ${color.hex} 50%, ${color.hex2} 50%)` }
+                        : { backgroundColor: color.hex }
+                      }
                     >
                       {selectedColor.name === color.name && (
-                        <span className={`text-[10px] font-bold ${['#F9FAFB', '#F3F4F6', '#FFFFFF'].includes(color.hex) ? 'text-black' : 'text-white'}`}>
+                        <span className={`text-[10px] font-bold drop-shadow ${['#F9FAFB', '#F3F4F6', '#FFFFFF', '#D1D5DB'].includes(color.hex2 || color.hex) ? 'text-black' : 'text-white'}`}>
                           ✓
                         </span>
                       )}

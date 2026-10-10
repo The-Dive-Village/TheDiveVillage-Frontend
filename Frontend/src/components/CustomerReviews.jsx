@@ -38,7 +38,7 @@ export default function CustomerReviews({ className = '' }) {
           <div
             key={item.id}
             onClick={() => setActiveMedia(item)}
-            className="group relative aspect-[3/4] w-full rounded-3xl overflow-hidden bg-[#EAEFF4] border border-navy/10 shadow-card hover:shadow-float hover:-translate-y-1.5 transition-all duration-300 cursor-pointer"
+            className="group relative w-full rounded-3xl overflow-hidden bg-[#EAEFF4] border border-navy/10 shadow-card hover:shadow-float hover:-translate-y-1.5 transition-all duration-300 cursor-pointer aspect-[4/5] sm:aspect-[3/4]"
           >
             {item.type === 'video' ? (
               <div className="w-full h-full relative">

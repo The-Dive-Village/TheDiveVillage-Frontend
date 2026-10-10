@@ -21,8 +21,7 @@ import {
   validateParticipantBooking,
 } from '../utils/courseEligibility'
 import { triggerHaptic, triggerSuccessHaptic, triggerErrorHaptic } from '../utils/haptics'
-import 'react-phone-number-input/style.css'
-import PhoneInput from 'react-phone-number-input'
+
 import turtleAnnaVideo from '../assets/Media/Background/Turtle.mp4'
 import compiledNightDiveVideo from '../assets/Media/Background/Night Dive.mp4'
 import useNightDive from '../hooks/useNightDive'
@@ -123,11 +122,12 @@ export default function BookUs() {
 
   const [currentStep, setCurrentStep] = useState(1)
 
-  // Today, 4-day preparation cooldown minimum date, & 1 year max date bounds
+  // Today, 7-day preparation cutoff (dates 7 days after current day are unavailable), & 1 year max date bounds
   const todayStr = useMemo(() => new Date().toISOString().split('T')[0], [])
   const cooldownMinDateStr = useMemo(() => {
     const d = new Date()
-    d.setDate(d.getDate() + 4)
+    // 7 days after current day are unavailable (e.g. if today is 10, till 17 is unavailable, available from 18)
+    d.setDate(d.getDate() + 8)
     const y = d.getFullYear()
     const m = String(d.getMonth() + 1).padStart(2, '0')
     const day = String(d.getDate()).padStart(2, '0')
@@ -431,8 +431,8 @@ export default function BookUs() {
       }
       if (!date || date < cooldownMinDateStr || date > maxDateStr) {
         triggerErrorHaptic()
-        setDateError('Please select a date after the 4-day cooldown period.')
-        setStepError('Please select a valid date after the 4-day cooldown period.')
+        setDateError('Please select a date after the 7-day advance booking period.')
+        setStepError('Please select a valid date after the 7-day advance booking period.')
         return false
       }
       if (!groupSize || parseInt(groupSize, 10) < 1) {
@@ -781,7 +781,7 @@ export default function BookUs() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="mt-6 text-base sm:text-xl font-medium text-white/90 max-w-xl leading-relaxed drop-shadow-md text-center"
           >
-            Select your location, group size, participant details, and matching programs. Our dive masters will get back to you.
+            Select your location, group size, participant details, and programs. Our dive masters will get back to you.
           </motion.p>
         </div>
       </section>
@@ -811,7 +811,7 @@ export default function BookUs() {
                   : [
                     { num: 1, title: 'Location & Experience' },
                     { num: 2, title: 'Participant Details' },
-                    { num: 3, title: 'Matching Programs' },
+                    { num: 3, title: 'Programs' },
                     { num: 4, title: 'Contact Info' },
                   ]
                 ).map((s, idx, arr) => (
@@ -859,7 +859,7 @@ export default function BookUs() {
                               <h2 className="text-base font-extrabold text-navy truncate block mt-0.5 leading-tight">
                                 {currentStep === 1 && 'Location & Experience'}
                                 {currentStep === 2 && 'Participant Details'}
-                                {currentStep === 3 && 'Matching Programs'}
+                                {currentStep === 3 && 'Programs'}
                                 {currentStep === 4 && 'Contact & Details'}
                               </h2>
                               <p className="text-[11px] font-medium text-navy/60 truncate mt-0.5 leading-tight">
@@ -1121,7 +1121,7 @@ export default function BookUs() {
                             onSelectDate={(formattedDDMMYYYY, yyyyMmDd) => {
                               setDate(yyyyMmDd)
                               if (yyyyMmDd && (yyyyMmDd < cooldownMinDateStr || yyyyMmDd > maxDateStr)) {
-                                setDateError('Please select a date after the 4-day cooldown period.')
+                                setDateError('Please select a date after the 7-day advance booking period.')
                               } else {
                                 setDateError('')
                                 setStepError('')
@@ -1559,14 +1559,20 @@ export default function BookUs() {
 
                       <div>
                         <label className="mb-1 sm:mb-2 block text-[9px] sm:text-xs font-bold text-navy/70 uppercase tracking-wider">Phone Number</label>
-                        <PhoneInput
-                          defaultCountry="IN"
-                          placeholder="Phone number"
+                        <input
+                          type="tel"
+                          inputMode="numeric"
+                          placeholder="XXX XXX XXXX"
                           value={contact.phone}
-                          onChange={(val) => setContact((prev) => ({ ...prev, phone: val }))}
-                          limitMaxLength={true}
-                          maxLength={15}
-                          className="w-full rounded-lg sm:rounded-2xl bg-[#F0F2F5] px-3 py-2 sm:px-5 sm:py-4 text-[11px] sm:text-sm font-semibold sm:font-bold text-navy outline-none focus-within:ring-2 focus-within:ring-accent/50 transition [&_.PhoneInputCountryIcon]:rounded-sm [&_.PhoneInputInput]:bg-transparent [&_.PhoneInputInput]:outline-none [&_.PhoneInputInput]:border-none [&_.PhoneInputCountrySelect]:outline-none [&_.PhoneInputCountryIcon--border]:border-none [&_.PhoneInputInput]:ml-2 [&_.PhoneInputInput]:text-[11px] sm:[&_.PhoneInputInput]:text-sm [&_.PhoneInputInput]:placeholder:text-[10px] sm:[&_.PhoneInputInput]:placeholder:text-sm font-semibold sm:font-bold"
+                          maxLength={12}
+                          onChange={(e) => {
+                            const digits = e.target.value.replace(/\D/g, '').slice(0, 10)
+                            let formatted = digits
+                            if (digits.length > 6) formatted = digits.slice(0, 3) + ' ' + digits.slice(3, 6) + ' ' + digits.slice(6)
+                            else if (digits.length > 3) formatted = digits.slice(0, 3) + ' ' + digits.slice(3)
+                            setContact((prev) => ({ ...prev, phone: formatted }))
+                          }}
+                          className="w-full rounded-lg sm:rounded-2xl bg-[#F0F2F5] px-3 py-2 sm:px-5 sm:py-4 text-[11px] sm:text-sm placeholder:text-[10px] sm:placeholder:text-sm font-semibold sm:font-bold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition placeholder:text-navy/30"
                         />
                       </div>
                     </div>

@@ -109,14 +109,22 @@ export default function Preloader({ onComplete }) {
   }, [])
 
   useEffect(() => {
-    const startTime = performance.now()
     const maxSafetyTimeout = 1800 // Hard safety cap guaranteeing preloader finishes within 2.0s
     const baseTargetDuration = 1400 // Smooth progress duration (~1.4s)
     let animationFrameId
     let completed = false
+    let firstFrameTime = null
+    let currentProgress = 0
 
     const updateProgress = (currentTime) => {
-      const elapsed = currentTime - startTime
+      if (firstFrameTime === null) {
+        firstFrameTime = currentTime
+        setProgress(0)
+        animationFrameId = requestAnimationFrame(updateProgress)
+        return
+      }
+
+      const elapsed = currentTime - firstFrameTime
       const isFullyReady = (isVideoReadyRef.current && isWebGLReadyRef.current) || elapsed >= maxSafetyTimeout
 
       let targetProgress
@@ -130,9 +138,17 @@ export default function Preloader({ onComplete }) {
         targetProgress = Math.min(90, (elapsed / maxSafetyTimeout) * 90)
       }
 
-      setProgress(targetProgress)
+      // Smooth step: strictly start at 0 and smoothly increment without jumping to higher values
+      const maxStepPerFrame = 2.5
+      currentProgress = Math.min(targetProgress, currentProgress + maxStepPerFrame)
 
-      if (targetProgress >= 100 && !completed) {
+      if (targetProgress >= 100 && (elapsed >= maxSafetyTimeout || currentProgress >= 98)) {
+        currentProgress = 100
+      }
+
+      setProgress(currentProgress)
+
+      if (currentProgress >= 100 && !completed) {
         completed = true
         try {
           window.dispatchEvent(new Event('tdv-unlock-audio'))
@@ -146,6 +162,7 @@ export default function Preloader({ onComplete }) {
       animationFrameId = requestAnimationFrame(updateProgress)
     }
 
+    setProgress(0)
     animationFrameId = requestAnimationFrame(updateProgress)
 
     return () => {

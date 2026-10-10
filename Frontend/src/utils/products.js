@@ -304,8 +304,8 @@ export const SHOP_PRODUCTS = [
     imageLabels: ['Front', 'Back', 'Yellow View 1', 'Yellow View 2', 'Yellow View 3', 'Grey Front', 'Grey Back', 'Grey View 1', 'Grey View 2'],
     glb: glbFullBodySkinYellow,
     glbByColor: {
-      'Yellow / Black': glbFullBodySkinYellow,
-      'Grey / Black': glbFullBodySkinGrey,
+      'Black / Yellow': glbFullBodySkinYellow,
+      'Black / Light Grey': glbFullBodySkinGrey,
     },
     category: 'Skin Wear',
     description: 'Ultimate full-body protection with grip panels on knees and seat, full front zipper, and stirrup foot straps.',
@@ -316,8 +316,8 @@ export const SHOP_PRODUCTS = [
     ],
     sizes: ['(S-M)', '(L-XXL)'],
     colors: [
-      { name: 'Yellow / Black', hex: '#EAB308' },
-      { name: 'Grey / Black', hex: '#6B7280' }
+      { name: 'Black / Yellow', hex: '#111111', hex2: '#EAB308' },
+      { name: 'Black / Light Grey', hex: '#111111', hex2: '#D1D5DB' }
     ],
     stock: 12,
     stockStatus: 'Low Stock',
