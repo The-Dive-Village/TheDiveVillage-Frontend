@@ -236,17 +236,8 @@ export default function Footer() {
           <div className="my-7 border-t border-white/15" />
 
           {/* Bottom Bar */}
-          <div className="flex items-center justify-between text-xs text-white/70">
+          <div className="text-center sm:text-left text-xs text-white/70">
             <p>© {new Date().getFullYear()} The Dive Village. A Brand of CAF Sourcing.</p>
-            <div className="flex items-center gap-2">
-              <Link to="/contact" className="hover:text-white transition-colors">
-                Privacy Policy
-              </Link>
-              <span className="text-white/40">|</span>
-              <Link to="/contact" className="hover:text-white transition-colors">
-                Terms of Service
-              </Link>
-            </div>
           </div>
         </div>
 
