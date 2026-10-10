@@ -20,6 +20,7 @@ class AudioManager {
     this.hasUnlocked = false
     this.initialized = false
     this.currentSourceIndex = 0
+    this.audioContext = null
 
     if (typeof window !== 'undefined') {
       this.init()
@@ -47,7 +48,6 @@ class AudioManager {
     audio.setAttribute('playsinline', '')
     audio.setAttribute('webkit-playsinline', '')
 
-    // Set initial source
     if (AUDIO_SOURCES.length > 0) {
       audio.src = AUDIO_SOURCES[0]
     }
@@ -67,7 +67,7 @@ class AudioManager {
 
     this.audio = audio
 
-    // Attach unlock handlers on any user interaction
+    // Attach unlock handlers on any user interaction (pointerdown, touchstart, click, keydown, mousemove, scroll)
     const unlockEvents = [
       'pointerdown',
       'touchstart',
@@ -75,7 +75,8 @@ class AudioManager {
       'click',
       'keydown',
       'wheel',
-      'scroll'
+      'scroll',
+      'mousemove'
     ]
 
     const unlock = () => {
@@ -85,6 +86,11 @@ class AudioManager {
           document.removeEventListener(evt, unlock, true)
         })
         return
+      }
+
+      // Resume Web Audio context if initialized
+      if (this.audioContext && this.audioContext.state === 'suspended') {
+        this.audioContext.resume().catch(() => {})
       }
 
       if (this.audio) {
@@ -100,7 +106,7 @@ class AudioManager {
               document.removeEventListener(evt, unlock, true)
             })
           }).catch(() => {
-            // Keep listeners alive for next user gesture
+            // Keep listeners for subsequent user gestures
           })
         }
       }
@@ -115,7 +121,7 @@ class AudioManager {
 
     window.addEventListener('tdv-unlock-audio', unlock)
 
-    // Attempt autoplay immediately
+    // Attempt direct autoplay on page load immediately
     if (!this.isMuted) {
       this.audio.volume = 0.5
       this.audio.muted = false
@@ -125,7 +131,11 @@ class AudioManager {
           this.hasUnlocked = true
           this.notify()
         }).catch(() => {
-          // Autoplay policy prevented playback; will unlock on first user gesture
+          // If unmuted autoplay blocked by browser policy, play muted first so stream buffers
+          this.audio.muted = true
+          this.audio.play().then(() => {
+            // Unmute on the next user event
+          }).catch(() => {})
         })
       }
     }
