@@ -1,15 +1,12 @@
 import underwaterAudioFile from '../assets/Audio.mp3'
 
-// Fallback sources list in order of preference:
-// 1. Vite hashed asset (Audio-*.mp3)
-// 2. Direct static public /Audio.mp3
-// 3. Direct static public /underwater.mp3
-// 4. Cloudinary reliable high-speed CDN audio fallback
+// Production CDN URL + Local Asset fallbacks:
+const CLOUDINARY_AUDIO_URL = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791624383/TDV-Audio/ambient_underwater.mp3'
+
 const AUDIO_SOURCES = [
+  CLOUDINARY_AUDIO_URL,
   underwaterAudioFile,
-  '/Audio.mp3',
-  'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790244012/dive-village/audio/Audio.mp3',
-  'https://res.cloudinary.com/qvbunv8y/video/upload/TDV-Audio/underwater_ambient_audio.mp3'
+  '/Audio.mp3'
 ].filter(Boolean)
 
 class AudioManager {
