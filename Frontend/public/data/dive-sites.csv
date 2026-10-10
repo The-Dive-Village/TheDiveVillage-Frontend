@@ -501,7 +501,7 @@ ID,Country,Site_Name,Latitude,Longitude,Natural_Types,PADI_URL,PADI_Latitude,PAD
 24731,Croatia,Tičiji rat,43.34184,16.84195,Wall; Cavern,https://www.padi.com/dive-site/croatia/ticiji-rat/,43.34333333333333,16.840555555555554,200,minimum_nearest_shoreline_crossing
 24733,Croatia,Bila punta,43.32519,16.87362,Reef; Wall; Cavern,https://www.padi.com/dive-site/croatia/bila-punta/,43.32666666666667,16.872222222222224,200,minimum_nearest_shoreline_crossing
 24739,Croatia,Kriz - Skala,43.28556,17.02139,Cave; Drift; Reef,https://www.padi.com/dive-site/croatia/kriz-skala/,43.285555555555554,17.02138888888889,0.0,PADI_coordinate_water
-24743,Croatia,Punta Osejava,43.28667,16.01944,Drift; Reef; Wall,https://www.padi.com/dive-site/croatia/punta-osejava/,43.28666666666666,16.01944444444442,0.0,PADI_coordinate_water
+24743,Croatia,Punta Osejava,43.28666666666666,17.019444444444442,Drift; Reef; Wall,https://www.padi.com/dive-site/croatia/punta-osejava/,43.28666666666666,17.019444444444442,0.0,PADI_coordinate_water
 24744,Croatia,Blue cave Hvar,43.15861,16.88194,Cave; Reef; Wall; Cavern,https://www.padi.com/dive-site/croatia/blue-cave-hvar/,43.15861111111111,16.881944444444446,0.0,PADI_coordinate_water
 24745,Croatia,Nugal,43.27889,17.03306,Reef; Wall,https://www.padi.com/dive-site/croatia/nugal/,43.278888888888886,17.033055555555556,0.0,PADI_coordinate_water
 25288,Croatia,"Lirica, Žuljana",42.87427,17.42698,Wall,https://www.padi.com/dive-site/croatia/lirica-zuljana/,42.87426580152777,17.426977157592777,0.0,PADI_coordinate_water
@@ -1856,9 +1856,6 @@ ID,Country,Site_Name,Latitude,Longitude,Natural_Types,PADI_URL,PADI_Latitude,PAD
 2655,Mexico,Mini Wall,20.82488,-86.87603,Reef; Wall,https://www.padi.com/dive-site/mexico/mini-wall/,20.824883,-86.876033,0.0,PADI_coordinate_water
 2657,Mexico,Aquarium,20.80503,-86.87997,Reef,https://www.padi.com/dive-site/mexico/aquarium-4/,20.805033,-86.879967,0.0,PADI_coordinate_water
 2731,Mexico,Akumal Bay Marine Park,20.39629,-87.30399,Reef,https://www.padi.com/dive-site/mexico/akumal-bay-marine-park/,20.39668641851668,-87.30586051940918,200,minimum_nearest_shoreline_crossing
-2732,Mexico,Cenote Angelita,20.13933,-87.57016,Cave,https://www.padi.com/dive-site/mexico/cenote-angelita/,20.139759639660177,-87.57202148437499,200,minimum_nearest_shoreline_crossing
-2769,Mexico,Cenote Tanimax,20.64925,-89.37036,Cave,https://www.padi.com/dive-site/mexico/cenote-tanimax/,20.64967171609298,-89.37223434448242,200,minimum_nearest_shoreline_crossing
-2804,Mexico,Cenote Chak Mol,20.50355,-87.23614,Cave,https://www.padi.com/dive-site/mexico/cenote-chak-mol/,20.503928146662584,-87.23801136016846,200,minimum_nearest_shoreline_crossing
 2836,Mexico,"San Carlos, Sonora",27.94846,-111.05656,Reef,https://www.padi.com/dive-site/mexico/san-carlos-sonora/,27.947573248602065,-111.05480432510376,200,minimum_nearest_shoreline_crossing
 2871,Mexico,Inah,20.56344,-87.13481,Reef,https://www.padi.com/dive-site/mexico/inah/,20.56380933343932,-87.13668823242188,200,minimum_nearest_shoreline_crossing
 2873,Mexico,Violin,15.73734,-96.13101,Beach; Reef,https://www.padi.com/dive-site/mexico/violin/,15.73874819869561,-96.13216280937196,200,minimum_nearest_shoreline_crossing
@@ -1888,22 +1885,17 @@ ID,Country,Site_Name,Latitude,Longitude,Natural_Types,PADI_URL,PADI_Latitude,PAD
 2897,Mexico,La Montosa Island,15.76147,-96.08402,Drift; Reef; Wall; Cavern,https://www.padi.com/dive-site/mexico/la-montosa-island/,15.7628800209137,-96.08518123626708,200,minimum_nearest_shoreline_crossing
 3045,Mexico,Chimo,20.49778,-105.49416,Reef,https://www.padi.com/dive-site/mexico/chimo/,20.49777794665844,-105.49415588378906,0.0,PADI_coordinate_water
 3046,Mexico,Anegados,20.68932,-105.65140,Reef,https://www.padi.com/dive-site/mexico/anegados/,20.68932277566333,-105.65139770507812,0.0,PADI_coordinate_water
-3290,Mexico,Cenote Tajma Ha,20.47391,-87.26459,Cave,https://www.padi.com/dive-site/mexico/cenote-tajma-ha/,20.4743,-87.266464,200,minimum_nearest_shoreline_crossing
 3368,Mexico,Whale Shark Refuge Waters,24.18004,-110.36071,Sandy bottom,https://www.padi.com/dive-site/mexico/whale-shark-refuge-waters/,24.180035,-110.360713,0.0,PADI_coordinate_water
 3865,Mexico,Pelican Rock,22.87916,-109.89839,Reef; Wall,https://www.padi.com/dive-site/mexico/pelican-rock/,22.87916,-109.898386,0.0,PADI_coordinate_water
 3924,Mexico,Chileno,22.94523,-109.80243,Ocean,https://www.padi.com/dive-site/mexico/chileno/,22.945234,-109.802427,0.0,PADI_coordinate_water
 5746,Mexico,Chankanaab Shallows,20.45060,-86.99011,Drift; Reef; Ocean,https://www.padi.com/dive-site/mexico/chankanaab-shallows/,20.45098,-86.991978,200,minimum_nearest_shoreline_crossing
 5854,Mexico,Los Arcos,20.54665,-105.29155,Reef; Wall,https://www.padi.com/dive-site/mexico/los-arcos/,20.546651,-105.291553,0.0,PADI_coordinate_water
-6618,Mexico,Jardin del Eden,20.49197,-87.25627,Cave; Cavern,https://www.padi.com/dive-site/mexico/jardin-del-eden/,20.49235109463216,-87.25813865661621,200,minimum_nearest_shoreline_crossing
-6621,Mexico,Cenote Dos Ojos,20.32442,-87.38872,Cavern,https://www.padi.com/dive-site/mexico/cenote-dos-ojos-3/,20.32482847293224,-87.39058613777162,200,minimum_nearest_shoreline_crossing
 6752,Mexico,El cristo,17.62190,-101.55127,Beach; Reef,https://www.padi.com/dive-site/mexico/el-cristo/,17.623674858820813,-101.5515661239624,200,minimum_nearest_shoreline_crossing
-7067,Mexico,Cuevitas,20.25793,-87.38678,Reef,https://www.padi.com/dive-site/mexico/cuavitas/,20.257929543616275,-87.38677740097046,0.0,PADI_coordinate_water
 7687,Mexico,Manchones National Park,21.19915,-86.72759,Reef,https://www.padi.com/dive-site/mexico/manchones/,21.199147,-86.727587,0.0,PADI_coordinate_water
 7689,Mexico,Punta Sur,21.19882,-86.71028,Drift,https://www.padi.com/dive-site/mexico/punta-sur-3/,21.198817,-86.710281,0.0,PADI_coordinate_water
 8873,Mexico,Santa Maria Bay,22.92927,-109.81673,Reef; Sandy bottom; Ocean,https://www.padi.com/dive-site/mexico/santa-maria-bay-2/,22.92946470447312,-109.81478691101076,200,minimum_nearest_shoreline_crossing
 9611,Mexico,Paso de Cedral,20.37492,-87.02597,Drift; Reef,https://www.padi.com/dive-site/mexico/paso-de-cedral/,20.3749233497694,-87.02596664428712,0.0,PADI_coordinate_water
 9612,Mexico,The Corner,20.71310,-86.97859,Reef; Wall,https://www.padi.com/dive-site/mexico/the-corner/,20.713095435232937,-86.97858810424805,0.0,PADI_coordinate_water
-11280,Mexico,Cenote Dos Ojos,20.32559,-87.38789,Cavern,https://www.padi.com/dive-site/mexico/cenote-dos-ojos-4/,20.32599552628245,-87.38976001739503,200,minimum_nearest_shoreline_crossing
 12574,Mexico,Coquitos,20.23176,-87.40409,Reef; Sandy bottom; Ocean,https://www.padi.com/dive-site/mexico/coquitos/,20.23175785242932,-87.40409374237062,0.0,PADI_coordinate_water
 15269,Mexico,Palancar Gardens,20.35066,-87.02465,Drift; Reef; Wall,https://www.padi.com/dive-site/mexico/palancar-gardens-2/,20.35106492452566,-87.0265245857709,200,minimum_nearest_shoreline_crossing
 15270,Mexico,Paradise Reef,20.46863,-86.98370,Drift; Reef; Ocean,https://www.padi.com/dive-site/mexico/paradise-reef-4/,20.46863148742675,-86.98369503021242,0.0,PADI_coordinate_water
@@ -3316,7 +3308,6 @@ ID,Country,Site_Name,Latitude,Longitude,Natural_Types,PADI_URL,PADI_Latitude,PAD
 24185,United Arab Emirates,Martini Wall,25.33716,56.38068,Reef,https://www.padi.com/dive-site/united-arab-emirates/martini-wall-2/,25.33716090532552,56.380677223205566,0.0,PADI_coordinate_water
 14,United Kingdom,Brixham Breakwater Beach,50.39813,-3.50408,Beach,https://www.padi.com/dive-site/united-kingdom/brixham-breakwater-beach/,50.3999287412946,-3.5040593147277828,200,minimum_nearest_shoreline_crossing
 438,United Kingdom,Nest Ends Gully,55.87541,-2.08163,Reef; Wall; Channel,https://www.padi.com/dive-site/united-kingdom/nest-ends-gully/,55.87541014629012,-2.081630229949951,0.0,PADI_coordinate_water
-439,United Kingdom,Greenends Gully,55.87514,-2.08282,Reef; Wall; Channel,https://www.padi.com/dive-site/united-kingdom/greenends-gully/,55.875139,-2.082816,0.0,PADI_coordinate_water
 442,United Kingdom,St Mary's Island - West Bay,55.06963,-1.44972,Beach; Reef,https://www.padi.com/dive-site/united-kingdom/st-marys-island-west-bay/,55.0701,-1.452749,200,minimum_nearest_shoreline_crossing
 678,United Kingdom,Lundy Island,51.16643,-4.67880,Reef,https://www.padi.com/dive-site/united-kingdom/lundy-island/,51.16642774275134,-4.678802490234375,0.0,PADI_coordinate_water
 811,United Kingdom,Chesil Beach,50.55971,-2.45580,Beach,https://www.padi.com/dive-site/united-kingdom/chesil-beach/,50.55874668203289,-2.4480950832366943,555,minimum_nearest_shoreline_crossing
@@ -3329,7 +3320,6 @@ ID,Country,Site_Name,Latitude,Longitude,Natural_Types,PADI_URL,PADI_Latitude,PAD
 3638,United Kingdom,Porthkerris Beach,50.06374,-5.06670,Ocean,https://www.padi.com/dive-site/united-kingdom/porthkerris-beach/,50.065503,-5.066162,200,minimum_nearest_shoreline_crossing
 4158,United Kingdom,A-Frames (Finnart),56.11739,-4.83117,Sea Loch; Archaeological,https://www.padi.com/dive-site/united-kingdom/a-frames-finnart/,56.117388,-4.831173,0.0,PADI_coordinate_water
 4208,United Kingdom,Craggen,56.16607,-4.79029,Reef; Sea Loch; Wall,https://www.padi.com/dive-site/united-kingdom/craggen/,56.164766,-4.788065,200,minimum_nearest_shoreline_crossing
-4671,United Kingdom,Conger Alley,56.19329,-4.77951,Reef; Sea Loch; Ocean,https://www.padi.com/dive-site/united-kingdom/conger-alley/,56.19197,-4.777327,200,minimum_nearest_shoreline_crossing
 4898,United Kingdom,Branksome Chine Pipes,50.70422,-1.90747,Beach; Reef; Sandy bottom; Ocean,https://www.padi.com/dive-site/united-kingdom/branksome-chine-pipe/,50.705985,-1.908048,200,minimum_nearest_shoreline_crossing
 5016,United Kingdom,Trearddurr Bay,53.27630,-4.61095,Beach,https://www.padi.com/dive-site/united-kingdom/trearddurr-bay/,53.278,-4.61,200,minimum_nearest_shoreline_crossing
 5033,United Kingdom,Farne Islands,55.66519,-1.62598,Drift; Reef,https://www.padi.com/dive-site/united-kingdom/farne-islands/,55.665193,-1.625977,0.0,PADI_coordinate_water
@@ -3343,9 +3333,7 @@ ID,Country,Site_Name,Latitude,Longitude,Natural_Types,PADI_URL,PADI_Latitude,PAD
 10375,United Kingdom,Gallanach Reef,56.39339,-5.51856,Reef; Ocean,https://www.padi.com/dive-site/united-kingdom/gallanach-reef/,56.392196539528165,-5.5161237716674805,200,minimum_nearest_shoreline_crossing
 13324,United Kingdom,Gylly Beach,50.14212,-5.06882,Reef; Sandy bottom,https://www.padi.com/dive-site/united-kingdom/gylly-beach/,50.14387865096156,-5.068269803010103,200,minimum_nearest_shoreline_crossing
 14878,United Kingdom,Selsey Beach,50.72669,-0.77774,Beach,https://www.padi.com/dive-site/united-kingdom/selsey-beach/,50.72838094605414,-0.7787096500396729,200,minimum_nearest_shoreline_crossing
-15157,United Kingdom,Babbacombe Beach,50.47786,-3.50905,Beach; Reef; Ocean,https://www.padi.com/dive-site/united-kingdom/babbacombe-beach-3/,50.47965702890173,-3.5090160007745523,200,minimum_nearest_shoreline_crossing
 15234,United Kingdom,Bognor Rocks,50.77743,-0.69249,Beach; Drift; Reef,https://www.padi.com/dive-site/united-kingdom/bognor-rocks-2/,50.77910504016152,-0.6934905052185059,200,minimum_nearest_shoreline_crossing
-15259,United Kingdom,Babbacombe Beach,50.47764,-3.50905,Beach; Ocean,https://www.padi.com/dive-site/united-kingdom/babbacombe-beach-2/,50.47943855422528,-3.5090159862894588,200,minimum_nearest_shoreline_crossing
 15273,United Kingdom,Bognor Rocks,50.77717,-0.69254,Reef; Sandy bottom,https://www.padi.com/dive-site/united-kingdom/bognor-rocks/,50.77884528757301,-0.6935371086001397,200,minimum_nearest_shoreline_crossing
 20581,United Kingdom,Lundy Island - Gannet's Bay,51.19430,-4.67005,Reef; Ocean,https://www.padi.com/dive-site/united-kingdom/lundy-island-2/,51.196073592737626,-4.669532572689321,200,minimum_nearest_shoreline_crossing
 24754,United Kingdom,Lundy Island Seal Encounter Dive Sites,51.19535,-4.66885,Sandy bottom,https://www.padi.com/dive-site/united-kingdom/lundy-island-seal-encounter-dive-sites-2/,51.19534747034083,-4.668846393998754,0.0,PADI_coordinate_water
@@ -3354,7 +3342,6 @@ ID,Country,Site_Name,Latitude,Longitude,Natural_Types,PADI_URL,PADI_Latitude,PAD
 665,United States of America (USA),Indian River Inlet,38.59180,-75.16608,Beach; Channel,https://www.padi.com/dive-site/united-states-of-america-usa/indian-river-inlet/,38.5917952,-75.168384,200,minimum_nearest_shoreline_crossing
 754,United States of America (USA),St. Andrews Jetties,30.12187,-85.73092,Beach,https://www.padi.com/dive-site/united-states-of-america-usa/st-andrews-jetties/,30.12476953136383,-85.73298633098602,379,minimum_nearest_shoreline_crossing
 756,United States of America (USA),Destin Jetties,30.38400,-86.50607,Beach,https://www.padi.com/dive-site/united-states-of-america-usa/destin-jetties/,30.38579618049916,-86.50606870651245,200,minimum_nearest_shoreline_crossing
-844,United States of America (USA),Niagara River Drift dives,43.00951,-78.90787,Drift,https://www.padi.com/dive-site/united-states-of-america-usa/niagara-river-drift-dives/,43.0095051668962,-78.9103338739369,200,minimum_nearest_shoreline_crossing
 994,United States of America (USA),Casino Point Dive Park,33.34906,-118.32636,Beach,https://www.padi.com/dive-site/united-states-of-america-usa/casino-point-dive-park/,33.34906403624164,-118.32421302795412,200,minimum_nearest_shoreline_crossing
 1044,United States of America (USA),Koloa Landing Dive Site,21.87908,-159.47052,Reef,https://www.padi.com/dive-site/united-states-of-america-usa/koloa-landing-dive-site/,21.87908222538648,-159.46857511997223,200,minimum_nearest_shoreline_crossing
 1045,United States of America (USA),Sheraton Caverns,21.87341,-159.46821,Reef; Wall,https://www.padi.com/dive-site/united-states-of-america-usa/sheraton-caverns-2/,21.873407156419425,-159.46627378463745,200,minimum_nearest_shoreline_crossing
@@ -3371,7 +3358,6 @@ ID,Country,Site_Name,Latitude,Longitude,Natural_Types,PADI_URL,PADI_Latitude,PAD
 1301,United States of America (USA),Five Caves at Makena Landing,20.65382,-156.44299,Reef,https://www.padi.com/dive-site/united-states-of-america-usa/five-caves-at-makena-landing/,20.65381799492841,-156.44107460975647,200,minimum_nearest_shoreline_crossing
 1302,United States of America (USA),Reefs End at Molokini Crater,20.63479,-156.49759,Reef,https://www.padi.com/dive-site/united-states-of-america-usa/reefs-end-at-molokini-crater/,20.63479237067984,-156.4975941181183,0.0,PADI_coordinate_water
 1303,United States of America (USA),Enenue at Molokini Dive Site,20.63345,-156.49460,Reef,https://www.padi.com/dive-site/united-states-of-america-usa/enenue-at-molokini-dive-site/,20.633446933014103,-156.49460077285767,0.0,PADI_coordinate_water
-1558,United States of America (USA),Rainbow River,29.04570,-82.45820,Drift,https://www.padi.com/dive-site/united-states-of-america-usa/rainbow-river/,29.0475,-82.4582,200,minimum_nearest_shoreline_crossing
 1713,United States of America (USA),Grayton Beach State Park,30.30589,-86.15891,Beach; Reef,https://www.padi.com/dive-site/united-states-of-america-usa/grayton-beach-state-park/,30.3076888673814,-86.15890502929688,200,minimum_nearest_shoreline_crossing
 1720,United States of America (USA),Patch Reefs - 20-30 ft,24.90979,-80.57270,Reef,https://www.padi.com/dive-site/united-states-of-america-usa/patch-reefs-20-30-ft/,24.90979251097979,-80.57270050048828,0.0,PADI_coordinate_water
 1721,United States of America (USA),Barrier Reef Shallow- 30-45 ft,24.88986,-80.54266,Reef,https://www.padi.com/dive-site/united-states-of-america-usa/barrier-reef-shallow-30-45-ft/,24.88986231692738,-80.54265975952148,0.0,PADI_coordinate_water
@@ -3409,8 +3395,6 @@ ID,Country,Site_Name,Latitude,Longitude,Natural_Types,PADI_URL,PADI_Latitude,PAD
 2969,United States of America (USA),Target Rock,35.36940,-120.86426,Channel,https://www.padi.com/dive-site/united-states-of-america-usa/target-rock/,35.36940280073097,-120.86426496505736,0.0,PADI_coordinate_water
 3019,United States of America (USA),Seacrest Cove 2,47.58860,-122.38241,Beach,https://www.padi.com/dive-site/united-states-of-america-usa/seacrest-cove-2/,47.58859684758036,-122.37974524497986,200,minimum_nearest_shoreline_crossing
 3020,United States of America (USA),Redondo,47.34932,-122.32701,Beach,https://www.padi.com/dive-site/united-states-of-america-usa/redondo/,47.349318,-122.324359,200,minimum_nearest_shoreline_crossing
-3051,United States of America (USA),Homestead Crater,40.52411,-111.48738,Cavern,https://www.padi.com/dive-site/united-states-of-america-usa/homestead-crater/,40.523978,-111.48502,200,minimum_nearest_shoreline_crossing
-3223,United States of America (USA),Devil's Den,29.40551,-82.47607,,https://www.padi.com/dive-site/united-states-of-america-usa/devils-den/,29.407308,-82.476066,200,minimum_nearest_shoreline_crossing
 3244,United States of America (USA),The Arch,33.47290,-119.03600,Ocean,https://www.padi.com/dive-site/united-states-of-america-usa/the-arch/,33.4729,-119.036,0.0,PADI_coordinate_water
 3245,United States of America (USA),Casino Point,33.34864,-118.32479,Ocean,https://www.padi.com/dive-site/united-states-of-america-usa/casino-point/,33.3486397,-118.324795,0.0,PADI_coordinate_water
 3246,United States of America (USA),Farnsworth Banks,33.50556,-118.77556,Ocean,https://www.padi.com/dive-site/united-states-of-america-usa/farnsworth-banks/,33.50555556,-118.7755556,0.0,PADI_coordinate_water

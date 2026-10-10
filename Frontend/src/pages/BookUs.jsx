@@ -2,6 +2,8 @@ import LazyVideo from '../components/LazyVideo'
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { useSearchParams } from 'react-router'
 import { motion } from 'framer-motion'
+import PhoneInput from 'react-phone-number-input'
+import flags from 'react-phone-number-input/flags'
 import CompactTwoMonthCalendarPopover from '../components/CompactTwoMonthCalendarPopover'
 import SEOHead from '../components/SEOHead'
 import padiCountries from '../data/padiCountries.json'
@@ -794,44 +796,6 @@ export default function BookUs() {
           {/* Column 1: 4-Step Booking Wizard */}
           <div className="lg:col-span-6 xl:col-span-5 w-full min-w-0">
             <div className="flex flex-col w-full min-w-0">
-
-              {/* Step Indicator Bar - Desktop Full Version */}
-              <div className="hidden sm:flex items-center justify-between mb-8 bg-white/90 backdrop-blur-xl p-5 rounded-3xl border border-navy/10 shadow-sm overflow-x-auto scrollbar-none">
-                {(((!experience && Boolean(selectedAddOn)) || isDirectActivity(experience))
-                  ? [
-                    { num: 1, title: 'Location & Experience' },
-                    { num: 4, title: 'Contact Info' },
-                  ]
-                  : initialFromService
-                  ? [
-                    { num: 1, title: 'Location & Experience' },
-                    { num: 2, title: 'Participant Details' },
-                    { num: 4, title: 'Contact Info' },
-                  ]
-                  : [
-                    { num: 1, title: 'Location & Experience' },
-                    { num: 2, title: 'Participant Details' },
-                    { num: 3, title: 'Programs' },
-                    { num: 4, title: 'Contact Info' },
-                  ]
-                ).map((s, idx, arr) => (
-                  <div key={s.num} className="flex items-center gap-2.5 shrink-0">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${currentStep === s.num
-                      ? 'bg-navy text-white shadow-md ring-2 ring-navy/20'
-                      : currentStep > s.num
-                        ? 'bg-emerald-500 text-white'
-                        : 'bg-[#F0F2F5] text-navy/50'
-                      }`}>
-                      {currentStep > s.num ? '✓' : idx + 1}
-                    </div>
-                    <span className={`text-xs font-bold whitespace-nowrap ${currentStep === s.num ? 'text-navy font-bold' : 'text-navy/40'}`}>
-                      {s.title}
-                    </span>
-                    {idx < arr.length - 1 && <span className="text-navy/20 text-xs mx-1">→</span>}
-                  </div>
-                ))}
-              </div>
-
               <form id="booking-wizard-form" onSubmit={handleSubmit} className="flex-1 flex flex-col bg-white p-4 sm:p-10 rounded-2xl sm:rounded-[36px] border border-navy/10 shadow-sm sm:shadow-card w-full min-w-0 max-w-full min-h-[auto] sm:min-h-[620px] justify-between">
                 <div className="flex-1 space-y-3.5 sm:space-y-6">
 
@@ -1559,21 +1523,18 @@ export default function BookUs() {
 
                       <div>
                         <label className="mb-1 sm:mb-2 block text-[9px] sm:text-xs font-bold text-navy/70 uppercase tracking-wider">Phone Number</label>
-                        <input
-                          type="tel"
-                          inputMode="numeric"
-                          placeholder="XXX XXX XXXX"
-                          value={contact.phone}
-                          maxLength={12}
-                          onChange={(e) => {
-                            const digits = e.target.value.replace(/\D/g, '').slice(0, 10)
-                            let formatted = digits
-                            if (digits.length > 6) formatted = digits.slice(0, 3) + ' ' + digits.slice(3, 6) + ' ' + digits.slice(6)
-                            else if (digits.length > 3) formatted = digits.slice(0, 3) + ' ' + digits.slice(3)
-                            setContact((prev) => ({ ...prev, phone: formatted }))
-                          }}
-                          className="w-full rounded-lg sm:rounded-2xl bg-[#F0F2F5] px-3 py-2 sm:px-5 sm:py-4 text-[11px] sm:text-sm placeholder:text-[10px] sm:placeholder:text-sm font-semibold sm:font-bold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition placeholder:text-navy/30"
-                        />
+                        <div className="w-full rounded-lg sm:rounded-2xl bg-[#F0F2F5] px-3 py-2 sm:px-5 sm:py-3.5 focus-within:ring-2 focus-within:ring-accent/50 transition">
+                          <PhoneInput
+                            flags={flags}
+                            defaultCountry="IN"
+                            international
+                            withCountryCallingCode
+                            placeholder="Enter phone number"
+                            value={contact.phone}
+                            onChange={(value) => setContact((prev) => ({ ...prev, phone: value || '' }))}
+                            className="w-full text-[11px] sm:text-sm font-semibold sm:font-bold text-navy outline-none placeholder:text-navy/30"
+                          />
+                        </div>
                       </div>
                     </div>
 

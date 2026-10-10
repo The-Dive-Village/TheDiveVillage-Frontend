@@ -9,7 +9,8 @@ import { GALLERY_ITEMS } from '../utils/galleryData'
 import { triggerHaptic } from '../utils/haptics'
 import { shareContent } from '../utils/share'
 import { useLenis } from '../utils/lenisReact'
-import diversBg from '../assets/divers.png'
+
+const diversBg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458258/TDV-Media/Products/Group/4M7A6732.jpg'
 
 const cleanTitle = (t) => (t ? t.replace(/\s*\(\d+\)/g, '').trim() : '')
 const SANITIZED_GALLERY_ITEMS = GALLERY_ITEMS.map((item) => ({

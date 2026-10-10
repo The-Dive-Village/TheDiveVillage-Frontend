@@ -1,23 +1,21 @@
-// Local 3D Models for Cap & Bag
-import glbCap from '../assets/Media/baseball cap 3d model.glb';
-import glbBag from '../assets/Media/backpack 3d model (4).glb';
-
 // Cloudinary Fallbacks
 const imgCloudinaryWomensShirtFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1790243995/dive-village/products/enwcujudp0hde9okxzpo.jpg'
 const imgCloudinaryWomensShirtBack = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1790243996/dive-village/products/gd7symgzgjml8cng5qya.jpg'
 
 // 3D GLB Model Imports
-const glbBottomsCompression = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791458296/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Bottoms_with_compression_support.glb';
-const glbFullSleeves = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791458308/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Full_Sleeves_Top.glb';
+const glbCap = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791610525/TDV-Media/Products/TDV%20-%203D%20Product%20Files/The_Dive_Village_Foldable_Cap.glb';
+const glbBag = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791610581/TDV-Media/Products/TDV%20-%203D%20Product%20Files/The_Dive_Village_Gear_Bag.glb';
+const glbBottomsCompression = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791609610/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Bottoms_with_compression_support.glb';
+const glbFullSleeves = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791609687/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Full_Sleeves_Top.glb';
 const glbHalfSleeves = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791458322/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Half_sleeves_tops_-_unisex.glb';
-const glbShortsUnisex = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791458335/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Shorts_-_unisex.glb';
+const glbShortsUnisex = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791609879/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Shorts_-_unisex.glb';
 const glbFullBodySkinGrey = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791458356/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Unisex_full_body_skin_with_front_zipper_Grey.glb';
 const glbFullBodySkinYellow = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791458376/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Unisex_full_body_skin_with_front_zipper_yellow.glb';
-const glbWetSuitFullLengthMale = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791458396/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Wet_Suit_-_Full_Length_Male.glb';
-const glbWetSuitShortieMale = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791458417/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Wet_Suit_-_Shortie_Male.glb';
+const glbWetSuitFullLengthMale = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791609765/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Wet_Suit_-_Full_Length_Male.glb';
+const glbWetSuitShortieMale = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791609807/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Wet_Suit_-_Shortie_Male.glb';
 const glbWetSuitShortieFemale = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791458436/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Wet_Suit_Shortie_Female.glb';
 const glbWomensShoulderStrap = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791458455/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Womens_shoulder_strap_shortie_with_all_round_compression.glb';
-const glbWomensSweetheart = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791458478/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Womens_Sweetheart_neck_top.glb';
+const glbWomensSweetheart = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791609981/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Womens_Sweetheart_neck_top.glb';
 
 // Backpack Assets
 const imgBagFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458222/TDV-Media/Products/Backpack/bag_front.webp';
@@ -38,8 +36,8 @@ const imgCapFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v179145823
 const imgCapBack = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458237/TDV-Media/Products/Cap/capb.webp';
 
 // Full Sleeves Tops - Unisex Assets
-const imgFullSleevesFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458245/TDV-Media/Products/Full%20Sleeves%20Tops%20-%20Unisex/Full_sleeve_front.jpg';
-const imgFullSleevesBack = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458244/TDV-Media/Products/Full%20Sleeves%20Tops%20-%20Unisex/Full_sleeve_back.jpg';
+const imgFullSleevesFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791609697/TDV-Media/Products/Full%20Sleeves%20Tops%20-%20Unisex/Full_sleeve_front.png';
+const imgFullSleevesBack = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791609706/TDV-Media/Products/Full%20Sleeves%20Tops%20-%20Unisex/Full_sleeve_back.png';
 const imgFullSleevesModel1 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458239/TDV-Media/Products/Full%20Sleeves%20Tops%20-%20Unisex/4M7A5597.jpg';
 const imgFullSleevesModel2 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458240/TDV-Media/Products/Full%20Sleeves%20Tops%20-%20Unisex/4M7A6299.jpg';
 const imgFullSleevesModel3 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458241/TDV-Media/Products/Full%20Sleeves%20Tops%20-%20Unisex/4M7A6453.jpg';
@@ -54,8 +52,8 @@ const imgHalfSleevesModel3 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v
 const imgHalfSleevesModel4 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458270/TDV-Media/Products/Half%20Sleeves%20Tops%20-%20Unisex/4M7A6544.jpg';
 
 // Shorts - Unisex Assets
-const imgUnisexShortsFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458282/TDV-Media/Products/Shorts%20-%20Unisex/Shorts_Front.jpg';
-const imgUnisexShortsBack = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458281/TDV-Media/Products/Shorts%20-%20Unisex/Shorts_Back.jpg';
+const imgUnisexShortsFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791609885/TDV-Media/Products/Shorts%20-%20Unisex/Shorts_Front.png';
+const imgUnisexShortsBack = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791609890/TDV-Media/Products/Shorts%20-%20Unisex/Shorts_Back.png';
 const imgUnisexShortsModel1 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458276/TDV-Media/Products/Shorts%20-%20Unisex/4M7A5477.jpg';
 const imgUnisexShortsModel2 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458278/TDV-Media/Products/Shorts%20-%20Unisex/4M7A5614.jpg';
 const imgUnisexShortsModel3 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458279/TDV-Media/Products/Shorts%20-%20Unisex/4M7A5732.jpg';
@@ -94,8 +92,8 @@ const imgWomensStrapModel2 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v
 const imgWomensStrapModel3 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458519/TDV-Media/Products/Women%27s%20Shoulder%20Strap%20Shortie%20with%20all%20round%20compression/4M7A6782.jpg';
 
 // Womens Sweetheart Neck Top Assets
-const imgWomensSweetheartFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458527/TDV-Media/Products/Womens%20Sweetheart%20Neck%20Top/Sweetheart_front.jpg';
-const imgWomensSweetheartBack = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458526/TDV-Media/Products/Womens%20Sweetheart%20Neck%20Top/Sweeheart_bck.jpg';
+const imgWomensSweetheartFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791609983/TDV-Media/Products/Womens%20Sweetheart%20Neck%20Top/Sweetheart_front.jpg';
+const imgWomensSweetheartBack = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791609992/TDV-Media/Products/Womens%20Sweetheart%20Neck%20Top/Sweeheart_bck.png';
 const imgWomensSweetheartModel1 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458522/TDV-Media/Products/Womens%20Sweetheart%20Neck%20Top/4M7A5652.jpg';
 const imgWomensSweetheartModel2 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458523/TDV-Media/Products/Womens%20Sweetheart%20Neck%20Top/4M7A5870.jpg';
 const imgWomensSweetheartModel3 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458525/TDV-Media/Products/Womens%20Sweetheart%20Neck%20Top/4M7A6144.jpg';

@@ -55,6 +55,50 @@ export async function loadDiveSites(csvUrl = '/data/dive-sites.csv') {
         '24530': { exclude: true },
         // ID 24531: Accurate coastal reef coordinates for Mirissa, Sri Lanka
         '24531': { country: 'Sri Lanka', latitude: 5.9405, longitude: 80.4550 },
+
+        // User requested removals:
+        // Homestead Crater - USA (ID: 3051)
+        '3051': { exclude: true },
+        // Niagara River Drift Dives - USA (ID: 844)
+        '844': { exclude: true },
+        // Babbacombe Beach - UK (IDs: 15157, 15259)
+        '15157': { exclude: true },
+        '15259': { exclude: true },
+        // Greenends / Greensends Gully - UK (ID: 439)
+        '439': { exclude: true },
+        // Conger Alley - UK (ID: 4671)
+        '4671': { exclude: true },
+
+        // Inland / on-land freshwater & cenote dive sites removed:
+        // Devil's Den - USA (ID: 3223)
+        '3223': { exclude: true },
+        // Rainbow River - USA (ID: 1558)
+        '1558': { exclude: true },
+        // Cenote Angelita - Mexico (ID: 2732)
+        '2732': { exclude: true },
+        // Cenote Tanimax - Mexico (ID: 2769)
+        '2769': { exclude: true },
+        // Cenote Chak Mol - Mexico (ID: 2804)
+        '2804': { exclude: true },
+        // Cenote Tajma Ha - Mexico (ID: 3290)
+        '3290': { exclude: true },
+        // Jardin del Eden - Mexico (ID: 6618)
+        '6618': { exclude: true },
+        // Cenote Dos Ojos - Mexico (IDs: 6621, 11280)
+        '6621': { exclude: true },
+        '11280': { exclude: true },
+        // Cuevitas - Mexico (ID: 7067)
+        '7067': { exclude: true },
+
+        // User requested moves to the authentic open-water coast:
+        // Seacrest Cove 2 - USA (Elliott Bay / Puget Sound Coast, Seattle, WA)
+        '3019': { latitude: 47.5898, longitude: -122.3805 },
+        // Port of Hoodsport - USA (Hood Canal Coastal Waters, Hoodsport, WA)
+        '4936': { latitude: 47.4042, longitude: -123.1388 },
+        // Brixham Breakwater Beach - UK (Torbay Coast / English Channel, Devon, UK)
+        '14': { latitude: 50.4008, longitude: -3.5032 },
+        // Punta Osejava - Croatia (ID: 24743)
+        '24743': { latitude: 43.28666666666666, longitude: 17.019444444444442 },
       }
 
       rows.forEach((row, index) => {

@@ -503,31 +503,31 @@ export default function Home() {
             </div>
           </SectionReveal>
 
-          <StaggerGrid className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none pb-4 gap-3 md:grid md:grid-cols-3 md:gap-8 items-stretch md:overflow-visible px-1">
+          <StaggerGrid className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none pb-4 gap-4 md:grid md:grid-cols-3 md:gap-8 items-stretch md:overflow-visible px-2 sm:px-4">
             {approvedReviews.slice(0, 3).map((t, i) => (
-              <StaggerItem key={t.id || i} className="w-[260px] xs:w-[280px] sm:w-[320px] shrink-0 md:w-auto snap-center h-full">
-                <div className="h-full flex flex-col justify-between bg-white/10 backdrop-blur-2xl rounded-2xl sm:rounded-3xl p-4 sm:p-8 border border-white/20 shadow-[0_8px_24px_rgba(0,0,0,0.25)] hover:bg-white/15 hover:border-white/40 hover:-translate-y-2 hover:shadow-[0_12px_32px_rgba(0,0,0,0.35)] transition-all duration-500">
+              <StaggerItem key={t.id || i} className="w-[85vw] max-w-[340px] xs:max-w-[360px] sm:w-[360px] shrink-0 md:w-auto snap-center h-full">
+                <div className="h-full flex flex-col justify-between bg-white/10 backdrop-blur-2xl rounded-2xl sm:rounded-3xl p-5 sm:p-8 border border-white/20 shadow-[0_8px_24px_rgba(0,0,0,0.25)] hover:bg-white/15 hover:border-white/40 hover:-translate-y-2 hover:shadow-[0_12px_32px_rgba(0,0,0,0.35)] transition-all duration-500">
                   <div>
-                    <div className="flex gap-0.5 sm:gap-1 mb-2 sm:mb-6">
+                    <div className="flex gap-1 mb-3 sm:mb-6">
                       {[...Array(t.rating || 5)].map((_, j) => (
-                        <svg key={j} className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-[#FFCD00]" fill="currentColor" viewBox="0 0 20 20">
+                        <svg key={j} className="w-4 h-4 sm:w-5 sm:h-5 text-[#FFCD00]" fill="currentColor" viewBox="0 0 20 20">
                           <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                         </svg>
                       ))}
                     </div>
-                    <p className="text-white/95 font-medium mb-3 sm:mb-8 text-xs sm:text-base leading-relaxed text-justify">
+                    <p className="text-white/95 font-medium mb-4 sm:mb-8 text-xs sm:text-base leading-relaxed text-left">
                       "{t.text}"
                     </p>
                   </div>
-                  <div className="flex items-center gap-2.5 sm:gap-4 mt-auto">
-                    <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-full overflow-hidden border border-white/30 shrink-0 shadow-md">
+                  <div className="flex items-center gap-3 sm:gap-4 mt-auto pt-2">
+                    <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-full overflow-hidden border border-white/30 shrink-0 shadow-md">
                       <SafeImage src={t.image} alt={t.name} className="w-full h-full object-cover" />
                     </div>
-                    <div>
-                      <h4 className="font-bold text-white text-xs sm:text-sm tracking-wide truncate max-w-[120px] sm:max-w-none">
+                    <div className="min-w-0">
+                      <h4 className="font-bold text-white text-xs sm:text-sm tracking-wide truncate">
                         {t.name}
                       </h4>
-                      <span className="text-[10px] sm:text-xs text-[#FFCD00] font-medium block truncate max-w-[120px] sm:max-w-none">
+                      <span className="text-[10px] sm:text-xs text-[#FFCD00] font-medium block truncate">
                         {t.role}
                       </span>
                     </div>

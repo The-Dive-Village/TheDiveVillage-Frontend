@@ -329,9 +329,9 @@ export default function About() {
             </h2>
           </SectionReveal>
           
-          <div className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none gap-4 md:gap-8 md:grid md:grid-cols-3 items-stretch pb-4 md:pb-0">
+          <div className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none gap-4 md:gap-8 md:grid md:grid-cols-3 items-stretch pb-4 md:pb-0 px-2 sm:px-4">
             {reviewsToDisplay.map((t, i) => (
-              <div key={t.id || i} className="w-[260px] xs:w-[280px] shrink-0 snap-center md:w-auto bg-white/10 backdrop-blur-2xl rounded-2xl sm:rounded-3xl p-5 sm:p-8 border border-white/20 shadow-2xl hover:bg-white/15 hover:border-white/30 hover:-translate-y-2 transition duration-500 flex flex-col justify-between h-full">
+              <div key={t.id || i} className="w-[85vw] max-w-[340px] xs:max-w-[360px] sm:w-[360px] shrink-0 snap-center md:w-auto bg-white/10 backdrop-blur-2xl rounded-2xl sm:rounded-3xl p-5 sm:p-8 border border-white/20 shadow-2xl hover:bg-white/15 hover:border-white/30 hover:-translate-y-2 transition duration-500 flex flex-col justify-between h-full">
                 <div>
                   <div className="flex gap-1 mb-3 sm:mb-6">
                     {[...Array(t.rating || 5)].map((_, j) => (
@@ -340,15 +340,15 @@ export default function About() {
                       </svg>
                     ))}
                   </div>
-                  <p className="text-xs sm:text-base text-white/95 mb-4 sm:mb-8 leading-relaxed font-body font-medium text-justify">"{t.text}"</p>
+                  <p className="text-xs sm:text-base text-white/95 mb-4 sm:mb-8 leading-relaxed font-body font-medium text-left">"{t.text}"</p>
                 </div>
-                <div className="flex items-center gap-3 sm:gap-4 mt-auto">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden border-2 border-white/30 shrink-0 shadow-md">
+                <div className="flex items-center gap-3 sm:gap-4 mt-auto pt-2">
+                  <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-full overflow-hidden border-2 border-white/30 shrink-0 shadow-md">
                     <SafeImage src={t.image} alt={t.name} className="w-full h-full object-cover" />
                   </div>
-                  <div>
-                    <h4 className="font-heading font-bold text-white text-xs sm:text-sm">{t.name}</h4>
-                    <span className="text-[10px] sm:text-xs text-[#FFCD00] font-heading font-bold">{t.role}</span>
+                  <div className="min-w-0">
+                    <h4 className="font-heading font-bold text-white text-xs sm:text-sm truncate">{t.name}</h4>
+                    <span className="text-[10px] sm:text-xs text-[#FFCD00] font-heading font-bold block truncate">{t.role}</span>
                   </div>
                 </div>
               </div>

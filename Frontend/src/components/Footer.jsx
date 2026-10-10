@@ -237,7 +237,7 @@ export default function Footer() {
 
           {/* Bottom Bar */}
           <div className="flex items-center justify-between text-xs text-white/70">
-            <p>© {new Date().getFullYear()} The Dive Village</p>
+            <p>© {new Date().getFullYear()} The Dive Village. A Brand of CAF Sourcing.</p>
             <div className="flex items-center gap-2">
               <Link to="/contact" className="hover:text-white transition-colors">
                 Privacy Policy
@@ -318,7 +318,7 @@ export default function Footer() {
                 <h3 className="font-heading text-base sm:text-lg font-bold uppercase tracking-wider sm:tracking-widest text-accent">
                   Contact
                 </h3>
-                <div className="mt-3 sm:mt-4 flex flex-1 flex-col justify-between space-y-2 sm:space-y-0">
+                <div className="mt-3 sm:mt-4 flex flex-1 flex-col justify-between space-y-3">
                   <ul className="flex flex-1 flex-col justify-between space-y-2 sm:space-y-0">
                     {SOCIALS.map((s) => (
                       <li key={s.label}>
@@ -327,8 +327,11 @@ export default function Footer() {
                           onClick={(e) => handleSocialClick(s, e)}
                           target={s.to.startsWith('http') ? '_blank' : '_self'}
                           rel={s.to.startsWith('http') ? 'noopener noreferrer' : undefined}
-                          className="group inline-flex items-center text-xs sm:text-sm text-white/80 hover:text-accent transition duration-200"
+                          className="group inline-flex items-center gap-2.5 text-xs sm:text-sm text-white/80 hover:text-accent transition duration-200"
                         >
+                          <span className="w-5 h-5 flex items-center justify-center shrink-0 text-white/80 group-hover:text-accent transition-colors">
+                            {s.icon}
+                          </span>
                           <span className="font-medium group-hover:text-accent transition-colors whitespace-nowrap">
                             {s.label}
                           </span>
@@ -336,6 +339,24 @@ export default function Footer() {
                       </li>
                     ))}
                   </ul>
+
+                  {/* Desktop Email Link */}
+                  <div className="pt-2 border-t border-white/10">
+                    <a
+                      href="mailto:sanjeev.bajaj@thedivevillage.co"
+                      className="inline-flex items-center gap-2 text-white/80 hover:text-accent transition-colors group text-xs sm:text-sm"
+                    >
+                      <div className="w-6 h-6 rounded-full border border-sky-400/40 flex items-center justify-center shrink-0 group-hover:border-accent transition-colors">
+                        <svg className="w-3.5 h-3.5 text-white/80 group-hover:text-accent transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <rect x="2" y="4" width="20" height="16" rx="2" />
+                          <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+                        </svg>
+                      </div>
+                      <span className="font-medium truncate group-hover:text-accent transition-colors">
+                        sanjeev.bajaj@thedivevillage.co
+                      </span>
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
