@@ -12,6 +12,9 @@ import nightDiveVideoLocal from '../assets/Media/Background/Night Dive.mp4'
 import underwaterAudio from '../assets/Audio.mp3'
 import { setHeroVideoReady, getOrCreateHeroVideoElement, setHeroWebGLReady, HERO_VIDEO_SRC } from '../utils/mediaReadyManager'
 
+// Audio source fallback (public static /Audio.mp3 or bundled underwaterAudio)
+const AUDIO_SRC = '/Audio.mp3'
+
 const videoFile = HERO_VIDEO_SRC || clownfishVideo
 const bookFile = barracudaVideo
 const turtleVideo = turtleBgVideo
@@ -701,7 +704,15 @@ export default function VideoSphereBackground() {
 
   return (
     <>
-      <audio ref={audioRef} src={underwaterAudio} loop autoPlay preload="auto" playsInline />
+      <audio
+        ref={audioRef}
+        loop
+        preload="auto"
+        playsInline
+      >
+        <source src="/Audio.mp3" type="audio/mpeg" />
+        <source src={underwaterAudio} type="audio/mpeg" />
+      </audio>
       <div className="fixed inset-0 -z-10 pointer-events-none">
         <div
           className="h-full w-full overflow-hidden relative"
