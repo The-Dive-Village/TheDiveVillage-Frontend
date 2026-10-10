@@ -552,9 +552,7 @@ export default function VideoSphereBackground() {
       'mousedown',
       'mouseup',
       'click',
-      'keydown',
-      'wheel',
-      'scroll'
+      'keydown'
     ]
 
     const removeUnlockListeners = () => {
@@ -567,76 +565,66 @@ export default function VideoSphereBackground() {
       window.removeEventListener('tdv-unlock-audio', unlockHandler)
     }
 
-    const tryPlayUnmuted = () => {
-      if (isCleanedUp || isMutedRef.current) return Promise.reject()
-      const el = audioRef.current
-      if (!el) return Promise.reject()
-      el.muted = false
-      el.volume = 0.5
-      const p = el.play()
-      if (p !== undefined) {
-        return p.then(() => {
-          removeUnlockListeners()
-          return true
-        })
-      }
-      return Promise.resolve(true)
-    }
-
-    const startAudioImmediate = () => {
-      if (isCleanedUp || isMutedRef.current) return
-      const el = audioRef.current
-      if (!el) return
-
-      // First attempt unmuted playback directly on load
-      tryPlayUnmuted().catch(() => {
-        // If unmuted playback is blocked by browser autoplay policy on deployed HTTPS domain:
-        // Start playback muted so the stream buffers and can immediately unmute upon first interaction
-        if (!isCleanedUp && !isMutedRef.current && el) {
-          el.muted = true
-          el.play().catch(() => {})
-        }
-      })
-    }
-
     const unlockHandler = () => {
       if (isCleanedUp || isMutedRef.current) return
       const el = audioRef.current
       if (!el) return
 
-      // Synchronously unmute and play inside user activation event stack
+      // In user gesture event stack, set volume & play unmuted
       el.muted = false
       el.volume = 0.5
       const p = el.play()
       if (p !== undefined) {
         p.then(() => {
           removeUnlockListeners()
-        }).catch(() => {})
+        }).catch(() => {
+          // If still blocked, fallback to next event
+        })
       } else {
         removeUnlockListeners()
       }
     }
 
-    if (!isMuted) {
-      // 1. Immediate play attempt right on component mount
-      startAudioImmediate()
+    const startAudio = () => {
+      if (isCleanedUp || isMutedRef.current) return
+      const el = audioRef.current
+      if (!el) return
 
-      // 2. Also retry when audio metadata or enough buffer is loaded
+      el.volume = 0.5
+      el.muted = false
+      const playPromise = el.play()
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            removeUnlockListeners()
+          })
+          .catch(() => {
+            // Autoplay with sound restricted by browser on deployed domain
+            // Start muted buffer so audio pipeline is ready immediately on first click/touch
+            if (!isCleanedUp && !isMutedRef.current && el) {
+              el.muted = true
+              el.play().catch(() => {})
+            }
+          })
+      }
+    }
+
+    if (!isMuted) {
+      startAudio()
+
       const handleCanPlay = () => {
-        if (audio.paused && !isMutedRef.current) {
-          startAudioImmediate()
+        if (!isMutedRef.current && audio.paused) {
+          startAudio()
         }
       }
       audio.addEventListener('canplay', handleCanPlay, { once: true })
       audio.addEventListener('loadedmetadata', handleCanPlay, { once: true })
 
-      // 3. User interaction capture listeners across window & document (both capturing and bubbling)
       validUnlockEvents.forEach((evt) => {
         window.addEventListener(evt, unlockHandler, { capture: true, passive: true })
         document.addEventListener(evt, unlockHandler, { capture: true, passive: true })
       })
 
-      // 4. Custom event for preloader completion or manual trigger
       window.addEventListener('tdv-unlock-audio', unlockHandler)
 
       return () => {
@@ -706,12 +694,13 @@ export default function VideoSphereBackground() {
     <>
       <audio
         ref={audioRef}
+        src={underwaterAudio || '/Audio.mp3'}
         loop
         preload="auto"
         playsInline
       >
-        <source src="/Audio.mp3" type="audio/mpeg" />
         <source src={underwaterAudio} type="audio/mpeg" />
+        <source src="/Audio.mp3" type="audio/mpeg" />
       </audio>
       <div className="fixed inset-0 -z-10 pointer-events-none">
         <div
