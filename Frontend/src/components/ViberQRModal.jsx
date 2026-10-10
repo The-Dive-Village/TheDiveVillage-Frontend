@@ -79,7 +79,7 @@ export default function ViberQRModal({ isOpen, onClose }) {
 
             {/* Phone Number */}
             <p className="font-heading text-lg sm:text-xl font-bold text-navy tracking-wide">
-              +91 89710 01010
+              +91 7338257002
             </p>
 
             {/* Secondary instruction */}

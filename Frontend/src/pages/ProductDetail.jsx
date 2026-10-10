@@ -959,7 +959,14 @@ function InteractiveProductImage({ src, alt, onOpenFloating }) {
   const [isHovered, setIsHovered] = useState(false)
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
   const [containerDimensions, setContainerDimensions] = useState({ width: 500, height: 500 })
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768)
   const containerRef = useRef(null)
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   const ZOOM_FACTOR = 2.5
   // Square magnifying view box dimension (substantially enlarged, responsive up to 300px)
@@ -1050,9 +1057,9 @@ function InteractiveProductImage({ src, alt, onOpenFloating }) {
   return (
     <div
       ref={containerRef}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onMouseMove={handleMouseMove}
+      onMouseEnter={isMobile ? undefined : handleMouseEnter}
+      onMouseLeave={isMobile ? undefined : handleMouseLeave}
+      onMouseMove={isMobile ? undefined : handleMouseMove}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
@@ -1071,8 +1078,8 @@ function InteractiveProductImage({ src, alt, onOpenFloating }) {
         draggable={false}
       />
 
-      {/* On-Image Magnifier Square Lens (Clean, enlarged square view box without any text or shapes) */}
-      {isHovered && (
+      {/* On-Image Magnifier Square Lens — desktop only */}
+      {!isMobile && isHovered && (
         <div
           className="pointer-events-none absolute z-30 rounded-lg border-[3px] border-white shadow-[0_20px_50px_rgba(0,30,61,0.45),0_0_0_1px_rgba(0,0,0,0.12)] overflow-hidden bg-white select-none transition-opacity duration-150"
           style={{
@@ -1102,14 +1109,16 @@ function InteractiveProductImage({ src, alt, onOpenFloating }) {
         </div>
       )}
 
-      {/* Hint Badge when Not Hovered */}
-      <div className={`absolute bottom-4 left-1/2 -translate-x-1/2 z-10 px-3.5 py-1.5 rounded-full bg-white/95 backdrop-blur-md text-navy text-[11px] font-bold shadow-md border border-navy/10 pointer-events-none flex items-center gap-2 transition-opacity duration-200 ${isHovered ? 'opacity-0' : 'opacity-90'}`}>
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-accent">
-          <circle cx="11" cy="11" r="8"/>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-        </svg>
-        <span>Hover to Magnify</span>
-      </div>
+      {/* Hint Badge when Not Hovered — desktop only */}
+      {!isMobile && (
+        <div className={`absolute bottom-4 left-1/2 -translate-x-1/2 z-10 px-3.5 py-1.5 rounded-full bg-white/95 backdrop-blur-md text-navy text-[11px] font-bold shadow-md border border-navy/10 pointer-events-none flex items-center gap-2 transition-opacity duration-200 ${isHovered ? 'opacity-0' : 'opacity-90'}`}>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-accent">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <span>Hover to Magnify</span>
+        </div>
+      )}
 
       {/* Floating Window Lightbox Button */}
       <button

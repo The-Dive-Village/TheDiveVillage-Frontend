@@ -25,10 +25,10 @@ const SOCIALS = [
   { label: 'Facebook', to: 'https://www.facebook.com/profile.php?id=61595366960524', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3.81l.39-4h-4.2V7a1 1 0 011-1h3z"/></svg> },
   { label: 'LinkedIn', to: 'https://www.linkedin.com/company/the-dive-village/', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg> },
   { label: 'YouTube', to: 'https://www.youtube.com/@thedivevillage', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22.54 6.42a2.78 2.78 0 00-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 00-1.94 2A29 29 0 001 11.75a29 29 0 00.46 5.33 2.78 2.78 0 001.94 2c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 001.94-2 29 29 0 00.46-5.33 29 29 0 00-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></svg> },
-  { label: 'WhatsApp', to: 'https://wa.me/918971001010', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg> },
+  { label: 'WhatsApp', to: 'https://wa.me/917338257002', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg> },
   {
     label: 'Viber',
-    to: 'viber://add?number=918971001010',
+    to: 'viber://add?number=917338257002',
     isViber: true,
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -49,7 +49,7 @@ export default function Footer() {
       const isMobilePhone = /Android|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
       if (isMobilePhone) {
         const start = Date.now()
-        window.location.href = 'viber://add?number=918971001010'
+        window.location.href = 'viber://add?number=917338257002'
         setTimeout(() => {
           if (!document.hidden && Date.now() - start < 2000) {
             setIsViberQrOpen(true)
@@ -216,7 +216,7 @@ export default function Footer() {
 
               {/* Email Link */}
               <a
-                href="mailto:info@thedivevillage.co"
+                href="mailto:sanjeev.bajaj@thedivevillage.co"
                 className="inline-flex items-center gap-2 text-white hover:text-accent active:opacity-80 transition-colors group min-w-0"
               >
                 <div className="w-9 h-9 rounded-full border border-sky-400/40 flex items-center justify-center shrink-0 group-hover:border-accent transition-colors">
@@ -226,7 +226,7 @@ export default function Footer() {
                   </svg>
                 </div>
                 <span className="text-[13px] sm:text-sm font-normal text-white/95 group-hover:text-accent transition-colors truncate">
-                  info@thedivevillage.co
+                  sanjeev.bajaj@thedivevillage.co
                 </span>
               </a>
             </div>

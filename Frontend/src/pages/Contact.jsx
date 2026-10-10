@@ -282,14 +282,14 @@ export default function Contact() {
           
           {/* Box 1: Call & WhatsApp */}
           <a
-            href="tel:+918971001010"
+            href="tel:+917338257002"
             className="flex flex-col items-center justify-center bg-white p-2.5 xs:p-3.5 sm:p-6 rounded-xl xs:rounded-2xl sm:rounded-3xl border border-navy/5 shadow-card hover:shadow-float hover:border-[#FFCD00]/50 hover:-translate-y-1 transition-all duration-300 group cursor-pointer active:scale-95 text-center min-w-0"
           >
             <div className="w-8 h-8 xs:w-10 xs:h-10 sm:w-12 sm:h-12 rounded-full bg-navy/5 text-navy group-hover:bg-[#FFCD00] group-hover:text-navy flex items-center justify-center mb-1.5 sm:mb-3 transition-colors shrink-0">
               <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" /></svg>
             </div>
             <h4 className="font-bold text-navy mb-0.5 sm:mb-1.5 text-[11px] xs:text-xs sm:text-base group-hover:text-navy truncate max-w-full">Call Us</h4>
-            <span className="text-[9px] xs:text-[10px] sm:text-sm text-navy/70 group-hover:text-[#FFCD00] font-bold transition-colors truncate max-w-full block">+91 89710 01010</span>
+            <span className="text-[9px] xs:text-[10px] sm:text-sm text-navy/70 group-hover:text-[#FFCD00] font-bold transition-colors truncate max-w-full block">+91 7338257002</span>
           </a>
 
           {/* Box 2: Write to Us */}
@@ -306,7 +306,7 @@ export default function Contact() {
 
           {/* Box 3: Availability */}
           <a
-            href="https://wa.me/918971001010"
+            href="https://wa.me/917338257002"
             target="_blank"
             rel="noopener noreferrer"
             className="flex flex-col items-center justify-center bg-white p-2.5 xs:p-3.5 sm:p-6 rounded-xl xs:rounded-2xl sm:rounded-3xl border border-navy/5 shadow-card hover:shadow-float hover:border-[#FFCD00]/50 hover:-translate-y-1 transition-all duration-300 group cursor-pointer active:scale-95 text-center min-w-0"
@@ -333,7 +333,7 @@ export default function Contact() {
           <a href="https://www.youtube.com/@thedivevillage" target="_blank" rel="noopener noreferrer" className="w-11 h-11 rounded-full bg-white border border-navy/10 shadow-sm flex items-center justify-center text-navy/70 hover:bg-accent hover:text-navy hover:border-accent transition" aria-label="YouTube">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22.54 6.42a2.78 2.78 0 00-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 00-1.94 2A29 29 0 001 11.75a29 29 0 00.46 5.33 2.78 2.78 0 001.94 2c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 001.94-2 29 29 0 00.46-5.33 29 29 0 00-.46-5.33z" /><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" /></svg>
           </a>
-          <a href="https://wa.me/918971001010" target="_blank" rel="noopener noreferrer" className="w-11 h-11 rounded-full bg-white border border-navy/10 shadow-sm flex items-center justify-center text-navy/70 hover:bg-accent hover:text-navy hover:border-accent transition" aria-label="WhatsApp">
+          <a href="https://wa.me/917338257002" target="_blank" rel="noopener noreferrer" className="w-11 h-11 rounded-full bg-white border border-navy/10 shadow-sm flex items-center justify-center text-navy/70 hover:bg-accent hover:text-navy hover:border-accent transition" aria-label="WhatsApp">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z" /></svg>
           </a>
         </div>

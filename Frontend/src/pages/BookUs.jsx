@@ -34,6 +34,67 @@ import { getIslandsForCountry, getSitesForIsland, getIslandForSite } from '../ut
 // Backwards-compatible export alias for any legacy imports
 export const PROGRAMS_CATALOG = COURSE_CATALOG
 
+/**
+ * Maps service page IDs → { courseId, experience, funDivesCount? }
+ * so that arriving from a 'Book' button auto-selects the program and skips Step 3.
+ */
+const SERVICE_TO_PROGRAM = {
+  // Introductory Programs
+  'prog-1': { courseId: 'try-dive',            experience: 'Scuba Diving' },
+  'prog-2': { courseId: 'dsd-lite',             experience: 'Scuba Diving' },
+  'prog-3': { courseId: 'padi-dsd',             experience: 'Scuba Diving' },
+  'prog-4': { courseId: 'add-dive-after-dsd',   experience: 'Scuba Diving' },
+  'prog-5': { courseId: 'padi-bubblemaker',     experience: 'Scuba Diving' },
+  // Snorkeling
+  'snork-1': { courseId: 'discover-snorkeling', experience: 'Snorkeling' },
+  'snork-2': { courseId: 'padi-skin-diver',     experience: 'Snorkeling' },
+  'snork-3': { courseId: 'reef-explorer',       experience: 'Snorkeling' },
+  // Certification Courses
+  'course-1':  { courseId: 'padi-skin-diver',        experience: 'Snorkeling'   },
+  'course-2':  { courseId: 'padi-scuba-diver',        experience: 'Scuba Diving' },
+  'course-3':  { courseId: 'padi-open-water',         experience: 'Scuba Diving' },
+  'course-4':  { courseId: 'padi-adventure-diver',    experience: 'Scuba Diving' },
+  'course-5':  { courseId: 'padi-advanced-ow',        experience: 'Scuba Diving' },
+  'course-6':  { courseId: 'efr-primary-secondary',   experience: 'Scuba Diving' },
+  'course-7':  { courseId: 'padi-rescue-diver',       experience: 'Scuba Diving' },
+  'course-8':  { courseId: 'padi-reactivate',         experience: 'Scuba Diving' },
+  'course-9':  { courseId: 'full-refresher',          experience: 'Scuba Diving' },
+  'course-10': { courseId: 'lite-refresher',          experience: 'Scuba Diving' },
+  // Specialties
+  'spec-1': { courseId: 'peak-buoyancy',       experience: 'Scuba Diving' },
+  'spec-2': { courseId: 'project-aware',       experience: 'Scuba Diving' },
+  'spec-3': { courseId: 'deep-diver',          experience: 'Scuba Diving' },
+  'spec-4': { courseId: 'wreck-diver',         experience: 'Scuba Diving' },
+  'spec-5': { courseId: 'night-diver',         experience: 'Scuba Diving' },
+  'spec-6': { courseId: 'enriched-air-nitrox', experience: 'Scuba Diving' },
+  'spec-7': { courseId: 'drift-diver',         experience: 'Scuba Diving' },
+  // Combos & Packages
+  'combo-1':        { courseId: 'padi-dsd-ow-combo',  experience: 'Scuba Diving' },
+  'combo-2':        { courseId: 'padi-ow-aow-combo',  experience: 'Scuba Diving' },
+  'combo-3':        { courseId: 'efr-rescue-combo',   experience: 'Scuba Diving' },
+  'combo-fundives': { courseId: 'fun-day-dive',        experience: 'Scuba Diving' },
+  // Pro Courses
+  'pro-1': { courseId: 'padi-divemaster',       experience: 'Scuba Diving' },
+  'pro-2': { courseId: 'efr-rescue-dm-combo',   experience: 'Scuba Diving' },
+  'pro-3': { courseId: 'efr-rescue-dm-prereqs', experience: 'Scuba Diving' },
+  'pro-4': { courseId: 'zero-to-hero',          experience: 'Scuba Diving' },
+  // Freediving
+  'free-1': { courseId: 'padi-basic-freediver', experience: 'FreeDiving' },
+  'free-2': { courseId: 'padi-freediver',       experience: 'FreeDiving' },
+  // Surfing
+  'surf-1': { courseId: 'discover-surfing',      experience: 'Surfing' },
+  'surf-3': { courseId: '3-day-surf-academy',    experience: 'Surfing' },
+  // Fun Dives (individual packages — auto-select day dive + count)
+  'fun-1':    { courseId: 'fun-day-dive', experience: 'Scuba Diving', funDivesCount: 1  },
+  'fun-2':    { courseId: 'fun-day-dive', experience: 'Scuba Diving', funDivesCount: 2  },
+  'fun-4':    { courseId: 'fun-day-dive', experience: 'Scuba Diving', funDivesCount: 4  },
+  'fun-6':    { courseId: 'fun-day-dive', experience: 'Scuba Diving', funDivesCount: 6  },
+  'fun-8':    { courseId: 'fun-day-dive', experience: 'Scuba Diving', funDivesCount: 8  },
+  'fun-10':   { courseId: 'fun-day-dive', experience: 'Scuba Diving', funDivesCount: 10 },
+  'fun-12':   { courseId: 'fun-day-dive', experience: 'Scuba Diving', funDivesCount: 12 },
+  'fun-post': { courseId: 'fun-day-dive', experience: 'Scuba Diving', funDivesCount: 2  },
+}
+
 export default function BookUs() {
   const isNightDive = useNightDive()
   const [searchParams] = useSearchParams()
@@ -41,6 +102,12 @@ export default function BookUs() {
   const initialCountry = searchParams.get('country') || ''
   const initialSite = searchParams.get('site') || ''
   const initialService = searchParams.get('service') || ''
+
+  // Derive pre-selected program from service link (e.g. /book-us?service=course-3)
+  const initialFromService = useMemo(() => {
+    if (!initialService) return null
+    return SERVICE_TO_PROGRAM[initialService] || null
+  }, [initialService])
 
   const initialAddOn = useMemo(() => {
     if (initialService) {
@@ -79,7 +146,7 @@ export default function BookUs() {
   const [selectedLocation, setSelectedLocation] = useState(null)
   const [locationId, setLocationId] = useState(initialSite)
   const [location, setLocation] = useState(initialSite)
-  const [experience, setExperience] = useState('')
+  const [experience, setExperience] = useState(initialFromService?.experience || '')
   const [selectedAddOn, setSelectedAddOn] = useState(initialAddOn)
   const [date, setDate] = useState('')
   const [dateError, setDateError] = useState('')
@@ -220,7 +287,8 @@ export default function BookUs() {
       age: '',
       hasCertification: false,
       certifications: [],
-      selectedProgram: initialProgram || ''
+      selectedProgram: initialFromService?.courseId || initialProgram || '',
+      funDivesCount: initialFromService?.funDivesCount || undefined,
     }
   ])
 
@@ -247,13 +315,14 @@ export default function BookUs() {
           age: '',
           hasCertification: false,
           certifications: [],
-          selectedProgram: ''
+          selectedProgram: initialFromService?.courseId || '',
+          funDivesCount: initialFromService?.funDivesCount || undefined,
         }))
         return [...prev, ...extra]
       }
       return prev.slice(0, count)
     })
-  }, [groupSize])
+  }, [groupSize, initialFromService])
 
   const handleParticipantChange = (index, field, value) => {
     setParticipants((prev) => {
@@ -329,11 +398,14 @@ export default function BookUs() {
       const isDirect = (!experience && Boolean(selectedAddOn)) || isDirectActivity(experience)
       if (currentStep === 4 && isDirect) {
         setCurrentStep(1)
+      } else if (currentStep === 4 && initialFromService) {
+        // Pre-selected from service → step 3 doesn’t exist, go back to step 2
+        setCurrentStep(2)
       } else {
         setCurrentStep((prev) => prev - 1)
       }
     }
-  }, [currentStep, experience, selectedAddOn])
+  }, [currentStep, experience, selectedAddOn, initialFromService])
 
   const handleNextStep = useCallback(() => {
     if (currentStep === 1) {
@@ -403,6 +475,12 @@ export default function BookUs() {
         return false
       }
       setStepError('')
+      // If coming from a service link, all participants already have program pre-selected—skip step 3
+      if (initialFromService) {
+        triggerHaptic(10)
+        setCurrentStep(4)
+        return true
+      }
     }
     if (currentStep === 3) {
       const hasUnselected = participants.some((p) => !p.selectedProgram)
@@ -434,7 +512,7 @@ export default function BookUs() {
       return true
     }
     return true
-  }, [currentStep, country, locationId, selectedLocation, location, experience, selectedAddOn, date, todayStr, maxDateStr, groupSize, participants])
+  }, [currentStep, country, locationId, selectedLocation, location, experience, selectedAddOn, date, todayStr, maxDateStr, groupSize, participants, initialFromService])
 
   // Desktop keyboard step navigation
   useEffect(() => {
@@ -724,6 +802,12 @@ export default function BookUs() {
                     { num: 1, title: 'Location & Experience' },
                     { num: 4, title: 'Contact Info' },
                   ]
+                  : initialFromService
+                  ? [
+                    { num: 1, title: 'Location & Experience' },
+                    { num: 2, title: 'Participant Details' },
+                    { num: 4, title: 'Contact Info' },
+                  ]
                   : [
                     { num: 1, title: 'Location & Experience' },
                     { num: 2, title: 'Participant Details' },
@@ -751,11 +835,16 @@ export default function BookUs() {
               <form id="booking-wizard-form" onSubmit={handleSubmit} className="flex-1 flex flex-col bg-white p-4 sm:p-10 rounded-2xl sm:rounded-[36px] border border-navy/10 shadow-sm sm:shadow-card w-full min-w-0 max-w-full min-h-[auto] sm:min-h-[620px] justify-between">
                 <div className="flex-1 space-y-3.5 sm:space-y-6">
 
-                  {/* Mobile Step Header (Matching User Reference Image) */}
+                  {/* Mobile Step Header */}
                   {(() => {
                     const isDirect = (!experience && Boolean(selectedAddOn)) || isDirectActivity(experience)
-                    const totalSteps = isDirect ? 2 : 4
-                    const displayStep = isDirect ? (currentStep === 4 ? 2 : 1) : currentStep
+                    const totalSteps = isDirect ? 2 : initialFromService ? 3 : 4
+                    // Map actual step numbers to display positions
+                    const displayStep = isDirect
+                      ? (currentStep === 4 ? 2 : 1)
+                      : initialFromService
+                      ? (currentStep === 4 ? 3 : currentStep)
+                      : currentStep
                     return (
                       <div className="sm:hidden pb-3.5 mb-1 border-b border-navy/5">
                         <div className="flex items-center justify-between gap-2">
@@ -782,7 +871,7 @@ export default function BookUs() {
                             </div>
                           </div>
                           <div className="flex items-center gap-1.5 shrink-0 pl-1">
-                            {(isDirect ? [1, 4] : [1, 2, 3, 4]).map((s) => (
+                            {(isDirect ? [1, 4] : initialFromService ? [1, 2, 4] : [1, 2, 3, 4]).map((s) => (
                               <span
                                 key={s}
                                 className={`h-2 rounded-full transition-all duration-300 ${currentStep === s
