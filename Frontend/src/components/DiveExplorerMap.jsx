@@ -4,6 +4,7 @@ import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import { loadDiveSites } from '../utils/diveSitesLoader'
 import { getIslandForSite } from '../utils/diveIslandCatalog'
+import { useLenis } from '../utils/lenisReact'
 
 // Official Vite worker setup for MapLibre GL JS
 setWorkerUrl(workerUrl)
@@ -75,6 +76,36 @@ export default function DiveExplorerMap({
 }) {
   const mapContainerRef = useRef(null)
   const mapRef = useRef(null)
+  const lenis = useLenis()
+
+  // Pin website scroll whenever user is hovering / interacting on the map
+  useEffect(() => {
+    const el = mapContainerRef.current
+    if (!el) return
+
+    const handlePointerEnter = () => {
+      if (lenis) lenis.stop()
+    }
+    const handlePointerLeave = () => {
+      if (lenis) lenis.start()
+    }
+    const stopScroll = (e) => {
+      e.stopPropagation()
+    }
+
+    el.addEventListener('pointerenter', handlePointerEnter)
+    el.addEventListener('pointerleave', handlePointerLeave)
+    el.addEventListener('wheel', stopScroll, { passive: true })
+    el.addEventListener('touchmove', stopScroll, { passive: true })
+
+    return () => {
+      if (lenis) lenis.start()
+      el.removeEventListener('pointerenter', handlePointerEnter)
+      el.removeEventListener('pointerleave', handlePointerLeave)
+      el.removeEventListener('wheel', stopScroll)
+      el.removeEventListener('touchmove', stopScroll)
+    }
+  }, [lenis])
 
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -827,14 +858,17 @@ export default function DiveExplorerMap({
           className="relative w-full h-[400px] xs:h-[460px] sm:h-[540px] lg:h-[600px] bg-[#1a75bb] overflow-hidden normal-cursor"
           data-normal-cursor
           data-dive-map="true"
+          data-lenis-prevent="true"
+          style={{ overscrollBehavior: 'contain', touchAction: 'none' }}
         >
           {/* MapLibre Canvas Container */}
           <div
             ref={mapContainerRef}
             className="w-full h-full normal-cursor"
-            style={{ overscrollBehavior: 'contain', touchAction: 'pan-x pan-y pinch-zoom' }}
+            style={{ overscrollBehavior: 'contain', touchAction: 'none' }}
             data-normal-cursor
             data-dive-map="true"
+            data-lenis-prevent="true"
           />
 
           {/* Loading Overlay */}

@@ -26,6 +26,20 @@ const CATEGORIES = [
   { key: 'Bottoms', label: 'Bottoms' },
 ]
 
+const MOBILE_PRODUCT_ORDER = [
+  'product-womens-shirt',        // Sweetheart neck
+  'product-unisex-shorts',       // Shorts Unisex
+  'product-half-sleeves-unisex', // Half sleeves
+  'product-full-sleeves-unisex', // Full sleeves
+  'product-full-suit',           // Unisex Full body skin
+  'product-full-wetsuit',        // Wet Suit full length
+  'product-womens-pants',        // Bottoms compression
+  'product-shortie-wetsuit',     // Wet Suit shortie
+  'product-womens-strap',        // Shoulder strap shortie
+  'product-ocean-bag',           // Gear Bag
+  'product-dive-cap',            // Cap
+]
+
 export default function Shop() {
   const { user } = useAuth()
   const navigate = useNavigate()
@@ -39,6 +53,13 @@ export default function Shop() {
   const [addedToast, setAddedToast] = useState(null)
   const { addItem, itemCount } = useCart()
   const { count: wishlistCount, toggle: toggleWishlist, isWishlisted } = useWishlist()
+  const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' ? window.innerWidth < 768 : false)
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   useEffect(() => {
     async function loadProducts() {
@@ -125,9 +146,16 @@ export default function Shop() {
       if (sortBy === 'price-low') return (Number(a?.price) || 0) - (Number(b?.price) || 0)
       if (sortBy === 'price-high') return (Number(b?.price) || 0) - (Number(a?.price) || 0)
       if (sortBy === 'rating') return (Number(b?.rating) || 5) - (Number(a?.rating) || 5)
+      if (isMobile) {
+        const idxA = MOBILE_PRODUCT_ORDER.indexOf(a.id)
+        const idxB = MOBILE_PRODUCT_ORDER.indexOf(b.id)
+        if (idxA !== -1 && idxB !== -1) return idxA - idxB
+        if (idxA !== -1) return -1
+        if (idxB !== -1) return 1
+      }
       return 0
     })
-  }, [productsList, selectedCategory, deferredSearchQuery, sortBy, priceFilter])
+  }, [productsList, selectedCategory, deferredSearchQuery, sortBy, priceFilter, isMobile])
 
   return (
     <div className="bg-[#FAFAFA] min-h-screen text-navy font-body pt-20 md:pt-32 pb-24 overflow-x-hidden">
@@ -612,7 +640,7 @@ function GroupGallerySection() {
             <img
               src={photo.src}
               alt="Community Photo"
-              className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+              className="w-full h-full object-cover object-top group-hover:scale-105 transition duration-500"
               loading="lazy"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-navy/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex items-end p-3" />

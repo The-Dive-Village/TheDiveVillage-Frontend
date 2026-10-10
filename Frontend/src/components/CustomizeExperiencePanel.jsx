@@ -1,22 +1,72 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { PANEL_IMAGES } from '../utils/images'
 
+// Activity Media
+import vidSafari from '../assets/Media/Airport to Airport/gallery1.mp4'
+import imgSafari from '../assets/Media/Services/Add Ons/safari.webp'
+import vidTrekking from '../assets/Media/Services/Add Ons/Trekking/Trekking.mp4'
+import imgTrekking from '../assets/Media/Services/Add Ons/trekking.webp'
+import vidSightseeing from '../assets/Media/Services/Add Ons/sightseeing.mp4'
+import imgSightseeing from '../assets/Media/Services/Add Ons/sightseeing.webp'
+import vidCampers from '../assets/Media/Services/Add Ons/Campers/Campers.MP4'
+import imgCampers from '../assets/Media/Services/Add Ons/campers.webp'
+import vidLiveaboard from '../assets/Media/Services/Add Ons/liveaboard.mp4'
+import imgLiveaboard from '../assets/Media/Services/Add Ons/liveaboard.webp'
+
 const CUSTOM_ACTIVITIES = [
-  { id: 'canyoneering', name: 'Canyoneering' },
-  { id: 'safari', name: 'Safari' },
-  { id: 'trekking', name: 'Trekking' },
-  { id: 'surfing', name: 'Surfing' },
-  { id: 'sightseeing', name: 'Local Sightseeing' },
-  { id: 'snorkeling', name: 'Snorkeling' },
-  { id: 'camping_camper', name: 'Camping / Camper' },
-  { id: 'liveaboard', name: 'Liveaboard' },
+  {
+    id: 'canyoneering',
+    name: 'Canyoneering',
+    video: 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791460085/TDV-Media/Services/Other/Canoneering.mp4',
+  },
+  {
+    id: 'safari',
+    name: 'Safari',
+    video: vidSafari,
+    poster: imgSafari,
+  },
+  {
+    id: 'trekking',
+    name: 'Trekking',
+    video: vidTrekking,
+    poster: imgTrekking,
+  },
+  {
+    id: 'surfing',
+    name: 'Surfing',
+    video: 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458534/TDV-Media/Services/3_Day_Surf_Academy_Course.mp4',
+  },
+  {
+    id: 'sightseeing',
+    name: 'Local Sightseeing',
+    video: vidSightseeing,
+    poster: imgSightseeing,
+  },
+  {
+    id: 'snorkeling',
+    name: 'Snorkeling',
+    video: 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458610/TDV-Media/Services/Discover_Snorkelling.mp4',
+  },
+  {
+    id: 'camping_camper',
+    name: 'Camping / Camper',
+    video: vidCampers,
+    poster: imgCampers,
+  },
+  {
+    id: 'liveaboard',
+    name: 'Liveaboard',
+    video: vidLiveaboard,
+    poster: imgLiveaboard,
+  },
 ]
 
 export default function CustomizeExperiencePanel({ className = '', images = PANEL_IMAGES }) {
   const [selectedActivities, setSelectedActivities] = useState([])
   const [customText, setCustomText] = useState('')
+  const [hoveredActivity, setHoveredActivity] = useState(null)
   const navigate = useNavigate()
   
   // Dynamic Background Image Carousel (Identical to Come for Adventure panel)
@@ -25,12 +75,13 @@ export default function CustomizeExperiencePanel({ className = '', images = PANE
 
   useEffect(() => {
     if (!images || images.length === 0) return
+    const duration = (typeof window !== 'undefined' && window.innerWidth < 640) ? 5200 : 3400
     const timer = setInterval(() => {
       setIndex((curr) => {
         setPrevIndex(curr)
         return (curr + 1) % images.length
       })
-    }, 3400)
+    }, duration)
     return () => clearInterval(timer)
   }, [images])
 
@@ -126,26 +177,138 @@ export default function CustomizeExperiencePanel({ className = '', images = PANE
               Select your favorite add-ons to build your perfect ocean journey:
             </p>
 
-            {/* Catchy Pill Badges */}
-            <div className="flex flex-wrap gap-2.5">
+            {/* Mobile View: 3 Explicit Lines */}
+            <div className="flex sm:hidden flex-col gap-2">
+              {[
+                ['canyoneering', 'safari', 'trekking'],
+                ['sightseeing', 'surfing', 'snorkeling'],
+                ['camping_camper', 'liveaboard']
+              ].map((lineItemIds, lineIdx) => (
+                <div key={lineIdx} className="flex flex-nowrap items-center gap-1.5 xs:gap-2">
+                  {lineItemIds.map((actId) => {
+                    const activity = CUSTOM_ACTIVITIES.find((a) => a.id === actId)
+                    if (!activity) return null
+                    const isSelected = selectedActivities.includes(activity.id)
+                    const isHovered = hoveredActivity === activity.id
+                    const displayName = activity.id === 'sightseeing' ? 'Sightseeing' : activity.name
+
+                    return (
+                      <div
+                        key={activity.id}
+                        className="relative shrink-0"
+                        onMouseEnter={() => setHoveredActivity(activity.id)}
+                        onMouseLeave={() => setHoveredActivity(null)}
+                      >
+                        <AnimatePresence>
+                          {isHovered && activity.video && (
+                            <motion.div
+                              initial={{ opacity: 0, y: 10, scale: 0.88 }}
+                              animate={{ opacity: 1, y: 0, scale: 1 }}
+                              exit={{ opacity: 0, y: 8, scale: 0.9 }}
+                              transition={{ type: 'spring', damping: 22, stiffness: 350 }}
+                              className="absolute bottom-[calc(100%+12px)] left-1/2 -translate-x-1/2 w-32 h-32 rounded-2xl overflow-hidden shadow-[0_16px_36px_rgba(0,0,0,0.7)] border-2 border-[#FFCD00] bg-[#001428] z-50 pointer-events-none flex flex-col justify-between"
+                            >
+                              <video
+                                src={activity.video}
+                                poster={activity.poster || undefined}
+                                autoPlay
+                                loop
+                                muted
+                                playsInline
+                                className="absolute inset-0 w-full h-full object-cover"
+                              />
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent pointer-events-none" />
+                              <div className="relative z-10 mt-auto p-2">
+                                <span className="text-[11px] font-heading font-bold text-white drop-shadow block leading-tight truncate">
+                                  {displayName}
+                                </span>
+                              </div>
+                              <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-[#001428] rotate-45 border-r-2 border-b-2 border-[#FFCD00]" />
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+
+                        <button
+                          type="button"
+                          onClick={() => toggleActivity(activity.id)}
+                          className={`group inline-flex items-center gap-1 px-2.5 py-1.5 xs:px-3.5 xs:py-2 rounded-full text-[10.5px] xs:text-xs font-bold transition-all duration-300 border cursor-pointer select-none active:scale-95 whitespace-nowrap ${
+                            isSelected
+                              ? 'bg-navy text-white border-white/40 scale-105 shadow-md'
+                              : 'bg-white/10 hover:bg-white/20 text-white border-white/25 hover:border-[#FFCD00] backdrop-blur-md hover:text-[#FFCD00]'
+                          }`}
+                        >
+                          <span>{displayName}</span>
+                          {isSelected && (
+                            <span className="ml-0.5 text-[10px] font-black">✓</span>
+                          )}
+                        </button>
+                      </div>
+                    )
+                  })}
+                </div>
+              ))}
+            </div>
+
+            {/* Desktop View: Normal Flex Wrap */}
+            <div className="hidden sm:flex flex-wrap gap-2.5">
               {CUSTOM_ACTIVITIES.map((activity) => {
                 const isSelected = selectedActivities.includes(activity.id)
+                const isHovered = hoveredActivity === activity.id
+
                 return (
-                  <button
+                  <div
                     key={activity.id}
-                    type="button"
-                    onClick={() => toggleActivity(activity.id)}
-                    className={`group inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-300 border cursor-pointer select-none active:scale-95 ${
-                      isSelected
-                        ? 'bg-navy text-white border-white/40 scale-105 shadow-md'
-                        : 'bg-white/10 hover:bg-white/20 text-white border-white/25 hover:border-[#FFCD00] backdrop-blur-md hover:text-[#FFCD00]'
-                    }`}
+                    className="relative"
+                    onMouseEnter={() => setHoveredActivity(activity.id)}
+                    onMouseLeave={() => setHoveredActivity(null)}
                   >
-                    <span>{activity.name}</span>
-                    {isSelected && (
-                      <span className="ml-1 text-[11px] font-black">✓</span>
-                    )}
-                  </button>
+                    {/* Hover Floating Video Preview Box */}
+                    <AnimatePresence>
+                      {isHovered && activity.video && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 10, scale: 0.88 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: 8, scale: 0.9 }}
+                          transition={{ type: 'spring', damping: 22, stiffness: 350 }}
+                          className="absolute bottom-[calc(100%+12px)] left-1/2 -translate-x-1/2 w-32 h-32 sm:w-36 sm:h-36 rounded-2xl overflow-hidden shadow-[0_16px_36px_rgba(0,0,0,0.7)] border-2 border-[#FFCD00] bg-[#001428] z-50 pointer-events-none flex flex-col justify-between"
+                        >
+                          <video
+                            src={activity.video}
+                            poster={activity.poster || undefined}
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                            className="absolute inset-0 w-full h-full object-cover"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent pointer-events-none" />
+                          <div className="relative z-10 mt-auto p-2">
+                            <span className="text-[11px] font-heading font-bold text-white drop-shadow block leading-tight truncate">
+                              {activity.name}
+                            </span>
+                          </div>
+
+                          {/* Downward Beak Indicator */}
+                          <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-[#001428] rotate-45 border-r-2 border-b-2 border-[#FFCD00]" />
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+
+                    <button
+                      type="button"
+                      onClick={() => toggleActivity(activity.id)}
+                      className={`group inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-300 border cursor-pointer select-none active:scale-95 ${
+                        isSelected
+                          ? 'bg-navy text-white border-white/40 scale-105 shadow-md'
+                          : 'bg-white/10 hover:bg-white/20 text-white border-white/25 hover:border-[#FFCD00] backdrop-blur-md hover:text-[#FFCD00]'
+                      }`}
+                    >
+                      <span>{activity.name}</span>
+                      {isSelected && (
+                        <span className="ml-1 text-[11px] font-black">✓</span>
+                      )}
+                    </button>
+                  </div>
                 )
               })}
             </div>

@@ -30,19 +30,6 @@ import DiveExplorerMap from '../components/DiveExplorerMap'
 import { loadDiveSites } from '../utils/diveSitesLoader'
 import { getIslandsForCountry, getSitesForIsland, getIslandForSite } from '../utils/diveIslandCatalog'
 
-// Curated popular dive hubs for quick selection
-const POPULAR_DESTINATIONS = {
-  Maldives: ['North Malé Atoll', 'South Ari Atoll', 'Baa Atoll (Hanifaru Bay)', 'Rasdhoo Atoll', 'Vaavu Atoll', 'Fuvahmulah'],
-  Thailand: ['Phuket', 'Koh Tao', 'Similan Islands', 'Phi Phi Islands', 'Koh Samui', 'Richelieu Rock'],
-  Indonesia: ['Bali (Tulamben & Nusa Penida)', 'Komodo National Park', 'Raja Ampat', 'Gili Islands', 'Bunaken & Lembeh Strait'],
-  Egypt: ['Sharm El Sheikh (Ras Mohammed)', 'Hurghada', 'Dahab (Blue Hole)', 'Marsa Alam (Elphinstone)', 'Brother Islands'],
-  Philippines: ['Cebu (Moalboal & Malapascua)', 'Coron (Shipwrecks)', 'El Nido', 'Apo Reef', 'Bohol (Panglao)', 'Tubbataha Reefs'],
-  Australia: ['Cairns (Great Barrier Reef)', 'Whitsundays', 'Ningaloo Reef', 'Lord Howe Island', 'Rowley Shoals'],
-  'Costa Rica': ['Cocos Island', 'Caño Island', 'Catalina Islands', 'Bat Islands', 'Golfo Dulce'],
-  Mexico: ['Cozumel', 'Cenotes (Riviera Maya)', 'Socorro Island', 'Cabo Pulmo', 'La Paz (Sea of Cortez)'],
-  Fiji: ['Rainbow Reef (Taveuni)', 'Beqa Lagoon (Shark Reef)', 'Great Astrolabe Reef', 'Bligh Water', 'Mamanuca Islands'],
-  Belize: ['Great Blue Hole', 'Lighthouse Reef', 'Hol Chan Marine Reserve', 'Glover’s Reef', 'Ambergris Caye'],
-}
 
 // Backwards-compatible export alias for any legacy imports
 export const PROGRAMS_CATALOG = COURSE_CATALOG
@@ -53,6 +40,19 @@ export default function BookUs() {
   const initialProgram = searchParams.get('program') || ''
   const initialCountry = searchParams.get('country') || ''
   const initialSite = searchParams.get('site') || ''
+  const initialService = searchParams.get('service') || ''
+
+  const initialAddOn = useMemo(() => {
+    if (initialService) {
+      if (initialService.includes('trekking')) return 'Trekking'
+      if (initialService.includes('sightseeing')) return 'Local Sightseeing'
+      if (initialService.includes('camper')) return 'Camping / Camper'
+      if (initialService.includes('safari')) return 'Safari'
+      if (initialService.includes('liveaboard')) return 'Liveaboard'
+      if (initialService.includes('canoneering') || initialService.includes('canyon')) return 'Canyoneering'
+    }
+    return ''
+  }, [initialService])
 
   const [currentStep, setCurrentStep] = useState(1)
 
@@ -80,7 +80,7 @@ export default function BookUs() {
   const [locationId, setLocationId] = useState(initialSite)
   const [location, setLocation] = useState(initialSite)
   const [experience, setExperience] = useState('')
-  const [selectedAddOn, setSelectedAddOn] = useState('')
+  const [selectedAddOn, setSelectedAddOn] = useState(initialAddOn)
   const [date, setDate] = useState('')
   const [dateError, setDateError] = useState('')
   const [stepError, setStepError] = useState('')
@@ -118,7 +118,8 @@ export default function BookUs() {
 
   // Available dive sites on selected island
   const availableSitesForIsland = useMemo(() => {
-    return getSitesForIsland(country, island, allDiveSites)
+    const list = getSitesForIsland(country, island, allDiveSites)
+    return [...list].sort((a, b) => (a.siteName || '').localeCompare(b.siteName || ''))
   }, [country, island, allDiveSites])
 
   const handleMapSelectCountry = useCallback((newCountry) => {
@@ -146,7 +147,12 @@ export default function BookUs() {
     }
     setStepError('')
     triggerSuccessHaptic()
-    setActiveMobileTab('form')
+    if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+      const formEl = document.getElementById('booking-wizard-form')
+      if (formEl) {
+        formEl.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }
+    }
   }, [])
 
   const formatDateToDDMMYYYY = (dateStr) => {
@@ -507,6 +513,7 @@ export default function BookUs() {
             id: res?.data?.booking?.id || res?.booking?.id || `BK-${Date.now().toString(36).toUpperCase()}`,
             type: 'Booking Request',
             country,
+            island: island || null,
             location,
             experience: experience || selectedAddOn,
             selectedAddOn: selectedAddOn || null,
@@ -741,7 +748,7 @@ export default function BookUs() {
                 ))}
               </div>
 
-              <form onSubmit={handleSubmit} className="flex-1 flex flex-col bg-white p-4 sm:p-10 rounded-2xl sm:rounded-[36px] border border-navy/10 shadow-sm sm:shadow-card w-full min-w-0 max-w-full min-h-[auto] sm:min-h-[620px] justify-between">
+              <form id="booking-wizard-form" onSubmit={handleSubmit} className="flex-1 flex flex-col bg-white p-4 sm:p-10 rounded-2xl sm:rounded-[36px] border border-navy/10 shadow-sm sm:shadow-card w-full min-w-0 max-w-full min-h-[auto] sm:min-h-[620px] justify-between">
                 <div className="flex-1 space-y-3.5 sm:space-y-6">
 
                   {/* Mobile Step Header (Matching User Reference Image) */}
@@ -831,50 +838,107 @@ export default function BookUs() {
                         </div>
                       </div>
 
-                      {/* 2. SELECT DIVE LOCATION */}
+                      {/* 2. SELECT ISLAND / REGION */}
                       <div>
-                        <label className="mb-1 sm:mb-2 block text-[9px] sm:text-xs font-bold text-navy/70 uppercase tracking-wider">
-                          Dive Destination / Island / Resort
-                        </label>
-                        <input
-                          type="text"
-                          value={location}
-                          onChange={(e) => {
-                            setLocation(e.target.value)
-                            setLocationId(e.target.value)
-                            setStepError('')
-                          }}
-                          placeholder={country ? `e.g. Popular dive spot, island, or resort in ${country}` : 'Select a country first or enter dive destination'}
-                          required
-                          className="w-full rounded-lg sm:rounded-2xl bg-[#F0F2F5] px-3 py-2 sm:px-5 sm:py-4 text-[11px] sm:text-sm font-semibold sm:font-bold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition placeholder:text-navy/40"
-                        />
-
-                        {/* Popular Quick-Select Destination Tags */}
-                        {country && POPULAR_DESTINATIONS[country] && (
-                          <div className="mt-2.5">
-                            <span className="text-[10px] font-bold text-navy/50 uppercase tracking-wider block mb-1.5">
-                              Popular in {country}:
+                        <div className="flex items-center justify-between mb-1 sm:mb-2">
+                          <label className="block text-[9px] sm:text-xs font-bold text-navy/70 uppercase tracking-wider">
+                            Select Island / Region
+                          </label>
+                          {country && availableIslands.length > 0 && (
+                            <span className="text-[9px] sm:text-[10px] font-semibold text-navy/50">
+                              {availableIslands.length} {availableIslands.length === 1 ? 'island' : 'islands'}
                             </span>
-                            <div className="flex flex-wrap gap-1.5 sm:gap-2">
-                              {POPULAR_DESTINATIONS[country].map((spot) => (
-                                <button
-                                  key={spot}
-                                  type="button"
-                                  onClick={() => {
-                                    triggerHaptic(5)
-                                    setLocation(spot)
-                                    setLocationId(spot)
-                                    setStepError('')
-                                  }}
-                                  className={`px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-bold transition active:scale-95 cursor-pointer ${location === spot
-                                      ? 'bg-navy text-accent shadow-sm ring-1 ring-accent/30'
-                                      : 'bg-navy/5 hover:bg-navy/10 text-navy'
-                                    }`}
-                                >
-                                  {spot}
-                                </button>
-                              ))}
-                            </div>
+                          )}
+                        </div>
+                        <div className="relative">
+                          <select
+                            value={island}
+                            onChange={(e) => handleIslandChange(e.target.value)}
+                            disabled={!country}
+                            required
+                            className={`w-full rounded-lg sm:rounded-2xl bg-[#F0F2F5] px-3 py-2 sm:px-5 sm:py-4 pr-8 sm:pr-10 text-[11px] sm:text-sm font-semibold sm:font-bold outline-none focus:ring-2 focus:ring-accent/50 transition cursor-pointer appearance-none ${
+                              !country ? 'opacity-60 cursor-not-allowed text-navy/40' : !island ? 'text-navy/50' : 'text-navy'
+                            }`}
+                          >
+                            <option value="">
+                              {!country
+                                ? 'Select a country first'
+                                : availableIslands.length === 0
+                                ? (allDiveSites.length === 0 ? 'Loading islands...' : 'No specific islands listed')
+                                : 'Select an island / region'}
+                            </option>
+                            {availableIslands.map((isl) => (
+                              <option key={isl.name} value={isl.name}>
+                                {isl.name} ({isl.count} {isl.count === 1 ? 'site' : 'sites'})
+                              </option>
+                            ))}
+                          </select>
+                          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 sm:pr-4 text-navy/60">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="sm:w-4 sm:h-4">
+                              <polyline points="6 9 12 15 18 9" />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 3. SELECT DIVE SITE */}
+                      <div>
+                        <div className="flex items-center justify-between mb-1 sm:mb-2">
+                          <label className="block text-[9px] sm:text-xs font-bold text-navy/70 uppercase tracking-wider">
+                            Select Dive Site
+                          </label>
+                          {island && availableSitesForIsland.length > 0 && (
+                            <span className="text-[9px] sm:text-[10px] font-semibold text-navy/50">
+                              {availableSitesForIsland.length} {availableSitesForIsland.length === 1 ? 'site' : 'sites'}
+                            </span>
+                          )}
+                        </div>
+                        <div className="relative">
+                          <select
+                            value={location}
+                            onChange={(e) => handleSiteChange(e.target.value)}
+                            disabled={!country || (!island && availableIslands.length > 0)}
+                            required
+                            className={`w-full rounded-lg sm:rounded-2xl bg-[#F0F2F5] px-3 py-2 sm:px-5 sm:py-4 pr-8 sm:pr-10 text-[11px] sm:text-sm font-semibold sm:font-bold outline-none focus:ring-2 focus:ring-accent/50 transition cursor-pointer appearance-none ${
+                              !country || (!island && availableIslands.length > 0)
+                                ? 'opacity-60 cursor-not-allowed text-navy/40'
+                                : !location
+                                ? 'text-navy/50'
+                                : 'text-navy'
+                            }`}
+                          >
+                            <option value="">
+                              {!country
+                                ? 'Select a country first'
+                                : !island && availableIslands.length > 0
+                                ? 'Select an island / region first'
+                                : availableSitesForIsland.length === 0
+                                ? 'No dive sites listed for this selection'
+                                : `Select a Dive Site (${availableSitesForIsland.length} available)`}
+                            </option>
+                            {/* Retain selected site if picked from map or search params */}
+                            {location && !availableSitesForIsland.some((s) => s.siteName === location) && (
+                              <option value={location}>{location}</option>
+                            )}
+                            {availableSitesForIsland.map((site) => (
+                              <option key={site.id || site.siteName} value={site.siteName}>
+                                {site.siteName}
+                              </option>
+                            ))}
+                          </select>
+                          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 sm:pr-4 text-navy/60">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="sm:w-4 sm:h-4">
+                              <polyline points="6 9 12 15 18 9" />
+                            </svg>
+                          </div>
+                        </div>
+
+                        {/* Selected site indicator pill */}
+                        {location && (
+                          <div className="mt-1.5 flex items-center gap-1.5 text-[10px] sm:text-xs">
+                            <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                            <span className="font-bold text-navy">{location}</span>
+                            {island && <span className="text-navy/50">in {island}</span>}
                           </div>
                         )}
                       </div>
@@ -1018,7 +1082,6 @@ export default function BookUs() {
                           />
                         </div>
                       </div>
-                    </div>
                   </motion.div>
                 )}
 
@@ -1484,7 +1547,7 @@ export default function BookUs() {
       </div>
 
       {/* Column 2: Interactive 2D Worldwide Dive Map (Beside Booking Form on Desktop, Directly Below on Mobile) */}
-      <div id="dive-explorer-map" className="lg:col-span-6 xl:col-span-7 w-full min-w-0 lg:sticky lg:top-28 self-start mt-6 sm:mt-10 lg:mt-0">
+      <div id="dive-explorer-map" data-lenis-prevent="true" className="lg:col-span-6 xl:col-span-7 w-full min-w-0 lg:sticky lg:top-28 self-start mt-6 sm:mt-10 lg:mt-0">
         <DiveExplorerMap
           onSelectSite={handleMapSelectSite}
           onBookSite={handleMapSelectSite}

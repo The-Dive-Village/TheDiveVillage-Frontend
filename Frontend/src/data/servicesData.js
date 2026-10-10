@@ -98,6 +98,18 @@ const vid3DaySurf = 'https://res.cloudinary.com/qvbunv8y/video/upload/v179145853
 const vidDiscoverSurfing = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458614/TDV-Media/Services/discover_surfing.mp4';
 const vidCanoneering = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791460085/TDV-Media/Services/Other/Canoneering.mp4';
 
+// Add Ons Media
+import vidTrekking from '../assets/Media/Services/Add Ons/Trekking/Trekking.mp4'
+import imgTrekking from '../assets/Media/Services/Add Ons/trekking.webp'
+import vidSightseeing from '../assets/Media/Services/Add Ons/sightseeing.mp4'
+import imgSightseeing from '../assets/Media/Services/Add Ons/sightseeing.webp'
+import vidCampers from '../assets/Media/Services/Add Ons/Campers/Campers.MP4'
+import imgCampers from '../assets/Media/Services/Add Ons/campers.webp'
+import vidSafari from '../assets/Media/Airport to Airport/gallery1.mp4'
+import imgSafari from '../assets/Media/Services/Add Ons/safari.webp'
+import vidLiveaboard from '../assets/Media/Services/Add Ons/liveaboard.mp4'
+import imgLiveaboard from '../assets/Media/Services/Add Ons/liveaboard.webp'
+
 export const CATEGORIES = [
   { key: 'all', label: 'All Services' },
   { key: 'programs', label: 'Programs' },
@@ -981,6 +993,106 @@ export const SERVICES_DATA = [
       {
         q: 'Do I need prior experience?',
         a: 'No prior experience is necessary. Our expert guides will provide all the necessary training and equipment.'
+      }
+    ]
+  },
+  {
+    id: 'addon-trekking',
+    category: 'addons',
+    title: 'Trekking',
+    short_desc: 'Guided nature trails and scenic coastal mountain treks.',
+    long_desc: 'Immerse yourself in lush rainforest trails, scenic ridges, and panoramic island viewpoints led by experienced backcountry guides.',
+    video: vidTrekking,
+    image: imgTrekking,
+    highlights: 'Scenic Trails | Guided Expeditions | Panoramic Views',
+    faqs: [
+      {
+        q: 'What should I wear for trekking?',
+        a: 'Sturdy hiking or athletic shoes, comfortable lightweight clothing, a hat, and plenty of water are recommended.'
+      },
+      {
+        q: 'What fitness level is required?',
+        a: 'Our trekking routes range from easy scenic walks to moderate trail hikes suitable for all active explorers.'
+      }
+    ]
+  },
+  {
+    id: 'addon-sightseeing',
+    category: 'addons',
+    title: 'Sightseeing',
+    short_desc: 'Discover historical landmarks, viewpoints, and hidden gems.',
+    long_desc: 'Experience local culture, historical landmarks, pristine beaches, and breathtaking coastal lookouts on our curated island sightseeing tours.',
+    video: vidSightseeing,
+    image: imgSightseeing,
+    highlights: 'Cultural Landmarks | Island Heritage | Hidden Gems',
+    faqs: [
+      {
+        q: 'Is transportation included?',
+        a: 'Yes, full air-conditioned or open-air island transfers are arranged for all sightseeing tour stops.'
+      },
+      {
+        q: 'Can sightseeing tours be customized?',
+        a: 'Absolutely! We offer flexible itineraries tailored to your group’s interests and timeline.'
+      }
+    ]
+  },
+  {
+    id: 'addon-campers',
+    category: 'addons',
+    title: 'Campers',
+    short_desc: 'Overland adventure camper vans for nomadic island exploration.',
+    long_desc: 'Hit the open road in fully equipped camper vehicles. Complete with sleeping quarters, outdoor cooking gear, and off-grid amenities for independent island living under the stars.',
+    video: vidCampers,
+    image: imgCampers,
+    highlights: 'Fully Equipped Vehicles | Off-Grid Freedom | Coastal Camping',
+    faqs: [
+      {
+        q: 'What driving license is needed?',
+        a: 'A valid standard driver’s license (and an international driving permit if visiting from abroad) is required.'
+      },
+      {
+        q: 'Are amenities included with the camper?',
+        a: 'Yes, our camper vehicles come fully outfitted with bedding, cookware, water storage, shade awnings, and emergency gear.'
+      }
+    ]
+  },
+  {
+    id: 'addon-safari',
+    category: 'addons',
+    title: 'Safari',
+    short_desc: 'Thrilling wildlife safaris and pristine nature expeditions.',
+    long_desc: 'Venture deep into protected habitats, mangrove waterways, and wilderness reserves to observe native wildlife, exotic birds, and marine fauna in their natural sanctuary.',
+    video: vidSafari,
+    image: imgSafari,
+    highlights: 'Wildlife Watching | Marine Sanctuaries | Nature Safari',
+    faqs: [
+      {
+        q: 'What wildlife might we encounter?',
+        a: 'Depending on the season, you may spot sea turtles, exotic birds, monitor lizards, dolphins, and diverse mangrove wildlife.'
+      },
+      {
+        q: 'Are safaris guided?',
+        a: 'Yes, every safari is accompanied by a certified wildlife naturalist and local guide.'
+      }
+    ]
+  },
+  {
+    id: 'addon-liveaboard',
+    category: 'addons',
+    title: 'Liveaboard',
+    short_desc: 'Multi-day offshore dive yacht excursions and remote reef expeditions.',
+    long_desc: 'Sleep, eat, and dive aboard our dedicated expedition vessel. Reach untouched offshore pinnacles, pristine outer reefs, and nocturnal marine sites inaccessible on day trips.',
+    video: vidLiveaboard,
+    image: imgLiveaboard,
+    highlights: 'Remote Dive Sites | All-Inclusive Cabins | Night Diving',
+    faqs: [
+      {
+        q: 'What is included in the liveaboard package?',
+        a: 'All meals, cabin accommodation, daily guided dives, tanks, weights, and marine park permits are included.'
+      },
+      {
+        q: 'What certification do I need for liveaboard trips?',
+        a: 'Advanced Open Water Diver (or Open Water with verified deep dive experience) is recommended for remote outer reef conditions.'
       }
     ]
   }

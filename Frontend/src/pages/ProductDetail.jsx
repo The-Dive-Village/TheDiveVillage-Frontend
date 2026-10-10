@@ -20,6 +20,10 @@ export default function ProductDetail() {
   const sizeChartRef = useRef(null)
 
   const product = SHOP_PRODUCTS.find((p) => p.id === id) || SHOP_PRODUCTS[0]
+  const isGearBagOrCap =
+    product.id === 'product-dive-cap' ||
+    product.id === 'product-ocean-bag' ||
+    product.category === 'Accessories'
 
   const relatedScrollRef = useRef(null)
 
@@ -148,6 +152,9 @@ export default function ProductDetail() {
     setActiveMedia(items[0] || null)
     if (p.sizes && p.sizes.length > 0) {
       setSelectedSize(p.sizes[0])
+    }
+    if (p.id === 'product-dive-cap' || p.id === 'product-ocean-bag' || p.category === 'Accessories') {
+      setActiveTab('details')
     }
     setQuantity(1)
   }, [id])
@@ -530,60 +537,62 @@ export default function ProductDetail() {
             )}
 
             {/* 2. Size Information & Options */}
-            <div className="mb-6">
-              <div className="flex justify-between items-center mb-3">
-                <p className="text-xs font-bold uppercase tracking-wider text-navy/70">
-                  Size: <span className="font-bold text-navy normal-case text-sm ml-1">{selectedSize}</span>
-                </p>
-                <button 
-                  type="button"
-                  onClick={(e) => {
-                    e.preventDefault()
-                    triggerHaptic(8)
-                    setActiveTab('sizeGuide')
-                    setTimeout(() => {
-                      sizeChartRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-                    }, 50)
-                  }} 
-                  className="text-xs font-bold text-navy/70 hover:text-navy underline transition cursor-pointer flex items-center gap-1"
-                >
-                  Size Guide
-                </button>
-              </div>
-
-              {/* Size Option Selector Buttons */}
-              {product.sizes && product.sizes.length > 1 && (
-                <div className="grid grid-cols-2 gap-3 mb-3">
-                  {product.sizes.map((sz) => (
-                    <button
-                      key={sz}
-                      type="button"
-                      onClick={() => {
-                        triggerHaptic(10)
-                        setSelectedSize(sz)
-                      }}
-                      className={`px-4 py-3 rounded-2xl text-xs font-bold transition border cursor-pointer active:scale-95 ${
-                        selectedSize === sz
-                          ? 'bg-navy text-white border-navy shadow-md ring-2 ring-navy/20'
-                          : 'bg-white text-navy border-navy/20 hover:border-navy'
-                      }`}
-                    >
-                      {sz}
-                    </button>
-                  ))}
+            {!isGearBagOrCap && (
+              <div className="mb-6">
+                <div className="flex justify-between items-center mb-3">
+                  <p className="text-xs font-bold uppercase tracking-wider text-navy/70">
+                    Size: <span className="font-bold text-navy normal-case text-sm ml-1">{selectedSize}</span>
+                  </p>
+                  <button 
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      triggerHaptic(8)
+                      setActiveTab('sizeGuide')
+                      setTimeout(() => {
+                        sizeChartRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                      }, 50)
+                    }} 
+                    className="text-xs font-bold text-navy/70 hover:text-navy underline transition cursor-pointer flex items-center gap-1"
+                  >
+                    Size Guide
+                  </button>
                 </div>
-              )}
 
-              {/* Size Info Card */}
-              <div className="flex items-center gap-3 rounded-2xl bg-navy/[0.04] border border-navy/10 px-4 py-3 text-xs text-navy/80 font-medium">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-navy/60 shrink-0">
-                  <circle cx="12" cy="12" r="10" />
-                  <line x1="12" y1="16" x2="12" y2="12" />
-                  <line x1="12" y1="8" x2="12.01" y2="8" />
-                </svg>
-                <span><strong>Adaptive Fit:</strong> 4-way ultra-stretch fabric. <strong>One size fits most</strong>.</span>
+                {/* Size Option Selector Buttons */}
+                {product.sizes && product.sizes.length > 1 && (
+                  <div className="grid grid-cols-2 gap-3 mb-3">
+                    {product.sizes.map((sz) => (
+                      <button
+                        key={sz}
+                        type="button"
+                        onClick={() => {
+                          triggerHaptic(10)
+                          setSelectedSize(sz)
+                        }}
+                        className={`px-4 py-3 rounded-2xl text-xs font-bold transition border cursor-pointer active:scale-95 ${
+                          selectedSize === sz
+                            ? 'bg-navy text-white border-navy shadow-md ring-2 ring-navy/20'
+                            : 'bg-white text-navy border-navy/20 hover:border-navy'
+                        }`}
+                      >
+                        {sz}
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {/* Size Info Card */}
+                <div className="flex items-center gap-3 rounded-2xl bg-navy/[0.04] border border-navy/10 px-4 py-3 text-xs text-navy/80 font-medium">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-navy/60 shrink-0">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="16" x2="12" y2="12" />
+                    <line x1="12" y1="8" x2="12.01" y2="8" />
+                  </svg>
+                  <span><strong>Adaptive Fit:</strong> 4-way ultra-stretch fabric. <strong>One size fits most</strong>.</span>
+                </div>
               </div>
-            </div>
+            )}
 
             {/* 3. Quantity */}
             <div className="mb-6">
@@ -686,7 +695,7 @@ export default function ProductDetail() {
           <div className="flex border-b border-navy/10 mb-8 overflow-x-auto scrollbar-none gap-2">
             {[
               { key: 'details', label: 'Product Features' },
-              { key: 'sizeGuide', label: 'Size Guide & Fit' },
+              ...(!isGearBagOrCap ? [{ key: 'sizeGuide', label: 'Size Guide & Fit' }] : []),
             ].map((tab) => (
               <button
                 key={tab.key}
@@ -725,7 +734,7 @@ export default function ProductDetail() {
             </div>
           )}
 
-          {activeTab === 'sizeGuide' && (
+          {activeTab === 'sizeGuide' && !isGearBagOrCap && (
             <div className="space-y-6">
               <div>
                 <h3 className="font-heading text-2xl font-bold text-navy mb-2">Universal Sizing Chart</h3>

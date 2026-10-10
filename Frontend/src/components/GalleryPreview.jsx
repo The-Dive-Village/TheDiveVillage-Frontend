@@ -57,7 +57,8 @@ export default function GalleryPreview() {
 
       if (!isDragging.current && !isHovered && scrollContainerRef.current) {
         // Shift smoothly at ~60px/s (scroll right -> content moves left)
-        scrollContainerRef.current.scrollLeft += 60 * delta
+        const scrollSpeed = (typeof window !== 'undefined' && window.innerWidth < 640) ? 22 : 60
+        scrollContainerRef.current.scrollLeft += scrollSpeed * delta
         if (scrollContainerRef.current.scrollLeft >= cachedThirdWidth * 2) {
           scrollContainerRef.current.scrollLeft = cachedThirdWidth
         }

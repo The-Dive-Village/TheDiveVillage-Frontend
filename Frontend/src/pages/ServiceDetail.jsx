@@ -60,45 +60,52 @@ export default function ServiceDetail() {
         canonicalUrl={`https://thedivevillage.com/services/${service.id}`}
       />
       
-      {/* 1. HERO BANNER */}
-      <div className="relative w-full min-h-[60vh] sm:min-h-[75vh] bg-navy overflow-hidden flex flex-col justify-end pt-32 pb-20 sm:pb-32">
-        {activeHeroVideo ? (
-          <LazyVideo
-            key={activeHeroVideo}
-            ref={(el) => {
-              if (el) {
-                el.muted = true
-                el.defaultMuted = true
-                el.setAttribute('muted', '')
-                el.setAttribute('playsinline', '')
-                el.play().catch(() => {})
-              }
-            }}
-            src={activeHeroVideo}
-            poster={activeHeroImage}
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="auto"
-            className="absolute inset-0 w-full h-full object-cover opacity-75 md:opacity-75 transition-opacity duration-500"
-          />
-        ) : (
-          <SafeImage
-            key={activeHeroImage}
-            src={activeHeroImage}
-            alt={activeHeroTitle}
-            className="absolute inset-0 w-full h-full object-cover opacity-75 md:opacity-75 transition-opacity duration-500"
-          />
-        )}
+      {/* 1. HERO BANNER WITH SMOOTH FADE OUT */}
+      <section className="relative w-full h-[58vh] min-h-[440px] lg:h-[62vh] lg:min-h-[480px] overflow-hidden flex flex-col justify-end pt-24 sm:pt-28 pb-12 sm:pb-16">
+        <div
+          className="absolute inset-0 z-0 overflow-hidden"
+          style={{
+            maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 45%, rgba(0,0,0,0.5) 75%, rgba(0,0,0,0) 100%)',
+            WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 45%, rgba(0,0,0,0.5) 75%, rgba(0,0,0,0) 100%)'
+          }}
+        >
+          {activeHeroVideo ? (
+            <LazyVideo
+              key={activeHeroVideo}
+              ref={(el) => {
+                if (el) {
+                  el.muted = true
+                  el.defaultMuted = true
+                  el.setAttribute('muted', '')
+                  el.setAttribute('playsinline', '')
+                  el.play().catch(() => {})
+                }
+              }}
+              src={activeHeroVideo}
+              poster={activeHeroImage}
+              autoPlay
+              loop
+              muted
+              playsInline
+              preload="auto"
+              onPlay={(e) => { e.currentTarget.playbackRate = 0.75 }}
+              className="w-full h-full object-cover scale-110 origin-center transition-all duration-700"
+            />
+          ) : (
+            <SafeImage
+              key={activeHeroImage}
+              src={activeHeroImage}
+              alt={activeHeroTitle}
+              className="w-full h-full object-cover scale-110 origin-center transition-all duration-700"
+            />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-b from-[#001428]/70 via-[#001428]/30 to-transparent pointer-events-none" />
+        </div>
         
-        {/* Top gradient overlay for navbar contrast */}
-        <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-navy/90 via-navy/50 to-transparent pointer-events-none z-10" />
+        {/* Bottom Ultra-Smooth Dissolve & Merge Layer into page background */}
+        <div className="absolute bottom-0 inset-x-0 h-28 sm:h-36 lg:h-44 pointer-events-none z-[5] bg-gradient-to-t from-[#FAFAFA] via-[#FAFAFA]/90 via-45% to-transparent" />
         
-        {/* Bottom smooth fade into page background */}
-        <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-[#FAFAFA] via-[#FAFAFA]/80 via-navy/30 to-transparent pointer-events-none z-10" />
-        
-        <div className="relative z-20 w-full px-6 sm:px-12 lg:px-24 max-w-7xl mx-auto">
+        <div className="relative z-20 w-full px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
           <motion.div
             key={activeHeroTitle}
             initial={{ opacity: 0, y: 30 }}
@@ -106,46 +113,46 @@ export default function ServiceDetail() {
             transition={{ duration: 0.6 }}
             className="drop-shadow-[0_4px_16px_rgba(0,0,0,0.6)]"
           >
-            <div className="flex items-center gap-3 mb-4 flex-wrap">
+            <div className="flex items-center gap-3 mb-3 sm:mb-4 flex-wrap">
               <Link
                 to={service.category ? `/services?category=${service.category}` : '/services'}
-                className="inline-flex items-center gap-1.5 bg-white/20 hover:bg-white/30 text-white backdrop-blur-md rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-widest transition cursor-pointer"
+                className="inline-flex items-center gap-1.5 bg-white/20 hover:bg-white/30 text-white backdrop-blur-md rounded-full px-3.5 py-1 sm:px-4 sm:py-1.5 text-[11px] sm:text-xs font-bold uppercase tracking-widest transition cursor-pointer"
               >
                 ← Back to Services
               </Link>
-              <span className="inline-block bg-accent/30 border border-accent/50 backdrop-blur-md rounded-full px-4 py-1.5 text-xs font-bold text-accent uppercase tracking-widest">
+              <span className="inline-block bg-accent/30 border border-accent/50 backdrop-blur-md rounded-full px-3.5 py-1 sm:px-4 sm:py-1.5 text-[11px] sm:text-xs font-bold text-accent uppercase tracking-widest">
                 {categoryLabel}
               </span>
             </div>
 
-            <h1 className="font-heading text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-white leading-none mb-4 drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)]">
+            <h1 className="font-heading text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-white leading-none mb-3 sm:mb-4 drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)]">
               {activeHeroTitle}
             </h1>
-            <p className="max-w-2xl text-lg sm:text-xl font-medium text-white/90 leading-relaxed drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
+            <p className="max-w-2xl text-base sm:text-xl font-medium text-white/90 leading-relaxed drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
               {activeHeroDesc}
             </p>
 
             {/* Quick Badges in Hero */}
-            <div className="flex flex-wrap items-center gap-2.5 mt-6">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 mt-4 sm:mt-6">
               {service.min_age && (
-                <span className="rounded-full bg-white/15 backdrop-blur-md text-white border border-white/20 px-3.5 py-1 text-xs font-bold">
+                <span className="rounded-full bg-white/15 backdrop-blur-md text-white border border-white/20 px-3 py-1 text-[11px] sm:text-xs font-bold">
                   Min Age: {service.min_age} yrs
                 </span>
               )}
               {service.days_min && (
-                <span className="rounded-full bg-white/15 backdrop-blur-md text-white border border-white/20 px-3.5 py-1 text-xs font-bold">
+                <span className="rounded-full bg-white/15 backdrop-blur-md text-white border border-white/20 px-3 py-1 text-[11px] sm:text-xs font-bold">
                   Duration: {service.days_min}{service.days_max && service.days_max !== service.days_min ? `–${service.days_max}` : ''} {service.days_min === 1 && !service.days_max ? 'Day' : 'Days'}
                 </span>
               )}
               {highlightItems.map((hl, i) => (
-                <span key={i} className="rounded-full bg-accent/20 backdrop-blur-md text-white border border-accent/40 px-3.5 py-1 text-xs font-bold">
+                <span key={i} className="rounded-full bg-accent/20 backdrop-blur-md text-white border border-accent/40 px-3 py-1 text-[11px] sm:text-xs font-bold">
                   {hl}
                 </span>
               ))}
             </div>
           </motion.div>
         </div>
-      </div>
+      </section>
 
       {/* 2. DEDICATED FUN DIVES PACKAGE SELECTOR (IF VIEWING FUN DIVES COMBO) */}
       {isFunDivesCombo && (

@@ -104,8 +104,15 @@ export default function Home() {
   const [revRole, setRevRole] = useState('')
   const [revText, setRevText] = useState('')
   const [revRating, setRevRating] = useState(5)
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768)
 
   // Prevent background scrolling when review modal is active
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
   useEffect(() => {
     if (showReviewModal) {
       const originalBodyOverflow = document.body.style.overflow
@@ -144,7 +151,7 @@ export default function Home() {
       />
 
       {/* 1. HERO */}
-      <section className="relative flex min-h-[100dvh] sm:min-h-screen items-start sm:items-end justify-start pb-12 sm:pb-32 md:pb-40 lg:pb-48 pt-24 xs:pt-28 sm:pt-[120px] pointer-events-none">
+      <section className="relative flex min-h-[100dvh] sm:min-h-screen items-start sm:items-end justify-start pb-12 sm:pb-32 md:pb-40 lg:pb-48 pt-36 xs:pt-40 sm:pt-[120px] pointer-events-none">
 
         <div className="relative z-10 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 pointer-events-none">
           <div className="max-w-3xl">
@@ -152,7 +159,7 @@ export default function Home() {
               initial={reduce ? false : { opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-              className="pointer-events-auto"
+              className="pointer-events-auto mt-4 xs:mt-6 sm:mt-0"
             >
               <h1 className="mt-2 sm:mt-5 font-heading text-[3.2rem] xs:text-[3.9rem] sm:text-[4.5rem] md:text-[5.5rem] lg:text-[7rem] font-bold uppercase tracking-tight sm:tracking-normal text-white leading-[0.92] flex flex-col drop-shadow-2xl">
                 <span className="block text-xs xs:text-sm sm:text-lg font-bold tracking-[0.22em] mb-1.5 sm:mb-3 text-white/90">MORE THAN A DESTINATION</span>
@@ -173,7 +180,7 @@ export default function Home() {
                 </Link>
                 <Link
                   to="/shop"
-                  className="w-[215px] xs:w-[235px] sm:w-fit inline-flex items-center justify-between gap-3 rounded-full bg-[#001428]/55 sm:bg-white/10 backdrop-blur-xl border border-white/25 sm:border-white/40 px-5 xs:px-6 sm:px-8 py-3 sm:py-4 font-body text-xs sm:text-sm tracking-widest font-bold text-white uppercase shadow-[0_8px_32px_0_rgba(0,0,0,0.25)] transition-all duration-300 hover:scale-105 hover:bg-[#FFCD00] hover:text-navy hover:border-[#FFCD00] active:scale-95 group"
+                  className="w-[215px] xs:w-[235px] sm:w-fit inline-flex items-center justify-between gap-3 rounded-full bg-white/20 sm:bg-white/10 backdrop-blur-xl border border-white/40 px-5 xs:px-6 sm:px-8 py-3 sm:py-4 font-body text-xs sm:text-sm tracking-widest font-bold text-white uppercase shadow-[0_8px_32px_0_rgba(0,0,0,0.25)] transition-all duration-300 hover:scale-105 hover:bg-[#FFCD00] hover:text-navy hover:border-[#FFCD00] active:scale-95 group"
                 >
                   <span>Shop Merch</span>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-1 shrink-0"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
@@ -244,29 +251,29 @@ export default function Home() {
               {
                 t: 'Enthusiastic Beginners',
                 img: img1,
-                bgImg: CAROUSEL_IMAGES[0],
+                bgImg: imgIntroductoryPrograms,
                 desc: "New to diving? Start your journey with confidence, our expert guidance and support every step."
               },
               {
                 t: 'Families & Groups',
                 img: img2,
-                bgImg: CAROUSEL_IMAGES[1],
+                bgImg: imgCertifiedCourses,
                 desc: "Shared memories. Deeper connections. Perfect experiences with who matter the most to you."
               },
               {
                 t: 'Professionals',
                 img: img3,
-                bgImg: CAROUSEL_IMAGES[2],
+                bgImg: imgFreeDiving,
                 desc: "For those who work beneath the surface. Training, support and solutions you can always rely on."
               },
               {
                 t: 'Adventure Seekers',
                 img: img4,
-                bgImg: CAROUSEL_IMAGES[3],
+                bgImg: imgFlexibleFunDives,
                 desc: "For the bold, the curious and all the ocean lovers. Explore more. Dive deeper. Live the adventure."
               }
             ].map((item, i) => (
-              <StaggerItem key={i} className="w-[220px] xs:w-[240px] shrink-0 sm:w-auto snap-center h-full">
+              <StaggerItem key={i} className="w-[245px] min-w-[245px] max-w-[245px] shrink-0 sm:w-auto sm:min-w-0 sm:max-w-none snap-center h-full">
                 <div
                   onClick={() => {
                     navigate('/book-us')
@@ -416,7 +423,7 @@ export default function Home() {
                     </div>
 
                     {/* Main Heading Text */}
-                    <h3 className="font-heading text-xs xs:text-sm sm:text-xl lg:text-2xl font-bold text-white uppercase tracking-wide leading-tight mb-1 sm:mb-2 text-left group-hover:text-[#FFCD00] transition-colors truncate sm:whitespace-normal">
+                    <h3 className="font-heading text-xs xs:text-sm sm:text-xl lg:text-2xl font-bold text-white uppercase tracking-wide leading-tight mt-0.5 sm:mt-0 mb-3.5 sm:mb-2 text-left group-hover:text-[#FFCD00] transition-colors truncate sm:whitespace-normal">
                       {item.title}
                     </h3>
 
@@ -509,7 +516,7 @@ export default function Home() {
                       ))}
                     </div>
                     <p className="text-white/95 font-medium mb-3 sm:mb-8 text-xs sm:text-base leading-relaxed text-justify line-clamp-4 sm:line-clamp-none">
-                      "{t.text}"
+                      "{isMobile && t.name === 'Sofia Stalance' ? t.text.replace('\u2014truly unforgettable', '') : t.text}"
                     </p>
                   </div>
                   <div className="flex items-center gap-2.5 sm:gap-4 mt-auto">
@@ -718,8 +725,8 @@ function InteractiveHighlights() {
   const itemsInSet = HIGHLIGHTS_DATA.length
   const cardGap = containerWidth < 640 ? 10 : 20 // px gap between cards
 
-  // Responsively show 5 cards on desktop, 3.2 on tablet, 2.3 on wide mobile, 1.45 on narrow mobile
-  const cardsToShow = containerWidth < 480 ? 1.45 : (containerWidth < 768 ? 2.3 : (containerWidth < 1024 ? 3.2 : 5))
+  // Responsively show 5 cards on desktop, 3.2 on tablet, 2.3 on wide mobile, 1.85 on narrow mobile (narrower panels on mobile)
+  const cardsToShow = containerWidth < 480 ? 1.85 : (containerWidth < 640 ? 2.15 : (containerWidth < 768 ? 2.3 : (containerWidth < 1024 ? 3.2 : 5)))
   const cardWidth = Math.floor((containerWidth - (Math.ceil(cardsToShow) - 1) * cardGap) / cardsToShow)
   const singleSetWidth = itemsInSet * (cardWidth + cardGap)
 
@@ -727,7 +734,7 @@ function InteractiveHighlights() {
   useEffect(() => {
     let animationFrameId = null
     let isVisible = false
-    const autoSpeed = 1.35 // pixels per frame
+    const autoSpeed = containerWidth < 640 ? 0.28 : 1.35 // further reduced speed on mobile (pixels per frame)
 
     const startLoop = () => {
       if (!animationFrameId && isVisible) {
@@ -997,12 +1004,13 @@ function AutoCarousel({ images, showContent = true }) {
 
     const startTimer = () => {
       if (!timer && isVisible && !document.hidden) {
+        const intervalDuration = (typeof window !== 'undefined' && window.innerWidth < 640) ? 5000 : 3200
         timer = setInterval(() => {
           setIndex((curr) => {
             setPrevIndex(curr)
             return (curr + 1) % images.length
           })
-        }, 3200)
+        }, intervalDuration)
       }
     }
 

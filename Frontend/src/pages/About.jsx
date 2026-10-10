@@ -1,4 +1,5 @@
 import LazyVideo from '../components/LazyVideo'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router'
 import { motion, useReducedMotion } from 'framer-motion'
 import Button from '../components/Button'
@@ -20,25 +21,21 @@ import flexibleFunDivesImg from '../assets/Media/Services Thumbnails/Flexible Fu
 
 const SAFETY_PROMISES = [
   {
-    num: '01',
     title: 'Globally Certified Instructors',
     desc: 'Globally certified instructors and professional guides dedicated to your safety and growth.',
     image: certifiedCoursesImg,
   },
   {
-    num: '02',
     title: 'Personalized Training',
     desc: 'Personalized training sessions tailored to your individual pace, comfort, and skill level.',
     image: introProgImg,
   },
   {
-    num: '03',
     title: 'Serviced Equipment',
     desc: 'High-quality, regularly inspected and serviced dive gear for flawless underwater performance.',
     image: freeDivingImg,
   },
   {
-    num: '04',
     title: 'Emergency-Ready Staff',
     desc: 'Emergency-ready, rescue-trained staff equipped with complete safety protocols on every dive.',
     image: flexibleFunDivesImg,
@@ -101,6 +98,13 @@ export default function About() {
   const isNightDive = useNightDive()
   const { approvedReviews } = useReviews()
   const reviewsToDisplay = approvedReviews && approvedReviews.length > 0 ? approvedReviews.slice(0, 3) : TESTIMONIALS
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768)
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   return (
     <div className="min-h-screen font-body overflow-x-hidden pointer-events-none relative bg-[#001e3d] text-white">
@@ -287,24 +291,21 @@ export default function About() {
             </p>
           </SectionReveal>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          <div className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none gap-3.5 sm:gap-6 sm:grid sm:grid-cols-2 lg:grid-cols-4 pb-4 sm:pb-0 mb-8 sm:mb-12">
             {SAFETY_PROMISES.map((s, i) => (
-              <div key={i} className="rounded-[32px] bg-white/10 backdrop-blur-xl p-5 sm:p-6 flex flex-col justify-between hover:bg-white/20 hover:border-[#FFCD00]/50 transition duration-500 group border border-white/15 shadow-lg overflow-hidden">
+              <div key={i} className="w-[210px] xs:w-[230px] shrink-0 snap-center sm:w-auto rounded-[24px] sm:rounded-[32px] bg-white/10 backdrop-blur-xl p-3.5 sm:p-6 flex flex-col justify-between hover:bg-white/20 hover:border-[#FFCD00]/50 transition duration-500 group border border-white/15 shadow-lg overflow-hidden">
                 <div>
                   {/* Photo Container */}
-                  <div className="h-44 w-full rounded-2xl overflow-hidden mb-5 border border-white/15 relative bg-black/20 shadow-md">
+                  <div className="h-28 sm:h-44 w-full rounded-xl sm:rounded-2xl overflow-hidden mb-3 sm:mb-5 border border-white/15 relative bg-black/20 shadow-md">
                     <img 
                       src={s.image} 
                       alt={s.title} 
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
-                    <span className="absolute top-3 left-3 bg-black/50 backdrop-blur-md border border-white/20 text-[#FFCD00] font-heading font-bold text-xs px-2.5 py-1 rounded-full">
-                      {s.num}
-                    </span>
                   </div>
-                  <h3 className="font-heading text-xl font-bold text-white mb-2 group-hover:text-[#FFCD00] transition">{s.title}</h3>
-                  <p className="text-xs sm:text-sm text-white/80 leading-relaxed font-body font-medium transition">{s.desc}</p>
+                  <h3 className="font-heading text-base sm:text-xl font-bold text-white mb-1.5 sm:mb-2 group-hover:text-[#FFCD00] transition leading-tight">{s.title}</h3>
+                  <p className="text-[11px] sm:text-sm text-white/80 leading-relaxed font-body font-medium transition line-clamp-3 sm:line-clamp-none">{s.desc}</p>
                 </div>
               </div>
             ))}
@@ -328,26 +329,26 @@ export default function About() {
             </h2>
           </SectionReveal>
           
-          <div className="grid md:grid-cols-3 gap-8 items-stretch">
+          <div className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none gap-4 md:gap-8 md:grid md:grid-cols-3 items-stretch pb-4 md:pb-0">
             {reviewsToDisplay.map((t, i) => (
-              <div key={t.id || i} className="bg-white/10 backdrop-blur-2xl rounded-3xl p-8 border border-white/20 shadow-2xl hover:bg-white/15 hover:border-white/30 hover:-translate-y-2 transition duration-500 flex flex-col justify-between h-full">
+              <div key={t.id || i} className="w-[260px] xs:w-[280px] shrink-0 snap-center md:w-auto bg-white/10 backdrop-blur-2xl rounded-2xl sm:rounded-3xl p-5 sm:p-8 border border-white/20 shadow-2xl hover:bg-white/15 hover:border-white/30 hover:-translate-y-2 transition duration-500 flex flex-col justify-between h-full">
                 <div>
-                  <div className="flex gap-1 mb-6">
+                  <div className="flex gap-1 mb-3 sm:mb-6">
                     {[...Array(t.rating || 5)].map((_, j) => (
-                      <svg key={j} className="w-5 h-5 text-[#FFCD00]" fill="currentColor" viewBox="0 0 20 20">
+                      <svg key={j} className="w-4 h-4 sm:w-5 sm:h-5 text-[#FFCD00]" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                       </svg>
                     ))}
                   </div>
-                  <p className="text-white/95 mb-8 leading-relaxed font-body font-medium text-justify">"{t.text}"</p>
+                  <p className="text-xs sm:text-base text-white/95 mb-4 sm:mb-8 leading-relaxed font-body font-medium text-justify">"{isMobile && t.name === 'Sofia Stalance' ? t.text.replace('\u2014truly unforgettable', '') : t.text}"</p>
                 </div>
-                <div className="flex items-center gap-4 mt-auto">
-                  <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white/30 shrink-0 shadow-md">
+                <div className="flex items-center gap-3 sm:gap-4 mt-auto">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden border-2 border-white/30 shrink-0 shadow-md">
                     <SafeImage src={t.image} alt={t.name} className="w-full h-full object-cover" />
                   </div>
                   <div>
-                    <h4 className="font-heading font-bold text-white text-sm">{t.name}</h4>
-                    <span className="text-xs text-[#FFCD00] font-heading font-bold">{t.role}</span>
+                    <h4 className="font-heading font-bold text-white text-xs sm:text-sm">{t.name}</h4>
+                    <span className="text-[10px] sm:text-xs text-[#FFCD00] font-heading font-bold">{t.role}</span>
                   </div>
                 </div>
               </div>

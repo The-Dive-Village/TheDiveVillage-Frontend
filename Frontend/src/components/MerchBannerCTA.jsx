@@ -50,7 +50,7 @@ export default function MerchBannerCTA({ className = '' }) {
         </div>
 
         {/* Right Column: 3D Flipping Product Tag */}
-        <div className="absolute right-3 sm:right-8 lg:right-12 top-0 bottom-0 z-10 shrink-0 h-full flex items-center pointer-events-none">
+        <div className="absolute right-3 sm:right-8 lg:right-12 top-0 bottom-0 z-10 shrink-0 h-full hidden sm:flex items-center pointer-events-none">
           <FlippingProductTag />
         </div>
       </div>

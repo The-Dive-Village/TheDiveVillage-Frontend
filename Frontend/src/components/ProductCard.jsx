@@ -1,4 +1,5 @@
 import { Link, useNavigate } from 'react-router'
+import { useState, useEffect } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import Badge from './Badge'
 import Button from './Button'
@@ -14,6 +15,13 @@ export default function ProductCard({ product }) {
   const { addItem } = useCart()
   const { toggle: toggleWishlist, isWishlisted } = useWishlist()
   const reduce = useReducedMotion()
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768)
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   const onAdd = (e) => {
     e.preventDefault()
@@ -38,7 +46,7 @@ export default function ProductCard({ product }) {
 
   return (
     <motion.article
-      whileHover={reduce ? undefined : { y: -6, scale: 1.02 }}
+      whileHover={reduce || isMobile ? undefined : { y: -6, scale: 1.02 }}
       transition={{ duration: 0.22, ease: 'easeOut' }}
       className="flex flex-col overflow-hidden rounded-card bg-white/10 backdrop-blur-md border border-white/20 shadow-card hover:shadow-lift"
     >
@@ -47,7 +55,7 @@ export default function ProductCard({ product }) {
           src={product.image}
           alt={product.name || product.title}
           className="absolute inset-0 h-full w-full"
-          imgClassName="transition duration-500 hover:scale-105"
+          imgClassName="transition duration-500 sm:hover:scale-105"
         />
         {product.badge && (
           <div className="absolute left-3 top-3">
