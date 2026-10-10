@@ -340,7 +340,10 @@ export default function About() {
                       </svg>
                     ))}
                   </div>
-                  <p className="text-xs sm:text-base text-white/95 mb-4 sm:mb-8 leading-relaxed font-body font-medium text-left">"{t.text}"</p>
+                  <p className="text-xs sm:text-base text-white/95 mb-4 sm:mb-8 leading-relaxed font-body font-medium text-left">
+                    <span className="sm:hidden">"{t.mobileText || t.text}"</span>
+                    <span className="hidden sm:inline">"{t.text}"</span>
+                  </p>
                 </div>
                 <div className="flex items-center gap-3 sm:gap-4 mt-auto pt-2">
                   <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-full overflow-hidden border-2 border-white/30 shrink-0 shadow-md">

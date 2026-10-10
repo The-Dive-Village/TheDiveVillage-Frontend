@@ -516,7 +516,8 @@ export default function Home() {
                       ))}
                     </div>
                     <p className="text-white/95 font-medium mb-4 sm:mb-8 text-xs sm:text-base leading-relaxed text-left">
-                      "{t.text}"
+                      <span className="sm:hidden">"{t.mobileText || t.text}"</span>
+                      <span className="hidden sm:inline">"{t.text}"</span>
                     </p>
                   </div>
                   <div className="flex items-center gap-3 sm:gap-4 mt-auto pt-2">
