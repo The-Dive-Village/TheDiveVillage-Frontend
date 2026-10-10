@@ -549,15 +549,18 @@ export default function VideoSphereBackground() {
       'mousedown',
       'mouseup',
       'click',
-      'keydown'
+      'keydown',
+      'wheel',
+      'scroll'
     ]
 
     const removeUnlockListeners = () => {
       validUnlockEvents.forEach((evt) => {
         window.removeEventListener(evt, unlockHandler, true)
         document.removeEventListener(evt, unlockHandler, true)
+        window.removeEventListener(evt, unlockHandler, false)
+        document.removeEventListener(evt, unlockHandler, false)
       })
-      window.removeEventListener('scroll', unlockHandler, true)
       window.removeEventListener('tdv-unlock-audio', unlockHandler)
     }
 
@@ -584,8 +587,8 @@ export default function VideoSphereBackground() {
 
       // First attempt unmuted playback directly on load
       tryPlayUnmuted().catch(() => {
-        // If unmuted playback is blocked by browser autoplay policy:
-        // Immediately start playback muted so the stream decodes and buffers in background
+        // If unmuted playback is blocked by browser autoplay policy on deployed HTTPS domain:
+        // Start playback muted so the stream buffers and can immediately unmute upon first interaction
         if (!isCleanedUp && !isMutedRef.current && el) {
           el.muted = true
           el.play().catch(() => {})
@@ -624,12 +627,11 @@ export default function VideoSphereBackground() {
       audio.addEventListener('canplay', handleCanPlay, { once: true })
       audio.addEventListener('loadedmetadata', handleCanPlay, { once: true })
 
-      // 3. User interaction capture listeners across window & document
+      // 3. User interaction capture listeners across window & document (both capturing and bubbling)
       validUnlockEvents.forEach((evt) => {
         window.addEventListener(evt, unlockHandler, { capture: true, passive: true })
         document.addEventListener(evt, unlockHandler, { capture: true, passive: true })
       })
-      window.addEventListener('scroll', unlockHandler, { capture: true, passive: true })
 
       // 4. Custom event for preloader completion or manual trigger
       window.addEventListener('tdv-unlock-audio', unlockHandler)

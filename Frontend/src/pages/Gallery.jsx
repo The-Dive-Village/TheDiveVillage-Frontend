@@ -294,14 +294,14 @@ export default function Gallery() {
 
         {/* 5. CALL TO ACTION WITH BACKGROUND IMAGE */}
         <div className="rounded-[40px] bg-navy text-white p-10 sm:p-16 lg:p-20 relative overflow-hidden shadow-lift group border border-white/10">
-          {/* Background Image: divers.png */}
+          {/* Background Image: 4M7A6732.jpg */}
           <img
             src={diversBg}
             alt="The Dive Village Divers"
-            className="absolute inset-0 w-full h-full object-cover object-[center_right] sm:object-center transition-transform duration-[7000ms] group-hover:scale-105 opacity-60 z-0"
+            className="absolute inset-0 w-full h-full object-cover object-[center_right] sm:object-center transition-transform duration-[7000ms] group-hover:scale-105 opacity-85 z-0"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/80 to-navy/30 z-0" />
-          <div className="absolute -left-20 -bottom-20 w-96 h-96 bg-accent/20 rounded-full blur-3xl pointer-events-none z-0" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#001e3d]/85 via-[#001e3d]/55 to-transparent z-0" />
+          <div className="absolute -left-20 -bottom-20 w-96 h-96 bg-accent/10 rounded-full blur-3xl pointer-events-none z-0" />
 
           <div className="relative z-10 max-w-3xl">
             <span className="inline-block bg-white/10 backdrop-blur-md rounded-full px-4 py-1.5 text-xs font-bold text-accent uppercase tracking-widest mb-6 border border-white/10">

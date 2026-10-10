@@ -75,12 +75,12 @@ const imgFullWetsuitFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1
 const imgFullWetsuitBack = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458506/TDV-Media/Products/Wet%20Suit%20-%20Full%20Length/back.jpg';
 const imgFullWetsuitModel1 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458502/TDV-Media/Products/Wet%20Suit%20-%20Full%20Length/4M7A7097.jpg';
 const imgFullWetsuitModel2 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458505/TDV-Media/Products/Wet%20Suit%20-%20Full%20Length/4M7A7149.jpg';
-const imgFullWetsuitModel3 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441733/TDV-Products/4M7A7125.jpg';
+const imgFullWetsuitModel3 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458507/TDV-Media/Products/Wet%20Suit%20-%20Full%20Length/4M7A7125.jpg';
 
 // Wet Suit - Shortie Assets
 const imgShortieWetsuitFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458515/TDV-Media/Products/Wet%20Suit%20-%20Shortie/front.png';
 const imgShortieWetsuitBack = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458513/TDV-Media/Products/Wet%20Suit%20-%20Shortie/back.png';
-const imgShortieWetsuitModel1 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791441747/TDV-Products/4M7A7068.jpg';
+const imgShortieWetsuitModel1 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458509/TDV-Media/Products/Wet%20Suit%20-%20Shortie/4M7A7068.jpg';
 const imgShortieWetsuitModel2 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458510/TDV-Media/Products/Wet%20Suit%20-%20Shortie/4M7A7089.jpg';
 const imgShortieWetsuitModel3 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458511/TDV-Media/Products/Wet%20Suit%20-%20Shortie/4M7A7130.jpg';
 
@@ -136,8 +136,8 @@ export const GROUP_PHOTOS = [
 export const SHOP_PRODUCTS = [
   {
     id: 'product-womens-shirt',
-    title: 'Womens Sweetheart Neck Top',
-    name: 'Womens Sweetheart Neck Top',
+    title: "Women's Sweetheart Neck Top",
+    name: "Women's Sweetheart Neck Top",
     price: 2499,
     oldPrice: 2999,
     image: imgWomensSweetheartFront,
@@ -162,8 +162,8 @@ export const SHOP_PRODUCTS = [
   },
   {
     id: 'product-womens-pants',
-    title: 'Bottoms with compression support',
-    name: 'Bottoms with compression support',
+    title: 'Bottoms With Compression Support',
+    name: 'Bottoms With Compression Support',
     price: 2999,
     oldPrice: 3499,
     image: imgWomensPantsFront,
@@ -189,8 +189,8 @@ export const SHOP_PRODUCTS = [
   },
   {
     id: 'product-womens-strap',
-    title: "Women's Shoulder Strap Shortie with all round compression",
-    name: "Women's Shoulder Strap Shortie with all round compression",
+    title: "Women's Shoulder Strap Shortie With All Round Compression",
+    name: "Women's Shoulder Strap Shortie With All Round Compression",
     price: 1999,
     oldPrice: 2499,
     image: imgWomensStrapFront,
@@ -293,8 +293,8 @@ export const SHOP_PRODUCTS = [
   },
   {
     id: 'product-full-suit',
-    title: 'Unisex full body skin with front zipper',
-    name: 'Unisex full body skin with front zipper',
+    title: 'Unisex Full Body Skin With Front Zipper',
+    name: 'Unisex Full Body Skin With Front Zipper',
     price: 6999,
     oldPrice: 8999,
     image: imgSkinSuitFront,
