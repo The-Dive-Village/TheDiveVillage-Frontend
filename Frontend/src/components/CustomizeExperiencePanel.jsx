@@ -14,12 +14,57 @@ import vidCampers from '../assets/Media/Services/Add Ons/Campers/Campers.MP4'
 import imgCampers from '../assets/Media/Services/Add Ons/campers.webp'
 import vidLiveaboard from '../assets/Media/Services/Add Ons/liveaboard.mp4'
 import imgLiveaboard from '../assets/Media/Services/Add Ons/liveaboard.webp'
+import { useRef } from 'react'
+
+function HoverVideoPreview({ videoSrc, poster, displayName }) {
+  const videoRef = useRef(null)
+  const [isLoaded, setIsLoaded] = useState(false)
+
+  useEffect(() => {
+    const v = videoRef.current
+    if (!v) return
+    v.muted = true
+    v.defaultMuted = true
+    const p = v.play()
+    if (p !== undefined) {
+      p.catch(() => {})
+    }
+  }, [videoSrc])
+
+  return (
+    <div className="absolute inset-0 w-full h-full bg-[#001428] overflow-hidden">
+      <video
+        ref={videoRef}
+        src={videoSrc}
+        poster={poster || undefined}
+        autoPlay
+        loop
+        muted
+        playsInline
+        preload="auto"
+        crossOrigin="anonymous"
+        onLoadedData={() => setIsLoaded(true)}
+        onCanPlay={() => setIsLoaded(true)}
+        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
+          isLoaded ? 'opacity-100' : 'opacity-0'
+        }`}
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent pointer-events-none" />
+      <div className="relative z-10 mt-auto p-2">
+        <span className="text-[11px] font-heading font-bold text-white drop-shadow block leading-tight truncate">
+          {displayName}
+        </span>
+      </div>
+      <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-[#001428] rotate-45 border-r-2 border-b-2 border-[#FFCD00]" />
+    </div>
+  )
+}
 
 const CUSTOM_ACTIVITIES = [
   {
     id: 'canyoneering',
     name: 'Canyoneering',
-    video: 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791460085/TDV-Media/Services/Other/Canoneering.mp4',
+    video: 'https://res.cloudinary.com/qvbunv8y/video/upload/c_scale,q_auto,w_360/TDV-Media/Services/Other/Canoneering.mp4',
   },
   {
     id: 'safari',
@@ -36,7 +81,7 @@ const CUSTOM_ACTIVITIES = [
   {
     id: 'surfing',
     name: 'Surfing',
-    video: 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458534/TDV-Media/Services/3_Day_Surf_Academy_Course.mp4',
+    video: 'https://res.cloudinary.com/qvbunv8y/video/upload/c_scale,q_auto,w_360/TDV-Media/Services/3_Day_Surf_Academy_Course.mp4',
   },
   {
     id: 'sightseeing',
@@ -47,7 +92,7 @@ const CUSTOM_ACTIVITIES = [
   {
     id: 'snorkeling',
     name: 'Snorkeling',
-    video: 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458610/TDV-Media/Services/Discover_Snorkelling.mp4',
+    video: 'https://res.cloudinary.com/qvbunv8y/video/upload/c_scale,q_auto,w_360/TDV-Media/Services/Discover_Snorkelling.mp4',
   },
   {
     id: 'camping_camper',
@@ -208,22 +253,11 @@ export default function CustomizeExperiencePanel({ className = '', images = PANE
                               transition={{ type: 'spring', damping: 22, stiffness: 350 }}
                               className="absolute bottom-[calc(100%+12px)] left-1/2 -translate-x-1/2 w-32 h-32 rounded-2xl overflow-hidden shadow-[0_16px_36px_rgba(0,0,0,0.7)] border-2 border-[#FFCD00] bg-[#001428] z-50 pointer-events-none flex flex-col justify-between"
                             >
-                              <video
-                                src={activity.video}
-                                poster={activity.poster || undefined}
-                                autoPlay
-                                loop
-                                muted
-                                playsInline
-                                className="absolute inset-0 w-full h-full object-cover"
+                              <HoverVideoPreview
+                                videoSrc={activity.video}
+                                poster={activity.poster}
+                                displayName={displayName}
                               />
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent pointer-events-none" />
-                              <div className="relative z-10 mt-auto p-2">
-                                <span className="text-[11px] font-heading font-bold text-white drop-shadow block leading-tight truncate">
-                                  {displayName}
-                                </span>
-                              </div>
-                              <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-[#001428] rotate-45 border-r-2 border-b-2 border-[#FFCD00]" />
                             </motion.div>
                           )}
                         </AnimatePresence>
@@ -272,24 +306,11 @@ export default function CustomizeExperiencePanel({ className = '', images = PANE
                           transition={{ type: 'spring', damping: 22, stiffness: 350 }}
                           className="absolute bottom-[calc(100%+12px)] left-1/2 -translate-x-1/2 w-32 h-32 sm:w-36 sm:h-36 rounded-2xl overflow-hidden shadow-[0_16px_36px_rgba(0,0,0,0.7)] border-2 border-[#FFCD00] bg-[#001428] z-50 pointer-events-none flex flex-col justify-between"
                         >
-                          <video
-                            src={activity.video}
-                            poster={activity.poster || undefined}
-                            autoPlay
-                            loop
-                            muted
-                            playsInline
-                            className="absolute inset-0 w-full h-full object-cover"
+                          <HoverVideoPreview
+                            videoSrc={activity.video}
+                            poster={activity.poster}
+                            displayName={activity.name}
                           />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent pointer-events-none" />
-                          <div className="relative z-10 mt-auto p-2">
-                            <span className="text-[11px] font-heading font-bold text-white drop-shadow block leading-tight truncate">
-                              {activity.name}
-                            </span>
-                          </div>
-
-                          {/* Downward Beak Indicator */}
-                          <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-[#001428] rotate-45 border-r-2 border-b-2 border-[#FFCD00]" />
                         </motion.div>
                       )}
                     </AnimatePresence>

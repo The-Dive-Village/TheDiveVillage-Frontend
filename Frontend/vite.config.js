@@ -101,12 +101,13 @@ export default defineConfig({
         ]
       },
       workbox: {
-        maximumFileSizeToCacheInBytes: 15 * 1024 * 1024,
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2,webp}'],
-        navigateFallbackDenylist: [/^\/assets\/.*\.(mp4|webm|mov|mp3|ogg)$/i],
+        maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        globIgnores: ['**/assets/*.{mp4,MP4,webm,mov,MOV,mp3,wav,ogg,glb,GLB}'],
+        navigateFallbackDenylist: [/^\/assets\/.*\.(mp4|webm|mov|mp3|ogg|glb)$/i],
         runtimeCaching: [
           {
-            urlPattern: /\.(?:mp4|webm|mov|mp3|ogg)$/i,
+            urlPattern: /\.(?:mp4|webm|mov|mp3|ogg|glb)$/i,
             handler: 'NetworkOnly',
           },
           {

@@ -39,7 +39,9 @@ export default function ServiceDetail() {
   const categoryLabel = CATEGORIES.find(c => c.key === service.category)?.label || (isFunDivesCombo ? 'Combos & Packages' : 'Services')
   const activeFaqs = service.faqs && service.faqs.length > 0 ? service.faqs : DEFAULT_FAQS
 
-  const filteredFunPackages = FUN_DIVES_PACKAGES
+  const filteredFunPackages = FUN_DIVES_PACKAGES.filter(
+    (pkg) => !pkg.funType || pkg.funType === funCategoryFilter
+  )
 
   // Parse highlight string into pills
   const highlightItems = service.highlights

@@ -16,10 +16,16 @@ import { setHeroVideoReady, getOrCreateHeroVideoElement, setHeroWebGLReady, HERO
 // Audio source fallback (public static /Audio.mp3 or bundled underwaterAudio)
 const AUDIO_SRC = '/Audio.mp3'
 
-const videoFile = HERO_VIDEO_SRC || clownfishVideo
-const bookFile = barracudaVideo
-const turtleVideo = turtleBgVideo
-const nightDiveVideo = nightDiveVideoLocal
+// Cloudinary Full-Resolution Uncompressed Video URLs
+const CLOUDINARY_CLOWNFISH = 'https://res.cloudinary.com/qvbunv8y/video/upload/TDV-Media/Background/ClownFish.mp4'
+const CLOUDINARY_BARRACUDA = 'https://res.cloudinary.com/qvbunv8y/video/upload/TDV-Media/Background/baracuda.mp4'
+const CLOUDINARY_TURTLE = 'https://res.cloudinary.com/qvbunv8y/video/upload/TDV-Media/Background/Turtle.mp4'
+const CLOUDINARY_NIGHT_DIVE = 'https://res.cloudinary.com/qvbunv8y/video/upload/TDV-Media/Background/Night_Dive.mp4'
+
+const videoFile = CLOUDINARY_CLOWNFISH || HERO_VIDEO_SRC || clownfishVideo
+const bookFile = CLOUDINARY_BARRACUDA || barracudaVideo
+const turtleVideo = CLOUDINARY_TURTLE || turtleBgVideo
+const nightDiveVideo = CLOUDINARY_NIGHT_DIVE || nightDiveVideoLocal
 
 function getOrCreateDomVideoContainer() {
   let container = document.getElementById('hero-360-video-dom-root')
@@ -660,14 +666,25 @@ function AudioToggle({ isMuted, onToggle }) {
     location.pathname === '/wishlist' ||
     location.pathname === '/checkout'
 
+  const lastClickRef = useRef(0)
+
+  const handleDebouncedToggle = (e) => {
+    e.stopPropagation()
+    const now = Date.now()
+    if (now - lastClickRef.current < 250) return // Prevent rapid spam triggering during buffering
+    lastClickRef.current = now
+    onToggle()
+  }
+
   return (
     <button
-      onClick={onToggle}
-      className={`fixed bottom-6 right-6 z-[9000] flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full border shadow-2xl transition-all duration-300 hover:scale-110 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] cursor-pointer ${isLightPage
+      onClick={handleDebouncedToggle}
+      className={`fixed bottom-6 right-6 z-[9000] flex h-11 w-11 sm:h-12 sm:w-12 min-h-[44px] min-w-[44px] items-center justify-center rounded-full border shadow-2xl transition-all duration-300 hover:scale-110 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] cursor-pointer touch-manipulation active:scale-95 ${isLightPage
         ? 'bg-[#001e3d] text-white border-white/20 shadow-[0_6px_24px_rgba(0,30,61,0.35)]'
         : 'bg-[#001e3d]/85 text-white border-white/30 backdrop-blur-2xl shadow-[0_6px_24px_rgba(0,0,0,0.5)]'
         }`}
       aria-label={isMuted ? 'Play underwater ambiance' : 'Mute underwater ambiance'}
+      title={isMuted ? 'Unmute underwater ambiance' : 'Mute underwater ambiance'}
     >
       {!isMuted ? (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
