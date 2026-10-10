@@ -505,8 +505,8 @@ export default function Home() {
 
           <StaggerGrid className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none pb-4 gap-3 md:grid md:grid-cols-3 md:gap-8 items-stretch md:overflow-visible px-1">
             {approvedReviews.slice(0, 3).map((t, i) => (
-              <StaggerItem key={t.id || i} className="w-[210px] xs:w-[230px] shrink-0 md:w-auto snap-center h-full">
-                <div className="h-full flex flex-col justify-between bg-white/10 backdrop-blur-2xl rounded-2xl sm:rounded-3xl p-3.5 sm:p-8 border border-white/20 shadow-[0_8px_24px_rgba(0,0,0,0.25)] hover:bg-white/15 hover:border-white/40 hover:-translate-y-2 hover:shadow-[0_12px_32px_rgba(0,0,0,0.35)] transition-all duration-500">
+              <StaggerItem key={t.id || i} className="w-[260px] xs:w-[280px] sm:w-[320px] shrink-0 md:w-auto snap-center h-full">
+                <div className="h-full flex flex-col justify-between bg-white/10 backdrop-blur-2xl rounded-2xl sm:rounded-3xl p-4 sm:p-8 border border-white/20 shadow-[0_8px_24px_rgba(0,0,0,0.25)] hover:bg-white/15 hover:border-white/40 hover:-translate-y-2 hover:shadow-[0_12px_32px_rgba(0,0,0,0.35)] transition-all duration-500">
                   <div>
                     <div className="flex gap-0.5 sm:gap-1 mb-2 sm:mb-6">
                       {[...Array(t.rating || 5)].map((_, j) => (
@@ -515,8 +515,8 @@ export default function Home() {
                         </svg>
                       ))}
                     </div>
-                    <p className="text-white/95 font-medium mb-3 sm:mb-8 text-xs sm:text-base leading-relaxed text-justify line-clamp-4 sm:line-clamp-none">
-                      "{isMobile && t.name === 'Sofia Stalance' ? t.text.replace('\u2014truly unforgettable', '') : t.text}"
+                    <p className="text-white/95 font-medium mb-3 sm:mb-8 text-xs sm:text-base leading-relaxed text-justify">
+                      "{t.text}"
                     </p>
                   </div>
                   <div className="flex items-center gap-2.5 sm:gap-4 mt-auto">
