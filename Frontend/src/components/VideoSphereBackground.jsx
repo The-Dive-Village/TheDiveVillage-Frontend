@@ -10,6 +10,7 @@ import turtleBgVideo from '../assets/Media/Background/Turtle.mp4'
 import nightDiveVideoLocal from '../assets/Media/Background/Night Dive.mp4'
 
 import underwaterAudio from '../assets/Audio.mp3'
+import { globalAudio } from '../utils/audioManager'
 import { setHeroVideoReady, getOrCreateHeroVideoElement, setHeroWebGLReady, HERO_VIDEO_SRC } from '../utils/mediaReadyManager'
 
 // Audio source fallback (public static /Audio.mp3 or bundled underwaterAudio)
@@ -478,13 +479,10 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
 
 export default function VideoSphereBackground() {
   const [mounted, setMounted] = useState(true)
-  // Audio state: Unmuted by default unless the user has explicitly muted it
-  const [isMuted, setIsMuted] = useState(false)
+  const [isMuted, setIsMuted] = useState(globalAudio.getIsMuted())
   const [isNightDive, setIsNightDive] = useState(false)
   const location = useLocation()
   const joystickVelocity = useRef({ x: 0, y: 0 })
-  const audioRef = useRef(null)
-  const isMutedRef = useRef(isMuted)
   const nightVideoRef = useRef(null)
   const [isVisible, setIsVisible] = useState(true)
 
@@ -493,10 +491,6 @@ export default function VideoSphereBackground() {
     window.addEventListener('visibilitychange', handleVisibility)
     return () => window.removeEventListener('visibilitychange', handleVisibility)
   }, [])
-
-  useEffect(() => {
-    isMutedRef.current = isMuted
-  }, [isMuted])
 
   useEffect(() => {
     setMounted(true)
@@ -510,8 +504,6 @@ export default function VideoSphereBackground() {
     observer.observe(document.body, { attributes: true, attributeFilter: ['class'] })
     return () => observer.disconnect()
   }, [])
-
-
 
   // Control night dive video playback when mode changes
   useEffect(() => {
@@ -536,134 +528,16 @@ export default function VideoSphereBackground() {
     }
   }, [isNightDive])
 
-  // Automatic ambient audio playback with aggressive browser autoplay & unlock handling
+  // Synchronize with global singleton audio manager
   useEffect(() => {
-    const audio = audioRef.current
-    if (!audio) return
-
-    let isCleanedUp = false
-
-    // Real browser-recognized user activation events
-    const validUnlockEvents = [
-      'pointerdown',
-      'pointerup',
-      'touchstart',
-      'touchend',
-      'mousedown',
-      'mouseup',
-      'click',
-      'keydown'
-    ]
-
-    const removeUnlockListeners = () => {
-      validUnlockEvents.forEach((evt) => {
-        window.removeEventListener(evt, unlockHandler, true)
-        document.removeEventListener(evt, unlockHandler, true)
-        window.removeEventListener(evt, unlockHandler, false)
-        document.removeEventListener(evt, unlockHandler, false)
-      })
-      window.removeEventListener('tdv-unlock-audio', unlockHandler)
-    }
-
-    const unlockHandler = () => {
-      if (isCleanedUp || isMutedRef.current) return
-      const el = audioRef.current
-      if (!el) return
-
-      // In user gesture event stack, set volume & play unmuted
-      el.muted = false
-      el.volume = 0.5
-      const p = el.play()
-      if (p !== undefined) {
-        p.then(() => {
-          removeUnlockListeners()
-        }).catch(() => {
-          // If still blocked, fallback to next event
-        })
-      } else {
-        removeUnlockListeners()
-      }
-    }
-
-    const startAudio = () => {
-      if (isCleanedUp || isMutedRef.current) return
-      const el = audioRef.current
-      if (!el) return
-
-      el.volume = 0.5
-      el.muted = false
-      const playPromise = el.play()
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => {
-            removeUnlockListeners()
-          })
-          .catch(() => {
-            // Autoplay with sound restricted by browser on deployed domain
-            // Start muted buffer so audio pipeline is ready immediately on first click/touch
-            if (!isCleanedUp && !isMutedRef.current && el) {
-              el.muted = true
-              el.play().catch(() => {})
-            }
-          })
-      }
-    }
-
-    if (!isMuted) {
-      startAudio()
-
-      const handleCanPlay = () => {
-        if (!isMutedRef.current && audio.paused) {
-          startAudio()
-        }
-      }
-      audio.addEventListener('canplay', handleCanPlay, { once: true })
-      audio.addEventListener('loadedmetadata', handleCanPlay, { once: true })
-
-      validUnlockEvents.forEach((evt) => {
-        window.addEventListener(evt, unlockHandler, { capture: true, passive: true })
-        document.addEventListener(evt, unlockHandler, { capture: true, passive: true })
-      })
-
-      window.addEventListener('tdv-unlock-audio', unlockHandler)
-
-      return () => {
-        isCleanedUp = true
-        audio.removeEventListener('canplay', handleCanPlay)
-        audio.removeEventListener('loadedmetadata', handleCanPlay)
-        removeUnlockListeners()
-      }
-    } else {
-      removeUnlockListeners()
-      audio.pause()
-      audio.currentTime = 0
-    }
-
-    return () => {
-      isCleanedUp = true
-      removeUnlockListeners()
-    }
-  }, [isMuted])
+    const unsub = globalAudio.subscribe(({ isMuted: muted }) => {
+      setIsMuted(muted)
+    })
+    return () => unsub()
+  }, [])
 
   const handleToggleAudio = () => {
-    setIsMuted((prev) => {
-      const next = !prev
-      isMutedRef.current = next
-      if (next) {
-        if (audioRef.current) {
-          audioRef.current.muted = true
-          audioRef.current.volume = 0
-          audioRef.current.pause()
-        }
-      } else {
-        if (audioRef.current) {
-          audioRef.current.muted = false
-          audioRef.current.volume = 0.5
-          audioRef.current.play().catch(() => { })
-        }
-      }
-      return next
-    })
+    globalAudio.toggle()
   }
 
   if (!mounted) return null // Prevent SSR/hydration mismatches if any
@@ -692,16 +566,6 @@ export default function VideoSphereBackground() {
 
   return (
     <>
-      <audio
-        ref={audioRef}
-        src={underwaterAudio || '/Audio.mp3'}
-        loop
-        preload="auto"
-        playsInline
-      >
-        <source src={underwaterAudio} type="audio/mpeg" />
-        <source src="/Audio.mp3" type="audio/mpeg" />
-      </audio>
       <div className="fixed inset-0 -z-10 pointer-events-none">
         <div
           className="h-full w-full overflow-hidden relative"
