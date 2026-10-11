@@ -1,5 +1,5 @@
 // Curated Gallery & High-Res Diving Photos from assets/Gallery
-const p1 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scuba_Diving.webp';
+const p1 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp';
 const p2 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458048/TDV-Media/Extras%20for%20Gallery/Blue_Lincka.webp';
 const p3 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458178/TDV-Media/Extras%20for%20Gallery/Open_Water_Scuba_Diving.webp';
 const p4 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458189/TDV-Media/Extras%20for%20Gallery/Scubadiving_2.webp';
@@ -12,16 +12,16 @@ const p11 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458209/TDV-Me
 const p12 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458221/TDV-Media/Extras%20for%20Gallery/Yellowback_fusiliers.webp';
 
 export const PANEL_IMAGES = [
-  "https://res.cloudinary.com/qvbunv8y/image/upload/v1791452129/TDV-Images/1Threadfin_Butterflyfish.webp",
-  "https://res.cloudinary.com/qvbunv8y/image/upload/v1791452131/TDV-Images/2Lionfish.webp",
-  "https://res.cloudinary.com/qvbunv8y/image/upload/v1791452132/TDV-Images/3Crown_Jellyfish.webp",
-  "https://res.cloudinary.com/qvbunv8y/image/upload/v1791452133/TDV-Images/4Blue_and_Gold_Fusilier.webp",
-  "https://res.cloudinary.com/qvbunv8y/image/upload/v1791452134/TDV-Images/5Bubble_Coral.webp",
-  "https://res.cloudinary.com/qvbunv8y/image/upload/v1791452136/TDV-Images/6Crown_of_thorns_Starfish.webp",
-  "https://res.cloudinary.com/qvbunv8y/image/upload/v1791452137/TDV-Images/7Toadstool_Leather_Coral.webp",
-  "https://res.cloudinary.com/qvbunv8y/image/upload/v1791452138/TDV-Images/8Feather_Star_2.webp",
-  "https://res.cloudinary.com/qvbunv8y/image/upload/v1791452139/TDV-Images/9Giant_Clam.webp",
-  "https://res.cloudinary.com/qvbunv8y/image/upload/v1791452128/TDV-Images/10Greenfish_Sea_Cucumber.webp"
+  "https://res.cloudinary.com/qvbunv8y/image/upload/v1791691582/TDV-Media/Panels/1Threadfin%20Butterflyfish.webp",
+  "https://res.cloudinary.com/qvbunv8y/image/upload/v1791691592/TDV-Media/Panels/2Lionfish.webp",
+  "https://res.cloudinary.com/qvbunv8y/image/upload/v1791691597/TDV-Media/Panels/3Crown%20Jellyfish.webp",
+  "https://res.cloudinary.com/qvbunv8y/image/upload/v1791691607/TDV-Media/Panels/4Blue%20and%20Gold%20Fusilier.webp",
+  "https://res.cloudinary.com/qvbunv8y/image/upload/v1791691615/TDV-Media/Panels/5Bubble%20Coral.webp",
+  "https://res.cloudinary.com/qvbunv8y/image/upload/v1791691628/TDV-Media/Panels/6Crown%20of%20thorns%20Starfish.webp",
+  "https://res.cloudinary.com/qvbunv8y/image/upload/v1791691636/TDV-Media/Panels/7Toadstool%20Leather%20Coral.webp",
+  "https://res.cloudinary.com/qvbunv8y/image/upload/v1791691647/TDV-Media/Panels/8Feather%20Star%20%282%29.webp",
+  "https://res.cloudinary.com/qvbunv8y/image/upload/v1791691652/TDV-Media/Panels/9Giant%20Clam.webp",
+  "https://res.cloudinary.com/qvbunv8y/image/upload/v1791691660/TDV-Media/Panels/10Greenfish%20Sea%20Cucumber.webp"
 ]
 export const CAROUSEL_IMAGES = PANEL_IMAGES.slice(0, 6)
 

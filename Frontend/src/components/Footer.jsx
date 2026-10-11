@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router'
-const footerLogoImg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791452082/TDV-Images/footer_logo.png'
+const footerLogoImg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791691227/TDV-Media/UI/footer%20logo.png'
 import ViberQRModal from './ViberQRModal'
 
 const QUICK = [

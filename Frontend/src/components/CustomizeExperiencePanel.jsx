@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { PANEL_IMAGES } from '../utils/images'
 
 // Activity Media (Cloudinary URLs)
-const vidSafari = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791191828/dive-village/gallery-videos/gallery1_mp4.mp4'
+const vidSafari = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791691465/TDV-Media/AirportToAirport/gallery1.mp4'
 const imgSafari = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791685504/TDV-Media/AddOns/safari.webp'
 const vidTrekking = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791685324/TDV-Media/AddOns/Trekking.mp4'
 const imgTrekking = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791685508/TDV-Media/AddOns/trekking.webp'
@@ -333,6 +333,11 @@ export default function CustomizeExperiencePanel({ className = '', images = PANE
                 )
               })}
             </div>
+
+            {/* Asterisk location disclaimer */}
+            <p className="mt-4 text-[11px] sm:text-xs text-white/70 italic font-medium">
+              *Add Ons are subjected to location.
+            </p>
           </div>
 
           {/* Right Column: Translucent Glass Box (Expanded Length & Height) */}

@@ -1,10 +1,8 @@
 // Production CDN Audio URLs:
 const CLOUDINARY_AUDIO_URL = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791685502/TDV-Media/Audio/Audio.mp3'
-const CLOUDINARY_AUDIO_FALLBACK = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791624383/TDV-Audio/ambient_underwater.mp3'
 
 const AUDIO_SOURCES = [
   CLOUDINARY_AUDIO_URL,
-  CLOUDINARY_AUDIO_FALLBACK,
 ].filter(Boolean)
 
 class AudioManager {

@@ -1,6 +1,3 @@
-// Cloudinary Fallbacks
-const imgCloudinaryWomensShirtFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1790243995/dive-village/products/enwcujudp0hde9okxzpo.jpg'
-const imgCloudinaryWomensShirtBack = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1790243996/dive-village/products/gd7symgzgjml8cng5qya.jpg'
 
 // 3D GLB Model Imports
 const glbCap = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791610525/TDV-Media/Products/TDV%20-%203D%20Product%20Files/The_Dive_Village_Foldable_Cap.glb';
@@ -12,8 +9,8 @@ const glbShortsUnisex = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791609
 const glbFullBodySkinGrey = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791458356/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Unisex_full_body_skin_with_front_zipper_Grey.glb';
 const glbFullBodySkinYellow = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791458376/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Unisex_full_body_skin_with_front_zipper_yellow.glb';
 const glbWetSuitFullLengthMale = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791609765/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Wet_Suit_-_Full_Length_Male.glb';
-const glbWetSuitShortieMale = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791609807/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Wet_Suit_-_Shortie_Male.glb';
 const glbWetSuitShortieFemale = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791458436/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Wet_Suit_Shortie_Female.glb';
+const glbWetSuitShortieMale = glbWetSuitShortieFemale;
 const glbWomensShoulderStrap = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791458455/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Womens_shoulder_strap_shortie_with_all_round_compression.glb';
 const glbWomensSweetheart = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791609981/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Womens_Sweetheart_neck_top.glb';
 

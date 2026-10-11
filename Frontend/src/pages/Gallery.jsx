@@ -137,6 +137,11 @@ export default function Gallery() {
   }, [selectedMediaIndex, lenis])
 
   const openLightbox = (index) => {
+    // Stop all grid card videos immediately
+    document.querySelectorAll('.gallery-grid-container video').forEach((vid) => {
+      vid.pause()
+      vid.currentTime = 0
+    })
     triggerHaptic(10)
     setSelectedMediaIndex(index)
   }
@@ -204,61 +209,15 @@ export default function Gallery() {
         </div>
 
         {/* GALLERY MASONRY / GRID: 2 Cards per row on mobile, 3 on desktop */}
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-6 lg:gap-8 mb-14 sm:mb-24">
+        <div className="gallery-grid-container grid grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-6 lg:gap-8 mb-14 sm:mb-24">
           {filteredItems.map((item, idx) => (
-            <motion.div
+            <GalleryGridCard
               key={item.id}
-              initial={reduce ? false : { opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: Math.min(idx * 0.02, 0.25) }}
-              className="group flex flex-col rounded-2xl sm:rounded-[24px] overflow-hidden bg-white border border-navy/10 shadow-sm hover:shadow-xl hover:border-cyan-500/30 transition-all duration-300 cursor-pointer active:scale-[0.99]"
+              item={item}
+              idx={idx}
+              reduce={reduce}
               onClick={() => openLightbox(idx)}
-              onMouseEnter={(e) => {
-                const vid = e.currentTarget.querySelector('video')
-                if (vid) vid.play().catch(() => {})
-              }}
-            >
-              {/* Media Container */}
-              <div className="relative aspect-[4/3] sm:aspect-[16/11] w-full overflow-hidden bg-navy/10">
-                {item.type === 'video' ? (
-                  <div className="w-full h-full transition-transform duration-700 ease-out group-hover:scale-105">
-                    <div className="w-full h-full flex items-center justify-center overflow-hidden" style={item.isVertical ? { transform: 'scale(2.6)' } : undefined}>
-                      <LazyVideo
-                        src={item.src}
-                        muted
-                        loop
-                        playsInline
-                        autoPlay
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  </div>
-                ) : (
-                  <SafeImage
-                    src={item.src}
-                    alt={item.title || 'Gallery item'}
-                    className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-                  />
-                )}
-
-                {/* Hover Dark Gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-300" />
-                
-                {/* Expand Icon on Hover */}
-                <div className="absolute top-2 right-2 sm:top-3.5 sm:right-3.5 h-6 w-6 sm:h-9 sm:w-9 rounded-full bg-white/25 backdrop-blur-md flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition duration-300 hover:scale-110 shadow-md [&>svg]:w-3 [&>svg]:h-3 sm:[&>svg]:w-4 sm:[&>svg]:h-4">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
-                  </svg>
-                </div>
-              </div>
-
-              {/* Information Panel Below Media - Title */}
-              <div className="p-2 sm:p-5 bg-white">
-                <h3 className="font-heading text-xs sm:text-lg font-bold text-navy group-hover:text-accent transition duration-200 line-clamp-1 leading-tight">
-                  {item.title}
-                </h3>
-              </div>
-            </motion.div>
+            />
           ))}
         </div>
 
@@ -517,5 +476,108 @@ export default function Gallery() {
         )}
       </AnimatePresence>
     </div>
+  )
+}
+
+function GalleryGridCard({ item, idx, reduce, onClick }) {
+  const cardRef = useRef(null)
+  const hoverTimerRef = useRef(null)
+
+  const handleMouseEnter = () => {
+    if (item.type !== 'video') return
+    if (hoverTimerRef.current) {
+      clearTimeout(hoverTimerRef.current)
+    }
+    // Hover 3 seconds to play
+    hoverTimerRef.current = setTimeout(() => {
+      const vid = cardRef.current?.querySelector('video')
+      if (vid) {
+        vid.play().catch(() => {})
+      }
+    }, 3000)
+  }
+
+  const handleMouseLeave = () => {
+    if (item.type !== 'video') return
+    // Cancel pending timer
+    if (hoverTimerRef.current) {
+      clearTimeout(hoverTimerRef.current)
+      hoverTimerRef.current = null
+    }
+    // Stop video playing immediately and reset
+    const vid = cardRef.current?.querySelector('video')
+    if (vid) {
+      vid.pause()
+      vid.currentTime = 0
+    }
+  }
+
+  useEffect(() => {
+    return () => {
+      if (hoverTimerRef.current) {
+        clearTimeout(hoverTimerRef.current)
+      }
+      const vid = cardRef.current?.querySelector('video')
+      if (vid) {
+        vid.pause()
+      }
+    }
+  }, [])
+
+  return (
+    <motion.div
+      ref={cardRef}
+      initial={reduce ? false : { opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: Math.min(idx * 0.02, 0.25) }}
+      className="group flex flex-col rounded-2xl sm:rounded-[24px] overflow-hidden bg-white border border-navy/10 shadow-sm hover:shadow-xl hover:border-cyan-500/30 transition-all duration-300 cursor-pointer active:scale-[0.99]"
+      onClick={onClick}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      {/* Media Container */}
+      <div className="relative aspect-[4/3] sm:aspect-[16/11] w-full overflow-hidden bg-navy/10">
+        {item.type === 'video' ? (
+          <div className="w-full h-full transition-transform duration-700 ease-out group-hover:scale-105">
+            <div
+              className="w-full h-full flex items-center justify-center overflow-hidden"
+              style={item.isVertical ? { transform: 'scale(2.6)' } : undefined}
+            >
+              <LazyVideo
+                src={item.src}
+                muted
+                loop
+                playsInline
+                autoPlay={false}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          </div>
+        ) : (
+          <SafeImage
+            src={item.src}
+            alt={item.title || 'Gallery item'}
+            className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+          />
+        )}
+
+        {/* Hover Dark Gradient */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-300 pointer-events-none" />
+
+        {/* Expand Icon on Hover */}
+        <div className="absolute top-2 right-2 sm:top-3.5 sm:right-3.5 h-6 w-6 sm:h-9 sm:w-9 rounded-full bg-white/25 backdrop-blur-md flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition duration-300 hover:scale-110 shadow-md [&>svg]:w-3 [&>svg]:h-3 sm:[&>svg]:w-4 sm:[&>svg]:h-4 pointer-events-none">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+          </svg>
+        </div>
+      </div>
+
+      {/* Information Panel Below Media - Title */}
+      <div className="p-2 sm:p-5 bg-white">
+        <h3 className="font-heading text-xs sm:text-lg font-bold text-navy group-hover:text-accent transition duration-200 line-clamp-1 leading-tight">
+          {item.title}
+        </h3>
+      </div>
+    </motion.div>
   )
 }

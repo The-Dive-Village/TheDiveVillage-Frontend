@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom'
 import { Link, NavLink, useLocation } from 'react-router'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import Logo from './Logo'
-const LogoImg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791452083/TDV-Images/Logo.png'
+const LogoImg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791691225/TDV-Media/UI/Logo.png'
 import ThemeToggle from './ThemeToggle'
 import ViberQRModal from './ViberQRModal'
 import { useCart } from '../hooks/useCart'
@@ -88,15 +88,18 @@ export default function Navbar() {
           />
         </Link>
 
-        {/* Right: Neomorphism Night Dive Toggle (Mobile Only - no text) */}
+        {/* Right: Neomorphism Night Dive Toggle (Mobile Only) */}
         <button
           type="button"
           onClick={toggleNightDive}
-          className="flex items-center justify-center cursor-pointer transition active:scale-95 p-1 shrink-0 rounded-full focus:outline-none"
+          className="flex flex-col items-center justify-center cursor-pointer transition active:scale-95 px-1 py-0.5 shrink-0 rounded-xl focus:outline-none"
           aria-label="Toggle Night Dive mode"
-          title={isNightDive ? 'Day Dive' : 'Night Dive'}
+          title={isNightDive ? 'Night Dive' : 'Day Dive'}
         >
           <ThemeToggle isNightDive={isNightDive} className="inline-block" />
+          <span className="text-[9px] font-extrabold tracking-tight mt-0.5 text-white/90 uppercase whitespace-nowrap leading-none select-none">
+            {isNightDive ? 'Night Dive' : 'Day Dive'}
+          </span>
         </button>
       </div>
 

@@ -143,7 +143,7 @@ export const GALLERY_ITEMS = [
   {
     "id": "gallery-item-16",
     "type": "video",
-    "src": "https://res.cloudinary.com/qvbunv8y/video/upload/v1791458185/TDV-Media/Extras%20for%20Gallery/Scuba_Diver.mp4",
+    "src": "https://res.cloudinary.com/qvbunv8y/video/upload/v1791458832/TDV-Media/Services/Scuba_Diver.mp4",
     "title": "Scuba Diver",
     "category": "marine",
     "filename": "Scuba Diver.mp4"
@@ -177,7 +177,7 @@ export const GALLERY_ITEMS = [
   {
     "id": "gallery-item-20",
     "type": "video",
-    "src": "https://res.cloudinary.com/qvbunv8y/video/upload/v1791458220/TDV-Media/Extras%20for%20Gallery/Whitetip_Reef_Shark.mp4",
+    "src": "https://res.cloudinary.com/qvbunv8y/video/upload/v1791458554/TDV-Media/Services/AdventureDiver.mp4",
     "title": "Whitetip Reef Shark",
     "category": "marine",
     "filename": "Whitetip Reef Shark.mp4",
@@ -362,7 +362,7 @@ export const GALLERY_ITEMS = [
   {
     "id": "gallery-item-43",
     "type": "image",
-    "src": "https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scuba_Diving.webp",
+    "src": "https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp",
     "title": "Scuba Diving",
     "category": "marine",
     "filename": "Scuba Diving.webp"

@@ -8,7 +8,7 @@ import CompactTwoMonthCalendarPopover from '../components/CompactTwoMonthCalenda
 import SEOHead from '../components/SEOHead'
 import padiCountries from '../data/padiCountries.json'
 import { bookingService } from '../services/bookingService'
-import { FUN_DIVES_PACKAGES } from '../data/servicesData'
+import { FUN_DIVES_PACKAGES, SERVICES_DATA } from '../data/servicesData'
 import {
   COURSE_CATALOG,
   CERTIFICATION_OPTIONS,
@@ -32,26 +32,22 @@ import { loadDiveSites } from '../utils/diveSitesLoader'
 import { getIslandsForCountry, getSitesForIsland, getIslandForSite } from '../utils/diveIslandCatalog'
 
 
-// Backwards-compatible export alias for any legacy imports
-export const PROGRAMS_CATALOG = COURSE_CATALOG
-
-/**
- * Maps service page IDs → { courseId, experience, funDivesCount? }
- * so that arriving from a 'Book' button auto-selects the program and skips Step 3.
- */
+// Maps service page IDs → { courseId, experience, funDivesCount? }
+// When a user arrives from services page via 'Book Now', experience is auto-selected (Scuba Diving, FreeDiving, Surfing),
+// certifications are hidden in Step 2, and Step 3 is skipped.
 const SERVICE_TO_PROGRAM = {
-  // Introductory Programs
+  // Introductory Programs -> Scuba Diving
   'prog-1': { courseId: 'try-dive',            experience: 'Scuba Diving' },
   'prog-2': { courseId: 'dsd-lite',             experience: 'Scuba Diving' },
   'prog-3': { courseId: 'padi-dsd',             experience: 'Scuba Diving' },
   'prog-4': { courseId: 'add-dive-after-dsd',   experience: 'Scuba Diving' },
   'prog-5': { courseId: 'padi-bubblemaker',     experience: 'Scuba Diving' },
-  // Snorkeling
-  'snork-1': { courseId: 'discover-snorkeling', experience: 'Snorkeling' },
-  'snork-2': { courseId: 'padi-skin-diver',     experience: 'Snorkeling' },
-  'snork-3': { courseId: 'reef-explorer',       experience: 'Snorkeling' },
-  // Certification Courses
-  'course-1':  { courseId: 'padi-skin-diver',        experience: 'Snorkeling'   },
+  // Snorkeling -> Scuba Diving / Skin Diver track
+  'snork-1': { courseId: 'padi-skin-diver',     experience: 'Scuba Diving' },
+  'snork-2': { courseId: 'padi-skin-diver',     experience: 'Scuba Diving' },
+  'snork-3': { courseId: 'padi-skin-diver',     experience: 'Scuba Diving' },
+  // Certification Courses -> Scuba Diving
+  'course-1':  { courseId: 'padi-skin-diver',        experience: 'Scuba Diving' },
   'course-2':  { courseId: 'padi-scuba-diver',        experience: 'Scuba Diving' },
   'course-3':  { courseId: 'padi-open-water',         experience: 'Scuba Diving' },
   'course-4':  { courseId: 'padi-adventure-diver',    experience: 'Scuba Diving' },
@@ -61,7 +57,7 @@ const SERVICE_TO_PROGRAM = {
   'course-8':  { courseId: 'padi-reactivate',         experience: 'Scuba Diving' },
   'course-9':  { courseId: 'full-refresher',          experience: 'Scuba Diving' },
   'course-10': { courseId: 'lite-refresher',          experience: 'Scuba Diving' },
-  // Specialties
+  // Specialties -> Scuba Diving
   'spec-1': { courseId: 'peak-buoyancy',       experience: 'Scuba Diving' },
   'spec-2': { courseId: 'project-aware',       experience: 'Scuba Diving' },
   'spec-3': { courseId: 'deep-diver',          experience: 'Scuba Diving' },
@@ -69,31 +65,38 @@ const SERVICE_TO_PROGRAM = {
   'spec-5': { courseId: 'night-diver',         experience: 'Scuba Diving' },
   'spec-6': { courseId: 'enriched-air-nitrox', experience: 'Scuba Diving' },
   'spec-7': { courseId: 'drift-diver',         experience: 'Scuba Diving' },
-  // Combos & Packages
+  // Combos & Packages -> Scuba Diving
   'combo-1':        { courseId: 'padi-dsd-ow-combo',  experience: 'Scuba Diving' },
   'combo-2':        { courseId: 'padi-ow-aow-combo',  experience: 'Scuba Diving' },
   'combo-3':        { courseId: 'efr-rescue-combo',   experience: 'Scuba Diving' },
-  'combo-fundives': { courseId: 'fun-day-dive',        experience: 'Scuba Diving' },
-  // Pro Courses
+  'combo-fundives': { courseId: 'fun-day-dive',       experience: 'Scuba Diving', funDivesCount: 'fun-2' },
+  // Pro Courses -> Scuba Diving
   'pro-1': { courseId: 'padi-divemaster',       experience: 'Scuba Diving' },
   'pro-2': { courseId: 'efr-rescue-dm-combo',   experience: 'Scuba Diving' },
   'pro-3': { courseId: 'efr-rescue-dm-prereqs', experience: 'Scuba Diving' },
   'pro-4': { courseId: 'zero-to-hero',          experience: 'Scuba Diving' },
-  // Freediving
+  // Freediving -> FreeDiving
   'free-1': { courseId: 'padi-basic-freediver', experience: 'FreeDiving' },
   'free-2': { courseId: 'padi-freediver',       experience: 'FreeDiving' },
-  // Surfing
+  // Surfing -> Surfing
   'surf-1': { courseId: 'discover-surfing',      experience: 'Surfing' },
   'surf-3': { courseId: '3-day-surf-academy',    experience: 'Surfing' },
-  // Fun Dives (individual packages — auto-select day dive + count)
-  'fun-1':    { courseId: 'fun-day-dive', experience: 'Scuba Diving', funDivesCount: 1  },
-  'fun-2':    { courseId: 'fun-day-dive', experience: 'Scuba Diving', funDivesCount: 2  },
-  'fun-4':    { courseId: 'fun-day-dive', experience: 'Scuba Diving', funDivesCount: 4  },
-  'fun-6':    { courseId: 'fun-day-dive', experience: 'Scuba Diving', funDivesCount: 6  },
-  'fun-8':    { courseId: 'fun-day-dive', experience: 'Scuba Diving', funDivesCount: 8  },
-  'fun-10':   { courseId: 'fun-day-dive', experience: 'Scuba Diving', funDivesCount: 10 },
-  'fun-12':   { courseId: 'fun-day-dive', experience: 'Scuba Diving', funDivesCount: 12 },
-  'fun-post': { courseId: 'fun-day-dive', experience: 'Scuba Diving', funDivesCount: 2  },
+  // Fun Dives (individual packages) -> Scuba Diving
+  'fun-day-dive':   { courseId: 'fun-day-dive',   experience: 'Scuba Diving', funDivesCount: 'fun-2' },
+  'fun-dawn-dive':  { courseId: 'fun-dawn-dive',  experience: 'Scuba Diving', funDivesCount: 'fun-dawn-1' },
+  'fun-night-dive': { courseId: 'fun-night-dive', experience: 'Scuba Diving', funDivesCount: 'fun-night-1' },
+  'fun-1':          { courseId: 'fun-day-dive',   experience: 'Scuba Diving', funDivesCount: 'fun-1' },
+  'fun-2':          { courseId: 'fun-day-dive',   experience: 'Scuba Diving', funDivesCount: 'fun-2' },
+  'fun-4':          { courseId: 'fun-day-dive',   experience: 'Scuba Diving', funDivesCount: 'fun-4' },
+  'fun-6':          { courseId: 'fun-day-dive',   experience: 'Scuba Diving', funDivesCount: 'fun-6' },
+  'fun-8':          { courseId: 'fun-day-dive',   experience: 'Scuba Diving', funDivesCount: 'fun-8' },
+  'fun-10':         { courseId: 'fun-day-dive',   experience: 'Scuba Diving', funDivesCount: 'fun-10' },
+  'fun-12':         { courseId: 'fun-day-dive',   experience: 'Scuba Diving', funDivesCount: 'fun-12' },
+  'fun-post':       { courseId: 'fun-day-dive',   experience: 'Scuba Diving', funDivesCount: 'fun-post' },
+  'fun-dawn-1':     { courseId: 'fun-dawn-dive',  experience: 'Scuba Diving', funDivesCount: 'fun-dawn-1' },
+  'fun-dawn-2':     { courseId: 'fun-dawn-dive',  experience: 'Scuba Diving', funDivesCount: 'fun-dawn-2' },
+  'fun-night-1':    { courseId: 'fun-night-dive', experience: 'Scuba Diving', funDivesCount: 'fun-night-1' },
+  'fun-night-2':    { courseId: 'fun-night-dive', experience: 'Scuba Diving', funDivesCount: 'fun-night-2' },
 }
 
 export default function BookUs() {
@@ -104,23 +107,73 @@ export default function BookUs() {
   const initialSite = searchParams.get('site') || ''
   const initialService = searchParams.get('service') || ''
 
-  // Derive pre-selected program from service link (e.g. /book-us?service=course-3)
-  const initialFromService = useMemo(() => {
+  // Look up full service data if initialService is provided
+  const serviceItem = useMemo(() => {
     if (!initialService) return null
-    return SERVICE_TO_PROGRAM[initialService] || null
+    return SERVICES_DATA.find((s) => s.id === initialService) || null
   }, [initialService])
 
-  const initialAddOn = useMemo(() => {
-    if (initialService) {
-      if (initialService.includes('trekking')) return 'Trekking'
-      if (initialService.includes('sightseeing')) return 'Local Sightseeing'
-      if (initialService.includes('camper')) return 'Camping / Camper'
-      if (initialService.includes('safari')) return 'Safari'
-      if (initialService.includes('liveaboard')) return 'Liveaboard'
-      if (initialService.includes('canoneering') || initialService.includes('canyon')) return 'Canyoneering'
+  // Check if arrival is specifically via an Add-On service
+  const isAddOnService = useMemo(() => {
+    if (!initialService) return false
+    return (
+      initialService.startsWith('addon-') ||
+      initialService.includes('canyon') ||
+      initialService.includes('canoneer') ||
+      initialService.includes('trekking') ||
+      initialService.includes('sightseeing') ||
+      initialService.includes('camper') ||
+      initialService.includes('safari') ||
+      initialService.includes('liveaboard') ||
+      serviceItem?.category === 'addons'
+    )
+  }, [initialService, serviceItem])
+
+  // Pre-selected course/program service from services page
+  const initialFromService = useMemo(() => {
+    if (!initialService || isAddOnService) return null
+    if (SERVICE_TO_PROGRAM[initialService]) {
+      return SERVICE_TO_PROGRAM[initialService]
     }
-    return ''
-  }, [initialService])
+    // Fallback: check if serviceItem exists and match category
+    if (serviceItem) {
+      if (serviceItem.category === 'freediving') return { courseId: 'padi-basic-freediver', experience: 'FreeDiving' }
+      if (serviceItem.category === 'surfing') return { courseId: 'discover-surfing', experience: 'Surfing' }
+      return { courseId: 'try-dive', experience: 'Scuba Diving' }
+    }
+    return null
+  }, [initialService, isAddOnService, serviceItem])
+
+  const isCourseService = Boolean(initialFromService)
+
+  // Resolve pre-selected course metadata if available
+  const selectedCourseProgram = useMemo(() => {
+    if (!initialFromService?.courseId) return null
+    return COURSE_CATALOG.find((c) => c.id === initialFromService.courseId) || null
+  }, [initialFromService])
+
+  // Pre-selected add-ons when arriving via add-on service
+  const initialAddOns = useMemo(() => {
+    if (initialService) {
+      const lower = initialService.toLowerCase()
+      if (lower.includes('trekking')) return ['Trekking']
+      if (lower.includes('sightseeing')) return ['Local Sightseeing']
+      if (lower.includes('camper')) return ['Camping / Camper']
+      if (lower.includes('safari')) return ['Safari']
+      if (lower.includes('liveaboard')) return ['Liveaboard']
+      if (lower.includes('canoneer') || lower.includes('canyon') || lower === 'addon-1') return ['Canyoneering']
+      if (serviceItem?.category === 'addons') {
+        const title = serviceItem.title?.toLowerCase() || ''
+        if (title.includes('trek')) return ['Trekking']
+        if (title.includes('sight')) return ['Local Sightseeing']
+        if (title.includes('camp')) return ['Camping / Camper']
+        if (title.includes('safari')) return ['Safari']
+        if (title.includes('live')) return ['Liveaboard']
+        if (title.includes('canyon') || title.includes('canon')) return ['Canyoneering']
+      }
+    }
+    return []
+  }, [initialService, serviceItem])
 
   const [currentStep, setCurrentStep] = useState(1)
 
@@ -149,7 +202,7 @@ export default function BookUs() {
   const [locationId, setLocationId] = useState(initialSite)
   const [location, setLocation] = useState(initialSite)
   const [experience, setExperience] = useState(initialFromService?.experience || '')
-  const [selectedAddOn, setSelectedAddOn] = useState(initialAddOn)
+  const [selectedAddOns, setSelectedAddOns] = useState(initialAddOns)
   const [date, setDate] = useState('')
   const [dateError, setDateError] = useState('')
   const [stepError, setStepError] = useState('')
@@ -276,8 +329,25 @@ export default function BookUs() {
     )
   }
 
-  const handleAddOnChange = (newAddOn) => {
-    setSelectedAddOn(newAddOn)
+  const handleToggleAddOn = (addOn) => {
+    if (addOn === 'None') {
+      setSelectedAddOns((prev) => (prev.includes('None') ? [] : ['None']))
+      setStepError('')
+      return
+    }
+
+    setSelectedAddOns((prev) => {
+      const withoutNone = prev.filter((item) => item !== 'None')
+      if (withoutNone.includes(addOn)) {
+        return withoutNone.filter((item) => item !== addOn)
+      }
+      return [...withoutNone, addOn]
+    })
+    setStepError('')
+  }
+
+  const handleClearAddOns = () => {
+    setSelectedAddOns([])
     setStepError('')
   }
 
@@ -287,12 +357,16 @@ export default function BookUs() {
       id: 1,
       name: '',
       age: '',
+      parentalConsent: false,
       hasCertification: false,
       certifications: [],
       selectedProgram: initialFromService?.courseId || initialProgram || '',
       funDivesCount: initialFromService?.funDivesCount || undefined,
     }
   ])
+
+  // Order Summary popup modal state before final booking submit
+  const [showSummaryModal, setShowSummaryModal] = useState(false)
 
   // Step 4: Contact Details
   const [contact, setContact] = useState({
@@ -301,6 +375,38 @@ export default function BookUs() {
     phone: '',
     requests: ''
   })
+
+  // Autofill Special Requests when Add Ons change
+  const prevAddOnsRef = useRef([])
+  useEffect(() => {
+    const activeAddOns = selectedAddOns.filter((item) => item !== 'None')
+    const addOnText = activeAddOns.length > 0 ? `Selected Add-ons: ${activeAddOns.join(', ')}` : ''
+
+    setContact((prev) => {
+      const currentText = prev.requests || ''
+      // Match existing auto-filled "Selected Add-ons: ..." line if present
+      const addOnRegex = /(?:^|\n)?Selected Add-ons:[^\n]*(?:\n|$)?/i
+
+      if (!addOnText) {
+        // If no add-ons or None selected, cleanly remove previous auto-filled add-ons line
+        const cleaned = currentText.replace(addOnRegex, '').trim()
+        return { ...prev, requests: cleaned }
+      }
+
+      if (addOnRegex.test(currentText)) {
+        // Replace existing auto-filled line
+        const updated = currentText.replace(addOnRegex, (match) => {
+          return match.startsWith('\n') ? `\n${addOnText}\n` : `${addOnText}\n`
+        }).trim()
+        return { ...prev, requests: updated }
+      } else {
+        // Prepend/append to any custom user notes
+        const updated = currentText ? `${addOnText}\n\n${currentText}` : addOnText
+        return { ...prev, requests: updated }
+      }
+    })
+    prevAddOnsRef.current = selectedAddOns
+  }, [selectedAddOns])
 
   const [submitted, setSubmitted] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -315,6 +421,7 @@ export default function BookUs() {
           id: prev.length + i + 1,
           name: '',
           age: '',
+          parentalConsent: false,
           hasCertification: false,
           certifications: [],
           selectedProgram: initialFromService?.courseId || '',
@@ -341,42 +448,54 @@ export default function BookUs() {
         if (isNaN(ageNum) || ageNum < 8 || ageNum > 110) {
           updated[index].hasCertification = false
           updated[index].certifications = []
-          updated[index].selectedProgram = ''
+          if (!isCourseService) {
+            updated[index].selectedProgram = ''
+          }
         } else {
-          const validCertsForAge = (updated[index].certifications || []).filter((certId) => {
-            const opt = CERTIFICATION_OPTIONS.find((c) => c.id === certId)
-            return opt && ageNum >= opt.minAgeToHold && (!opt.maxAgeToHold || ageNum <= opt.maxAgeToHold)
-          })
-          updated[index].certifications = validCertsForAge
-
-          const availableCertOpts = getAvailableCertificationsForAge(ageNum, experience)
-          if (availableCertOpts.length === 0) {
-            updated[index].hasCertification = false
+          // If 12 or above, parental consent is automatically valid
+          if (ageNum >= 12) {
+            updated[index].parentalConsent = true
           }
 
-          const eligible = getRecommendedCourses(p.age, updated[index].hasCertification, updated[index].certifications, experience)
-          const isCurrentEligible = eligible.some((course) => course.id === p.selectedProgram)
-          if (!isCurrentEligible) {
-            updated[index].selectedProgram = ''
+          if (!isCourseService) {
+            const validCertsForAge = (updated[index].certifications || []).filter((certId) => {
+              const opt = CERTIFICATION_OPTIONS.find((c) => c.id === certId)
+              return opt && ageNum >= opt.minAgeToHold && (!opt.maxAgeToHold || ageNum <= opt.maxAgeToHold)
+            })
+            updated[index].certifications = validCertsForAge
+
+            const availableCertOpts = getAvailableCertificationsForAge(ageNum, experience)
+            if (availableCertOpts.length === 0) {
+              updated[index].hasCertification = false
+            }
+
+            const eligible = getRecommendedCourses(p.age, updated[index].hasCertification, updated[index].certifications, experience)
+            const isCurrentEligible = eligible.some((course) => course.id === p.selectedProgram)
+            if (!isCurrentEligible) {
+              updated[index].selectedProgram = ''
+            }
           }
         }
       }
+
+      // Preserve pre-selected course if arriving via service
+      if (isCourseService && !updated[index].selectedProgram && initialFromService?.courseId) {
+        updated[index].selectedProgram = initialFromService.courseId
+      }
+      if (isCourseService && !updated[index].funDivesCount && initialFromService?.funDivesCount) {
+        updated[index].funDivesCount = initialFromService.funDivesCount
+      }
+
       return updated
     })
   }
 
-  // Multi-select certification handler for Scuba & FreeDiving
+  // Single-select certification handler for age > 8
   const handleSelectCertification = (index, certId) => {
     setParticipants((prev) => {
       const updated = [...prev]
       const p = updated[index]
-      const currentCerts = p.certifications || []
-      const isCurrentlySelected = currentCerts.includes(certId)
-
-      // Multi-select: toggle clicked certification
-      const newCerts = isCurrentlySelected
-        ? currentCerts.filter((id) => id !== certId)
-        : [...currentCerts, certId]
+      const newCerts = [certId]
 
       updated[index] = {
         ...p,
@@ -393,21 +512,30 @@ export default function BookUs() {
     })
   }
 
+  const scrollToFormTop = () => {
+    if (typeof document !== 'undefined') {
+      const el = document.getElementById('booking-wizard-form')
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }
+    }
+  }
+
   const handlePrevStep = useCallback(() => {
     if (currentStep > 1) {
       triggerHaptic(8)
       setStepError('')
-      const isDirect = (!experience && Boolean(selectedAddOn)) || isDirectActivity(experience)
-      if (currentStep === 4 && isDirect) {
-        setCurrentStep(1)
-      } else if (currentStep === 4 && initialFromService) {
-        // Pre-selected from service → step 3 doesn’t exist, go back to step 2
-        setCurrentStep(2)
+      const hasActiveAddOns = selectedAddOns.some((item) => item !== 'None')
+      const isDirect = (!experience && hasActiveAddOns) || isDirectActivity(experience)
+      if (currentStep === 4) {
+        // Step 4 goes back directly to Step 2 (or Step 1 for direct add-on activities)
+        setCurrentStep(isDirect ? 1 : 2)
       } else {
         setCurrentStep((prev) => prev - 1)
       }
+      scrollToFormTop()
     }
-  }, [currentStep, experience, selectedAddOn, initialFromService])
+  }, [currentStep, experience, selectedAddOns])
 
   const handleNextStep = useCallback(() => {
     if (currentStep === 1) {
@@ -426,9 +554,10 @@ export default function BookUs() {
         setStepError('Please select a dive site.')
         return false
       }
-      if (!experience && (!selectedAddOn || selectedAddOn === 'None')) {
+      const hasActiveAddOns = selectedAddOns.some((item) => item !== 'None')
+      if (!experience && !hasActiveAddOns) {
         triggerErrorHaptic()
-        setStepError('Please select a primary diving experience.')
+        setStepError('Please select a primary diving experience or at least one add-on activity.')
         return false
       }
       if (!date || date < cooldownMinDateStr || date > maxDateStr) {
@@ -446,12 +575,19 @@ export default function BookUs() {
       setStepError('')
 
       // Direct activity skips course & participant cert eligibility steps directly to Contact Info (Step 4)
-      const isDirect = (!experience && Boolean(selectedAddOn) && selectedAddOn !== 'None') || isDirectActivity(experience)
+      const isDirect = (!experience && hasActiveAddOns) || isDirectActivity(experience)
       if (isDirect) {
         triggerHaptic(10)
         setCurrentStep(4)
+        scrollToFormTop()
         return true
       }
+
+      // Normal flow advances to Step 2 (Participants & Eligibility)
+      triggerHaptic(10)
+      setCurrentStep(2)
+      scrollToFormTop()
+      return true
     }
     if (currentStep === 2) {
       const hasEmpty = participants.some((p) => !p.name || !p.age)
@@ -466,6 +602,26 @@ export default function BookUs() {
         setStepError('Minimum age for participating in activities is 8 years. Participants under 8 cannot proceed.')
         return false
       }
+
+      const missingConsent = participants.some((p) => {
+        const a = parseInt(p.age, 10)
+        return a >= 8 && a < 12 && !p.parentalConsent
+      })
+      if (missingConsent) {
+        triggerErrorHaptic()
+        setStepError('Please select the Parental Consent checkbox for all participants under 12 years of age.')
+        return false
+      }
+
+      // If user came via course service page: skip certification validation & program validation (already prefilled)
+      if (isCourseService) {
+        setStepError('')
+        triggerHaptic(10)
+        setCurrentStep(4)
+        scrollToFormTop()
+        return true
+      }
+
       const hasMissingCert = participants.some((p) => {
         if (!p.hasCertification) return false
         const available = getAvailableCertificationsForAge(p.age, experience)
@@ -476,27 +632,21 @@ export default function BookUs() {
         setStepError('Please select at least one current certification for participants marked as certified.')
         return false
       }
-      setStepError('')
-      // If coming from a service link, all participants already have program pre-selected—skip step 3
-      if (initialFromService) {
-        triggerHaptic(10)
-        setCurrentStep(4)
-        return true
-      }
-    }
-    if (currentStep === 3) {
+
       const hasUnselected = participants.some((p) => !p.selectedProgram)
       if (hasUnselected) {
         triggerErrorHaptic()
         setStepError('Please select an eligible program for each participant.')
         return false
       }
+
       const hasMissingFunDivesCount = participants.some((p) => ['fun-day-dive', 'fun-dawn-dive', 'fun-night-dive'].includes(p.selectedProgram) && !p.funDivesCount)
       if (hasMissingFunDivesCount) {
         triggerErrorHaptic()
         setStepError('Please select a dive package (number of dives) for each Fun Dive participant.')
         return false
       }
+
       for (const p of participants) {
         const val = validateParticipantBooking(p, experience)
         if (!val.valid) {
@@ -505,16 +655,23 @@ export default function BookUs() {
           return false
         }
       }
+
       setStepError('')
+      triggerHaptic(10)
+      // Advance straight to Contact Details (Step 4)
+      setCurrentStep(4)
+      scrollToFormTop()
+      return true
     }
     if (currentStep < 4) {
       triggerHaptic(10)
       setStepError('')
-      setCurrentStep((prev) => prev + 1)
+      setCurrentStep(4)
+      scrollToFormTop()
       return true
     }
     return true
-  }, [currentStep, country, locationId, selectedLocation, location, experience, selectedAddOn, date, todayStr, maxDateStr, groupSize, participants, initialFromService])
+  }, [currentStep, country, locationId, selectedLocation, location, experience, selectedAddOns, date, todayStr, maxDateStr, groupSize, participants, isCourseService, availableIslands])
 
   // Desktop keyboard step navigation
   useEffect(() => {
@@ -534,7 +691,7 @@ export default function BookUs() {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [handleNextStep, handlePrevStep, isCalendarOpen, currentStep])
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault()
 
     if (isSubmitting) return
@@ -544,37 +701,73 @@ export default function BookUs() {
       return
     }
 
-    const isDirect = (!experience && Boolean(selectedAddOn)) || isDirectActivity(experience)
+    const activeAddOns = selectedAddOns.filter((item) => item !== 'None')
+    const isDirect = (!experience && activeAddOns.length > 0) || isDirectActivity(experience)
 
     // Pre-submission validation for course-based bookings
     if (!isDirect) {
       for (const p of participants) {
-        const validation = validateParticipantBooking(p, experience)
-        if (!validation.valid) {
-          setStepError(validation.error || 'Participant eligibility validation failed.')
+        const ageNum = parseInt(p.age, 10)
+        if (!p.name || !p.age || isNaN(ageNum) || ageNum < 8 || ageNum > 110) {
+          setStepError('Please enter a valid Name and Age (8-110) for all participants.')
           setCurrentStep(2)
+          scrollToFormTop()
           return
+        }
+        if (ageNum < 12 && !p.parentalConsent) {
+          setStepError('Parental consent is required for all participants under 12.')
+          setCurrentStep(2)
+          scrollToFormTop()
+          return
+        }
+        if (!isCourseService) {
+          const validation = validateParticipantBooking(p, experience)
+          if (!validation.valid) {
+            setStepError(validation.error || 'Participant eligibility validation failed.')
+            setCurrentStep(2)
+            scrollToFormTop()
+            return
+          }
         }
       }
     }
 
+    setStepError('')
+    setShowSummaryModal(true)
+  }
+
+  const handleFinalSubmit = async () => {
+    if (isSubmitting) return
     setIsSubmitting(true)
     setStepError('')
+
+    const activeAddOns = selectedAddOns.filter((item) => item !== 'None')
+    const isDirect = (!experience && activeAddOns.length > 0) || isDirectActivity(experience)
+    const addOnsSummary = activeAddOns.join(', ')
 
     try {
       const res = await bookingService.createBooking({
         country,
         locationId: locationId ? String(locationId) : null,
         location,
-        experience: experience || selectedAddOn,
-        selectedAddOn: selectedAddOn || null,
+        experience: experience || addOnsSummary,
+        selectedAddOn: addOnsSummary || null,
+        selectedAddOns: activeAddOns,
         date,
         groupSize: participants.length,
         contactName: contact.name,
         contactEmail: contact.email,
         contactPhone: contact.phone || null,
         specialRequests: contact.requests || null,
-        participants: isDirect ? [] : participants,
+        participants: isDirect ? [] : participants.map((p) => ({
+          name: p.name,
+          age: parseInt(p.age, 10),
+          parentalConsent: !!p.parentalConsent,
+          hasCertification: p.hasCertification,
+          certifications: p.certifications,
+          selectedProgram: p.selectedProgram,
+          funDivesCount: p.funDivesCount,
+        })),
       })
 
       const isSuccess = Boolean(
@@ -595,8 +788,9 @@ export default function BookUs() {
             country,
             island: island || null,
             location,
-            experience: experience || selectedAddOn,
-            selectedAddOn: selectedAddOn || null,
+            experience: experience || addOnsSummary,
+            selectedAddOn: addOnsSummary || null,
+            selectedAddOns: activeAddOns,
             date,
             groupSize: participants.length,
             contactName: contact.name,
@@ -610,25 +804,26 @@ export default function BookUs() {
           const existing = JSON.parse(localStorage.getItem('dive_village_bookings') || '[]')
           localStorage.setItem('dive_village_bookings', JSON.stringify([newBookingRecord, ...existing]))
         } catch (e) {
-          console.warn('Could not save booking locally:', e)
+          console.error(e)
         }
+        setShowSummaryModal(false)
         setSubmitted(true)
       } else {
         triggerErrorHaptic()
-        throw new Error('Server returned an invalid or incomplete booking response.')
+        setStepError('Booking failed. Please try again.')
       }
     } catch (err) {
       triggerErrorHaptic()
-      console.error('Booking submission error:', err)
-      const errorMsg = err.message || 'Failed to submit booking. Please try again.'
-      setStepError(`Booking submission failed: ${errorMsg}`)
+      setStepError(err.message || 'Failed to submit booking. Please check your network and try again.')
     } finally {
       setIsSubmitting(false)
     }
   }
 
   if (submitted) {
-    const isDirect = (!experience && Boolean(selectedAddOn)) || isDirectActivity(experience)
+    const activeAddOns = selectedAddOns.filter((item) => item !== 'None')
+    const isDirect = (!experience && activeAddOns.length > 0) || isDirectActivity(experience)
+    const addOnsSummary = activeAddOns.join(', ')
     return (
       <div className="bg-[#FAFAFA] flex min-h-[80vh] flex-col items-center justify-center px-4 py-16 text-center">
         <motion.div
@@ -655,7 +850,7 @@ export default function BookUs() {
             Great!<br />We'll get in touch with you.
           </h2>
           <p className="text-navy/70 text-sm sm:text-base leading-relaxed">
-            Thank you <span className="font-bold text-navy">{contact.name}</span>! We've reserved your request for <span className="font-bold text-accent">{experience || selectedAddOn}</span> at <span className="font-bold text-navy">{location}</span>.
+            Thank you <span className="font-bold text-navy">{contact.name}</span>! We've reserved your request for <span className="font-bold text-accent">{experience || addOnsSummary}</span> at <span className="font-bold text-navy">{location}</span>.
           </p>
 
           <div className="my-10 relative">
@@ -666,12 +861,18 @@ export default function BookUs() {
             <div className="rounded-3xl bg-[#F8F9FA] p-6 text-left space-y-4 text-xs sm:text-sm border border-dashed border-navy/20 relative z-0">
               <div className="flex justify-between items-start border-b border-navy/5 pb-3">
                 <span className="text-navy/50 font-semibold uppercase tracking-wider text-[10px] sm:text-xs">Experience & Location</span>
-                <span className="font-bold text-navy text-right leading-tight max-w-[60%]">{experience || selectedAddOn} <br /><span className="text-navy/60 font-medium text-[11px] sm:text-xs">{location}</span></span>
+                <span className="font-bold text-navy text-right leading-tight max-w-[60%]">{experience || addOnsSummary} <br /><span className="text-navy/60 font-medium text-[11px] sm:text-xs">{location}</span></span>
               </div>
-              {selectedAddOn && experience && (
+              {activeAddOns.length > 0 && experience && (
                 <div className="flex justify-between items-start border-b border-navy/5 pb-3">
-                  <span className="text-navy/50 font-semibold uppercase tracking-wider text-[10px] sm:text-xs">Add On</span>
-                  <span className="font-bold text-accent text-right leading-tight">{selectedAddOn}</span>
+                  <span className="text-navy/50 font-semibold uppercase tracking-wider text-[10px] sm:text-xs">Add Ons</span>
+                  <div className="flex flex-wrap gap-1 justify-end max-w-[65%]">
+                    {activeAddOns.map((addOn) => (
+                      <span key={addOn} className="px-2 py-0.5 rounded-full bg-accent/15 text-accent text-[11px] font-bold">
+                        {addOn}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               )}
               <div className="flex justify-between items-start border-b border-navy/5 pb-3">
@@ -801,14 +1002,13 @@ export default function BookUs() {
 
                   {/* Mobile Step Header */}
                   {(() => {
-                    const isDirect = (!experience && Boolean(selectedAddOn)) || isDirectActivity(experience)
-                    const totalSteps = isDirect ? 2 : initialFromService ? 3 : 4
-                    // Map actual step numbers to display positions
+                    const hasActiveAddOns = selectedAddOns.some((item) => item !== 'None')
+                    const isDirect = (!experience && hasActiveAddOns) || isDirectActivity(experience)
+                    const totalSteps = isDirect ? 2 : 3
+                    // Map actual step numbers (1, 2, 4) to clean display positions (1, 2, 3)
                     const displayStep = isDirect
                       ? (currentStep === 4 ? 2 : 1)
-                      : initialFromService
-                      ? (currentStep === 4 ? 3 : currentStep)
-                      : currentStep
+                      : (currentStep === 4 ? 3 : currentStep)
                     return (
                       <div className="sm:hidden pb-3.5 mb-1 border-b border-navy/5">
                         <div className="flex items-center justify-between gap-2">
@@ -822,20 +1022,18 @@ export default function BookUs() {
                               </span>
                               <h2 className="text-base font-extrabold text-navy truncate block mt-0.5 leading-tight">
                                 {currentStep === 1 && 'Location & Experience'}
-                                {currentStep === 2 && 'Participant Details'}
-                                {currentStep === 3 && 'Programs'}
+                                {currentStep === 2 && 'Participants & Programs'}
                                 {currentStep === 4 && 'Contact & Details'}
                               </h2>
                               <p className="text-[11px] font-medium text-navy/60 truncate mt-0.5 leading-tight">
                                 {currentStep === 1 && 'Where, what, and when would you like to book?'}
-                                {currentStep === 2 && 'Add names and diving levels for your group'}
-                                {currentStep === 3 && 'Choose your preferred dive or course program'}
+                                {currentStep === 2 && 'Add names, diving levels, and select programs'}
                                 {currentStep === 4 && 'Please provide your contact information'}
                               </p>
                             </div>
                           </div>
                           <div className="flex items-center gap-1.5 shrink-0 pl-1">
-                            {(isDirect ? [1, 4] : initialFromService ? [1, 2, 4] : [1, 2, 3, 4]).map((s) => (
+                            {(isDirect ? [1, 4] : [1, 2, 4]).map((s) => (
                               <span
                                 key={s}
                                 className={`h-2 rounded-full transition-all duration-300 ${currentStep === s
@@ -858,7 +1056,7 @@ export default function BookUs() {
                       {/* Desktop Step 1 Header */}
                       <div className="hidden sm:block">
                         <span className="text-[9px] sm:text-xs font-bold uppercase tracking-widest text-accent mb-0.5 block">
-                          Step 1 of {((!experience && Boolean(selectedAddOn)) || isDirectActivity(experience)) ? 2 : 4}
+                          Step 1 of {((!experience && selectedAddOns.some((item) => item !== 'None')) || isDirectActivity(experience)) ? 2 : 3}
                         </span>
                         <h3 className="font-heading text-lg sm:text-3xl font-bold text-navy">Location & Experience</h3>
                         <p className="text-[10px] sm:text-xs text-navy/60 mt-0.5">Where, what, and when would you like to book?</p>
@@ -1027,33 +1225,63 @@ export default function BookUs() {
 
                       {/* 4. SELECT YOUR ADD ONS */}
                       <div>
-                        <label className="mb-2 block text-xs font-bold text-navy/70 uppercase tracking-wider">
-                          SELECT YOUR ADD ONS
-                        </label>
-                        <div className="relative">
-                          <select
-                            value={selectedAddOn}
-                            onChange={(e) => handleAddOnChange(e.target.value)}
-                            className={`w-full rounded-2xl bg-[#F0F2F5] px-5 py-4 pr-10 text-sm font-bold outline-none focus:ring-2 focus:ring-accent/50 transition cursor-pointer appearance-none ${!selectedAddOn ? 'text-navy/40' : 'text-navy'
-                              }`}
+                        <div className="flex items-center justify-between mb-2">
+                          <label className="block text-xs font-bold text-navy/70 uppercase tracking-wider">
+                            SELECT YOUR ADD ONS
+                          </label>
+                          <span className="text-[10px] sm:text-xs text-navy/50 font-medium italic">
+                            *Add Ons are subjected to location.
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-2.5">
+                          {/* Option for None */}
+                          <button
+                            type="button"
+                            onClick={() => handleToggleAddOn('None')}
+                            className={`group relative flex items-center justify-between px-3.5 py-3 rounded-2xl text-xs sm:text-sm font-bold transition-all text-left border cursor-pointer ${
+                              selectedAddOns.includes('None')
+                                ? 'bg-navy text-white border-navy shadow-md ring-1 ring-navy'
+                                : 'bg-[#F0F2F5] text-navy/80 border-transparent hover:bg-[#E5E9EF] hover:text-navy'
+                            }`}
                           >
-                            <option value="">
-                              Select Your Add Ons
-                            </option>
-                            <option value="None">
-                              None
-                            </option>
-                            {ADD_ON_OPTIONS.map((addOn) => (
-                              <option key={addOn} value={addOn}>
-                                {addOn}
-                              </option>
-                            ))}
-                          </select>
-                          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-navy/60">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                              <polyline points="6 9 12 15 18 9" />
-                            </svg>
-                          </div>
+                            <span className="truncate pr-2">None</span>
+                            <span
+                              className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 text-[9px] transition-all ${
+                                selectedAddOns.includes('None')
+                                  ? 'border-white bg-white text-navy font-black scale-105'
+                                  : 'border-navy/20 bg-white/60 group-hover:border-navy/40'
+                              }`}
+                            >
+                              {selectedAddOns.includes('None') ? '✓' : ''}
+                            </span>
+                          </button>
+
+                          {ADD_ON_OPTIONS.map((addOn) => {
+                            const isSelected = selectedAddOns.includes(addOn)
+                            return (
+                              <button
+                                key={addOn}
+                                type="button"
+                                onClick={() => handleToggleAddOn(addOn)}
+                                className={`group relative flex items-center justify-between px-3.5 py-3 rounded-2xl text-xs sm:text-sm font-bold transition-all text-left border cursor-pointer ${
+                                  isSelected
+                                    ? 'bg-navy text-white border-navy shadow-md ring-1 ring-navy'
+                                    : 'bg-[#F0F2F5] text-navy/80 border-transparent hover:bg-[#E5E9EF] hover:text-navy'
+                                }`}
+                              >
+                                <span className="truncate pr-2">{addOn}</span>
+                                <span
+                                  className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 text-[9px] transition-all ${
+                                    isSelected
+                                      ? 'border-white bg-white text-navy font-black scale-105'
+                                      : 'border-navy/20 bg-white/60 group-hover:border-navy/40'
+                                  }`}
+                                >
+                                  {isSelected ? '✓' : ''}
+                                </span>
+                              </button>
+                            )
+                          })}
                         </div>
                       </div>
 
@@ -1145,9 +1373,17 @@ export default function BookUs() {
                 {currentStep === 2 && (
                   <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="space-y-3.5 sm:space-y-6">
                     <div className="hidden sm:block">
-                      <span className="text-[9px] sm:text-xs font-bold uppercase tracking-widest text-accent mb-0.5 block">Step 2 of 4</span>
-                      <h3 className="font-heading text-lg sm:text-3xl font-bold text-navy">Participant Details</h3>
-                      <p className="text-[10px] sm:text-xs text-navy/60 mt-0.5">Enter age and prior certification level for each person for {experience}.</p>
+                      <span className="text-[9px] sm:text-xs font-bold uppercase tracking-widest text-accent mb-0.5 block">
+                        Step 2 of {((!experience && selectedAddOns.some((item) => item !== 'None')) || isDirectActivity(experience)) ? 2 : 3}
+                      </span>
+                      <h3 className="font-heading text-lg sm:text-3xl font-bold text-navy">
+                        {isCourseService ? 'Participant Details' : 'Participants & Programs'}
+                      </h3>
+                      <p className="text-[10px] sm:text-xs text-navy/60 mt-0.5">
+                        {isCourseService
+                          ? `Confirm participant details for ${selectedCourseProgram?.name || serviceItem?.title || experience}.`
+                          : `Enter age, prior certification, and choose your preferred course for ${experience}.`}
+                      </p>
                     </div>
 
                     <div data-lenis-prevent className="space-y-3 sm:space-y-6 max-h-[500px] sm:max-h-[550px] overflow-y-auto overscroll-contain pr-1">
@@ -1158,6 +1394,7 @@ export default function BookUs() {
                         const availableCertOptions = sortCoursesByDifficulty(
                           getAvailableCertificationsForAge(p.age, experience)
                         )
+                        const programName = selectedCourseProgram?.name || serviceItem?.title || 'Selected Program'
 
                         return (
                           <div key={p.id} className="rounded-xl sm:rounded-3xl bg-[#FAFAFA] border border-navy/10 p-3 sm:p-6 space-y-2.5 sm:space-y-5">
@@ -1208,11 +1445,45 @@ export default function BookUs() {
                               </div>
                             </div>
 
+                            {/* Compulsory Circular Parental Consent Checkbox for Age < 12 */}
+                            {isAgeValid && ageNum < 12 && (
+                              <div
+                                onClick={() => handleParticipantChange(idx, 'parentalConsent', !p.parentalConsent)}
+                                className={`p-3 sm:p-4 rounded-xl sm:rounded-2xl border transition-all cursor-pointer flex items-center gap-3 select-none ${
+                                  p.parentalConsent
+                                    ? 'bg-amber-500/10 border-amber-500/50 text-navy'
+                                    : 'bg-white border-amber-300 hover:border-amber-400'
+                                }`}
+                              >
+                                <div
+                                  className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
+                                    p.parentalConsent
+                                      ? 'bg-navy border-navy text-white shadow-sm'
+                                      : 'border-amber-500 bg-white'
+                                  }`}
+                                >
+                                  {p.parentalConsent && (
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                                      <polyline points="20 6 9 17 4 12" />
+                                    </svg>
+                                  )}
+                                </div>
+                                <div className="flex-1">
+                                  <span className="text-[11px] sm:text-xs font-bold text-navy block leading-snug">
+                                    Yes I have proper experience and Parental Consent <span className="text-red-500">*</span>
+                                  </span>
+                                  <span className="text-[9px] sm:text-[10px] text-navy/60 font-medium block mt-0.5">
+                                    Compulsory verification for participants under 12 years of age
+                                  </span>
+                                </div>
+                              </div>
+                            )}
+
                             {/* Before age is entered */}
                             {p.age === '' && (
                               <div className="rounded-lg sm:rounded-2xl bg-navy/[0.03] border border-navy/10 p-2.5 sm:p-4 text-[10px] sm:text-xs font-medium text-navy/70 flex items-center gap-2">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-navy/50"><circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" /></svg>
-                                <span>Enter age to see available programs.</span>
+                                <span>{isCourseService ? 'Enter age to continue.' : 'Enter age to see available programs.'}</span>
                               </div>
                             )}
 
@@ -1233,253 +1504,224 @@ export default function BookUs() {
                               </div>
                             )}
 
-                            {/* Once Age is Valid: Certification Choice */}
-                            {isAgeValid && (
-                              <div className="space-y-2.5 pt-1">
-                                {availableCertOptions.length > 0 && (
-                                  <>
-                                    <div>
-                                      <label className="mb-1.5 block text-[9px] sm:text-xs font-bold text-navy/80 uppercase tracking-wider">
-                                        Do you already have a certification?
-                                      </label>
-                                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
-                                        <button
-                                          type="button"
-                                          onClick={() => handleParticipantChange(idx, 'hasCertification', false)}
-                                          className={`p-2.5 sm:p-4 rounded-lg sm:rounded-2xl border text-left transition-all flex items-center justify-between gap-2 ${!p.hasCertification
-                                            ? 'bg-navy text-white border-navy shadow-sm'
-                                            : 'bg-white text-navy border-navy/15 hover:border-navy/30'
-                                            }`}
-                                        >
-                                          <div>
-                                            <span className="font-bold text-[11px] sm:text-sm block">No, I don't have a certification</span>
-                                            <span className={`text-[9px] sm:text-[11px] block mt-0.5 ${!p.hasCertification ? 'text-white/70' : 'text-navy/50'}`}>
-                                              {ageNum < 10 ? 'Introductory & Beginner options' : 'Beginner & Entry Level options'}
-                                            </span>
-                                          </div>
-                                          <div className={`w-3.5 h-3.5 sm:w-5 sm:h-5 rounded-full border flex items-center justify-center shrink-0 ${!p.hasCertification ? 'border-white bg-white text-navy' : 'border-navy/20'
-                                            }`}>
-                                            {!p.hasCertification && <span className="text-[8px] sm:text-[10px] font-bold">✓</span>}
-                                          </div>
-                                        </button>
+                            {/* FOR SERVICE FLOW: Show only the automatically filled Program and no certification questions */}
+                            {isCourseService ? (
+                              isAgeValid && (
+                                <div className="rounded-xl sm:rounded-2xl bg-white border border-navy/10 p-3 sm:p-4 shadow-sm flex items-center justify-between gap-3">
+                                  <div className="min-w-0">
+                                    <span className="text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider text-navy/50 block">
+                                      Program
+                                    </span>
+                                    <span className="font-heading font-bold text-navy text-xs sm:text-base truncate block mt-0.5">
+                                      Program - "{programName}"
+                                    </span>
+                                  </div>
+                                  <span className="px-2.5 py-1 rounded-full bg-accent/20 text-navy text-[10px] sm:text-xs font-extrabold shrink-0">
+                                    Selected
+                                  </span>
+                                </div>
+                              )
+                            ) : (
+                              /* FOR REGULAR BOOK US FLOW: Certification Choice & Levels */
+                              isAgeValid && (
+                                <div className="space-y-2.5 pt-1">
+                                  <div>
+                                    <label className="mb-1.5 block text-[9px] sm:text-xs font-bold text-navy/80 uppercase tracking-wider">
+                                      Do you already have a certification?
+                                    </label>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+                                      <button
+                                        type="button"
+                                        onClick={() => handleParticipantChange(idx, 'hasCertification', false)}
+                                        className={`p-2.5 sm:p-4 rounded-lg sm:rounded-2xl border text-left transition-all flex items-center justify-between gap-2 ${!p.hasCertification
+                                          ? 'bg-navy text-white border-navy shadow-sm'
+                                          : 'bg-white text-navy border-navy/15 hover:border-navy/30'
+                                          }`}
+                                      >
+                                        <div>
+                                          <span className="font-bold text-[11px] sm:text-sm block">Without Certificate</span>
+                                          <span className={`text-[9px] sm:text-[11px] block mt-0.5 ${!p.hasCertification ? 'text-white/70' : 'text-navy/50'}`}>
+                                            Beginner, introductory & pathway options
+                                          </span>
+                                        </div>
+                                        <div className={`w-3.5 h-3.5 sm:w-5 sm:h-5 rounded-full border flex items-center justify-center shrink-0 ${!p.hasCertification ? 'border-white bg-white text-navy' : 'border-navy/20'
+                                          }`}>
+                                          {!p.hasCertification && <span className="text-[8px] sm:text-[10px] font-bold">✓</span>}
+                                        </div>
+                                      </button>
 
-                                        <button
-                                          type="button"
-                                          onClick={() => handleParticipantChange(idx, 'hasCertification', true)}
-                                          className={`p-2.5 sm:p-4 rounded-lg sm:rounded-2xl border text-left transition-all flex items-center justify-between gap-2 ${p.hasCertification
-                                            ? 'bg-navy text-white border-navy shadow-sm'
-                                            : 'bg-white text-navy border-navy/15 hover:border-navy/30'
-                                            }`}
-                                        >
-                                          <div>
-                                            <span className="font-bold text-[11px] sm:text-sm block">
-                                              {ageNum < 10 ? 'Yes, I have prior experience' : 'Yes, I have a certification'}
-                                            </span>
-                                            <span className={`text-[9px] sm:text-[11px] block mt-0.5 ${p.hasCertification ? 'text-white/70' : 'text-navy/50'}`}>
-                                              {ageNum < 10 ? 'Select completed youth programs' : 'Advanced, Specialties & Continuing Ed'}
-                                            </span>
-                                          </div>
-                                          <div className={`w-3.5 h-3.5 sm:w-5 sm:h-5 rounded-full border flex items-center justify-center shrink-0 ${p.hasCertification ? 'border-white bg-white text-navy' : 'border-navy/20'
-                                            }`}>
-                                            {p.hasCertification && <span className="text-[8px] sm:text-[10px] font-bold">✓</span>}
-                                          </div>
-                                        </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => handleParticipantChange(idx, 'hasCertification', true)}
+                                        className={`p-2.5 sm:p-4 rounded-lg sm:rounded-2xl border text-left transition-all flex items-center justify-between gap-2 ${p.hasCertification
+                                          ? 'bg-navy text-white border-navy shadow-sm'
+                                          : 'bg-white text-navy border-navy/15 hover:border-navy/30'
+                                          }`}
+                                      >
+                                        <div>
+                                          <span className="font-bold text-[11px] sm:text-sm block">
+                                            With Certificate
+                                          </span>
+                                          <span className={`text-[9px] sm:text-[11px] block mt-0.5 ${p.hasCertification ? 'text-white/70' : 'text-navy/50'}`}>
+                                            {ageNum === 8 ? 'Junior certified diver programs' : 'Choose your current diving certificate'}
+                                          </span>
+                                        </div>
+                                        <div className={`w-3.5 h-3.5 sm:w-5 sm:h-5 rounded-full border flex items-center justify-center shrink-0 ${p.hasCertification ? 'border-white bg-white text-navy' : 'border-navy/20'
+                                          }`}>
+                                          {p.hasCertification && <span className="text-[8px] sm:text-[10px] font-bold">✓</span>}
+                                        </div>
+                                      </button>
+                                    </div>
+                                  </div>
+
+                                  {/* If Certified & Above 8+: Ask which certificate */}
+                                  {p.hasCertification && ageNum > 8 && availableCertOptions.length > 0 && (
+                                    <div className="space-y-1.5 pt-1">
+                                      <label className="block text-[9px] sm:text-xs font-bold text-navy/80 uppercase tracking-wider">
+                                        Which certificate do you currently have?
+                                      </label>
+                                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-2">
+                                        {availableCertOptions.map((opt) => {
+                                          const isSelected = (p.certifications || []).includes(opt.id)
+                                          return (
+                                            <button
+                                              key={opt.id}
+                                              type="button"
+                                              onClick={() => handleSelectCertification(idx, opt.id)}
+                                              className={`p-2 sm:p-3 rounded-lg border text-left text-[10px] sm:text-xs font-semibold sm:font-bold transition flex items-center justify-between gap-1.5 ${isSelected
+                                                ? 'bg-navy text-white border-navy shadow-sm'
+                                                : 'bg-white text-navy/80 border-navy/10 hover:border-navy/30 hover:bg-navy/[0.02]'
+                                                }`}
+                                            >
+                                              <span className="truncate">{getCourseDisplayName(opt.name)}</span>
+                                              <span className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full border flex items-center justify-center shrink-0 text-[8px] sm:text-[10px] ${isSelected ? 'bg-white text-navy border-white font-bold' : 'border-navy/20'
+                                                }`}>
+                                                {isSelected ? '✓' : ''}
+                                              </span>
+                                            </button>
+                                          )
+                                        })}
                                       </div>
                                     </div>
+                                  )}
 
-                                    {/* If Certified: Options (MULTI SELECT) */}
-                                    {p.hasCertification && (
-                                      <div className="space-y-1.5 pt-1">
-                                        <label className="block text-[9px] sm:text-xs font-bold text-navy/80 uppercase tracking-wider">
-                                          Which certification(s) do you currently have?
-                                        </label>
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-2">
-                                          {availableCertOptions.map((opt) => {
-                                            const isSelected = (p.certifications || []).includes(opt.id)
+                                  {/* Dynamic Eligibility Badge */}
+                                  <div className="rounded-lg sm:rounded-2xl bg-emerald-500/10 border border-emerald-500/20 p-2 sm:p-3.5 text-[10px] sm:text-xs text-emerald-800 font-medium flex items-center justify-between gap-2">
+                                    <div className="flex items-center gap-1.5 sm:gap-2">
+                                      <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-500 shrink-0 animate-pulse" />
+                                      <span>
+                                        {eligibleCourses.length} course(s) unlocked for age {p.age}
+                                      </span>
+                                    </div>
+                                    <span className="font-bold text-[9px] sm:text-[11px] uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-emerald-500/15">
+                                      {eligibleCourses.length} Available
+                                    </span>
+                                  </div>
+
+                                  {/* INLINE ELIGIBLE COURSES & PROGRAMS (Integrated directly into Step 2) */}
+                                  <div className="pt-2 sm:pt-3 border-t border-navy/10 space-y-2.5">
+                                    <div className="flex justify-between items-center">
+                                      <label htmlFor={`select-program-${p.id}`} className="text-[9px] sm:text-xs font-bold text-navy/80 uppercase tracking-wider">
+                                        Select Course / Program <span className="text-red-500">*</span>
+                                      </label>
+                                      <span className="text-[9px] sm:text-[11px] text-navy/50 font-medium">Choose from unlocked courses</span>
+                                    </div>
+
+                                    {eligibleCourses.length === 0 ? (
+                                      <div className="rounded-lg sm:rounded-2xl bg-navy/[0.04] border border-navy/10 p-3 text-[10px] sm:text-xs font-medium text-navy/80">
+                                        No courses available for this combination.
+                                      </div>
+                                    ) : (
+                                      <div className="space-y-2">
+                                        {/* Dropdown Selector */}
+                                        <div className="relative">
+                                          <select
+                                            id={`select-program-${p.id}`}
+                                            value={p.selectedProgram}
+                                            onChange={(e) => handleParticipantChange(idx, 'selectedProgram', e.target.value)}
+                                            required
+                                            aria-label={`Select course for ${p.name || `Person ${idx + 1}`}`}
+                                            className="w-full rounded-lg sm:rounded-2xl bg-white border border-navy/15 px-2.5 py-2 sm:px-4 sm:py-3.5 text-[11px] sm:text-sm font-semibold sm:font-bold text-navy outline-none focus:ring-2 focus:ring-navy/20 transition appearance-none shadow-sm cursor-pointer pr-8"
+                                          >
+                                            <option value="" disabled>Select an eligible course...</option>
+                                            {eligibleCourses.map((prog) => (
+                                              <option key={prog.id} value={prog.id}>
+                                                {getCourseDisplayName(prog.name)} [{prog.category}] — {prog.certLabel}
+                                              </option>
+                                            ))}
+                                          </select>
+                                          <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-navy/40">
+                                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 9l6 6 6-6" /></svg>
+                                          </div>
+                                        </div>
+
+                                        {/* Quick-Pick Course Cards */}
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2.5 pt-1">
+                                          {eligibleCourses.map((prog) => {
+                                            const isSelected = p.selectedProgram === prog.id
                                             return (
-                                              <button
-                                                key={opt.id}
-                                                type="button"
-                                                onClick={() => handleSelectCertification(idx, opt.id)}
-                                                className={`p-2 sm:p-3 rounded-lg border text-left text-[10px] sm:text-xs font-semibold sm:font-bold transition flex items-center justify-between gap-1.5 ${isSelected
-                                                  ? 'bg-navy text-white border-navy shadow-sm'
-                                                  : 'bg-white text-navy/80 border-navy/10 hover:border-navy/30 hover:bg-navy/[0.02]'
+                                              <div
+                                                key={prog.id}
+                                                onClick={() => handleParticipantChange(idx, 'selectedProgram', prog.id)}
+                                                className={`rounded-lg sm:rounded-2xl p-2.5 sm:p-3.5 border transition-all cursor-pointer flex flex-col justify-between gap-1.5 ${isSelected
+                                                  ? 'bg-navy text-white border-navy shadow-md ring-1 ring-navy'
+                                                  : 'bg-white text-navy border-navy/10 hover:border-navy/30 hover:bg-navy/[0.02]'
                                                   }`}
                                               >
-                                                <span className="truncate">{getCourseDisplayName(opt.name)}</span>
-                                                <span className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full border flex items-center justify-center shrink-0 text-[8px] sm:text-[10px] ${isSelected ? 'bg-white text-navy border-white font-bold' : 'border-navy/20'
-                                                  }`}>
-                                                  {isSelected ? '✓' : ''}
-                                                </span>
-                                              </button>
+                                                <div className="flex justify-between items-start gap-1.5">
+                                                  <div>
+                                                    <span className={`text-[8px] sm:text-[9px] font-bold uppercase tracking-widest block mb-0.5 ${isSelected ? 'text-cyan-300' : 'text-navy/50'}`}>
+                                                      {prog.category}
+                                                    </span>
+                                                    <h5 className="font-heading font-bold text-[11px] sm:text-sm leading-snug">
+                                                      {getCourseDisplayName(prog.name)}
+                                                    </h5>
+                                                  </div>
+                                                  <div className={`w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full border shrink-0 flex items-center justify-center mt-0.5 ${isSelected ? 'border-white bg-white text-navy' : 'border-navy/20 bg-transparent'}`}>
+                                                    {isSelected && <span className="text-[8px] sm:text-[9px] font-bold">✓</span>}
+                                                  </div>
+                                                </div>
+
+                                                <div className="flex flex-wrap items-center gap-1 pt-1 text-[8px] sm:text-[9px]">
+                                                  
+                                                  <span className={`truncate max-w-[200px] sm:max-w-[260px] ${isSelected ? 'text-white/70' : 'text-navy/50'}`}>
+                                                    {prog.certLabel}
+                                                  </span>
+                                                </div>
+                                              </div>
                                             )
                                           })}
                                         </div>
+
+                                        {/* Fun Dives Package Selector if Fun Dives is picked */}
+                                        {['fun-day-dive', 'fun-dawn-dive', 'fun-night-dive'].includes(p.selectedProgram) && (
+                                          <div className="mt-2.5 pt-2.5 border-t border-navy/10">
+                                            <label className="text-[9px] sm:text-xs font-bold text-navy/70 uppercase tracking-wider mb-1.5 block">
+                                              Select Number of Dives <span className="text-red-500">*</span>
+                                            </label>
+                                            <div className="relative">
+                                              <select
+                                                value={p.funDivesCount || ''}
+                                                onChange={(e) => handleParticipantChange(idx, 'funDivesCount', e.target.value)}
+                                                required
+                                                className="w-full rounded-lg sm:rounded-2xl bg-[#F0F2F5] border border-navy/5 px-2.5 py-2 sm:px-4 sm:py-3.5 text-[11px] sm:text-sm font-semibold sm:font-bold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition appearance-none shadow-inner cursor-pointer pr-8"
+                                              >
+                                                <option value="" disabled>Choose your dive package...</option>
+                                                {FUN_DIVES_PACKAGES.map((pkg) => (
+                                                  <option key={pkg.id} value={pkg.id}>{pkg.title} - {pkg.duration}</option>
+                                                ))}
+                                              </select>
+                                              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-navy/50">
+                                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 9l6 6 6-6" /></svg>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        )}
                                       </div>
                                     )}
-                                  </>
-                                )}
-
-                                {/* Dynamic Eligibility Badge */}
-                                <div className="rounded-lg sm:rounded-2xl bg-emerald-500/10 border border-emerald-500/20 p-2 sm:p-3.5 text-[10px] sm:text-xs text-emerald-800 font-medium flex items-center justify-between gap-2">
-                                  <div className="flex items-center gap-1.5 sm:gap-2">
-                                    <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-500 shrink-0 animate-pulse" />
-                                    <span>
-                                      {eligibleCourses.length} course(s) unlocked for age {p.age}
-                                    </span>
-                                  </div>
-                                  <span className="font-bold text-[9px] sm:text-[11px] uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-emerald-500/15">
-                                    {eligibleCourses.length} Available
-                                  </span>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        )
-                      })}
-                    </div>
-                  </motion.div>
-                )}
-
-                {/* STEP 3: Matching Programs Selection */}
-                {currentStep === 3 && (
-                  <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="space-y-3.5 sm:space-y-6">
-                    <div className="hidden sm:block">
-                      <span className="text-[9px] sm:text-xs font-bold uppercase tracking-widest text-accent mb-0.5 block">Step 3 of 4</span>
-                      <h3 className="font-heading text-lg sm:text-3xl font-bold text-navy">Eligible Programs & Courses</h3>
-                      <p className="text-[10px] sm:text-xs text-navy/60 mt-0.5">Select a program for each person for {experience}.</p>
-                    </div>
-
-                    <div data-lenis-prevent className="space-y-3.5 sm:space-y-8 max-h-[500px] sm:max-h-[550px] overflow-y-auto overscroll-contain pr-1">
-                      {participants.map((p, idx) => {
-                        const eligible = sortCoursesByDifficulty(
-                          getRecommendedCourses(p.age, p.hasCertification, p.certifications, experience)
-                        )
-                        const certNames = (p.certifications || [])
-                          .map((id) => CERTIFICATION_OPTIONS.find((c) => c.id === id)?.name)
-                          .filter(Boolean)
-                        const certSummary = p.hasCertification
-                          ? (certNames.length ? certNames.join(', ') : 'Certified Diver')
-                          : 'Beginner / Pathway'
-
-                        return (
-                          <div key={p.id} className="rounded-xl sm:rounded-3xl bg-[#FAFAFA] border border-navy/10 p-3 sm:p-6 space-y-2.5 sm:space-y-5">
-                            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1 border-b border-navy/10 pb-2.5 sm:pb-4">
-                              <div>
-                                <h4 className="font-heading font-bold text-navy text-sm sm:text-xl">
-                                  {p.name || `Person ${idx + 1}`}
-                                </h4>
-                                <p className="text-[10px] sm:text-xs text-navy/60 mt-0.5">
-                                  Age: <span className="font-bold text-navy">{p.age || 'N/A'}</span> • Cert: <span className="font-bold text-navy">{certSummary}</span>
-                                </p>
-                              </div>
-                              <span className="text-[9px] sm:text-[11px] font-bold px-2 py-0.5 sm:px-3.5 sm:py-1 rounded-full bg-navy/[0.06] text-navy border border-navy/10">
-                                {eligible.length} Suggested Program(s)
-                              </span>
-                            </div>
-
-                            {eligible.length === 0 ? (
-                              <div className="rounded-lg sm:rounded-2xl bg-navy/[0.04] border border-navy/10 p-3 sm:p-4 text-[10px] sm:text-xs font-medium text-navy/80 flex items-start gap-2">
-                                <span>No eligible programs found for this age and experience level.</span>
-                              </div>
-                            ) : (
-                              <div className="space-y-2.5">
-                                <div className="flex justify-between items-center">
-                                  <label htmlFor={`select-program-${p.id}`} className="text-[9px] sm:text-xs font-bold text-navy/70 uppercase tracking-wider">
-                                    Choose Suggested Program
-                                  </label>
-                                  <span className="text-[9px] sm:text-[11px] text-navy/50 font-medium">Tap any card below</span>
-                                </div>
-
-                                {/* Accessible Native Select Dropdown */}
-                                <div className="relative">
-                                  <select
-                                    id={`select-program-${p.id}`}
-                                    value={p.selectedProgram}
-                                    onChange={(e) => handleParticipantChange(idx, 'selectedProgram', e.target.value)}
-                                    required={eligible.length > 0}
-                                    aria-label={`Select program for ${p.name || `Person ${idx + 1}`}`}
-                                    className="w-full rounded-lg sm:rounded-2xl bg-white border border-navy/10 px-2.5 py-2 sm:px-4 sm:py-3.5 text-[11px] sm:text-sm font-semibold sm:font-bold text-navy outline-none focus:ring-2 focus:ring-navy/20 transition appearance-none shadow-sm cursor-pointer pr-8"
-                                  >
-                                    <option value="" disabled>Select an eligible course...</option>
-                                    {eligible.map((prog) => (
-                                      <option key={prog.id} value={prog.id}>
-                                        {getCourseDisplayName(prog.name)} [{prog.category}] (Age {prog.minimumAge}+) — {prog.certLabel}
-                                      </option>
-                                    ))}
-                                  </select>
-                                  <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-navy/40">
-                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 9l6 6 6-6" /></svg>
                                   </div>
                                 </div>
-
-                                {/* Interactive Program Cards Grid */}
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 pt-1">
-                                  {eligible.map((prog) => {
-                                    const isSelected = p.selectedProgram === prog.id
-                                    return (
-                                      <div
-                                        key={prog.id}
-                                        onClick={() => handleParticipantChange(idx, 'selectedProgram', prog.id)}
-                                        className={`rounded-lg sm:rounded-2xl p-2.5 sm:p-4 border transition-all cursor-pointer flex flex-col justify-between gap-1.5 sm:gap-3 ${isSelected
-                                          ? 'bg-navy text-white border-navy shadow-md ring-1 ring-navy'
-                                          : 'bg-white text-navy border-navy/10 hover:border-navy/30 hover:bg-navy/[0.02]'
-                                          }`}
-                                      >
-                                        <div className="flex justify-between items-start gap-1.5">
-                                          <div>
-                                            <span className={`text-[8px] sm:text-[10px] font-bold uppercase tracking-widest block mb-0.5 ${isSelected ? 'text-cyan-300' : 'text-navy/50'
-                                              }`}>
-                                              {prog.category}
-                                            </span>
-                                            <h5 className="font-heading font-bold text-[11px] sm:text-base leading-snug">
-                                              {getCourseDisplayName(prog.name)}
-                                            </h5>
-                                          </div>
-                                          <div className={`w-3.5 h-3.5 sm:w-5 sm:h-5 rounded-full border shrink-0 flex items-center justify-center mt-0.5 ${isSelected ? 'border-white bg-white text-navy' : 'border-navy/20 bg-transparent'
-                                            }`}>
-                                            {isSelected && <span className="text-[8px] sm:text-[10px] font-bold">✓</span>}
-                                          </div>
-                                        </div>
-
-                                        <div className="flex flex-wrap items-center gap-1 pt-1 text-[8px] sm:text-[10px]">
-                                          <span className={`px-1.5 py-0.5 rounded-full font-semibold ${isSelected ? 'bg-white/10 text-white/90' : 'bg-navy/[0.05] text-navy/70'
-                                            }`}>
-                                            Age {prog.minimumAge}+
-                                          </span>
-                                          <span className={`truncate max-w-[120px] sm:max-w-[170px] ${isSelected ? 'text-white/70' : 'text-navy/50'
-                                            }`}>
-                                            Prereq: {prog.certLabel}
-                                          </span>
-                                        </div>
-                                      </div>
-                                    )
-                                  })}
-                                </div>
-                                {['fun-day-dive', 'fun-dawn-dive', 'fun-night-dive'].includes(p.selectedProgram) && (
-                                  <div className="mt-3.5 pt-3.5 border-t border-navy/5">
-                                    <label className="text-[9px] sm:text-xs font-bold text-navy/70 uppercase tracking-wider mb-2 block">
-                                      Select Number of Dives
-                                    </label>
-                                    <div className="relative">
-                                      <select
-                                        value={p.funDivesCount || ''}
-                                        onChange={(e) => handleParticipantChange(idx, 'funDivesCount', e.target.value)}
-                                        required
-                                        className="w-full rounded-lg sm:rounded-2xl bg-[#F0F2F5] border border-navy/5 px-2.5 py-2 sm:px-4 sm:py-3.5 text-[11px] sm:text-sm font-semibold sm:font-bold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition appearance-none shadow-inner cursor-pointer pr-8"
-                                      >
-                                        <option value="" disabled>Choose your dive package...</option>
-                                        {FUN_DIVES_PACKAGES.map(pkg => (
-                                          <option key={pkg.id} value={pkg.id}>{pkg.title} - {pkg.duration}</option>
-                                        ))}
-                                      </select>
-                                      <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-navy/50">
-                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 9l6 6 6-6" /></svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
+                              )
                             )}
                           </div>
                         )
@@ -1493,7 +1735,7 @@ export default function BookUs() {
                   <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="space-y-3.5 sm:space-y-6">
                     <div className="hidden sm:block">
                       <span className="text-[9px] sm:text-xs font-bold uppercase tracking-widest text-accent mb-0.5 block">
-                        Step {((!experience && Boolean(selectedAddOn)) || isDirectActivity(experience)) ? 2 : 4} of {((!experience && Boolean(selectedAddOn)) || isDirectActivity(experience)) ? 2 : 4}
+                        Step {((!experience && selectedAddOns.some((item) => item !== 'None')) || isDirectActivity(experience)) ? 2 : 3} of {((!experience && selectedAddOns.some((item) => item !== 'None')) || isDirectActivity(experience)) ? 2 : 3}
                       </span>
                       <h3 className="font-heading text-lg sm:text-3xl font-bold text-navy">Contact & Booking Details</h3>
                       <p className="text-[10px] sm:text-xs text-navy/60 mt-0.5">Please provide your contact information to finalize the booking request.</p>
@@ -1574,7 +1816,22 @@ export default function BookUs() {
                 >
                   <span>← Back</span>
                 </button>
-              ) : <div />}
+              ) : (initialService ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (typeof window !== 'undefined' && window.history.length > 1) {
+                      window.history.back()
+                    } else {
+                      window.location.href = `/services/${initialService}`
+                    }
+                  }}
+                  className="rounded-full px-3.5 py-2 sm:px-5 sm:py-3 text-[11px] sm:text-xs font-bold text-navy/70 hover:text-navy hover:bg-[#F0F2F5] active:scale-95 transition cursor-pointer flex items-center gap-1.5 border border-navy/15"
+                  title="Return to selected service page"
+                >
+                  <span>← Back to {selectedCourseProgram?.name || serviceItem?.title || 'Program'}</span>
+                </button>
+              ) : <div />)}
 
               {currentStep < 4 ? (
                 <button
@@ -1620,10 +1877,192 @@ export default function BookUs() {
           showHeading={true}
         />
       </div>
-
     </div>
-    </div >
-  </div >
+
+    {/* 5. ORDER SUMMARY & CONFIRMATION POPUP MODAL */}
+    <AnimatePresence>
+      {showSummaryModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/60 backdrop-blur-md">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 15 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 15 }}
+            transition={{ duration: 0.2 }}
+            className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-navy/15 overflow-hidden text-navy"
+          >
+            {/* Modal Header */}
+            <div className="p-5 sm:p-6 border-b border-navy/10 flex items-center justify-between bg-gradient-to-r from-navy to-[#003865] text-white">
+              <div>
+                <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-[#FFCD00] block mb-0.5">
+                  Order Summary & Confirmation
+                </span>
+                <h3 className="font-heading text-lg sm:text-2xl font-bold">
+                  Review Your Booking Details
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowSummaryModal(false)}
+                className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition active:scale-90 cursor-pointer text-sm font-bold"
+                aria-label="Close summary modal"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-5 sm:p-7 overflow-y-auto space-y-4 sm:space-y-6 text-xs sm:text-sm">
+              
+              {/* 1. Trip & Location Details */}
+              <div className="rounded-2xl bg-[#FAFAFA] border border-navy/10 p-4 space-y-2.5">
+                <span className="text-[10px] font-extrabold uppercase tracking-wider text-navy/50 block">
+                  1. Destination & Schedule
+                </span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-navy">
+                  <div>
+                    <span className="text-navy/60 block text-[11px]">Country & Island:</span>
+                    <strong className="font-bold">{country} {island ? `• ${island}` : ''}</strong>
+                  </div>
+                  <div>
+                    <span className="text-navy/60 block text-[11px]">Dive Site / Location:</span>
+                    <strong className="font-bold">{location || 'To Be Arranged'}</strong>
+                  </div>
+                  <div>
+                    <span className="text-navy/60 block text-[11px]">Date:</span>
+                    <strong className="font-bold">{formatDateToDDMMYYYY(date)}</strong>
+                  </div>
+                  <div>
+                    <span className="text-navy/60 block text-[11px]">Total Group Size:</span>
+                    <strong className="font-bold">{participants.length} Person{participants.length > 1 ? 's' : ''}</strong>
+                  </div>
+                </div>
+              </div>
+
+              {/* 2. Experience & Add-Ons */}
+              <div className="rounded-2xl bg-[#FAFAFA] border border-navy/10 p-4 space-y-2.5">
+                <span className="text-[10px] font-extrabold uppercase tracking-wider text-navy/50 block">
+                  2. Experience & Add-Ons
+                </span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-navy">
+                  <div>
+                    <span className="text-navy/60 block text-[11px]">Primary Experience:</span>
+                    <strong className="font-bold">{experience || 'Direct Add-On / Custom'}</strong>
+                  </div>
+                  <div>
+                    <span className="text-navy/60 block text-[11px]">Selected Add-Ons:</span>
+                    <strong className="font-bold">
+                      {selectedAddOns.filter(a => a !== 'None').length > 0
+                        ? selectedAddOns.filter(a => a !== 'None').join(', ')
+                        : 'None'}
+                    </strong>
+                  </div>
+                </div>
+              </div>
+
+              {/* 3. Participants & Program Breakdown */}
+              <div className="rounded-2xl bg-[#FAFAFA] border border-navy/10 p-4 space-y-3">
+                <span className="text-[10px] font-extrabold uppercase tracking-wider text-navy/50 block">
+                  3. Participants & Courses
+                </span>
+                <div className="space-y-2">
+                  {participants.map((p, idx) => {
+                    const progName = COURSE_CATALOG.find(c => c.id === p.selectedProgram)?.name || p.selectedProgram || 'Standard Activity'
+                    const isUnder12 = parseInt(p.age, 10) < 12
+                    return (
+                      <div key={p.id} className="p-3 bg-white rounded-xl border border-navy/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div>
+                          <span className="font-bold text-navy">
+                            {idx + 1}. {p.name || `Participant ${idx + 1}`}
+                          </span>
+                          <span className="text-navy/60 ml-2 font-medium">
+                            (Age: {p.age})
+                          </span>
+                          {isUnder12 && p.parentalConsent && (
+                            <span className="block text-[10px] text-amber-700 font-semibold mt-0.5">
+                              ✓ Parental Consent Confirmed
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-left sm:text-right">
+                          <span className="px-2.5 py-1 rounded-full bg-navy/5 text-navy font-bold text-[11px] inline-block">
+                            {progName}
+                          </span>
+                          {p.funDivesCount && (
+                            <span className="block text-[10px] text-navy/60 font-semibold mt-0.5">
+                              Package: {FUN_DIVES_PACKAGES.find(f => f.id === p.funDivesCount)?.title || p.funDivesCount}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* 4. Contact Details & Notes */}
+              <div className="rounded-2xl bg-[#FAFAFA] border border-navy/10 p-4 space-y-2.5">
+                <span className="text-[10px] font-extrabold uppercase tracking-wider text-navy/50 block">
+                  4. Contact Information
+                </span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-navy">
+                  <div>
+                    <span className="text-navy/60 block text-[11px]">Primary Contact:</span>
+                    <strong className="font-bold">{contact.name}</strong>
+                  </div>
+                  <div>
+                    <span className="text-navy/60 block text-[11px]">Email Address:</span>
+                    <strong className="font-bold">{contact.email}</strong>
+                  </div>
+                  <div>
+                    <span className="text-navy/60 block text-[11px]">Phone Number:</span>
+                    <strong className="font-bold">{contact.phone || 'Not provided'}</strong>
+                  </div>
+                  {contact.requests && (
+                    <div className="sm:col-span-2 mt-1">
+                      <span className="text-navy/60 block text-[11px]">Special Notes & Requests:</span>
+                      <p className="font-medium text-navy/80 whitespace-pre-line bg-white p-2.5 rounded-lg border border-navy/10 mt-1">
+                        {contact.requests}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+            </div>
+
+            {/* Modal Footer Controls */}
+            <div className="p-4 sm:p-6 border-t border-navy/10 bg-[#FAFAFA] flex items-center justify-between gap-3">
+              <button
+                type="button"
+                onClick={() => setShowSummaryModal(false)}
+                className="rounded-full px-4 py-2.5 sm:px-6 sm:py-3.5 text-xs sm:text-sm font-bold text-navy hover:bg-navy/10 active:scale-95 transition cursor-pointer"
+              >
+                ← Edit Booking
+              </button>
+
+              <button
+                type="button"
+                onClick={handleFinalSubmit}
+                disabled={isSubmitting}
+                className="rounded-full bg-accent hover:!bg-navy hover:!text-white active:scale-95 px-5 py-2.5 sm:px-8 sm:py-3.5 text-xs sm:text-sm font-extrabold text-[#001e3d] transition-all duration-200 shadow-md cursor-pointer border border-[#FFCD00] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              >
+                {isSubmitting ? (
+                  <>
+                    <span className="w-4 h-4 border-2 border-navy border-t-transparent rounded-full animate-spin inline-block" />
+                    <span>Submitting Booking...</span>
+                  </>
+                ) : (
+                  <span>Confirm & Submit Booking ✓</span>
+                )}
+              </button>
+            </div>
+
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
+    </div>
+  </div>
   )
 }
 
