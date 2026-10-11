@@ -9,9 +9,13 @@ import {
   getHeroWebGLReady
 } from '../utils/mediaReadyManager'
 
+import { usePageVisibility } from '../hooks/usePageVisibility'
+
 function DiverAnimation({ src, className }) {
   const videoRef = useRef(null)
   const canvasRef = useRef(null)
+  const isVisible = usePageVisibility()
+  const isRunningRef = useRef(true)
 
   useEffect(() => {
     const video = videoRef.current
@@ -23,14 +27,19 @@ function DiverAnimation({ src, className }) {
     video.setAttribute('muted', '')
     video.setAttribute('playsinline', '')
     video.setAttribute('webkit-playsinline', '')
-    video.play().catch(() => {})
+
+    if (isVisible) {
+      video.play().catch(() => {})
+    } else {
+      video.pause()
+    }
 
     const ctx = canvas.getContext('2d', { willReadFrequently: true })
     let animId
-    let isRunning = true
+    isRunningRef.current = isVisible
 
     const render = () => {
-      if (!isRunning) return
+      if (!isRunningRef.current) return
       if (video.readyState >= 2) {
         const targetW = 320
         const aspect = (video.videoWidth && video.videoHeight) ? (video.videoHeight / video.videoWidth) : (9 / 16)
@@ -65,13 +74,15 @@ function DiverAnimation({ src, className }) {
       animId = requestAnimationFrame(render)
     }
 
-    animId = requestAnimationFrame(render)
+    if (isVisible) {
+      animId = requestAnimationFrame(render)
+    }
 
     return () => {
-      isRunning = false
+      isRunningRef.current = false
       if (animId) cancelAnimationFrame(animId)
     }
-  }, [src])
+  }, [src, isVisible])
 
   return (
     <>
@@ -172,6 +183,9 @@ export default function Preloader({ onComplete }) {
 
   const handleUnlockAudio = () => {
     try {
+      if (window.__tdvGlobalAudio && typeof window.__tdvGlobalAudio.unmute === 'function') {
+        window.__tdvGlobalAudio.unmute()
+      }
       window.dispatchEvent(new Event('tdv-unlock-audio'))
     } catch (_) {}
   }

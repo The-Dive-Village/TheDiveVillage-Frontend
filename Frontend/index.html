@@ -40,6 +40,42 @@
 </head>
 
 <body style="background-color: #001e3d; margin: 0; padding: 0;">
+  <!-- Global Ambient Audio Stream (Loaded from millisecond zero) -->
+  <audio
+    id="tdv-global-ambient-audio"
+    src="https://res.cloudinary.com/qvbunv8y/video/upload/v1791685502/TDV-Media/Audio/Audio.mp3"
+    loop
+    preload="auto"
+    crossorigin="anonymous"
+    playsinline
+    webkit-playsinline
+    style="display:none;position:fixed;pointer-events:none;"
+  ></audio>
+  <script>
+    (function () {
+      try {
+        var audio = document.getElementById('tdv-global-ambient-audio');
+        if (!audio) return;
+        var isMuted = localStorage.getItem('tdv_audio_muted') === 'true';
+        if (isMuted) {
+          audio.muted = true;
+          audio.volume = 0;
+          return;
+        }
+        audio.volume = 0.5;
+        audio.muted = false;
+        var p = audio.play();
+        if (p !== undefined) {
+          p.catch(function () {
+            // If browser policy restricts unmuted sound on initial page load (e.g. Chrome with 0 MEI):
+            // Immediately start playback muted so the stream buffers from millisecond zero
+            audio.muted = true;
+            audio.play().catch(function () {});
+          });
+        }
+      } catch (e) {}
+    })();
+  </script>
   <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>
 </body>

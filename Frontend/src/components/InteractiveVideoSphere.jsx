@@ -1,26 +1,36 @@
 import { useState, useEffect, Suspense, useRef } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { OrbitControls, useVideoTexture } from '@react-three/drei'
+import { OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
-const clownfishVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/TDV-Media/Background/ClownFish.mp4'
-const videoFile = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v2/dive-village/hero-360/cj9jvkh5j6sozf2fhf0x.mp4?v=2' || clownfishVideo
+import {
+  OPTIMIZED_CLOWNFISH_360,
+  RAW_CLOUDINARY_CLOWNFISH,
+  MASTER_1080P_CLOWNFISH,
+} from '../utils/videoOptimizer'
+import { usePageVisibility } from '../hooks/usePageVisibility'
+import { attachHlsStream } from '../hooks/useCloudinaryHls'
+
+const clownfishVideo = OPTIMIZED_CLOWNFISH_360 || RAW_CLOUDINARY_CLOWNFISH
+const videoFile = clownfishVideo
 
 function getOrCreateDomVideoContainer() {
   let container = document.getElementById('interactive-video-dom-root')
   if (!container) {
     container = document.createElement('div')
     container.id = 'interactive-video-dom-root'
-    container.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;opacity:0.001;pointer-events:none;overflow:hidden;z-index:-99999;'
+    container.style.cssText =
+      'position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;opacity:0.001;pointer-events:none;overflow:hidden;z-index:-99999;'
     document.body.appendChild(container)
   }
   return container
 }
 
-function useDirectVideoTexture(src) {
+function useDirectVideoTexture(src, isVisible = true) {
   const [texture, setTexture] = useState(null)
   const videoRef = useRef(null)
   const hasNewFrameRef = useRef(false)
   const lastTimeRef = useRef(-1)
+  const hlsControllerRef = useRef(null)
 
   useEffect(() => {
     if (!src) {
@@ -31,10 +41,10 @@ function useDirectVideoTexture(src) {
     let isMounted = true
     let vidTexture = null
     let rvfcId = null
+    let fallbackCleanup = null
 
     const domContainer = getOrCreateDomVideoContainer()
     const video = document.createElement('video')
-    video.src = src
     video.crossOrigin = 'anonymous'
     video.playsInline = true
     video.setAttribute('webkit-playsinline', '')
@@ -47,20 +57,23 @@ function useDirectVideoTexture(src) {
     video.preload = 'auto'
     video.playbackRate = 0.45
     video.setAttribute('fetchpriority', 'high')
-    
+
     domContainer.appendChild(video)
     videoRef.current = video
 
+    const hlsController = attachHlsStream({
+      video,
+      hlsUrl: src,
+      mp4FallbackUrl: MASTER_1080P_CLOWNFISH,
+      autoPlay: true,
+      playbackRate: 0.45,
+    })
+    hlsControllerRef.current = hlsController
+
     const checkReadiness = () => {
       if (!isMounted) return false
-      return (
-        video.readyState >= 2 &&
-        video.videoWidth > 0 &&
-        video.videoHeight > 0
-      )
+      return video.readyState >= 2 && video.videoWidth > 0 && video.videoHeight > 0
     }
-
-    let fallbackCleanup = null
 
     const registerFrameCallback = () => {
       if (video.requestVideoFrameCallback) {
@@ -89,7 +102,7 @@ function useDirectVideoTexture(src) {
       if (checkReadiness()) {
         if (!vidTexture) {
           vidTexture = new THREE.VideoTexture(video)
-          vidTexture.update = () => {} // Disable Three.js per-frame auto-update so requestVideoFrameCallback controls needsUpdate
+          vidTexture.update = () => {}
           vidTexture.colorSpace = THREE.SRGBColorSpace
           vidTexture.minFilter = THREE.LinearFilter
           vidTexture.magFilter = THREE.LinearFilter
@@ -105,7 +118,7 @@ function useDirectVideoTexture(src) {
     }
 
     const startPlayback = () => {
-      if (!isMounted) return
+      if (!isMounted || !isVisible) return
       tryActivateTexture()
       if (video.paused) {
         const playPromise = video.play()
@@ -117,9 +130,7 @@ function useDirectVideoTexture(src) {
                 tryActivateTexture()
               }
             })
-            .catch((err) => {
-              console.warn('Interactive video autoplay status:', err?.name || err)
-            })
+            .catch(() => {})
         }
       }
     }
@@ -137,18 +148,20 @@ function useDirectVideoTexture(src) {
       'canplaythrough',
       'playing',
       'timeupdate',
-      'resize'
+      'resize',
     ]
 
     mediaEvents.forEach((evt) => {
       video.addEventListener(evt, handleEvent)
     })
 
-    startPlayback()
+    if (isVisible) {
+      startPlayback()
+    }
 
     const handleUserInteraction = () => {
       if (!isMounted) return
-      if (videoRef.current && videoRef.current.paused) {
+      if (videoRef.current && videoRef.current.paused && isVisible) {
         videoRef.current.playbackRate = 0.45
         videoRef.current
           .play()
@@ -177,6 +190,10 @@ function useDirectVideoTexture(src) {
       mediaEvents.forEach((evt) => {
         video.removeEventListener(evt, handleEvent)
       })
+
+      if (hlsController) {
+        hlsController.destroy()
+      }
       video.pause()
       video.removeAttribute('src')
       video.load()
@@ -189,17 +206,36 @@ function useDirectVideoTexture(src) {
       }
       videoRef.current = null
       setTexture(null)
+      hlsControllerRef.current = null
     }
   }, [src])
+
+  // Manage visibility
+  useEffect(() => {
+    const video = videoRef.current
+    const controller = hlsControllerRef.current
+    if (!video) return
+
+    if (!isVisible) {
+      video.pause()
+      if (controller) controller.stopLoad()
+    } else {
+      if (controller) controller.startLoad()
+      video.play().catch(() => {})
+    }
+  }, [isVisible])
 
   return { texture, hasNewFrameRef, lastTimeRef }
 }
 
-function SphereMesh({ autoRotate }) {
+function SphereMesh({ autoRotate, isVisible }) {
   const meshRef = useRef()
-  const { texture, hasNewFrameRef, lastTimeRef } = useDirectVideoTexture(videoFile)
+  const geomRef = useRef()
+  const matRef = useRef()
+  const { texture, hasNewFrameRef, lastTimeRef } = useDirectVideoTexture(videoFile, isVisible)
 
   useFrame(() => {
+    if (!isVisible) return
     if (meshRef.current && texture && texture.image) {
       const vid = texture.image
       if (hasNewFrameRef.current || vid.currentTime !== lastTimeRef.current) {
@@ -210,22 +246,30 @@ function SphereMesh({ autoRotate }) {
     }
   })
 
+  useEffect(() => {
+    return () => {
+      if (geomRef.current) geomRef.current.dispose()
+      if (matRef.current) matRef.current.dispose()
+    }
+  }, [])
+
   if (!texture) return null
 
   return (
     <mesh ref={meshRef} scale={[-1, 1, 1]} rotation={[0.05, -1.2, 0]}>
-      <sphereGeometry args={[500, 60, 40]} />
-      <meshBasicMaterial map={texture} side={THREE.BackSide} />
+      <sphereGeometry ref={geomRef} args={[500, 60, 40]} />
+      <meshBasicMaterial ref={matRef} map={texture} side={THREE.BackSide} />
     </mesh>
   )
 }
 
-export default function InteractiveVideoSphere({ autoRotate = true, className = "" }) {
+export default function InteractiveVideoSphere({ autoRotate = true, className = '' }) {
   const [mounted, setMounted] = useState(false)
   const controlsRef = useRef()
   const containerRef = useRef(null)
   const isDragging = useRef(false)
   const [thumbPos, setThumbPos] = useState({ x: 0, y: 0 })
+  const isVisible = usePageVisibility()
   const MAX_RADIUS = 14
 
   useEffect(() => {
@@ -276,11 +320,18 @@ export default function InteractiveVideoSphere({ autoRotate = true, className = 
   if (!mounted) return null
 
   return (
-    <div className={`relative w-full h-full bg-[#001e3d] overflow-hidden cursor-grab active:cursor-grabbing ${className}`}>
-      <Canvas dpr={[1, 1.5]} camera={{ position: [0, 0, 0.1], fov: 52 }} gl={{ powerPreference: 'high-performance', antialias: false }}>
+    <div
+      className={`relative w-full h-full bg-[#001e3d] overflow-hidden cursor-grab active:cursor-grabbing ${className}`}
+    >
+      <Canvas
+        frameloop={isVisible ? 'always' : 'never'}
+        dpr={[1, 1.5]}
+        camera={{ position: [0, 0, 0.1], fov: 52 }}
+        gl={{ powerPreference: 'high-performance', antialias: false }}
+      >
         <color attach="background" args={['#001e3d']} />
         <Suspense fallback={null}>
-          <SphereMesh autoRotate={autoRotate} />
+          <SphereMesh autoRotate={autoRotate} isVisible={isVisible} />
         </Suspense>
         <OrbitControls
           ref={controlsRef}
@@ -288,9 +339,9 @@ export default function InteractiveVideoSphere({ autoRotate = true, className = 
           enablePan={false}
           enableDamping={true}
           dampingFactor={0.05}
-          autoRotate={autoRotate}
+          autoRotate={autoRotate && isVisible}
           autoRotateSpeed={1.0}
-          rotateSpeed={-0.15} 
+          rotateSpeed={-0.15}
         />
       </Canvas>
     </div>

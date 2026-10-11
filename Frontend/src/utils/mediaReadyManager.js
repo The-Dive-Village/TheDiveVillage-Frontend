@@ -4,15 +4,22 @@
  * with the application Preloader to guarantee a zero-gap, instant handoff.
  */
 
-const clownfishVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/TDV-Media/Background/ClownFish.mp4'
+import {
+  OPTIMIZED_CLOWNFISH_360,
+  RAW_CLOUDINARY_CLOWNFISH,
+  MASTER_1080P_CLOWNFISH
+} from './videoOptimizer'
+import { attachHlsStream } from '../hooks/useCloudinaryHls'
 
-export const HERO_VIDEO_SRC = 'https://res.cloudinary.com/qvbunv8y/video/upload/TDV-Media/Background/ClownFish.mp4' || clownfishVideo
+export const HERO_VIDEO_SRC = OPTIMIZED_CLOWNFISH_360 || RAW_CLOUDINARY_CLOWNFISH
 
 let isHeroVideoReady = false
 let isHeroWebGLReady = false
 const videoListeners = new Set()
 const webglListeners = new Set()
 let warmHeroVideo = null
+let warmHeroHlsController = null
+let currentHeroSrc = null
 
 export function setHeroVideoReady(ready = true) {
   if (isHeroVideoReady === ready) return
@@ -77,50 +84,59 @@ export function getIsHeroFullyReady() {
 export function getOrCreateHeroVideoElement(src = HERO_VIDEO_SRC, playbackRate = 0.5) {
   if (typeof window === 'undefined') return null
 
-  if (warmHeroVideo && warmHeroVideo.src === src) {
+  if (warmHeroVideo && currentHeroSrc === src) {
     warmHeroVideo.playbackRate = playbackRate
     return warmHeroVideo
+  }
+
+  // If changing src, cleanup existing controller
+  if (warmHeroHlsController) {
+    warmHeroHlsController.destroy()
+    warmHeroHlsController = null
   }
 
   let container = document.getElementById('hero-360-video-dom-root')
   if (!container) {
     container = document.createElement('div')
     container.id = 'hero-360-video-dom-root'
-    container.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;opacity:0.001;pointer-events:none;overflow:hidden;z-index:-99999;'
+    container.style.cssText =
+      'position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;opacity:0.001;pointer-events:none;overflow:hidden;z-index:-99999;'
     document.body.appendChild(container)
   }
 
-  const video = document.createElement('video')
-  if (src && (src.startsWith('http://') || src.startsWith('https://')) && !src.includes(window.location.host)) {
-    video.crossOrigin = 'anonymous'
+  let video = warmHeroVideo
+  if (!video) {
+    video = document.createElement('video')
+    if (src && (src.startsWith('http://') || src.startsWith('https://')) && !src.includes(window.location.host)) {
+      video.crossOrigin = 'anonymous'
+    }
+    video.muted = true
+    video.defaultMuted = true
+    video.volume = 0
+    video.playsInline = true
+    video.setAttribute('muted', '')
+    video.setAttribute('playsinline', '')
+    video.setAttribute('webkit-playsinline', '')
+    video.loop = true
+    video.autoplay = true
+    video.preload = 'auto'
+    video.playbackRate = playbackRate
+    video.setAttribute('fetchpriority', 'high')
+    container.appendChild(video)
+    warmHeroVideo = video
   }
-  video.muted = true
-  video.defaultMuted = true
-  video.volume = 0
-  video.playsInline = true
-  video.setAttribute('muted', '')
-  video.setAttribute('playsinline', '')
-  video.setAttribute('webkit-playsinline', '')
-  video.loop = true
-  video.autoplay = true
-  video.preload = 'auto'
-  video.playbackRate = playbackRate
-  video.setAttribute('fetchpriority', 'high')
-  video.src = src
 
-  container.appendChild(video)
-  warmHeroVideo = video
+  currentHeroSrc = src
 
   const evaluateReadiness = () => {
-    if (video.readyState >= 3 && video.videoWidth > 0 && video.videoHeight > 0) {
+    if (video.readyState >= 2 && video.videoWidth > 0 && video.videoHeight > 0) {
       setHeroVideoReady(true)
     }
   }
 
   const handleNetworkStall = () => {
-    // If waiting or stalled, attempt resume without resetting or recreating the video
     if (video.paused && video.readyState >= 2) {
-      video.play().catch(() => { })
+      video.play().catch(() => {})
     }
   }
 
@@ -133,7 +149,7 @@ export function getOrCreateHeroVideoElement(src = HERO_VIDEO_SRC, playbackRate =
     'progress',
     'playing',
     'timeupdate',
-    'resize'
+    'resize',
   ]
 
   mediaEvents.forEach((evt) => {
@@ -143,23 +159,59 @@ export function getOrCreateHeroVideoElement(src = HERO_VIDEO_SRC, playbackRate =
   video.addEventListener('waiting', handleNetworkStall)
   video.addEventListener('stalled', handleNetworkStall)
 
-  // Start buffering immediately
-  video.play().catch(() => {
-    // Autoplay unlock retry on next interaction
-  })
+  // Attach HLS stream if .m3u8, with transparent MP4 fallback
+  if (src && src.includes('.m3u8')) {
+    warmHeroHlsController = attachHlsStream({
+      video,
+      hlsUrl: src,
+      mp4FallbackUrl: MASTER_1080P_CLOWNFISH,
+      autoPlay: true,
+      playbackRate,
+      onLoaded: evaluateReadiness,
+    })
+  } else {
+    video.src = src
+    video.play().catch(() => {})
+  }
 
-  // Initial check
   evaluateReadiness()
-
   return video
 }
 
-// Start eager buffering on client boot
-if (typeof window !== 'undefined') {
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => getOrCreateHeroVideoElement())
-  } else {
-    getOrCreateHeroVideoElement()
+export function pauseHeroVideo() {
+  if (warmHeroHlsController) {
+    warmHeroHlsController.stopLoad()
+  }
+  if (warmHeroVideo && !warmHeroVideo.paused) {
+    warmHeroVideo.pause()
   }
 }
 
+export function resumeHeroVideo(playbackRate = 0.5) {
+  if (warmHeroHlsController) {
+    warmHeroHlsController.startLoad()
+  }
+  if (warmHeroVideo) {
+    warmHeroVideo.playbackRate = playbackRate
+    if (warmHeroVideo.paused) {
+      warmHeroVideo.play().catch(() => {})
+    }
+  }
+}
+
+// Start eager buffering on client boot ONLY IF starting on a sphere page (Home or About)
+if (typeof window !== 'undefined') {
+  const isSpherePage = window.location.pathname === '/' || window.location.pathname === '/about'
+  if (isSpherePage) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => getOrCreateHeroVideoElement())
+    } else {
+      getOrCreateHeroVideoElement()
+    }
+  } else {
+    // Starting on a non-sphere page (Services, Book Us, Gallery, Shop, etc.):
+    // Immediately mark ready so Preloader finishes without downloading 360 video
+    setHeroVideoReady(true)
+    setHeroWebGLReady(true)
+  }
+}

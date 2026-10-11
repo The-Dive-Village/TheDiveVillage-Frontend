@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.jsx'
 import './styles/globals.css'
+import './utils/audioManager'
 import { initIdlePrefetching } from './utils/routePrefetcher'
 
 // Filter non-actionable notices from external libraries and empty-src fallbacks

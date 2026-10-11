@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 import { useState, useEffect, useRef, useMemo } from 'react'
 import {
   getLqipUrl,
@@ -7,6 +8,10 @@ import {
   isMediaLoaded,
   markMediaLoaded
 } from '../utils/mediaOptimizer'
+=======
+import { useState, useEffect, useRef } from 'react'
+import { usePageVisibility } from '../hooks/usePageVisibility'
+>>>>>>> Stashed changes
 
 export default function LazyVideo({
   src,
@@ -24,6 +29,12 @@ export default function LazyVideo({
   const containerRef = useRef(null)
   const posterImgRef = useRef(null)
   const [isInView, setIsInView] = useState(false)
+<<<<<<< Updated upstream
+=======
+  const [isLoaded, setIsLoaded] = useState(false)
+  const isVisible = usePageVisibility()
+  const wasPlayingBeforeHideRef = useRef(false)
+>>>>>>> Stashed changes
 
   // Sharp WebP/JPG poster
   const resolvedPoster = useMemo(() => {
@@ -83,14 +94,20 @@ export default function LazyVideo({
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             setIsInView(true)
+<<<<<<< Updated upstream
             const video = videoRef.current
             if (video && autoPlayRef.current) {
               video.muted = true
               video.defaultMuted = true
               video.volume = 0
               video.play().catch(() => {})
+=======
+            if (videoRef.current && autoPlayRef.current && isVisible) {
+              videoRef.current.play().catch(() => {})
+>>>>>>> Stashed changes
             }
           } else {
+            setIsInView(false)
             if (videoRef.current) {
               videoRef.current.pause()
             }
@@ -102,12 +119,12 @@ export default function LazyVideo({
 
     observer.observe(el)
     return () => observer.disconnect()
-  }, [])
+  }, [isVisible])
 
   // Start video playback when in view if autoPlay is true
   useEffect(() => {
     const video = videoRef.current
-    if (isInView && video && autoPlay) {
+    if (isInView && video && autoPlay && isVisible) {
       video.muted = true
       video.defaultMuted = true
       video.volume = 0
@@ -128,12 +145,33 @@ export default function LazyVideo({
 
       attemptPlay()
     }
-  }, [isInView, autoPlay, src])
+  }, [isInView, autoPlay, src, isVisible])
+
+  // Pause video when tab becomes hidden; resume when visible if in view
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video) return
+
+    if (!isVisible) {
+      wasPlayingBeforeHideRef.current = !video.paused
+      video.pause()
+    } else {
+      if (wasPlayingBeforeHideRef.current && isInView && autoPlay) {
+        video.muted = true
+        video.defaultMuted = true
+        video.play().catch(() => {})
+      }
+    }
+  }, [isVisible, isInView, autoPlay])
 
   // Handle user gestures (touch/click/hover) to unlock playback
   const handleUserGesture = () => {
     const video = videoRef.current
+<<<<<<< Updated upstream
     if (video && video.paused) {
+=======
+    if (autoPlay && video && isInView && isVisible) {
+>>>>>>> Stashed changes
       video.muted = true
       video.defaultMuted = true
       video.volume = 0
@@ -141,9 +179,17 @@ export default function LazyVideo({
     }
   }
 
+<<<<<<< Updated upstream
   const handlePosterSuccess = () => {
     setPosterLoaded(true)
     markMediaLoaded(resolvedPoster)
+=======
+  const handleMouseEnter = () => {
+    if (videoRef.current && isVisible) {
+      videoRef.current.muted = true
+      videoRef.current.play().catch(() => {})
+    }
+>>>>>>> Stashed changes
   }
 
   const fitClass = className.includes('object-contain') ? 'object-contain' : 'object-cover'
@@ -204,9 +250,15 @@ export default function LazyVideo({
               props.ref.current = el
             }
           }}
+<<<<<<< Updated upstream
           src={optimizedVideoSrc || src}
           poster={resolvedPoster || undefined}
           autoPlay={autoPlay}
+=======
+          src={src || null}
+          poster={poster || null}
+          autoPlay={autoPlay && isVisible}
+>>>>>>> Stashed changes
           loop={loop}
           muted={muted}
           playsInline={playsInline}
