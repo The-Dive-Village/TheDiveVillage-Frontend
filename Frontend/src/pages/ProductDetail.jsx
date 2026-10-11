@@ -338,7 +338,7 @@ export default function ProductDetail() {
             >
               {activeMedia?.type === 'glb' ? (
                 <div className="w-full h-full rounded-[28px] overflow-hidden">
-                  <Product3DViewer key={activeMedia.src} src={activeMedia.src} alt={product.title} productId={product.id} />
+                  <Product3DViewer key={activeMedia.src} src={activeMedia.src} alt={product.title} productId={product.id} poster={product.image} />
                 </div>
               ) : activeMedia?.type === 'video' ? (
                 <div className="w-full h-full rounded-[28px] overflow-hidden">

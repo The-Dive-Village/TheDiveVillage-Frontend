@@ -6,12 +6,12 @@ const glbBottomsCompression = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1
 const glbFullSleeves = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791609687/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Full_Sleeves_Top.glb';
 const glbHalfSleeves = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791458322/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Half_sleeves_tops_-_unisex.glb';
 const glbShortsUnisex = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791609879/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Shorts_-_unisex.glb';
-const glbFullBodySkinGrey = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791458356/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Unisex_full_body_skin_with_front_zipper_Grey.glb';
-const glbFullBodySkinYellow = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791458376/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Unisex_full_body_skin_with_front_zipper_yellow.glb';
-const glbWetSuitFullLengthMale = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791609765/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Wet_Suit_-_Full_Length_Male.glb';
+const glbFullBodySkinGrey = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791721692/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Unisex_full_body_skin_with_front_zipper_Grey.glb';
+const glbFullBodySkinYellow = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791720829/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Unisex_full_body_skin_with_front_zipper_yellow.glb';
+const glbWetSuitFullLengthMale = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791718869/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Wet_Suit_-_Full_Length_Male.glb';
 const glbWetSuitShortieFemale = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791458436/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Wet_Suit_Shortie_Female.glb';
 const glbWetSuitShortieMale = glbWetSuitShortieFemale;
-const glbWomensShoulderStrap = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791458455/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Womens_shoulder_strap_shortie_with_all_round_compression.glb';
+const glbWomensShoulderStrap = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791718918/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Womens_shoulder_strap_shortie_with_all_round_compression.glb';
 const glbWomensSweetheart = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791609981/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Womens_Sweetheart_neck_top.glb';
 
 // Backpack Assets
@@ -57,19 +57,19 @@ const imgUnisexShortsModel3 = 'https://res.cloudinary.com/qvbunv8y/image/upload/
 const imgUnisexShortsModel4 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458280/TDV-Media/Products/Shorts%20-%20Unisex/4M7A6500.jpg';
 
 // Unisex full body skin with front zipper Assets
-const imgSkinSuitFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458500/TDV-Media/Products/Unisex%20full%20body%20skin%20with%20front%20zipper/Yellow/front.png';
-const imgSkinSuitBack = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458499/TDV-Media/Products/Unisex%20full%20body%20skin%20with%20front%20zipper/Yellow/back.png';
+const imgSkinSuitFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791720781/TDV-Media/Products/Unisex%20full%20body%20skin%20with%20front%20zipper/Yellow/front.png';
+const imgSkinSuitBack = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791720801/TDV-Media/Products/Unisex%20full%20body%20skin%20with%20front%20zipper/Yellow/back.png';
 const imgSkinSuitYellow1 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458488/TDV-Media/Products/Unisex%20full%20body%20skin%20with%20front%20zipper/Yellow/4M7A5420.jpg';
 const imgSkinSuitYellow2 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458494/TDV-Media/Products/Unisex%20full%20body%20skin%20with%20front%20zipper/Yellow/4M7A5779.jpg';
 const imgSkinSuitYellow3 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458496/TDV-Media/Products/Unisex%20full%20body%20skin%20with%20front%20zipper/Yellow/4M7A6616.jpg';
-const imgSkinSuitGreyFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458486/TDV-Media/Products/Unisex%20full%20body%20skin%20with%20front%20zipper/Grey/Front.jpg';
-const imgSkinSuitGreyBack = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458484/TDV-Media/Products/Unisex%20full%20body%20skin%20with%20front%20zipper/Grey/Back.jpg';
+const imgSkinSuitGreyFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791718966/TDV-Media/Products/Unisex%20full%20body%20skin%20with%20front%20zipper/Grey/Front.png';
+const imgSkinSuitGreyBack = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791718977/TDV-Media/Products/Unisex%20full%20body%20skin%20with%20front%20zipper/Grey/Back.png';
 const imgSkinSuitGrey1 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458482/TDV-Media/Products/Unisex%20full%20body%20skin%20with%20front%20zipper/Grey/4M7A5826.jpg';
 const imgSkinSuitGrey2 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458483/TDV-Media/Products/Unisex%20full%20body%20skin%20with%20front%20zipper/Grey/4M7A6907.jpg';
 
 // Wet Suit - Full Length Assets
-const imgFullWetsuitFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458508/TDV-Media/Products/Wet%20Suit%20-%20Full%20Length/front.jpg';
-const imgFullWetsuitBack = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458506/TDV-Media/Products/Wet%20Suit%20-%20Full%20Length/back.jpg';
+const imgFullWetsuitFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791718824/TDV-Media/Products/Wet%20Suit%20-%20Full%20Length/front.png';
+const imgFullWetsuitBack = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791718848/TDV-Media/Products/Wet%20Suit%20-%20Full%20Length/back.png';
 const imgFullWetsuitModel1 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458502/TDV-Media/Products/Wet%20Suit%20-%20Full%20Length/4M7A7097.jpg';
 const imgFullWetsuitModel2 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458505/TDV-Media/Products/Wet%20Suit%20-%20Full%20Length/4M7A7149.jpg';
 const imgFullWetsuitModel3 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458507/TDV-Media/Products/Wet%20Suit%20-%20Full%20Length/4M7A7125.jpg';
@@ -82,8 +82,8 @@ const imgShortieWetsuitModel2 = 'https://res.cloudinary.com/qvbunv8y/image/uploa
 const imgShortieWetsuitModel3 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458511/TDV-Media/Products/Wet%20Suit%20-%20Shortie/4M7A7130.jpg';
 
 // Women's Shoulder Strap Shortie with all round compression Assets
-const imgWomensStrapFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458521/TDV-Media/Products/Women%27s%20Shoulder%20Strap%20Shortie%20with%20all%20round%20compression/Shoulder_Strap_Front.jpg';
-const imgWomensStrapBack = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458520/TDV-Media/Products/Women%27s%20Shoulder%20Strap%20Shortie%20with%20all%20round%20compression/Shoulder_Strap_back.jpg';
+const imgWomensStrapFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791718883/TDV-Media/Products/Women%27s%20Shoulder%20Strap%20Shortie%20with%20all%20round%20compression/Shoulder_Strap_Front.png';
+const imgWomensStrapBack = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791718904/TDV-Media/Products/Women%27s%20Shoulder%20Strap%20Shortie%20with%20all%20round%20compression/Shoulder_Strap_back.png';
 const imgWomensStrapModel1 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458516/TDV-Media/Products/Women%27s%20Shoulder%20Strap%20Shortie%20with%20all%20round%20compression/4M7A5683.jpg';
 const imgWomensStrapModel2 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458517/TDV-Media/Products/Women%27s%20Shoulder%20Strap%20Shortie%20with%20all%20round%20compression/4M7A6182.jpg';
 const imgWomensStrapModel3 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458519/TDV-Media/Products/Women%27s%20Shoulder%20Strap%20Shortie%20with%20all%20round%20compression/4M7A6782.jpg';

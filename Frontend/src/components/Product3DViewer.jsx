@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 
-export default function Product3DViewer({ src, alt = '3D Product Model', productId }) {
+export default function Product3DViewer({ src, alt = '3D Product Model', productId, poster }) {
   const [scriptLoaded, setScriptLoaded] = useState(false)
   const [autoRotate, setAutoRotate] = useState(true)
   const modelRef = useRef(null)
@@ -168,16 +168,73 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
               // Ultra matte for sweetheart top: 1.0 maximum roughness, 0.0 metallic
               pbr.setRoughnessFactor(isSweetheart ? 1.0 : isCap ? 0.65 : isBag ? 0.75 : 0.85)
               pbr.setMetallicFactor(0.0)
+
+              // Detach embedded roughness/metallic texture map so it doesn't force shiny spots
+              if (isSweetheart && pbr.metallicRoughnessTexture && typeof pbr.metallicRoughnessTexture.setTexture === 'function') {
+                try {
+                  pbr.metallicRoughnessTexture.setTexture(null)
+                } catch (e) {}
+              }
             }
 
             // Remove specular/clearcoat glossiness if supported in GLTF extensions
             if (mat.clearcoat) {
-              mat.clearcoat.setClearcoatFactor(0.0)
-              mat.clearcoat.setClearcoatRoughnessFactor(1.0)
+              if (typeof mat.clearcoat.setClearcoatFactor === 'function') {
+                mat.clearcoat.setClearcoatFactor(0.0)
+              }
+              if (typeof mat.clearcoat.setClearcoatRoughnessFactor === 'function') {
+                mat.clearcoat.setClearcoatRoughnessFactor(1.0)
+              }
             }
             if (mat.specular) {
-              mat.specular.setSpecularFactor(isSweetheart ? 0.0 : 0.2)
+              if (typeof mat.specular.setSpecularFactor === 'function') {
+                mat.specular.setSpecularFactor(isSweetheart ? 0.0 : 0.2)
+              }
+              if (isSweetheart && typeof mat.specular.setSpecularColorFactor === 'function') {
+                mat.specular.setSpecularColorFactor([0, 0, 0])
+              }
             }
+            if (isSweetheart && mat.ior && typeof mat.ior.setIor === 'function') {
+              try {
+                mat.ior.setIor(1.0) // 1.0 = no Fresnel reflection
+              } catch (e) {}
+            }
+
+            // Deep configuration on underlying Three.js materials to eliminate all specular highlights
+            const applyToSymbols = (obj) => {
+              if (!obj) return
+              Object.getOwnPropertySymbols(obj).forEach((sym) => {
+                const val = obj[sym]
+                if (val && typeof val.forEach === 'function') {
+                  val.forEach((threeMat) => {
+                    if (threeMat && threeMat.isMaterial) {
+                      if (isSweetheart) {
+                        threeMat.roughness = 1.0
+                        threeMat.metalness = 0.0
+                        threeMat.roughnessMap = null
+                        threeMat.metalnessMap = null
+                        threeMat.envMapIntensity = 0.3
+                        if (threeMat.clearcoat !== undefined) threeMat.clearcoat = 0.0
+                        if (threeMat.sheen !== undefined) threeMat.sheen = 0.0
+                        if (threeMat.specularIntensity !== undefined) threeMat.specularIntensity = 0.0
+                        if (threeMat.ior !== undefined) threeMat.ior = 1.0
+                        if (threeMat.normalScale && typeof threeMat.normalScale.set === 'function') {
+                          threeMat.normalScale.set(0.4, 0.4)
+                        }
+                      } else {
+                        threeMat.roughness = isCap ? 0.65 : isBag ? 0.75 : 0.85
+                        threeMat.metalness = 0.0
+                        threeMat.envMapIntensity = 0.25
+                      }
+                      threeMat.needsUpdate = true
+                    }
+                  })
+                }
+              })
+            }
+
+            applyToSymbols(mat)
+            applyToSymbols(pbr)
           })
         }
       } catch (err) {
@@ -185,13 +242,19 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
       }
     }
 
-    viewer.addEventListener('load', applyMatteAndDoubleSided)
-    if (viewer.loaded) {
+    const runMatte = () => {
       applyMatteAndDoubleSided()
+      setTimeout(applyMatteAndDoubleSided, 150)
+      setTimeout(applyMatteAndDoubleSided, 600)
+    }
+
+    viewer.addEventListener('load', runMatte)
+    if (viewer.loaded) {
+      runMatte()
     }
 
     return () => {
-      viewer.removeEventListener('load', applyMatteAndDoubleSided)
+      viewer.removeEventListener('load', runMatte)
     }
   }, [src, scriptLoaded, isCap, isBag, isSweetheart])
 
@@ -205,6 +268,9 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
         ref={modelRef}
         src={src ? src : undefined}
         alt={alt}
+        poster={poster || undefined}
+        loading="eager"
+        reveal="auto"
         auto-rotate={autoRotate ? true : undefined}
         rotation-per-second="25deg"
         camera-controls
@@ -216,17 +282,23 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
         camera-target="auto auto auto"
         min-camera-orbit="auto 75deg auto"
         max-camera-orbit="auto 75deg auto"
-        environment-image={isSweetheart ? "" : "neutral"}
-        exposure={isSweetheart ? "1.05" : isCap ? "2.5" : isBag ? "1.8" : "1.4"}
+        environment-image="neutral"
+        exposure={isSweetheart ? "1.25" : isCap ? "2.5" : isBag ? "1.8" : "1.4"}
         shadow-intensity={isSweetheart ? "0.15" : isCap ? "0.08" : isBag ? "0.2" : "0.35"}
-        shadow-softness="0.9"
-        tone-mapping="commerce"
+        shadow-softness="1.0"
+        tone-mapping={isSweetheart ? "neutral" : "commerce"}
         bounds="tight"
         style={{ width: '100%', height: '100%', minHeight: '340px' }}
       >
-        <div slot="poster" className="w-full h-full flex flex-col items-center justify-center bg-white">
-          <div className="w-9 h-9 border-4 border-navy border-t-transparent rounded-full animate-spin mb-2" />
-          <span className="text-xs font-bold text-navy uppercase tracking-widest">Loading 3D Model...</span>
+        <div slot="poster" className="w-full h-full flex flex-col items-center justify-center bg-white p-4">
+          {poster ? (
+            <img src={poster} alt={alt} className="max-h-full max-w-full object-contain" />
+          ) : (
+            <>
+              <div className="w-9 h-9 border-4 border-navy border-t-transparent rounded-full animate-spin mb-2" />
+              <span className="text-xs font-bold text-navy uppercase tracking-widest">Loading 3D Model...</span>
+            </>
+          )}
         </div>
       </model-viewer>
     </div>

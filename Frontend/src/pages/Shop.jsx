@@ -75,6 +75,7 @@ export default function Shop() {
               glb: staticProd.glb || dbProd.glb,
               glbByColor: staticProd.glbByColor || dbProd.glbByColor,
               images: staticProd.images && staticProd.images.length > 0 ? staticProd.images : dbProd.images,
+              imageLabels: staticProd.imageLabels && staticProd.imageLabels.length > 0 ? staticProd.imageLabels : dbProd.imageLabels,
               image: staticProd.image || dbProd.image,
             }
           })
@@ -738,28 +739,89 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
               if (pbr) {
                 pbr.setRoughnessFactor(isSweetheart ? 1.0 : isCap ? 0.65 : isBag ? 0.75 : 0.85)
                 pbr.setMetallicFactor(0.0)
+
+                // Detach embedded roughness/metallic texture map so it doesn't force shiny spots
+                if (isSweetheart && pbr.metallicRoughnessTexture && typeof pbr.metallicRoughnessTexture.setTexture === 'function') {
+                  try {
+                    pbr.metallicRoughnessTexture.setTexture(null)
+                  } catch (e) {}
+                }
               }
               if (mat.clearcoat) {
-                mat.clearcoat.setClearcoatFactor(0.0)
-                mat.clearcoat.setClearcoatRoughnessFactor(1.0)
+                if (typeof mat.clearcoat.setClearcoatFactor === 'function') {
+                  mat.clearcoat.setClearcoatFactor(0.0)
+                }
+                if (typeof mat.clearcoat.setClearcoatRoughnessFactor === 'function') {
+                  mat.clearcoat.setClearcoatRoughnessFactor(1.0)
+                }
               }
               if (mat.specular) {
-                mat.specular.setSpecularFactor(isSweetheart ? 0.0 : 0.2)
+                if (typeof mat.specular.setSpecularFactor === 'function') {
+                  mat.specular.setSpecularFactor(isSweetheart ? 0.0 : 0.2)
+                }
+                if (isSweetheart && typeof mat.specular.setSpecularColorFactor === 'function') {
+                  mat.specular.setSpecularColorFactor([0, 0, 0])
+                }
               }
+              if (isSweetheart && mat.ior && typeof mat.ior.setIor === 'function') {
+                try {
+                  mat.ior.setIor(1.0)
+                } catch (e) {}
+              }
+
+              // Deep configuration on underlying Three.js materials to eliminate all specular highlights
+              const applyToSymbols = (obj) => {
+                if (!obj) return
+                Object.getOwnPropertySymbols(obj).forEach((sym) => {
+                  const val = obj[sym]
+                  if (val && typeof val.forEach === 'function') {
+                    val.forEach((threeMat) => {
+                      if (threeMat && threeMat.isMaterial) {
+                        if (isSweetheart) {
+                          threeMat.roughness = 1.0
+                          threeMat.metalness = 0.0
+                          threeMat.roughnessMap = null
+                          threeMat.metalnessMap = null
+                          threeMat.envMapIntensity = 0.3
+                          if (threeMat.clearcoat !== undefined) threeMat.clearcoat = 0.0
+                          if (threeMat.sheen !== undefined) threeMat.sheen = 0.0
+                          if (threeMat.specularIntensity !== undefined) threeMat.specularIntensity = 0.0
+                          if (threeMat.ior !== undefined) threeMat.ior = 1.0
+                          if (threeMat.normalScale && typeof threeMat.normalScale.set === 'function') {
+                            threeMat.normalScale.set(0.4, 0.4)
+                          }
+                        } else {
+                          threeMat.roughness = isCap ? 0.65 : isBag ? 0.75 : 0.85
+                          threeMat.metalness = 0.0
+                          threeMat.envMapIntensity = 0.25
+                        }
+                        threeMat.needsUpdate = true
+                      }
+                    })
+                  }
+                })
+              }
+
+              applyToSymbols(mat)
+              applyToSymbols(pbr)
             })
           }
         } catch (e) { }
       }
 
-      if (el.loaded) {
+      const runMatte = () => {
+        if (!active) return
         setIsLoaded(true)
         applyMatte()
+        setTimeout(applyMatte, 150)
+        setTimeout(applyMatte, 600)
+      }
+
+      if (el.loaded) {
+        runMatte()
       }
       const handleLoad = () => {
-        if (active) {
-          setIsLoaded(true)
-          applyMatte()
-        }
+        runMatte()
       }
       el.addEventListener('load', handleLoad)
       return () => {
@@ -891,11 +953,11 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
                     min-camera-orbit="auto 75deg auto"
                     max-camera-orbit="auto 75deg auto"
                     interaction-prompt="none"
-                    environment-image={isSweetheart ? "" : "neutral"}
-                    exposure={isSweetheart ? '1.05' : product.id === 'product-dive-cap' || (typeof product.glb === 'string' && product.glb.toLowerCase().includes('cap')) ? '2.5' : '1.35'}
+                    environment-image="neutral"
+                    exposure={isSweetheart ? '1.25' : product.id === 'product-dive-cap' || (typeof product.glb === 'string' && product.glb.toLowerCase().includes('cap')) ? '2.5' : '1.35'}
                     shadow-intensity={isSweetheart ? '0.15' : product.id === 'product-dive-cap' || (typeof product.glb === 'string' && product.glb.toLowerCase().includes('cap')) ? '0.08' : '0.4'}
-                    shadow-softness="0.9"
-                    tone-mapping="commerce"
+                    shadow-softness="1.0"
+                    tone-mapping={isSweetheart ? "neutral" : "commerce"}
                     bounds="tight"
                     style={{ width: '100%', height: '100%' }}
                   >
