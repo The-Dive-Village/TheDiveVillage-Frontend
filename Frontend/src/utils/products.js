@@ -1,3 +1,6 @@
+import imgFullWetsuitFront from '../assets/Media/done/Full Wet Suit/Black Wetsuit with Dive Village Logos.png';
+import imgFullWetsuitBack from '../assets/Media/done/Full Wet Suit/Rear-View Black Wetsuit with Cyan Zipper Strap.png';
+import imgCommunity from '../assets/Media/done/community.jpeg';
 
 // 3D GLB Model Imports
 const glbCap = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791610525/TDV-Media/Products/TDV%20-%203D%20Product%20Files/The_Dive_Village_Foldable_Cap.glb';
@@ -68,8 +71,6 @@ const imgSkinSuitGrey1 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791
 const imgSkinSuitGrey2 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458483/TDV-Media/Products/Unisex%20full%20body%20skin%20with%20front%20zipper/Grey/4M7A6907.jpg';
 
 // Wet Suit - Full Length Assets
-const imgFullWetsuitFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791718824/TDV-Media/Products/Wet%20Suit%20-%20Full%20Length/front.png';
-const imgFullWetsuitBack = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791718848/TDV-Media/Products/Wet%20Suit%20-%20Full%20Length/back.png';
 const imgFullWetsuitModel1 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458502/TDV-Media/Products/Wet%20Suit%20-%20Full%20Length/4M7A7097.jpg';
 const imgFullWetsuitModel2 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458505/TDV-Media/Products/Wet%20Suit%20-%20Full%20Length/4M7A7149.jpg';
 const imgFullWetsuitModel3 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458507/TDV-Media/Products/Wet%20Suit%20-%20Full%20Length/4M7A7125.jpg';
@@ -98,36 +99,25 @@ const imgWomensSweetheartModel3 = 'https://res.cloudinary.com/qvbunv8y/image/upl
 // Group Photos Assets
 const imgGroup1 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458246/TDV-Media/Products/Group/4M7A5516.jpg';
 const imgGroup2 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458247/TDV-Media/Products/Group/4M7A5935.jpg';
-const imgGroup3 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458249/TDV-Media/Products/Group/4M7A6084.jpg';
-const imgGroup4 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458250/TDV-Media/Products/Group/4M7A6085.jpg';
 const imgGroup5 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458251/TDV-Media/Products/Group/4M7A6095.jpg';
 const imgGroup6 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458253/TDV-Media/Products/Group/4M7A6124.jpg';
-const imgGroup7 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458254/TDV-Media/Products/Group/4M7A6133.jpg';
 const imgGroup8 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458255/TDV-Media/Products/Group/4M7A6629.jpg';
-const imgGroup9 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458257/TDV-Media/Products/Group/4M7A6666.jpg';
 const imgGroup10 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458258/TDV-Media/Products/Group/4M7A6732.jpg';
 const imgGroup11 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458259/TDV-Media/Products/Group/4M7A6910.jpg';
-const imgGroup12 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458261/TDV-Media/Products/Group/4M7A6954.jpg';
-const imgGroup13 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458262/TDV-Media/Products/Group/4M7A6959.jpg';
 const imgGroup14 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458264/TDV-Media/Products/Group/4M7A6966.jpg';
 const imgGroup15 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458265/TDV-Media/Products/Group/4M7A6987.jpg';
 
 export const GROUP_PHOTOS = [
   { id: 'g-1', src: imgGroup1, title: 'The Dive Village Squad' },
   { id: 'g-2', src: imgGroup2, title: 'Ocean Exploration Team' },
-  { id: 'g-3', src: imgGroup3, title: 'Dive Community' },
-  { id: 'g-4', src: imgGroup4, title: 'Sunset Dive Crew' },
-  { id: 'g-5', src: imgGroup5, title: 'Reef Explorers' },
-  { id: 'g-6', src: imgGroup6, title: 'Divemaster Family' },
-  { id: 'g-7', src: imgGroup7, title: 'Marine Conservation Group' },
-  { id: 'g-8', src: imgGroup8, title: 'Ocean Ambassadors' },
-  { id: 'g-9', src: imgGroup9, title: 'Island Vibe Crew' },
-  { id: 'g-10', src: imgGroup10, title: 'Open Water Graduates' },
-  { id: 'g-11', src: imgGroup11, title: 'Beach & Boat Team' },
-  { id: 'g-12', src: imgGroup12, title: 'Scuba Action Squad' },
-  { id: 'g-13', src: imgGroup13, title: 'Deep Blue Explorers' },
-  { id: 'g-14', src: imgGroup14, title: 'Dive Village Tribe' },
-  { id: 'g-15', src: imgGroup15, title: 'Ocean Family' },
+  { id: 'g-3', src: imgCommunity, title: 'The Dive Village Community' },
+  { id: 'g-4', src: imgGroup5, title: 'Reef Explorers' },
+  { id: 'g-5', src: imgGroup6, title: 'Divemaster Family' },
+  { id: 'g-6', src: imgGroup8, title: 'Ocean Ambassadors' },
+  { id: 'g-7', src: imgGroup10, title: 'Open Water Graduates' },
+  { id: 'g-8', src: imgGroup11, title: 'Beach & Boat Team' },
+  { id: 'g-9', src: imgGroup14, title: 'Dive Village Tribe' },
+  { id: 'g-10', src: imgGroup15, title: 'Ocean Family' },
 ]
 
 export const SHOP_PRODUCTS = [

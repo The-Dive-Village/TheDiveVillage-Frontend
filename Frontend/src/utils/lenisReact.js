@@ -17,4 +17,5 @@ export const defaultLenisOptions = {
   wheelMultiplier: 1,
   touchMultiplier: 1.5,
   infinite: false,
+  allowNestedScroll: true,
 }

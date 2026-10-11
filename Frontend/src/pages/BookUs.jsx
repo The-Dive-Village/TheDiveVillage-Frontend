@@ -103,7 +103,7 @@ const SERVICE_TO_PROGRAM = {
 
 export default function BookUs() {
   const isNightDive = useNightDive()
-  const [searchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams()
   const initialProgram = searchParams.get('program') || ''
   const initialCountry = searchParams.get('country') || ''
   const initialSite = searchParams.get('site') || ''
@@ -369,6 +369,8 @@ export default function BookUs() {
   ])
 
   const lenis = useLenis()
+  const bookingFormRef = useRef(null)
+  const participantScrollRef = useRef(null)
 
   // Order Summary popup modal state before final booking submit
   const [showSummaryModal, setShowSummaryModal] = useState(false)
@@ -411,6 +413,110 @@ export default function BookUs() {
       document.body.style.paddingRight = prevBodyPaddingRight
     }
   }, [showSummaryModal, lenis])
+
+  // Boundary-aware scroll handling for the booking form:
+  // When cursor is over the form and the participant list has internal scrollable content:
+  // - Scrolling stays strictly within the form while room remains in the scroll direction.
+  // - When the bottom of the form is reached, scrolling down seamlessly scrolls the page.
+  // - When the top of the form is reached, scrolling up seamlessly scrolls the page.
+  useEffect(() => {
+    const formEl = bookingFormRef.current
+    if (!formEl) return
+
+    const handleWheel = (e) => {
+      // Ignore negligible scroll deltas or horizontal scrolling
+      if (Math.abs(e.deltaY) < 0.2) return
+
+      const scrollEl = participantScrollRef.current
+      if (!scrollEl) return
+
+      const { scrollTop, scrollHeight, clientHeight } = scrollEl
+      const maxScroll = scrollHeight - clientHeight
+
+      // If participant container doesn't overflow (no internal scrollbar), let normal page scroll handle it
+      if (maxScroll <= 2) return
+
+      const isAtBottom = scrollTop >= maxScroll - 2
+      const isAtTop = scrollTop <= 2
+
+      const getCurrentPageScroll = () => {
+        if (lenis) {
+          if (typeof lenis.targetScroll === 'number') return lenis.targetScroll
+          if (typeof lenis.scroll === 'number') return lenis.scroll
+        }
+        return window.scrollY || window.pageYOffset || 0
+      }
+
+      const scrollPageBy = (delta) => {
+        if (lenis && typeof lenis.scrollTo === 'function') {
+          const current = getCurrentPageScroll()
+          lenis.scrollTo(current + delta, { programmatic: false })
+        } else {
+          window.scrollBy({ top: delta, behavior: 'smooth' })
+        }
+      }
+
+      if (e.deltaY > 0) {
+        // Scrolling DOWN
+        if (!isAtBottom) {
+          // Scroll stays strictly within the form
+          const remaining = maxScroll - scrollTop
+          if (e.deltaY <= remaining) {
+            scrollEl.scrollTop += e.deltaY
+            e.preventDefault()
+            e.stopPropagation()
+            e.lenisStopPropagation = true
+          } else {
+            // Reached bottom boundary on this tick: scroll form to bottom and forward excess to page
+            scrollEl.scrollTop = maxScroll
+            const excess = e.deltaY - remaining
+            e.preventDefault()
+            e.stopPropagation()
+            e.lenisStopPropagation = true
+            scrollPageBy(excess)
+          }
+        } else {
+          // Bottom of form is reached: page scrolling is possible!
+          e.preventDefault()
+          e.stopPropagation()
+          e.lenisStopPropagation = true
+          scrollPageBy(e.deltaY)
+        }
+      } else if (e.deltaY < 0) {
+        // Scrolling UP
+        if (!isAtTop) {
+          // Scroll stays strictly within the form
+          const remaining = scrollTop
+          const absDelta = Math.abs(e.deltaY)
+          if (absDelta <= remaining) {
+            scrollEl.scrollTop -= absDelta
+            e.preventDefault()
+            e.stopPropagation()
+            e.lenisStopPropagation = true
+          } else {
+            // Reached top boundary on this tick: scroll form to top and forward excess to page
+            scrollEl.scrollTop = 0
+            const excess = absDelta - remaining
+            e.preventDefault()
+            e.stopPropagation()
+            e.lenisStopPropagation = true
+            scrollPageBy(-excess)
+          }
+        } else {
+          // Top of form is reached: page scrolling is possible!
+          e.preventDefault()
+          e.stopPropagation()
+          e.lenisStopPropagation = true
+          scrollPageBy(e.deltaY)
+        }
+      }
+    }
+
+    formEl.addEventListener('wheel', handleWheel, { passive: false })
+    return () => {
+      formEl.removeEventListener('wheel', handleWheel)
+    }
+  }, [lenis, currentStep, participants.length])
 
   // Restrict phone input strictly to at most 10 digits
   const handlePhoneChange = useCallback((val) => {
@@ -497,7 +603,52 @@ export default function BookUs() {
   }, [selectedAddOns])
 
   const [submitted, setSubmitted] = useState(false)
+  const [submittedBooking, setSubmittedBooking] = useState(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  // Completely reset the booking wizard form to its fresh blank state
+  const resetFormState = useCallback(() => {
+    setCountry('')
+    setIsland('')
+    setSelectedLocation(null)
+    setLocationId('')
+    setLocation('')
+    setExperience('')
+    setSelectedAddOns([])
+    setDate('')
+    setDateError('')
+    setStepError('')
+    setGroupSize(1)
+    setIsCalendarOpen(false)
+    setParticipants([
+      {
+        id: 1,
+        name: '',
+        age: '',
+        parentalConsent: false,
+        hasCertification: false,
+        certifications: [],
+        selectedProgram: '',
+        funDivesCount: undefined,
+      }
+    ])
+    setContact({
+      name: '',
+      email: '',
+      phone: '',
+      requests: '',
+    })
+    setPhoneCountry('IN')
+    setCurrentStep(1)
+    if (typeof setSearchParams === 'function') {
+      try {
+        setSearchParams({}, { replace: true })
+      } catch { }
+    }
+    if (bookingFormRef.current) {
+      bookingFormRef.current.reset?.()
+    }
+  }, [setSearchParams])
 
   // Sync group size changes to participants array
   useEffect(() => {
@@ -913,7 +1064,9 @@ export default function BookUs() {
           console.error(e)
         }
         setShowSummaryModal(false)
+        setSubmittedBooking(newBookingRecord)
         setSubmitted(true)
+        resetFormState()
       } else {
         triggerErrorHaptic()
         setStepError('Booking failed. Please try again.')
@@ -927,9 +1080,20 @@ export default function BookUs() {
   }
 
   if (submitted) {
-    const activeAddOns = selectedAddOns.filter((item) => item !== 'None')
-    const isDirect = (!experience && activeAddOns.length > 0) || isDirectActivity(experience)
-    const addOnsSummary = activeAddOns.join(', ')
+    const booking = submittedBooking || {}
+    const activeAddOns = booking.selectedAddOns || []
+    const isDirect = (!booking.experience && activeAddOns.length > 0) || isDirectActivity(booking.experience)
+    const addOnsSummary = booking.selectedAddOn || activeAddOns.join(', ') || ''
+    const bookingParticipants = booking.participants || []
+    const bookingLocation = booking.location || 'Selected Location'
+    const bookingExperience = booking.experience || addOnsSummary || 'Selected Program'
+    const bookingDate = booking.date || ''
+    const bookingContact = {
+      name: booking.contactName || '',
+      email: booking.contactEmail || '',
+      phone: booking.contactPhone || '',
+    }
+
     return (
       <div className="bg-[#FAFAFA] flex min-h-[80vh] flex-col items-center justify-center px-4 py-16 text-center">
         <motion.div
@@ -956,7 +1120,7 @@ export default function BookUs() {
             Great!<br />We'll get in touch with you.
           </h2>
           <p className="text-navy/70 text-sm sm:text-base leading-relaxed">
-            Thank you <span className="font-bold text-navy">{contact.name}</span>! We've reserved your request for <span className="font-bold text-accent">{experience || addOnsSummary}</span> at <span className="font-bold text-navy">{location}</span>.
+            Thank you <span className="font-bold text-navy">{bookingContact.name}</span>! We've reserved your request for <span className="font-bold text-accent">{bookingExperience}</span> at <span className="font-bold text-navy">{bookingLocation}</span>.
           </p>
 
           <div className="my-10 relative">
@@ -967,9 +1131,9 @@ export default function BookUs() {
             <div className="rounded-3xl bg-[#F8F9FA] p-6 text-left space-y-4 text-xs sm:text-sm border border-dashed border-navy/20 relative z-0">
               <div className="flex justify-between items-start border-b border-navy/5 pb-3">
                 <span className="text-navy/50 font-semibold uppercase tracking-wider text-[10px] sm:text-xs">Experience & Location</span>
-                <span className="font-bold text-navy text-right leading-tight max-w-[60%]">{experience || addOnsSummary} <br /><span className="text-navy/60 font-medium text-[11px] sm:text-xs">{location}</span></span>
+                <span className="font-bold text-navy text-right leading-tight max-w-[60%]">{bookingExperience} <br /><span className="text-navy/60 font-medium text-[11px] sm:text-xs">{bookingLocation}</span></span>
               </div>
-              {activeAddOns.length > 0 && experience && (
+              {activeAddOns.length > 0 && booking.experience && (
                 <div className="flex justify-between items-start border-b border-navy/5 pb-3">
                   <span className="text-navy/50 font-semibold uppercase tracking-wider text-[10px] sm:text-xs">Add Ons</span>
                   <div className="flex flex-wrap gap-1 justify-end max-w-[65%]">
@@ -983,23 +1147,23 @@ export default function BookUs() {
               )}
               <div className="flex justify-between items-start border-b border-navy/5 pb-3">
                 <span className="text-navy/50 font-semibold uppercase tracking-wider text-[10px] sm:text-xs">Date & Group</span>
-                <span className="font-bold text-navy text-right leading-tight max-w-[60%]">{formatDateToDDMMYYYY(date)} <br /><span className="text-navy/60 font-medium text-[11px] sm:text-xs">{participants.length} Person{participants.length > 1 ? 's' : ''}</span></span>
+                <span className="font-bold text-navy text-right leading-tight max-w-[60%]">{formatDateToDDMMYYYY(bookingDate)} <br /><span className="text-navy/60 font-medium text-[11px] sm:text-xs">{bookingParticipants.length} Person{bookingParticipants.length > 1 ? 's' : ''}</span></span>
               </div>
 
               {!isDirect && (
                 <div className="space-y-3 pt-1">
                   <span className="text-navy/50 font-semibold uppercase tracking-wider text-[10px] sm:text-xs block mb-2">Participants & Programs</span>
-                  {participants.map((p, idx) => {
+                  {bookingParticipants.map((p, idx) => {
                     const prog = COURSE_CATALOG.find((pr) => pr.id === p.selectedProgram)
                     const certNames = (p.certifications || [])
                       .map((id) => CERTIFICATION_OPTIONS.find((c) => c.id === id)?.name)
                       .filter(Boolean)
-                    const isScuba = normalizeExperienceKey(experience) === 'scuba'
+                    const isScuba = normalizeExperienceKey(booking.experience) === 'scuba'
                     const certSummary = isScuba
                       ? (p.hasCertification
                         ? (certNames.length ? certNames.join(', ') : 'Certified Diver')
                         : 'No Prior Certification (Beginner / Pathway)')
-                      : `${experience} Program`
+                      : `${booking.experience} Program`
 
                     return (
                       <div key={idx} className="flex justify-between items-center bg-white p-4 rounded-2xl shadow-sm border border-navy/5">
@@ -1018,15 +1182,21 @@ export default function BookUs() {
 
               <div className="flex justify-between items-start border-t border-navy/10 pt-4 mt-2">
                 <span className="text-navy/50 font-semibold uppercase tracking-wider text-[10px] sm:text-xs">Contact Info</span>
-                <span className="font-bold text-navy text-right leading-tight max-w-[60%]">{contact.email} <br /><span className="text-navy/60 font-medium text-[11px] sm:text-xs">{contact.phone || 'N/A'}</span></span>
+                <span className="font-bold text-navy text-right leading-tight max-w-[60%]">{bookingContact.email} <br /><span className="text-navy/60 font-medium text-[11px] sm:text-xs">{bookingContact.phone || 'N/A'}</span></span>
               </div>
             </div>
           </div>
 
           <button
             onClick={() => {
+              resetFormState()
               setSubmitted(false)
-              setCurrentStep(1)
+              setSubmittedBooking(null)
+              if (lenis) {
+                lenis.scrollTo(0, { immediate: true })
+              } else if (typeof window !== 'undefined') {
+                window.scrollTo({ top: 0, behavior: 'smooth' })
+              }
             }}
             className="relative z-10 rounded-full bg-navy px-8 py-4 sm:py-5 text-sm sm:text-base font-bold text-white transition-all hover:bg-accent hover:text-navy hover:scale-[1.02] active:scale-[0.98] w-full shadow-[0_8px_20px_rgba(0,56,101,0.15)] cursor-pointer"
           >
@@ -1106,7 +1276,7 @@ export default function BookUs() {
           {/* Column 1: 4-Step Booking Wizard */}
           <div className="lg:col-span-6 xl:col-span-5 w-full min-w-0">
             <div className="flex flex-col w-full min-w-0">
-              <form id="booking-wizard-form" onSubmit={handleSubmit} className="flex-1 flex flex-col bg-white p-4 sm:p-10 rounded-2xl sm:rounded-[36px] border border-navy/10 shadow-sm sm:shadow-card w-full min-w-0 max-w-full min-h-[auto] sm:min-h-[620px] justify-between">
+              <form ref={bookingFormRef} id="booking-wizard-form" onSubmit={handleSubmit} className="flex-1 flex flex-col bg-white p-4 sm:p-10 rounded-2xl sm:rounded-[36px] border border-navy/10 shadow-sm sm:shadow-card w-full min-w-0 max-w-full min-h-[auto] sm:min-h-[620px] justify-between">
                 <div className="flex-1 space-y-3.5 sm:space-y-6">
 
                   {/* Mobile Step Header */}
@@ -1489,7 +1659,7 @@ export default function BookUs() {
                         </p>
                       </div>
 
-                      <div data-lenis-prevent className="space-y-3 sm:space-y-6 max-h-[500px] sm:max-h-[550px] overflow-y-auto overscroll-contain pr-1">
+                      <div ref={participantScrollRef} className="space-y-3 sm:space-y-6 max-h-[500px] sm:max-h-[550px] overflow-y-auto overscroll-y-auto pr-1">
                         {participants.map((p, idx) => {
                           const ageNum = parseInt(p.age, 10)
                           const isAgeValid = !isNaN(ageNum) && ageNum >= 8 && ageNum <= 110
