@@ -9,6 +9,7 @@ export default function LazyVideo({
   muted = true,
   playsInline = true,
   controls = false,
+  preload = 'metadata',
   ...props
 }) {
   const videoRef = useRef(null)
@@ -20,6 +21,11 @@ export default function LazyVideo({
   useEffect(() => {
     setIsLoaded(false)
   }, [src])
+
+  const autoPlayRef = useRef(autoPlay)
+  useEffect(() => {
+    autoPlayRef.current = autoPlay
+  }, [autoPlay])
 
   useEffect(() => {
     const el = containerRef.current
@@ -33,6 +39,9 @@ export default function LazyVideo({
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             setIsInView(true)
+            if (videoRef.current && autoPlayRef.current) {
+              videoRef.current.play().catch(() => {})
+            }
           } else {
             if (videoRef.current) {
               videoRef.current.pause()
@@ -40,7 +49,7 @@ export default function LazyVideo({
           }
         })
       },
-      { rootMargin: '400px 0px', threshold: 0.05 }
+      { rootMargin: '200px 0px', threshold: 0.1 }
     )
 
     observer.observe(el)
@@ -62,7 +71,7 @@ export default function LazyVideo({
         }
         const p = video.play()
         if (p !== undefined) {
-          p.then(() => setIsLoaded(true)).catch(() => { })
+          p.then(() => setIsLoaded(true)).catch(() => {})
         }
       }
 
@@ -70,23 +79,43 @@ export default function LazyVideo({
     }
   }, [isInView, autoPlay, src])
 
-  const handleMediaReady = (e) => {
+  const handleMediaReady = () => {
     setIsLoaded(true)
-    if (autoPlay && e.currentTarget) {
-      e.currentTarget.muted = true
-      e.currentTarget.play().catch(() => { })
+    const video = videoRef.current
+    if (autoPlay && video && isInView) {
+      video.muted = true
+      video.defaultMuted = true
+      video.play().catch(() => {})
+    }
+  }
+
+  const handleMouseEnter = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = true
+      videoRef.current.play().catch(() => {})
     }
   }
 
   return (
     <div
       ref={containerRef}
+      onMouseEnter={handleMouseEnter}
       className={`relative overflow-hidden ${className}`}
-      style={{ contentVisibility: 'auto', containIntrinsicSize: '100% 100%' }}
     >
       {isInView && src && (
         <video
-          ref={videoRef}
+          ref={(el) => {
+            videoRef.current = el
+            if (el) {
+              el.muted = true
+              el.defaultMuted = true
+              el.setAttribute('muted', '')
+              el.setAttribute('playsinline', '')
+              if (el.readyState >= 2 || el.currentTime > 0) {
+                setIsLoaded(true)
+              }
+            }
+          }}
           src={src || null}
           poster={poster || null}
           autoPlay={autoPlay}
@@ -94,7 +123,7 @@ export default function LazyVideo({
           muted={muted}
           playsInline={playsInline}
           controls={controls}
-          preload="auto"
+          preload={preload}
           onLoadedMetadata={handleMediaReady}
           onLoadedData={handleMediaReady}
           onCanPlay={handleMediaReady}
@@ -102,8 +131,11 @@ export default function LazyVideo({
           onTimeUpdate={(e) => {
             if (e.currentTarget.currentTime > 0) setIsLoaded(true)
           }}
-          className={`w-full h-full ${className.includes('object-contain') ? 'object-contain' : 'object-cover'} transition-opacity duration-300 ${isLoaded || !poster ? 'opacity-100 relative z-10' : 'opacity-0 relative z-0'
-            }`}
+          className={`w-full h-full ${
+            className.includes('object-contain') ? 'object-contain' : 'object-cover'
+          } transition-opacity duration-500 ${
+            isLoaded || !poster ? 'opacity-100 z-10' : 'opacity-90 z-10'
+          }`}
           {...props}
         />
       )}
@@ -111,10 +143,14 @@ export default function LazyVideo({
         <img
           src={poster || null}
           alt=""
-          className={`absolute inset-0 w-full h-full ${className.includes('object-contain') ? 'object-contain' : 'object-cover'} z-0`}
+          loading="lazy"
+          className={`absolute inset-0 w-full h-full ${
+            className.includes('object-contain') ? 'object-contain' : 'object-cover'
+          } z-0 pointer-events-none transition-opacity duration-300`}
         />
       )}
     </div>
   )
 }
+
 

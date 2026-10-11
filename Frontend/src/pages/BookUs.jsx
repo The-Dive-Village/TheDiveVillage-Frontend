@@ -552,9 +552,13 @@ export default function BookUs() {
             })
             updated[index].certifications = validCertsForAge
 
-            const availableCertOpts = getAvailableCertificationsForAge(ageNum, experience)
-            if (availableCertOpts.length === 0) {
+            // Non-scuba activities do not have scuba certification tracks
+            if (normalizeExperienceKey(experience) !== 'scuba') {
               updated[index].hasCertification = false
+              updated[index].certifications = []
+            } else if (ageNum === 8) {
+              // 8-year-olds can hold junior certification status, but don't hold adult cert cards
+              updated[index].certifications = []
             }
 
             const eligible = getRecommendedCourses(p.age, updated[index].hasCertification, updated[index].certifications, experience)
