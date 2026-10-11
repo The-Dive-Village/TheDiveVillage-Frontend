@@ -1,4 +1,12 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
+import {
+  getLqipUrl,
+  getOptimizedVideoPoster,
+  getOptimizedVideoUrl,
+  getOptimizedImageUrl,
+  isMediaLoaded,
+  markMediaLoaded
+} from '../utils/mediaOptimizer'
 
 export default function LazyVideo({
   src,
@@ -9,18 +17,54 @@ export default function LazyVideo({
   muted = true,
   playsInline = true,
   controls = false,
-  preload = 'metadata',
+  preload = 'auto',
   ...props
 }) {
   const videoRef = useRef(null)
   const containerRef = useRef(null)
+  const posterImgRef = useRef(null)
   const [isInView, setIsInView] = useState(false)
-  const [isLoaded, setIsLoaded] = useState(false)
 
-  // Reset loaded state whenever src changes
-  useEffect(() => {
-    setIsLoaded(false)
+  // Sharp WebP/JPG poster
+  const resolvedPoster = useMemo(() => {
+    if (poster) {
+      return getOptimizedImageUrl(poster, { width: 800 })
+    }
+    return getOptimizedVideoPoster(src, { width: 800 })
+  }, [poster, src])
+
+  // Check if poster was already loaded/cached in this session
+  const alreadyCached = useMemo(() => isMediaLoaded(resolvedPoster), [resolvedPoster])
+  const [posterLoaded, setPosterLoaded] = useState(alreadyCached)
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false)
+
+  // Ultra-lightweight ~400-byte Low Quality Image Placeholder
+  const lqipPoster = useMemo(() => {
+    if (alreadyCached) return null
+    return getLqipUrl(poster || src, { isVideo: true })
+  }, [poster, src, alreadyCached])
+
+  // Optimized video stream URL
+  const optimizedVideoSrc = useMemo(() => {
+    return getOptimizedVideoUrl(src, { width: 720 })
   }, [src])
+
+  // Reset states when src changes
+  useEffect(() => {
+    const isCached = isMediaLoaded(resolvedPoster)
+    if (isCached) {
+      setPosterLoaded(true)
+    }
+    setIsVideoPlaying(false)
+  }, [src, poster, resolvedPoster])
+
+  // Check if poster is in browser cache on mount
+  useEffect(() => {
+    if (posterImgRef.current && posterImgRef.current.complete && posterImgRef.current.naturalWidth > 0 && !posterLoaded) {
+      setPosterLoaded(true)
+      markMediaLoaded(resolvedPoster)
+    }
+  }, [resolvedPoster, posterLoaded])
 
   const autoPlayRef = useRef(autoPlay)
   useEffect(() => {
@@ -39,8 +83,12 @@ export default function LazyVideo({
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             setIsInView(true)
-            if (videoRef.current && autoPlayRef.current) {
-              videoRef.current.play().catch(() => {})
+            const video = videoRef.current
+            if (video && autoPlayRef.current) {
+              video.muted = true
+              video.defaultMuted = true
+              video.volume = 0
+              video.play().catch(() => {})
             }
           } else {
             if (videoRef.current) {
@@ -49,29 +97,32 @@ export default function LazyVideo({
           }
         })
       },
-      { rootMargin: '200px 0px', threshold: 0.1 }
+      { rootMargin: '150px 50px', threshold: 0.05 }
     )
 
     observer.observe(el)
     return () => observer.disconnect()
   }, [])
 
-  // Actively start video playback whenever in view or src changes
+  // Start video playback when in view if autoPlay is true
   useEffect(() => {
     const video = videoRef.current
     if (isInView && video && autoPlay) {
       video.muted = true
       video.defaultMuted = true
+      video.volume = 0
       video.setAttribute('muted', '')
       video.setAttribute('playsinline', '')
+      video.setAttribute('webkit-playsinline', '')
 
       const attemptPlay = () => {
-        if (video.readyState >= 2 || video.currentTime > 0) {
-          setIsLoaded(true)
-        }
         const p = video.play()
         if (p !== undefined) {
-          p.then(() => setIsLoaded(true)).catch(() => {})
+          p.then(() => {
+            if (video.currentTime > 0) {
+              setIsVideoPlaying(true)
+            }
+          }).catch(() => {})
         }
       }
 
@@ -79,29 +130,62 @@ export default function LazyVideo({
     }
   }, [isInView, autoPlay, src])
 
-  const handleMediaReady = () => {
-    setIsLoaded(true)
+  // Handle user gestures (touch/click/hover) to unlock playback
+  const handleUserGesture = () => {
     const video = videoRef.current
-    if (autoPlay && video && isInView) {
+    if (video && video.paused) {
       video.muted = true
       video.defaultMuted = true
+      video.volume = 0
       video.play().catch(() => {})
     }
   }
 
-  const handleMouseEnter = () => {
-    if (videoRef.current) {
-      videoRef.current.muted = true
-      videoRef.current.play().catch(() => {})
-    }
+  const handlePosterSuccess = () => {
+    setPosterLoaded(true)
+    markMediaLoaded(resolvedPoster)
   }
+
+  const fitClass = className.includes('object-contain') ? 'object-contain' : 'object-cover'
 
   return (
     <div
       ref={containerRef}
-      onMouseEnter={handleMouseEnter}
-      className={`${className.includes('absolute') ? '' : 'relative'} overflow-hidden ${className}`}
+      onMouseEnter={handleUserGesture}
+      onTouchStart={handleUserGesture}
+      onClick={handleUserGesture}
+      className={`${className.includes('absolute') ? '' : 'relative'} overflow-hidden bg-[#00172b] ${className}`}
     >
+      {/* 1. Low Quality Image Placeholder: Instant 400-byte blurred frame at second 0 */}
+      {/* Stays permanently mounted underneath at z-0 while poster loads. NEVER unmounts until covered. */}
+      {lqipPoster && !alreadyCached && (
+        <img
+          src={lqipPoster}
+          alt=""
+          aria-hidden="true"
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
+          className={`absolute inset-0 w-full h-full ${fitClass} filter blur-[10px] scale-110 pointer-events-none z-0`}
+        />
+      )}
+
+      {/* 2. Crisp WebP/JPG Poster Frame: Sits directly on top at z-[1] */}
+      {resolvedPoster && (
+        <img
+          ref={posterImgRef}
+          src={resolvedPoster}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          onLoad={handlePosterSuccess}
+          className={`absolute inset-0 w-full h-full ${fitClass} z-[1] pointer-events-none ${
+            posterLoaded ? 'opacity-100' : 'opacity-0'
+          } ${alreadyCached ? '' : 'transition-opacity duration-300 ease-out'}`}
+        />
+      )}
+
+      {/* 3. HTML5 Video Element (Fades in ONLY when actual playback begins) */}
       {isInView && src && (
         <video
           ref={(el) => {
@@ -109,48 +193,44 @@ export default function LazyVideo({
             if (el) {
               el.muted = true
               el.defaultMuted = true
+              el.volume = 0
               el.setAttribute('muted', '')
               el.setAttribute('playsinline', '')
-              if (el.readyState >= 2 || el.currentTime > 0) {
-                setIsLoaded(true)
-              }
+              el.setAttribute('webkit-playsinline', '')
+            }
+            if (typeof props.ref === 'function') {
+              props.ref(el)
+            } else if (props.ref && typeof props.ref === 'object') {
+              props.ref.current = el
             }
           }}
-          src={src || null}
-          poster={poster || null}
+          src={optimizedVideoSrc || src}
+          poster={resolvedPoster || undefined}
           autoPlay={autoPlay}
           loop={loop}
           muted={muted}
           playsInline={playsInline}
+          webkit-playsinline=""
+          x5-playsinline=""
           controls={controls}
           preload={preload}
-          onLoadedMetadata={handleMediaReady}
-          onLoadedData={handleMediaReady}
-          onCanPlay={handleMediaReady}
-          onPlaying={() => setIsLoaded(true)}
+          onPlaying={() => setIsVideoPlaying(true)}
           onTimeUpdate={(e) => {
-            if (e.currentTarget.currentTime > 0) setIsLoaded(true)
+            if (e.currentTarget.currentTime > 0.05) {
+              setIsVideoPlaying(true)
+            }
           }}
-          className={`w-full h-full ${
-            className.includes('object-contain') ? 'object-contain' : 'object-cover'
-          } transition-opacity duration-500 ${
-            isLoaded || !poster ? 'opacity-100 z-10' : 'opacity-90 z-10'
+          onPause={() => {
+            if (videoRef.current && videoRef.current.currentTime === 0) {
+              setIsVideoPlaying(false)
+            }
+          }}
+          className={`w-full h-full ${fitClass} transition-opacity duration-300 ease-out relative z-[2] ${
+            isVideoPlaying ? 'opacity-100' : 'opacity-0'
           }`}
           {...props}
-        />
-      )}
-      {!isLoaded && poster && (
-        <img
-          src={poster || null}
-          alt=""
-          loading="lazy"
-          className={`absolute inset-0 w-full h-full ${
-            className.includes('object-contain') ? 'object-contain' : 'object-cover'
-          } z-0 pointer-events-none transition-opacity duration-300`}
         />
       )}
     </div>
   )
 }
-
-

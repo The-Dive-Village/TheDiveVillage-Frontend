@@ -14,6 +14,10 @@ class AudioManager {
     this.initialized = false
     this.currentSourceIndex = 0
     this.audioContext = null
+    this.isBackgrounded = false
+    this.wasPlayingBeforeBackground = false
+    this.resumeGestureAttached = false
+    this.onGestureResume = null
 
     if (typeof window !== 'undefined') {
       this.init()
@@ -28,6 +32,11 @@ class AudioManager {
     const storedMute = localStorage.getItem('tdv_audio_muted')
     if (storedMute !== null) {
       this.isMuted = storedMute === 'true'
+    }
+
+    // Check if initially hidden/backgrounded (e.g. loaded in a background tab)
+    if (typeof document !== 'undefined' && document.hidden) {
+      this.isBackgrounded = true
     }
 
     const audio = new Audio()
@@ -52,7 +61,7 @@ class AudioManager {
         console.warn(`[AudioManager] Switching audio source to fallback: ${AUDIO_SOURCES[this.currentSourceIndex]}`)
         audio.src = AUDIO_SOURCES[this.currentSourceIndex]
         audio.load()
-        if (!this.isMuted) {
+        if (!this.isMuted && !this.isBackgrounded) {
           audio.play().catch(() => {})
         }
       }
@@ -73,11 +82,13 @@ class AudioManager {
     ]
 
     const unlock = () => {
-      if (this.isMuted) {
-        unlockEvents.forEach((evt) => {
-          window.removeEventListener(evt, unlock, true)
-          document.removeEventListener(evt, unlock, true)
-        })
+      if (this.isMuted || this.isBackgrounded) {
+        if (this.isMuted) {
+          unlockEvents.forEach((evt) => {
+            window.removeEventListener(evt, unlock, true)
+            document.removeEventListener(evt, unlock, true)
+          })
+        }
         return
       }
 
@@ -114,8 +125,43 @@ class AudioManager {
 
     window.addEventListener('tdv-unlock-audio', unlock)
 
-    // Attempt direct autoplay on page load immediately
-    if (!this.isMuted) {
+    // Setup lifecycle listeners for tab switching, window switching, and app switching
+    const handleVisibilityChange = () => {
+      if (typeof document !== 'undefined' && document.hidden) {
+        this.handleBackground()
+      } else {
+        this.handleForeground()
+      }
+    }
+
+    const handleWindowBlur = (e) => {
+      // Ignore blur events from inner elements (e.g. form fields)
+      if (e && e.target && e.target !== window && e.target !== document) return
+      this.handleBackground()
+    }
+
+    const handleWindowFocus = (e) => {
+      // Ignore focus events from inner elements
+      if (e && e.target && e.target !== window && e.target !== document) return
+      this.handleForeground()
+    }
+
+    const handlePageHide = () => {
+      this.handleBackground()
+    }
+
+    const handlePageShow = () => {
+      this.handleForeground()
+    }
+
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    window.addEventListener('blur', handleWindowBlur)
+    window.addEventListener('focus', handleWindowFocus)
+    window.addEventListener('pagehide', handlePageHide)
+    window.addEventListener('pageshow', handlePageShow)
+
+    // Attempt direct autoplay on page load immediately if in foreground
+    if (!this.isMuted && !this.isBackgrounded) {
       this.audio.volume = 0.5
       this.audio.muted = false
       const p = this.audio.play()
@@ -131,6 +177,121 @@ class AudioManager {
           }).catch(() => {})
         })
       }
+    } else if (!this.isMuted && this.isBackgrounded) {
+      this.wasPlayingBeforeBackground = true
+    }
+  }
+
+  handleBackground() {
+    if (this.isBackgrounded) return
+    this.isBackgrounded = true
+
+    // Check if audio was playing or was actively unlocked to play
+    const isPlaying = this.isPlaying()
+    const shouldBePlaying = !this.isMuted && (this.hasUnlocked || isPlaying)
+    this.wasPlayingBeforeBackground = isPlaying || shouldBePlaying
+
+    // Immediately pause audio to stop playing in background
+    if (this.audio) {
+      try {
+        this.audio.pause()
+      } catch (e) {
+        // ignore
+      }
+    }
+
+    // Suspend audio context if running
+    if (this.audioContext && this.audioContext.state === 'running') {
+      this.audioContext.suspend().catch(() => {})
+    }
+
+    // Ensure any other audio elements on page are paused in background
+    if (typeof document !== 'undefined') {
+      try {
+        document.querySelectorAll('audio').forEach((el) => {
+          if (!el.paused) {
+            el.pause()
+          }
+        })
+      } catch (e) {
+        // ignore
+      }
+    }
+
+    this.notify()
+  }
+
+  handleForeground() {
+    // If the tab is still hidden (e.g. background tab), do not resume
+    if (typeof document !== 'undefined' && document.hidden) {
+      return
+    }
+
+    if (!this.isBackgrounded) return
+    this.isBackgrounded = false
+
+    // Resume only if user has not explicitly muted and it was playing before
+    if (!this.isMuted && this.wasPlayingBeforeBackground) {
+      this.resumeAudio()
+    }
+
+    this.wasPlayingBeforeBackground = false
+    this.notify()
+  }
+
+  resumeAudio() {
+    if (this.isMuted || this.isBackgrounded) return
+
+    if (this.audioContext && this.audioContext.state === 'suspended') {
+      this.audioContext.resume().catch(() => {})
+    }
+
+    if (this.audio) {
+      this.audio.muted = false
+      this.audio.volume = 0.5
+      const playPromise = this.audio.play()
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            this.hasUnlocked = true
+            this.notify()
+          })
+          .catch((err) => {
+            console.warn('[AudioManager] Resume playback was blocked by browser policy:', err)
+            // Browser policy may require a user gesture to resume audio
+            this.setupResumeGestureListener()
+          })
+      }
+    }
+  }
+
+  setupResumeGestureListener() {
+    if (this.resumeGestureAttached) return
+    this.resumeGestureAttached = true
+
+    const onGesture = () => {
+      this.removeResumeGestureListener()
+      if (!this.isMuted && !this.isBackgrounded) {
+        this.resumeAudio()
+      }
+    }
+
+    this.onGestureResume = onGesture
+    const gestureEvents = ['pointerdown', 'touchstart', 'mousedown', 'keydown', 'click']
+    gestureEvents.forEach((evt) => {
+      window.addEventListener(evt, onGesture, { capture: true, passive: true, once: true })
+    })
+  }
+
+  removeResumeGestureListener() {
+    if (!this.resumeGestureAttached) return
+    this.resumeGestureAttached = false
+    if (this.onGestureResume) {
+      const gestureEvents = ['pointerdown', 'touchstart', 'mousedown', 'keydown', 'click']
+      gestureEvents.forEach((evt) => {
+        window.removeEventListener(evt, this.onGestureResume, true)
+      })
+      this.onGestureResume = null
     }
   }
 
@@ -169,6 +330,8 @@ class AudioManager {
 
   mute() {
     this.isMuted = true
+    this.wasPlayingBeforeBackground = false
+    this.removeResumeGestureListener()
     localStorage.setItem('tdv_audio_muted', 'true')
     if (this.audio) {
       this.audio.muted = true
@@ -180,8 +343,11 @@ class AudioManager {
 
   unmute() {
     this.isMuted = false
+    this.removeResumeGestureListener()
     localStorage.setItem('tdv_audio_muted', 'false')
-    if (this.audio) {
+    if (this.isBackgrounded) {
+      this.wasPlayingBeforeBackground = true
+    } else if (this.audio) {
       this.audio.muted = false
       this.audio.volume = 0.5
       const p = this.audio.play()
@@ -191,6 +357,7 @@ class AudioManager {
           this.notify()
         }).catch((e) => {
           console.warn('[AudioManager] Unmute play blocked:', e)
+          this.setupResumeGestureListener()
         })
       }
     }

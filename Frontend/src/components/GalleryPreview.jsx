@@ -101,30 +101,36 @@ export default function GalleryPreview() {
 
 
   const handlePointerDown = (e) => {
+    if (e && e.stopPropagation) e.stopPropagation()
     isDragging.current = true
-    startX.current = e.pageX - scrollContainerRef.current.offsetLeft
+    const clientX = e.pageX !== undefined ? e.pageX : (e.clientX || 0)
+    startX.current = clientX - scrollContainerRef.current.offsetLeft
     scrollLeft.current = scrollContainerRef.current.scrollLeft
   }
 
-  const handlePointerLeave = () => {
+  const handlePointerLeave = (e) => {
+    if (e && e.stopPropagation) e.stopPropagation()
     isDragging.current = false
     setIsHovered(false)
   }
 
-  const handlePointerUp = () => {
+  const handlePointerUp = (e) => {
+    if (e && e.stopPropagation) e.stopPropagation()
     isDragging.current = false
   }
 
   const handlePointerMove = (e) => {
     if (!isDragging.current) return
+    if (e && e.stopPropagation) e.stopPropagation()
     e.preventDefault()
-    const x = e.pageX - scrollContainerRef.current.offsetLeft
+    const clientX = e.pageX !== undefined ? e.pageX : (e.clientX || 0)
+    const x = clientX - scrollContainerRef.current.offsetLeft
     const walk = (x - startX.current) * 2
     scrollContainerRef.current.scrollLeft = scrollLeft.current - walk
   }
 
   return (
-    <section id="gallery" className="relative py-16 sm:py-20 scroll-mt-20 pointer-events-auto overflow-hidden">
+    <section id="gallery" data-no-bg-drag="true" className="relative py-16 sm:py-20 scroll-mt-20 pointer-events-auto overflow-hidden">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionReveal className="mb-12 text-center">
           <h2
@@ -144,23 +150,23 @@ export default function GalleryPreview() {
 
       {/* Infinite scroll marquee & drag gallery */}
       <div 
+        data-no-bg-drag="true"
         className="relative w-full overflow-hidden"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
 
-        {/* Fade edges */}
-        <div className="absolute left-0 top-0 bottom-0 w-12 sm:w-24 z-10 pointer-events-none"
-          style={{ background: 'linear-gradient(to right, rgba(0,15,40,0.8), transparent)' }} />
-        <div className="absolute right-0 top-0 bottom-0 w-12 sm:w-24 z-10 pointer-events-none"
-          style={{ background: 'linear-gradient(to left, rgba(0,15,40,0.8), transparent)' }} />
-
         <div 
           ref={scrollContainerRef}
+          data-no-bg-drag="true"
           onMouseDown={handlePointerDown}
           onMouseLeave={handlePointerLeave}
           onMouseUp={handlePointerUp}
           onMouseMove={handlePointerMove}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={handlePointerUp}
           className="flex gap-2.5 sm:gap-4 overflow-x-auto scrollbar-none no-scrollbar cursor-grab active:cursor-grabbing select-none py-2 px-3 sm:px-6"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
@@ -168,7 +174,7 @@ export default function GalleryPreview() {
             <div
               key={`${item.id}-${i}`}
               onClick={goToGallery}
-              className="relative flex-shrink-0 w-[44vw] min-w-[155px] max-w-[210px] aspect-square sm:aspect-auto sm:w-[230px] sm:h-[310px] lg:w-[260px] lg:h-[350px] rounded-2xl overflow-hidden border border-white/20 shadow-2xl group cursor-pointer bg-navy/20"
+              className="relative flex-shrink-0 w-[44vw] min-w-[155px] max-w-[210px] aspect-square sm:aspect-auto sm:w-[230px] sm:h-[310px] lg:w-[260px] lg:h-[350px] rounded-2xl overflow-hidden border border-white/20 shadow-2xl group cursor-pointer bg-[#00172b]"
             >
               {item.type === 'video' ? (
                 <LazyVideo

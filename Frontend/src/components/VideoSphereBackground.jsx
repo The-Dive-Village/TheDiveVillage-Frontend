@@ -352,7 +352,11 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightDive }) {
 
     const onPointerDown = (e) => {
       if (window.innerWidth < 640) return
-      if (e.target.closest('button, a, input, textarea, select, [role="button"], .joystick-container')) {
+      if (
+        e.target.closest(
+          'button, a, input, textarea, select, [role="button"], .joystick-container, [data-no-bg-drag], .cursor-grab, [class*="cursor-grab"], [class*="overflow-x-auto"], [class*="snap-x"], [class*="carousel"], [data-carousel]'
+        )
+      ) {
         return
       }
       isDragging.current = true
@@ -489,8 +493,12 @@ export default function VideoSphereBackground() {
 
   useEffect(() => {
     const handleVisibility = () => setIsVisible(!document.hidden)
+    document.addEventListener('visibilitychange', handleVisibility)
     window.addEventListener('visibilitychange', handleVisibility)
-    return () => window.removeEventListener('visibilitychange', handleVisibility)
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibility)
+      window.removeEventListener('visibilitychange', handleVisibility)
+    }
   }, [])
 
   useEffect(() => {

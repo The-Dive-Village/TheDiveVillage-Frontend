@@ -9,6 +9,7 @@ import { GALLERY_ITEMS } from '../utils/galleryData'
 import { triggerHaptic } from '../utils/haptics'
 import { shareContent } from '../utils/share'
 import { useLenis } from '../utils/lenisReact'
+import { getOptimizedImageUrl, getOptimizedVideoPoster } from '../utils/mediaOptimizer'
 
 const diversBg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458258/TDV-Media/Products/Group/4M7A6732.jpg'
 
@@ -351,12 +352,13 @@ export default function Gallery() {
                     className="w-full h-full max-w-full max-h-full object-contain flex items-center justify-center"
                   />
                 ) : (
-                  <img
+                  <SafeImage
                     src={currentItem.src}
                     alt={currentItem.title || 'Gallery visual'}
-                    draggable={false}
-                    className="w-full h-full max-w-full max-h-full object-contain select-none m-auto"
-                    style={{ maxWidth: '100%', maxHeight: '100%' }}
+                    targetWidth={1600}
+                    disableParallax={true}
+                    className="w-full h-full max-w-full max-h-full flex items-center justify-center"
+                    imgClassName="w-full h-full max-w-full max-h-full object-contain select-none m-auto"
                   />
                 )}
               </div>
@@ -414,11 +416,12 @@ export default function Gallery() {
                         >
                           {item.type === 'video' ? (
                             <div className="relative w-full h-full bg-black flex items-center justify-center">
-                              <LazyVideo
-                                src={item.thumbnail || item.poster || item.src}
-                                muted
-                                playsInline
-                                className="w-full h-full object-cover pointer-events-none opacity-80"
+                              <img
+                                src={getOptimizedVideoPoster(item.src, { width: 120 })}
+                                alt=""
+                                className="w-full h-full object-cover pointer-events-none opacity-85"
+                                loading="lazy"
+                                decoding="async"
                               />
                               <div className="absolute inset-0 bg-black/40 flex items-center justify-center text-white text-[7px] sm:text-[8px]">
                                 ▶
@@ -426,10 +429,11 @@ export default function Gallery() {
                             </div>
                           ) : (
                             <img
-                              src={item.thumbnail || item.poster || item.src}
+                              src={getOptimizedImageUrl(item.src, { width: 120 })}
                               alt=""
                               className="w-full h-full object-cover"
                               loading="lazy"
+                              decoding="async"
                             />
                           )}
                         </button>
@@ -521,7 +525,7 @@ function GalleryGridCard({ item, idx, reduce, onClick }) {
       onMouseLeave={handleMouseLeave}
     >
       {/* Media Container */}
-      <div className="relative aspect-[4/3] sm:aspect-[16/11] w-full overflow-hidden bg-navy/10">
+      <div className="relative aspect-[4/3] sm:aspect-[16/11] w-full overflow-hidden bg-[#00172b]">
         {item.type === 'video' ? (
           <div className="w-full h-full transition-transform duration-700 ease-out group-hover:scale-105">
             <LazyVideo

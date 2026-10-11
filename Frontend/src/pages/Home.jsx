@@ -13,10 +13,12 @@ const img1 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791691491/TDV-M
 const img2 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791691503/TDV-Media/OceanWelcomesAll/2.png'
 const img3 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791691529/TDV-Media/OceanWelcomesAll/3.png'
 const img4 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791691578/TDV-Media/OceanWelcomesAll/4.png'
-const travelVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791691360/TDV-Media/AirportToAirport/travel.mp4'
+const travelVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/q_auto,f_auto/v1791691360/TDV-Media/AirportToAirport/travel.mp4'
+const travelPoster = 'https://res.cloudinary.com/qvbunv8y/video/upload/f_auto,q_auto/v1791691360/TDV-Media/AirportToAirport/travel.webp'
 const stayImg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791691313/TDV-Media/AirportToAirport/Stay.webp'
 const foodImg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791691316/TDV-Media/AirportToAirport/food.webp'
-const itineraryVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791691465/TDV-Media/AirportToAirport/gallery1.mp4'
+const itineraryVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/q_auto,f_auto/v1791691465/TDV-Media/AirportToAirport/gallery1.mp4'
+const itineraryPoster = 'https://res.cloudinary.com/qvbunv8y/video/upload/f_auto,q_auto/v1791691465/TDV-Media/AirportToAirport/gallery1.webp'
 const imgIntroductoryPrograms = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791691278/TDV-Media/ServicesThumbnails/Introductory%20Programs.webp'
 const imgGuidedSnorkeling = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791691302/TDV-Media/ServicesThumbnails/Snorkeling.webp'
 const imgCertifiedCourses = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791691284/TDV-Media/ServicesThumbnails/Certified%20Courses.webp'
@@ -247,7 +249,7 @@ export default function Home() {
             </p>
           </SectionReveal>
 
-          <StaggerGrid className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none pb-6 gap-3.5 sm:gap-6 sm:grid sm:grid-cols-2 lg:grid-cols-4 lg:gap-8 mt-10 sm:mt-24 sm:overflow-visible px-2 sm:px-0">
+          <StaggerGrid data-no-bg-drag="true" className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none pb-6 gap-3.5 sm:gap-6 sm:grid sm:grid-cols-2 lg:grid-cols-4 lg:gap-8 mt-10 sm:mt-24 sm:overflow-visible px-2 sm:px-0">
             {[
               {
                 t: 'Enthusiastic Beginners',
@@ -357,12 +359,14 @@ export default function Home() {
             </p>
           </SectionReveal>
 
-          <StaggerGrid className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none pb-4 gap-3 sm:gap-6 sm:grid sm:grid-cols-2 lg:grid-cols-4 lg:gap-8 sm:overflow-visible px-1">
+          <StaggerGrid data-no-bg-drag="true" className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none pb-4 gap-3 sm:gap-6 sm:grid sm:grid-cols-2 lg:grid-cols-4 lg:gap-8 sm:overflow-visible px-1">
             {[
               {
                 title: 'Travel Logistics',
                 desc: 'Seamless transfers and hassle free travel, arrival to departure.',
                 video: travelVid,
+                poster: travelPoster,
+                img: travelPoster,
                 icon: (
                   <svg className="w-4 h-4 sm:w-5 sm:h-5 text-[#00AEC7]" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" />
@@ -393,6 +397,7 @@ export default function Home() {
                 title: 'Personal Itineraries',
                 desc: 'Custom experiences tailored to your travel style and made to fit.',
                 video: itineraryVid,
+                poster: itineraryPoster,
                 img: CAROUSEL_IMAGES[1],
                 icon: (
                   <svg className="w-4 h-4 sm:w-5 sm:h-5 text-[#00AEC7]" fill="currentColor" viewBox="0 0 24 24">
@@ -438,16 +443,19 @@ export default function Home() {
                       {item.video ? (
                         <LazyVideo
                           src={item.video}
+                          poster={item.poster || item.img}
                           autoPlay
                           loop
                           muted
                           playsInline
+                          preload="auto"
                           className="w-full h-full object-cover transition duration-700 group-hover:scale-105"
                         />
                       ) : item.img ? (
                         <img
                           src={item.img}
                           alt={item.title}
+                          loading="lazy"
                           className="w-full h-full object-cover transition duration-700 group-hover:scale-105"
                         />
                       ) : null}
@@ -504,7 +512,7 @@ export default function Home() {
             </div>
           </SectionReveal>
 
-          <StaggerGrid className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none pb-4 gap-4 md:grid md:grid-cols-3 md:gap-8 items-stretch md:overflow-visible px-2 sm:px-4">
+          <StaggerGrid data-no-bg-drag="true" className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none pb-4 gap-4 md:grid md:grid-cols-3 md:gap-8 items-stretch md:overflow-visible px-2 sm:px-4">
             {approvedReviews.slice(0, 3).map((t, i) => (
               <StaggerItem key={t.id || i} className="w-[85vw] max-w-[340px] xs:max-w-[360px] sm:w-[360px] shrink-0 md:w-auto snap-center h-full">
                 <div className="h-full flex flex-col justify-between bg-white/10 backdrop-blur-2xl rounded-2xl sm:rounded-3xl p-5 sm:p-8 border border-white/20 shadow-[0_8px_24px_rgba(0,0,0,0.25)] hover:bg-white/15 hover:border-white/40 hover:-translate-y-2 hover:shadow-[0_12px_32px_rgba(0,0,0,0.35)] transition-all duration-500">
@@ -803,6 +811,7 @@ function InteractiveHighlights() {
   }, [singleSetWidth])
 
   const handlePointerDown = (e) => {
+    if (e && e.stopPropagation) e.stopPropagation()
     isDraggingRef.current = true
     hasMovedRef.current = false
     isSwipingHorizontalRef.current = null
@@ -817,6 +826,7 @@ function InteractiveHighlights() {
 
   const handlePointerMove = (e) => {
     if (!isDraggingRef.current) return
+    if (e && e.stopPropagation) e.stopPropagation()
     const clientX = e.touches ? e.touches[0].clientX : e.clientX
     const clientY = e.touches ? e.touches[0].clientY : e.clientY
     const totalDeltaX = clientX - dragStartXRef.current
@@ -853,8 +863,9 @@ function InteractiveHighlights() {
     lastTimeRef.current = now
   }
 
-  const handlePointerUp = () => {
+  const handlePointerUp = (e) => {
     if (isDraggingRef.current) {
+      if (e && e.stopPropagation) e.stopPropagation()
       isDraggingRef.current = false
       if (velocityRef.current > 35) velocityRef.current = 35
       if (velocityRef.current < -35) velocityRef.current = -35
@@ -893,6 +904,7 @@ function InteractiveHighlights() {
 
   return (
     <div
+      data-no-bg-drag="true"
       onMouseEnter={() => { isHoveredRef.current = true }}
       onMouseLeave={() => { isHoveredRef.current = false }}
       className="relative w-full max-w-[1800px] mx-auto my-4 pointer-events-auto px-1 sm:px-2"
@@ -927,6 +939,7 @@ function InteractiveHighlights() {
       {/* Main Track Viewport */}
       <div
         ref={containerRef}
+        data-no-bg-drag="true"
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
