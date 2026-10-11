@@ -1,9 +1,10 @@
 import LazyVideo from '../components/LazyVideo'
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { useSearchParams } from 'react-router'
-import { motion } from 'framer-motion'
-import PhoneInput from 'react-phone-number-input'
+import { motion, AnimatePresence } from 'framer-motion'
+import PhoneInput, { parsePhoneNumber, getCountryCallingCode } from 'react-phone-number-input'
 import flags from 'react-phone-number-input/flags'
+import { useLenis } from '../utils/lenisReact'
 import CompactTwoMonthCalendarPopover from '../components/CompactTwoMonthCalendarPopover'
 import SEOHead from '../components/SEOHead'
 import padiCountries from '../data/padiCountries.json'
@@ -21,6 +22,7 @@ import {
   getAvailableCertificationsForAge,
   sortCoursesByDifficulty,
   validateParticipantBooking,
+  normalizeExperienceKey,
 } from '../utils/courseEligibility'
 import { triggerHaptic, triggerSuccessHaptic, triggerErrorHaptic } from '../utils/haptics'
 
@@ -42,10 +44,10 @@ const SERVICE_TO_PROGRAM = {
   'prog-3': { courseId: 'padi-dsd',             experience: 'Scuba Diving' },
   'prog-4': { courseId: 'add-dive-after-dsd',   experience: 'Scuba Diving' },
   'prog-5': { courseId: 'padi-bubblemaker',     experience: 'Scuba Diving' },
-  // Snorkeling -> Scuba Diving / Skin Diver track
-  'snork-1': { courseId: 'padi-skin-diver',     experience: 'Scuba Diving' },
-  'snork-2': { courseId: 'padi-skin-diver',     experience: 'Scuba Diving' },
-  'snork-3': { courseId: 'padi-skin-diver',     experience: 'Scuba Diving' },
+  // Snorkeling -> Snorkeling
+  'snork-1': { courseId: 'discover-snorkeling', experience: 'Snorkeling' },
+  'snork-2': { courseId: 'reef-explorer',       experience: 'Snorkeling' },
+  'snork-3': { courseId: 'ocean-explorer',      experience: 'Snorkeling' },
   // Certification Courses -> Scuba Diving
   'course-1':  { courseId: 'padi-skin-diver',        experience: 'Scuba Diving' },
   'course-2':  { courseId: 'padi-scuba-diver',        experience: 'Scuba Diving' },
@@ -138,6 +140,7 @@ export default function BookUs() {
     // Fallback: check if serviceItem exists and match category
     if (serviceItem) {
       if (serviceItem.category === 'freediving') return { courseId: 'padi-basic-freediver', experience: 'FreeDiving' }
+      if (serviceItem.category === 'snorkeling') return { courseId: 'discover-snorkeling', experience: 'Snorkeling' }
       if (serviceItem.category === 'surfing') return { courseId: 'discover-surfing', experience: 'Surfing' }
       return { courseId: 'try-dive', experience: 'Scuba Diving' }
     }
@@ -365,16 +368,101 @@ export default function BookUs() {
     }
   ])
 
+  const lenis = useLenis()
+
   // Order Summary popup modal state before final booking submit
   const [showSummaryModal, setShowSummaryModal] = useState(false)
 
   // Step 4: Contact Details
+  const [phoneCountry, setPhoneCountry] = useState('IN')
   const [contact, setContact] = useState({
     name: '',
     email: '',
     phone: '',
     requests: ''
   })
+
+  // Lock background scrolling and pause Lenis when order confirmation modal is open
+  useEffect(() => {
+    if (!showSummaryModal) return
+
+    if (lenis) {
+      lenis.stop()
+    }
+
+    const prevBodyOverflow = document.body.style.overflow
+    const prevHtmlOverflow = document.documentElement.style.overflow
+    const prevBodyPaddingRight = document.body.style.paddingRight
+
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`
+    }
+
+    document.body.style.overflow = 'hidden'
+    document.documentElement.style.overflow = 'hidden'
+
+    return () => {
+      if (lenis) {
+        lenis.start()
+      }
+      document.body.style.overflow = prevBodyOverflow
+      document.documentElement.style.overflow = prevHtmlOverflow
+      document.body.style.paddingRight = prevBodyPaddingRight
+    }
+  }, [showSummaryModal, lenis])
+
+  // Restrict phone input strictly to at most 10 digits
+  const handlePhoneChange = useCallback((val) => {
+    if (!val) {
+      setContact((prev) => ({ ...prev, phone: '' }))
+      return
+    }
+    try {
+      const parsed = parsePhoneNumber(val)
+      if (parsed && parsed.nationalNumber && parsed.nationalNumber.length > 10) {
+        const trimmed = parsed.nationalNumber.slice(0, 10)
+        const clamped = `+${parsed.countryCallingCode}${trimmed}`
+        setContact((prev) => ({ ...prev, phone: clamped }))
+        return
+      }
+    } catch {}
+    setContact((prev) => ({ ...prev, phone: val }))
+  }, [])
+
+  const handlePhoneKeyDown = useCallback((e) => {
+    // 1. Allow control & navigation keys
+    if (
+      ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', 'Enter', 'Home', 'End'].includes(e.key) ||
+      e.ctrlKey ||
+      e.metaKey
+    ) {
+      return
+    }
+
+    // 2. Strictly disallow any non-digit character
+    if (!/^\d$/.test(e.key)) {
+      e.preventDefault()
+      return
+    }
+
+    // 3. Allow typing if user has selected text that will be replaced
+    const { selectionStart, selectionEnd } = e.currentTarget
+    if (selectionStart !== selectionEnd) {
+      return
+    }
+
+    // 4. Calculate calling code digit length and limit national digits to strictly 10
+    let callingCodeLen = 2
+    try {
+      callingCodeLen = getCountryCallingCode(phoneCountry || 'IN').length
+    } catch {}
+
+    const currentDigits = (e.currentTarget.value || '').replace(/\D/g, '')
+    if (currentDigits.length >= callingCodeLen + 10) {
+      e.preventDefault()
+    }
+  }, [phoneCountry])
 
   // Autofill Special Requests when Add Ons change
   const prevAddOnsRef = useRef([])
@@ -623,6 +711,7 @@ export default function BookUs() {
       }
 
       const hasMissingCert = participants.some((p) => {
+        if (normalizeExperienceKey(experience) !== 'scuba') return false
         if (!p.hasCertification) return false
         const available = getAvailableCertificationsForAge(p.age, experience)
         return available.length > 0 && (!p.certifications || p.certifications.length === 0)
@@ -699,6 +788,19 @@ export default function BookUs() {
     if (!contact.name || !contact.email) {
       setStepError('Please enter your contact Name and Email.')
       return
+    }
+
+    if (contact.phone) {
+      try {
+        const parsed = parsePhoneNumber(contact.phone)
+        if (parsed && parsed.nationalNumber && parsed.nationalNumber.length !== 10) {
+          setStepError('Phone number must be exactly 10 digits.')
+          return
+        }
+      } catch {
+        setStepError('Please enter a valid 10-digit phone number.')
+        return
+      }
     }
 
     const activeAddOns = selectedAddOns.filter((item) => item !== 'None')
@@ -888,9 +990,12 @@ export default function BookUs() {
                     const certNames = (p.certifications || [])
                       .map((id) => CERTIFICATION_OPTIONS.find((c) => c.id === id)?.name)
                       .filter(Boolean)
-                    const certSummary = p.hasCertification
-                      ? (certNames.length ? certNames.join(', ') : 'Certified Diver')
-                      : 'No Prior Certification (Beginner / Pathway)'
+                    const isScuba = normalizeExperienceKey(experience) === 'scuba'
+                    const certSummary = isScuba
+                      ? (p.hasCertification
+                        ? (certNames.length ? certNames.join(', ') : 'Certified Diver')
+                        : 'No Prior Certification (Beginner / Pathway)')
+                      : `${experience} Program`
 
                     return (
                       <div key={idx} className="flex justify-between items-center bg-white p-4 rounded-2xl shadow-sm border border-navy/5">
@@ -1525,57 +1630,60 @@ export default function BookUs() {
                               /* FOR REGULAR BOOK US FLOW: Certification Choice & Levels */
                               isAgeValid && (
                                 <div className="space-y-2.5 pt-1">
-                                  <div>
-                                    <label className="mb-1.5 block text-[9px] sm:text-xs font-bold text-navy/80 uppercase tracking-wider">
-                                      Do you already have a certification?
-                                    </label>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
-                                      <button
-                                        type="button"
-                                        onClick={() => handleParticipantChange(idx, 'hasCertification', false)}
-                                        className={`p-2.5 sm:p-4 rounded-lg sm:rounded-2xl border text-left transition-all flex items-center justify-between gap-2 ${!p.hasCertification
-                                          ? 'bg-navy text-white border-navy shadow-sm'
-                                          : 'bg-white text-navy border-navy/15 hover:border-navy/30'
-                                          }`}
-                                      >
-                                        <div>
-                                          <span className="font-bold text-[11px] sm:text-sm block">Without Certificate</span>
-                                          <span className={`text-[9px] sm:text-[11px] block mt-0.5 ${!p.hasCertification ? 'text-white/70' : 'text-navy/50'}`}>
-                                            Beginner, introductory & pathway options
-                                          </span>
-                                        </div>
-                                        <div className={`w-3.5 h-3.5 sm:w-5 sm:h-5 rounded-full border flex items-center justify-center shrink-0 ${!p.hasCertification ? 'border-white bg-white text-navy' : 'border-navy/20'
-                                          }`}>
-                                          {!p.hasCertification && <span className="text-[8px] sm:text-[10px] font-bold">✓</span>}
-                                        </div>
-                                      </button>
+                                  {/* Certification Choice only for Scuba Diving */}
+                                  {normalizeExperienceKey(experience) === 'scuba' && (
+                                    <div>
+                                      <label className="mb-1.5 block text-[9px] sm:text-xs font-bold text-navy/80 uppercase tracking-wider">
+                                        Do you already have a certification?
+                                      </label>
+                                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+                                        <button
+                                          type="button"
+                                          onClick={() => handleParticipantChange(idx, 'hasCertification', false)}
+                                          className={`p-2.5 sm:p-4 rounded-lg sm:rounded-2xl border text-left transition-all flex items-center justify-between gap-2 ${!p.hasCertification
+                                            ? 'bg-navy text-white border-navy shadow-sm'
+                                            : 'bg-white text-navy border-navy/15 hover:border-navy/30'
+                                            }`}
+                                        >
+                                          <div>
+                                            <span className="font-bold text-[11px] sm:text-sm block">Without Certificate</span>
+                                            <span className={`text-[9px] sm:text-[11px] block mt-0.5 ${!p.hasCertification ? 'text-white/70' : 'text-navy/50'}`}>
+                                              Beginner, introductory & pathway options
+                                            </span>
+                                          </div>
+                                          <div className={`w-3.5 h-3.5 sm:w-5 sm:h-5 rounded-full border flex items-center justify-center shrink-0 ${!p.hasCertification ? 'border-white bg-white text-navy' : 'border-navy/20'
+                                            }`}>
+                                            {!p.hasCertification && <span className="text-[8px] sm:text-[10px] font-bold">✓</span>}
+                                          </div>
+                                        </button>
 
-                                      <button
-                                        type="button"
-                                        onClick={() => handleParticipantChange(idx, 'hasCertification', true)}
-                                        className={`p-2.5 sm:p-4 rounded-lg sm:rounded-2xl border text-left transition-all flex items-center justify-between gap-2 ${p.hasCertification
-                                          ? 'bg-navy text-white border-navy shadow-sm'
-                                          : 'bg-white text-navy border-navy/15 hover:border-navy/30'
-                                          }`}
-                                      >
-                                        <div>
-                                          <span className="font-bold text-[11px] sm:text-sm block">
-                                            With Certificate
-                                          </span>
-                                          <span className={`text-[9px] sm:text-[11px] block mt-0.5 ${p.hasCertification ? 'text-white/70' : 'text-navy/50'}`}>
-                                            {ageNum === 8 ? 'Junior certified diver programs' : 'Choose your current diving certificate'}
-                                          </span>
-                                        </div>
-                                        <div className={`w-3.5 h-3.5 sm:w-5 sm:h-5 rounded-full border flex items-center justify-center shrink-0 ${p.hasCertification ? 'border-white bg-white text-navy' : 'border-navy/20'
-                                          }`}>
-                                          {p.hasCertification && <span className="text-[8px] sm:text-[10px] font-bold">✓</span>}
-                                        </div>
-                                      </button>
+                                        <button
+                                          type="button"
+                                          onClick={() => handleParticipantChange(idx, 'hasCertification', true)}
+                                          className={`p-2.5 sm:p-4 rounded-lg sm:rounded-2xl border text-left transition-all flex items-center justify-between gap-2 ${p.hasCertification
+                                            ? 'bg-navy text-white border-navy shadow-sm'
+                                            : 'bg-white text-navy border-navy/15 hover:border-navy/30'
+                                            }`}
+                                        >
+                                          <div>
+                                            <span className="font-bold text-[11px] sm:text-sm block">
+                                              With Certificate
+                                            </span>
+                                            <span className={`text-[9px] sm:text-[11px] block mt-0.5 ${p.hasCertification ? 'text-white/70' : 'text-navy/50'}`}>
+                                              {ageNum === 8 ? 'Junior certified diver programs' : 'Choose your current diving certificate'}
+                                            </span>
+                                          </div>
+                                          <div className={`w-3.5 h-3.5 sm:w-5 sm:h-5 rounded-full border flex items-center justify-center shrink-0 ${p.hasCertification ? 'border-white bg-white text-navy' : 'border-navy/20'
+                                            }`}>
+                                            {p.hasCertification && <span className="text-[8px] sm:text-[10px] font-bold">✓</span>}
+                                          </div>
+                                        </button>
+                                      </div>
                                     </div>
-                                  </div>
+                                  )}
 
-                                  {/* If Certified & Above 8+: Ask which certificate */}
-                                  {p.hasCertification && ageNum > 8 && availableCertOptions.length > 0 && (
+                                  {/* If Certified & Above 8+: Ask which certificate (Only Scuba Diving) */}
+                                  {normalizeExperienceKey(experience) === 'scuba' && p.hasCertification && ageNum > 8 && availableCertOptions.length > 0 && (
                                     <div className="space-y-1.5 pt-1">
                                       <label className="block text-[9px] sm:text-xs font-bold text-navy/80 uppercase tracking-wider">
                                         Which certificate do you currently have?
@@ -1610,7 +1718,7 @@ export default function BookUs() {
                                     <div className="flex items-center gap-1.5 sm:gap-2">
                                       <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-500 shrink-0 animate-pulse" />
                                       <span>
-                                        {eligibleCourses.length} course(s) unlocked for age {p.age}
+                                        {eligibleCourses.length} {normalizeExperienceKey(experience) === 'scuba' ? 'course(s)' : 'program(s)'} available for {experience || 'selected experience'}
                                       </span>
                                     </div>
                                     <span className="font-bold text-[9px] sm:text-[11px] uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-emerald-500/15">
@@ -1774,9 +1882,15 @@ export default function BookUs() {
                             defaultCountry="IN"
                             international
                             withCountryCallingCode
-                            placeholder="Enter phone number"
+                            placeholder="Enter 10-digit phone number"
                             value={contact.phone}
-                            onChange={(value) => setContact((prev) => ({ ...prev, phone: value || '' }))}
+                            onCountryChange={(c) => setPhoneCountry(c || 'IN')}
+                            onChange={handlePhoneChange}
+                            numberInputProps={{
+                              inputMode: 'numeric',
+                              autoComplete: 'tel',
+                              onKeyDown: handlePhoneKeyDown,
+                            }}
                             className="w-full text-[11px] sm:text-sm font-semibold sm:font-bold text-navy outline-none placeholder:text-navy/30"
                           />
                         </div>
@@ -1882,16 +1996,25 @@ export default function BookUs() {
     {/* 5. ORDER SUMMARY & CONFIRMATION POPUP MODAL */}
     <AnimatePresence>
       {showSummaryModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/60 backdrop-blur-md">
+        <div
+          data-lenis-prevent="true"
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/60 backdrop-blur-md overflow-hidden"
+          onClick={(e) => {
+            if (e.target === e.currentTarget && !isSubmitting) {
+              setShowSummaryModal(false)
+            }
+          }}
+        >
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 15 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 15 }}
             transition={{ duration: 0.2 }}
             className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-navy/15 overflow-hidden text-navy"
+            onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="p-5 sm:p-6 border-b border-navy/10 flex items-center justify-between bg-gradient-to-r from-navy to-[#003865] text-white">
+            <div className="p-5 sm:p-6 border-b border-navy/10 flex items-center justify-between bg-gradient-to-r from-navy to-[#003865] text-white shrink-0">
               <div>
                 <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-[#FFCD00] block mb-0.5">
                   Order Summary & Confirmation
@@ -1911,7 +2034,10 @@ export default function BookUs() {
             </div>
 
             {/* Modal Body */}
-            <div className="p-5 sm:p-7 overflow-y-auto space-y-4 sm:space-y-6 text-xs sm:text-sm">
+            <div
+              data-lenis-prevent="true"
+              className="p-5 sm:p-7 overflow-y-auto space-y-4 sm:space-y-6 text-xs sm:text-sm overscroll-contain flex-1"
+            >
               
               {/* 1. Trip & Location Details */}
               <div className="rounded-2xl bg-[#FAFAFA] border border-navy/10 p-4 space-y-2.5">
@@ -2031,7 +2157,7 @@ export default function BookUs() {
             </div>
 
             {/* Modal Footer Controls */}
-            <div className="p-4 sm:p-6 border-t border-navy/10 bg-[#FAFAFA] flex items-center justify-between gap-3">
+            <div className="p-4 sm:p-6 border-t border-navy/10 bg-[#FAFAFA] flex items-center justify-between gap-3 shrink-0">
               <button
                 type="button"
                 onClick={() => setShowSummaryModal(false)}

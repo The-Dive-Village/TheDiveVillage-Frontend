@@ -7,12 +7,12 @@
 export const EXPERIENCE_OPTIONS = [
   'Scuba Diving',
   'FreeDiving',
+  'Snorkeling',
   'Surfing',
 ]
 
 // Add-On Options (Direct activities)
 export const ADD_ON_OPTIONS = [
-  'Snorkeling',
   'Canyoneering',
   'Safari',
   'Trekking',
@@ -23,7 +23,6 @@ export const ADD_ON_OPTIONS = [
 
 // Direct activities that skip participant cert & course eligibility stages
 export const DIRECT_ACTIVITIES = [
-  'Snorkeling',
   'Canyoneering',
   'Safari',
   'Trekking',
@@ -341,12 +340,41 @@ export const COURSE_CATALOG = [
     experience: 'Scuba Diving',
   },
 
+  // Snorkeling
+  {
+    id: 'discover-snorkeling',
+    name: 'Discover Snorkeling',
+    category: 'Snorkeling',
+    minimumAge: 8,
+    maxAge: null,
+    certLabel: 'No prior certification required',
+    experience: 'Snorkeling',
+  },
+  {
+    id: 'reef-explorer',
+    name: 'Reef Explorer',
+    category: 'Snorkeling',
+    minimumAge: 8,
+    maxAge: null,
+    certLabel: 'No prior certification required',
+    experience: 'Snorkeling',
+  },
+  {
+    id: 'ocean-explorer',
+    name: 'Ocean Explorer',
+    category: 'Snorkeling',
+    minimumAge: 8,
+    maxAge: null,
+    certLabel: 'No prior certification required',
+    experience: 'Snorkeling',
+  },
+
   // Freediving & Surfing
   {
     id: 'padi-basic-freediver',
     name: 'Basic Freediver',
     category: 'Freediving',
-    minimumAge: 12,
+    minimumAge: 8,
     maxAge: null,
     certLabel: 'No prior certification required',
     experience: 'FreeDiving',
@@ -355,9 +383,9 @@ export const COURSE_CATALOG = [
     id: 'padi-freediver',
     name: 'Freediver',
     category: 'Freediving',
-    minimumAge: 15,
+    minimumAge: 8,
     maxAge: null,
-    certLabel: 'Basic Freediver certification',
+    certLabel: 'Freediving program',
     experience: 'FreeDiving',
   },
   {
@@ -371,7 +399,7 @@ export const COURSE_CATALOG = [
   },
   {
     id: '3-day-surf-academy',
-    name: '3-Day Surf Academy Course',
+    name: '3 Day Surf Academy Course',
     category: 'Surfing',
     minimumAge: 8,
     maxAge: null,
@@ -401,10 +429,7 @@ export function getAvailableCertificationsForAge(age, experience = 'Scuba Diving
   if (isNaN(numericAge) || numericAge < 8 || numericAge > 110) return []
 
   const normExp = normalizeExperienceKey(experience)
-  if (normExp === 'freediving') {
-    return numericAge >= 12 ? [{ id: 'basic-freediver', name: 'Basic Freediver' }] : []
-  }
-
+  // Only Scuba Diving asks for certifications
   if (normExp !== 'scuba') return []
 
   // If exact age 8, they don't choose from the 7 adult certs
@@ -456,15 +481,17 @@ export function getEligibleCourses(age, hasCert = false, userCerts = [], experie
 
   const normExp = normalizeExperienceKey(experience)
 
-  // Handle Freediving and Surfing
+  // Handle Freediving: Two programs - Basic Freediver and Freediver (no certificate asked)
   if (normExp === 'freediving') {
-    const list = Array.isArray(userCerts) ? userCerts : (userCerts ? [userCerts] : [])
-    if (!hasCert || list.length === 0) {
-      return catalog.filter((c) => c.id === 'padi-basic-freediver' && numericAge >= c.minimumAge)
-    }
-    return catalog.filter((c) => c.id === 'padi-freediver' && numericAge >= c.minimumAge)
+    return catalog.filter((c) => c.experience === 'FreeDiving')
   }
 
+  // Handle Snorkeling: Three programs - Discover Snorkeling, Reef Explorer and Ocean Explorer
+  if (normExp === 'snorkeling') {
+    return catalog.filter((c) => c.experience === 'Snorkeling')
+  }
+
+  // Handle Surfing: Two programs - Discover Surfing and 3 Day Surf Academy Course
   if (normExp === 'surfing') {
     return catalog.filter((c) => c.experience === 'Surfing')
   }
@@ -594,7 +621,7 @@ export function validateParticipantBooking(participant, experience = 'Scuba Divi
     return { valid: false, error: `Invalid age for ${participant.name || 'participant'}. Age must be between 8 and 110 years.` }
   }
 
-  if (participant.hasCertification && age > 8) {
+  if (normalizeExperienceKey(experience) === 'scuba' && participant.hasCertification && age > 8) {
     const certs = participant.certifications || []
     if (certs.length === 0) {
       return { valid: false, error: `Please choose a certificate for ${participant.name || 'participant'}.` }
@@ -627,4 +654,5 @@ export default {
   getRecommendedCourses,
   sortCoursesByDifficulty,
   validateParticipantBooking,
+  normalizeExperienceKey,
 }
