@@ -597,17 +597,6 @@ export default function VideoSphereBackground() {
   const nightVideoRef = useRef(null)
   const nightHlsControllerRef = useRef(null)
 
-<<<<<<< Updated upstream
-  useEffect(() => {
-    const handleVisibility = () => setIsVisible(!document.hidden)
-    document.addEventListener('visibilitychange', handleVisibility)
-    window.addEventListener('visibilitychange', handleVisibility)
-    return () => {
-      document.removeEventListener('visibilitychange', handleVisibility)
-      window.removeEventListener('visibilitychange', handleVisibility)
-    }
-  }, [])
-=======
   // Reusable Page Visibility hook
   const isVisible = usePageVisibility()
 
@@ -615,7 +604,6 @@ export default function VideoSphereBackground() {
   const isSpherePage = location.pathname === '/' || isAbout
   const shouldRenderCanvas = isVisible && isSpherePage && !isNightDive
   const currentVideo = isNightDive ? nightDiveVideo : isAbout ? bookFile : videoFile
->>>>>>> Stashed changes
 
   useEffect(() => {
     setMounted(true)

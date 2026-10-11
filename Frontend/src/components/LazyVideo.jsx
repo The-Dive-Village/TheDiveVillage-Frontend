@@ -1,4 +1,3 @@
-<<<<<<< Updated upstream
 import { useState, useEffect, useRef, useMemo } from 'react'
 import {
   getLqipUrl,
@@ -8,10 +7,7 @@ import {
   isMediaLoaded,
   markMediaLoaded
 } from '../utils/mediaOptimizer'
-=======
-import { useState, useEffect, useRef } from 'react'
 import { usePageVisibility } from '../hooks/usePageVisibility'
->>>>>>> Stashed changes
 
 export default function LazyVideo({
   src,
@@ -29,12 +25,8 @@ export default function LazyVideo({
   const containerRef = useRef(null)
   const posterImgRef = useRef(null)
   const [isInView, setIsInView] = useState(false)
-<<<<<<< Updated upstream
-=======
-  const [isLoaded, setIsLoaded] = useState(false)
   const isVisible = usePageVisibility()
   const wasPlayingBeforeHideRef = useRef(false)
->>>>>>> Stashed changes
 
   // Sharp WebP/JPG poster
   const resolvedPoster = useMemo(() => {
@@ -94,17 +86,8 @@ export default function LazyVideo({
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             setIsInView(true)
-<<<<<<< Updated upstream
-            const video = videoRef.current
-            if (video && autoPlayRef.current) {
-              video.muted = true
-              video.defaultMuted = true
-              video.volume = 0
-              video.play().catch(() => {})
-=======
             if (videoRef.current && autoPlayRef.current && isVisible) {
               videoRef.current.play().catch(() => {})
->>>>>>> Stashed changes
             }
           } else {
             setIsInView(false)
@@ -121,7 +104,7 @@ export default function LazyVideo({
     return () => observer.disconnect()
   }, [isVisible])
 
-  // Start video playback when in view if autoPlay is true
+  // Start video playback when in view if autoPlay is true and tab is visible
   useEffect(() => {
     const video = videoRef.current
     if (isInView && video && autoPlay && isVisible) {
@@ -167,11 +150,7 @@ export default function LazyVideo({
   // Handle user gestures (touch/click/hover) to unlock playback
   const handleUserGesture = () => {
     const video = videoRef.current
-<<<<<<< Updated upstream
-    if (video && video.paused) {
-=======
     if (autoPlay && video && isInView && isVisible) {
->>>>>>> Stashed changes
       video.muted = true
       video.defaultMuted = true
       video.volume = 0
@@ -179,17 +158,9 @@ export default function LazyVideo({
     }
   }
 
-<<<<<<< Updated upstream
   const handlePosterSuccess = () => {
     setPosterLoaded(true)
     markMediaLoaded(resolvedPoster)
-=======
-  const handleMouseEnter = () => {
-    if (videoRef.current && isVisible) {
-      videoRef.current.muted = true
-      videoRef.current.play().catch(() => {})
-    }
->>>>>>> Stashed changes
   }
 
   const fitClass = className.includes('object-contain') ? 'object-contain' : 'object-cover'
@@ -203,7 +174,6 @@ export default function LazyVideo({
       className={`${className.includes('absolute') ? '' : 'relative'} overflow-hidden bg-[#00172b] ${className}`}
     >
       {/* 1. Low Quality Image Placeholder: Instant 400-byte blurred frame at second 0 */}
-      {/* Stays permanently mounted underneath at z-0 while poster loads. NEVER unmounts until covered. */}
       {lqipPoster && !alreadyCached && (
         <img
           src={lqipPoster}
@@ -250,15 +220,9 @@ export default function LazyVideo({
               props.ref.current = el
             }
           }}
-<<<<<<< Updated upstream
           src={optimizedVideoSrc || src}
           poster={resolvedPoster || undefined}
-          autoPlay={autoPlay}
-=======
-          src={src || null}
-          poster={poster || null}
           autoPlay={autoPlay && isVisible}
->>>>>>> Stashed changes
           loop={loop}
           muted={muted}
           playsInline={playsInline}
