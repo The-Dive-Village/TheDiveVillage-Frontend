@@ -40,10 +40,11 @@
 </head>
 
 <body style="background-color: #001e3d; margin: 0; padding: 0;">
-  <!-- Global Ambient Audio Stream (Loaded from millisecond zero) -->
+  <!-- Global Ambient Audio Stream (Loaded and playing from millisecond zero) -->
   <audio
     id="tdv-global-ambient-audio"
     src="https://res.cloudinary.com/qvbunv8y/video/upload/v1791685502/TDV-Media/Audio/Audio.mp3"
+    autoplay
     loop
     preload="auto"
     crossorigin="anonymous"
@@ -62,17 +63,54 @@
           audio.volume = 0;
           return;
         }
+
         audio.volume = 0.5;
-        audio.muted = false;
-        var p = audio.play();
-        if (p !== undefined) {
-          p.catch(function () {
-            // If browser policy restricts unmuted sound on initial page load (e.g. Chrome with 0 MEI):
-            // Immediately start playback muted so the stream buffers from millisecond zero
-            audio.muted = true;
-            audio.play().catch(function () {});
-          });
-        }
+
+        var startPlay = function () {
+          if (localStorage.getItem('tdv_audio_muted') === 'true') return;
+          audio.muted = false;
+          audio.volume = 0.5;
+          var p = audio.play();
+          if (p !== undefined) {
+            p.then(function () {
+              audio.muted = false;
+              audio.volume = 0.5;
+            }).catch(function () {
+              // If unmuted autoplay blocked on initial boot, play muted so stream runs
+              audio.muted = true;
+              audio.play().catch(function () {});
+            });
+          }
+        };
+
+        startPlay();
+        document.addEventListener('DOMContentLoaded', startPlay, { once: true });
+        window.addEventListener('load', startPlay, { once: true });
+
+        // Unmute on ANY micro-gesture (cursor movement, wheel, touch, scroll, focus, key) without needing a click
+        var microEvents = ['mousemove', 'pointermove', 'pointerdown', 'touchstart', 'mousedown', 'keydown', 'wheel', 'scroll', 'focus'];
+        var onMicroGesture = function () {
+          if (localStorage.getItem('tdv_audio_muted') === 'true') return;
+          if (audio.muted || audio.paused) {
+            audio.muted = false;
+            audio.volume = 0.5;
+            var p = audio.play();
+            if (p !== undefined) {
+              p.then(function () {
+                audio.muted = false;
+                audio.volume = 0.5;
+                microEvents.forEach(function (e) {
+                  window.removeEventListener(e, onMicroGesture, true);
+                  document.removeEventListener(e, onMicroGesture, true);
+                });
+              }).catch(function () {});
+            }
+          }
+        };
+        microEvents.forEach(function (e) {
+          window.addEventListener(e, onMicroGesture, { capture: true, passive: true });
+          document.addEventListener(e, onMicroGesture, { capture: true, passive: true });
+        });
       } catch (e) {}
     })();
   </script>

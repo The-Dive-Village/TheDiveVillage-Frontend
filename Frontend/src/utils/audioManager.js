@@ -13,7 +13,7 @@ class AudioManager {
     this.hasUnlocked = false
     this.initialized = false
     this.currentSourceIndex = 0
-    this.wasPlayingBeforeHidden = false
+    this.wasAudibleBeforeLeave = false
     this.unlockListenersAttached = false
     this.unlockFn = null
 
@@ -41,10 +41,12 @@ class AudioManager {
     if (!audio) {
       audio = document.createElement('audio')
       audio.id = 'tdv-global-ambient-audio'
+      audio.autoplay = true
       audio.loop = true
       audio.preload = 'auto'
       audio.crossOrigin = 'anonymous'
       audio.playsInline = true
+      audio.setAttribute('autoplay', '')
       audio.setAttribute('playsinline', '')
       audio.setAttribute('webkit-playsinline', '')
       audio.style.cssText = 'display:none;position:fixed;pointer-events:none;'
@@ -64,8 +66,10 @@ class AudioManager {
       audio.volume = 0
     } else {
       audio.volume = 0.5
-      // If audio element already started muted during index.html inline script, keep until unmuted
-      audio.muted = audio.muted ?? false
+      // If audio is currently unmuted and playing, mark unlocked
+      if (!audio.muted && !audio.paused) {
+        this.hasUnlocked = true
+      }
     }
 
     if (!audio.src && AUDIO_SOURCES.length > 0) {
@@ -88,26 +92,32 @@ class AudioManager {
     this.audio = audio
 
     // ─────────────────────────────────────────────────────────────
-    // User Gesture Unlock Handlers (Capture phase for instant unlock)
+    // Instant Unmute Handlers: Covers Cursor Move, Wheel, Touch, Key, Click
+    // Ensures audio un-mutes automatically without waiting for an explicit click
     // ─────────────────────────────────────────────────────────────
-    const unlockEvents = [
+    const microEvents = [
+      'mousemove',
+      'pointermove',
+      'wheel',
+      'scroll',
       'pointerdown',
       'touchstart',
       'mousedown',
       'click',
-      'keydown'
+      'keydown',
+      'focus'
     ]
 
     const removeUnlockListeners = () => {
       if (!this.unlockListenersAttached) return
       this.unlockListenersAttached = false
-      unlockEvents.forEach((evt) => {
-        window.removeEventListener(evt, unlock, true)
-        document.removeEventListener(evt, unlock, true)
+      microEvents.forEach((evt) => {
+        window.removeEventListener(evt, attemptUnmute, true)
+        document.removeEventListener(evt, attemptUnmute, true)
       })
     }
 
-    const unlock = () => {
+    const attemptUnmute = () => {
       if (this.isMuted) {
         removeUnlockListeners()
         return
@@ -124,80 +134,65 @@ class AudioManager {
         if (p !== undefined) {
           p.then(() => {
             this.hasUnlocked = true
+            this.wasAudibleBeforeLeave = true
             this.notify()
             removeUnlockListeners()
           }).catch(() => {
-            // Keep listeners if interaction was not recognized as activation by browser
+            // Keep muted if browser requires further activation
+            this.audio.muted = true
           })
         } else {
           this.hasUnlocked = true
+          this.wasAudibleBeforeLeave = true
           this.notify()
           removeUnlockListeners()
         }
       }
     }
 
-    this.unlockFn = unlock
+    this.unlockFn = attemptUnmute
     this.unlockListenersAttached = true
 
-    unlockEvents.forEach((evt) => {
-      window.addEventListener(evt, unlock, { capture: true, passive: true })
-      document.addEventListener(evt, unlock, { capture: true, passive: true })
+    microEvents.forEach((evt) => {
+      window.addEventListener(evt, attemptUnmute, { capture: true, passive: true })
+      document.addEventListener(evt, attemptUnmute, { capture: true, passive: true })
     })
 
-    window.addEventListener('tdv-unlock-audio', unlock)
+    window.addEventListener('tdv-unlock-audio', attemptUnmute)
 
     // ─────────────────────────────────────────────────────────────
-    // Desktop & Mobile Lifecycle Handlers (Pause & Resume)
+    // Seamless Resume & Pause Matrix (Zero-Click Resumption)
     //
-    // Covers:
-    // 1. Desktop Tab Switch & Window Minimize: document.visibilitychange
-    // 2. Desktop Window Switch / Click off website: window.blur & window.focus
-    // 3. Mobile App Switch & Screen Lock: window.pagehide & window.pageshow
+    // KEY ARCHITECTURAL INSIGHT:
+    // To allow instant automatic resume on tab switch / window focus
+    // WITHOUT requiring user interaction, NEVER call audio.pause().
+    // Instead, mute the audio (audio.muted = true, volume = 0) when leaving.
+    // When returning, unmute (audio.muted = false, volume = 0.5).
+    // Browsers allow changing muted and volume freely without user gesture!
     // ─────────────────────────────────────────────────────────────
     const handleLeaveSite = () => {
       if (this.isMuted || !this.audio) return
-      // If currently playing with audible sound, remember and pause
-      if (!this.audio.paused && !this.audio.muted) {
-        this.wasPlayingBeforeHidden = true
-        this.audio.pause()
+      if (!this.audio.muted) {
+        this.wasAudibleBeforeLeave = true
+        // Instantly silence audio without terminating playback session
         this.audio.muted = true
+        this.audio.volume = 0
         this.notify()
       }
     }
 
     const handleEnterSite = () => {
       if (this.isMuted || !this.audio) return
-      // Don't resume if document is actually hidden in another tab
       if (typeof document !== 'undefined' && document.hidden) return
 
-      if (this.wasPlayingBeforeHidden) {
-        this.wasPlayingBeforeHidden = false
+      if (this.wasAudibleBeforeLeave && this.audio) {
+        // Instantly restore sound automatically — zero click required!
         this.audio.muted = false
         this.audio.volume = 0.5
-        const p = this.audio.play()
-        if (p !== undefined) {
-          p.then(() => {
-            this.hasUnlocked = true
-            this.notify()
-          }).catch((err) => {
-            console.warn('[AudioManager] Resumption blocked by browser policy:', err)
-            // Re-arm one-time unlock listener for the immediate next tap/click
-            const resumeOnTouch = () => {
-              if (!this.isMuted && this.audio && this.audio.paused && !document.hidden) {
-                this.audio.muted = false
-                this.audio.volume = 0.5
-                this.audio.play().catch(() => {})
-              }
-              window.removeEventListener('pointerdown', resumeOnTouch)
-              window.removeEventListener('touchstart', resumeOnTouch)
-              window.removeEventListener('click', resumeOnTouch)
-            }
-            window.addEventListener('pointerdown', resumeOnTouch, { once: true, passive: true })
-            window.addEventListener('touchstart', resumeOnTouch, { once: true, passive: true })
-            window.addEventListener('click', resumeOnTouch, { once: true, passive: true })
-          })
+        if (this.audio.paused) {
+          this.audio.play().catch(() => {})
         }
+        this.notify()
       }
     }
 
@@ -229,27 +224,31 @@ class AudioManager {
     })
 
     // ─────────────────────────────────────────────────────────────
-    // Initial Autoplay Attempt on Page Load
+    // Refresh & Boot Autoplay Retries
     // ─────────────────────────────────────────────────────────────
-    if (!this.isMuted && typeof document !== 'undefined' && !document.hidden) {
+    const tryAutoplay = () => {
+      if (this.isMuted || typeof document === 'undefined' || document.hidden) return
       this.audio.volume = 0.5
       this.audio.muted = false
       const p = this.audio.play()
       if (p !== undefined) {
         p.then(() => {
           this.hasUnlocked = true
+          this.wasAudibleBeforeLeave = true
           this.notify()
           removeUnlockListeners()
         }).catch(() => {
-          // If browser policy restricts unmuted autoplay on initial load (e.g. Chrome with 0 MEI):
-          // Immediately start muted playback so stream buffers and runs in the background
+          // If unmuted autoplay blocked on initial boot, play muted so stream is pre-buffered
           this.audio.muted = true
-          this.audio.play().then(() => {
-            // Buffer ready, waits for unlock
-          }).catch(() => {})
+          this.audio.play().catch(() => {})
         })
       }
     }
+
+    tryAutoplay()
+    setTimeout(tryAutoplay, 150)
+    setTimeout(tryAutoplay, 500)
+    window.addEventListener('load', tryAutoplay, { once: true })
 
     // Expose global instance for easy debugging and components
     window.__tdvGlobalAudio = this
@@ -291,19 +290,18 @@ class AudioManager {
 
   mute() {
     this.isMuted = true
-    this.wasPlayingBeforeHidden = false
+    this.wasAudibleBeforeLeave = false
     localStorage.setItem('tdv_audio_muted', 'true')
     if (this.audio) {
       this.audio.muted = true
       this.audio.volume = 0
-      this.audio.pause()
     }
     this.notify()
   }
 
   unmute() {
     this.isMuted = false
-    this.wasPlayingBeforeHidden = false
+    this.wasAudibleBeforeLeave = true
     localStorage.setItem('tdv_audio_muted', 'false')
     if (this.audio && typeof document !== 'undefined' && !document.hidden) {
       this.audio.muted = false
