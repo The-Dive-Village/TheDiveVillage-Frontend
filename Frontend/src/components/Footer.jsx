@@ -216,7 +216,7 @@ export default function Footer() {
 
               {/* Email Link */}
               <a
-                href="mailto:sanjeev.bajaj@thedivevillage.co"
+                href="mailto:sanjeev.bajaj@thedivevillage.com"
                 className="inline-flex items-center gap-2 text-white hover:text-accent active:opacity-80 transition-colors group min-w-0"
               >
                 <div className="w-9 h-9 rounded-full border border-sky-400/40 flex items-center justify-center shrink-0 group-hover:border-accent transition-colors">
@@ -226,7 +226,7 @@ export default function Footer() {
                   </svg>
                 </div>
                 <span className="text-[13px] sm:text-sm font-normal text-white/95 group-hover:text-accent transition-colors truncate">
-                  sanjeev.bajaj@thedivevillage.co
+                  sanjeev.bajaj@thedivevillage.com
                 </span>
               </a>
             </div>
@@ -334,7 +334,7 @@ export default function Footer() {
                   {/* Desktop Email Link */}
                   <div className="pt-2 border-t border-white/10">
                     <a
-                      href="mailto:sanjeev.bajaj@thedivevillage.co"
+                      href="mailto:sanjeev.bajaj@thedivevillage.com"
                       className="inline-flex items-center gap-2 text-white/80 hover:text-accent transition-colors group text-xs sm:text-sm"
                     >
                       <div className="w-6 h-6 rounded-full border border-sky-400/40 flex items-center justify-center shrink-0 group-hover:border-accent transition-colors">
@@ -344,7 +344,7 @@ export default function Footer() {
                         </svg>
                       </div>
                       <span className="font-medium truncate group-hover:text-accent transition-colors">
-                        sanjeev.bajaj@thedivevillage.co
+                        sanjeev.bajaj@thedivevillage.com
                       </span>
                     </a>
                   </div>

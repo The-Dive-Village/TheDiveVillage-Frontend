@@ -676,14 +676,14 @@ export default function Contact() {
 
           {/* Box 2: Write to Us */}
           <a
-            href="mailto:sanjeev.bajaj@thedivevillage.co"
+            href="mailto:sanjeev.bajaj@thedivevillage.com"
             className="flex flex-col items-center justify-center bg-white p-2.5 xs:p-3.5 sm:p-6 rounded-xl xs:rounded-2xl sm:rounded-3xl border border-navy/5 shadow-card hover:shadow-float hover:border-[#FFCD00]/50 hover:-translate-y-1 transition-all duration-300 group cursor-pointer active:scale-95 text-center min-w-0"
           >
             <div className="w-8 h-8 xs:w-10 xs:h-10 sm:w-12 sm:h-12 rounded-full bg-navy/5 text-navy group-hover:bg-[#FFCD00] group-hover:text-navy flex items-center justify-center mb-1.5 sm:mb-3 transition-colors shrink-0">
               <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><path d="M22 6l-10 7L2 6" /></svg>
             </div>
             <h4 className="font-bold text-navy mb-0.5 sm:mb-1.5 text-[11px] xs:text-xs sm:text-base group-hover:text-navy truncate max-w-full">Mail Us</h4>
-            <span className="text-[9px] xs:text-[10px] sm:text-sm text-navy/70 group-hover:text-[#FFCD00] font-bold transition-colors truncate max-w-full block">sanjeev.bajaj@thedivevillage.co</span>
+            <span className="text-[9px] xs:text-[10px] sm:text-sm text-navy/70 group-hover:text-[#FFCD00] font-bold transition-colors truncate max-w-full block">sanjeev.bajaj@thedivevillage.com</span>
           </a>
 
           {/* Box 3: Availability */}

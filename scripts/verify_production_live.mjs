@@ -122,7 +122,7 @@ async function verifyAll() {
   const cesiumOk = checkFeature('Cesium 3D Globe & Ion integration present', t => t.includes('Cesium') || t.includes('createWorldTerrain') || t.includes('Viewer'));
   const padiOk = checkFeature('PADI dive sites dataset (4,869 sites / 123 countries)', t => t.includes('latitude') && (t.includes('diveSites') || t.includes('dive_sites') || t.includes('diveLocations')));
   const phoneOk = checkFeature('Phone Call click destination: tel:+918971001010', t => t.includes('tel:+918971001010'));
-  const emailOk = checkFeature('Email click destination: mailto:sanjeev.bajaj@thedivevillage.co', t => t.includes('mailto:sanjeev.bajaj@thedivevillage.co'));
+  const emailOk = checkFeature('Email click destination: mailto:sanjeev.bajaj@thedivevillage.com', t => t.includes('mailto:sanjeev.bajaj@thedivevillage.com'));
   const waOk = checkFeature('WhatsApp destination: wa.me/918971001010', t => t.includes('wa.me/918971001010'));
   const cursorOk = checkFeature('Custom Diver Cursor hotspot tracking', t => t.includes('custom-cursor') || t.includes('cursor') || t.includes('diver'));
 

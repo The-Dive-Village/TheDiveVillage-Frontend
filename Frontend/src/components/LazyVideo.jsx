@@ -62,7 +62,7 @@ export default function LazyVideo({
         }
         const p = video.play()
         if (p !== undefined) {
-          p.then(() => setIsLoaded(true)).catch(() => {})
+          p.then(() => setIsLoaded(true)).catch(() => { })
         }
       }
 
@@ -74,13 +74,13 @@ export default function LazyVideo({
     setIsLoaded(true)
     if (autoPlay && e.currentTarget) {
       e.currentTarget.muted = true
-      e.currentTarget.play().catch(() => {})
+      e.currentTarget.play().catch(() => { })
     }
   }
 
   return (
-    <div 
-      ref={containerRef} 
+    <div
+      ref={containerRef}
       className={`relative overflow-hidden ${className}`}
       style={{ contentVisibility: 'auto', containIntrinsicSize: '100% 100%' }}
     >
@@ -102,9 +102,8 @@ export default function LazyVideo({
           onTimeUpdate={(e) => {
             if (e.currentTarget.currentTime > 0) setIsLoaded(true)
           }}
-          className={`w-full h-full ${className.includes('object-contain') ? 'object-contain' : 'object-cover'} transition-opacity duration-300 ${
-            isLoaded || !poster ? 'opacity-100 relative z-10' : 'opacity-0 relative z-0'
-          }`}
+          className={`w-full h-full ${className.includes('object-contain') ? 'object-contain' : 'object-cover'} transition-opacity duration-300 ${isLoaded || !poster ? 'opacity-100 relative z-10' : 'opacity-0 relative z-0'
+            }`}
           {...props}
         />
       )}

@@ -405,6 +405,7 @@ export const SERVICES_DATA = [
     long_desc: 'Expand skills in areas like navigation, buoyancy, or night diving.',
     video: vidAdventureDiver,
     image: imgScuba2Jpg,
+    isVertical: true,
     highlights: 'Duration: 1–2 days | Credit toward Advanced | Prequisites: Open Water Diver',
     days_min: 1.0,
     days_max: 2.0,
@@ -802,6 +803,7 @@ export const SERVICES_DATA = [
     long_desc: 'Explore reefs and walls with flexible guided dive packages tailored directly to your schedule. Choose from 1 to 12+ dives, specialized Night Dives, and Dawn Dives with certified Divemasters.',
     video: vidFunDive,
     image: imgFlexFunDives,
+    isVertical: true,
     highlights: 'Certified divers only | 1 to 12+ Dives | Custom Packages',
     isFunDivesContainer: true,
     faqs: [

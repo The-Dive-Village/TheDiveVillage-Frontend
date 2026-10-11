@@ -96,14 +96,14 @@ async function runParityAudit() {
       // Feature checks
       const hasDiverCursor = bundleText.includes('diver') || bundleText.includes('custom-cursor');
       const hasPhone = bundleText.includes('tel:+918971001010');
-      const hasEmail = bundleText.includes('mailto:sanjeev.bajaj@thedivevillage.co');
+      const hasEmail = bundleText.includes('mailto:sanjeev.bajaj@thedivevillage.com');
       const hasWhatsApp = bundleText.includes('wa.me/918971001010');
       const hasCesium = bundleText.includes('Cesium') || bundleText.includes('ion');
       const hasPadiSites = bundleText.includes('diveSites') || bundleText.includes('dive_sites') || bundleText.includes('PADI') || bundleText.includes('latitude');
 
       console.log(`  - Custom Cursor code present: ${hasDiverCursor}`);
       console.log(`  - Phone action ('tel:+918971001010') present: ${hasPhone}`);
-      console.log(`  - Email action ('mailto:sanjeev.bajaj@thedivevillage.co') present: ${hasEmail}`);
+      console.log(`  - Email action ('mailto:sanjeev.bajaj@thedivevillage.com') present: ${hasEmail}`);
       console.log(`  - WhatsApp action ('wa.me/918971001010') present: ${hasWhatsApp}`);
       console.log(`  - Cesium globe code present: ${hasCesium}`);
       console.log(`  - PADI dive sites data present: ${hasPadiSites}`);

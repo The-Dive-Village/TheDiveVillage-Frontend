@@ -53,8 +53,8 @@ export default function Services() {
     return false
   }
 
-  const filtered = activeTab === 'all' 
-    ? SERVICES_DATA 
+  const filtered = activeTab === 'all'
+    ? SERVICES_DATA
     : SERVICES_DATA.filter((s) => isMatch(s, activeTab))
 
   const grouped = CATEGORIES.slice(1).map(cat => ({
@@ -71,7 +71,7 @@ export default function Services() {
         canonicalUrl="https://thedivevillage.com/services"
       />
       <div className="mx-auto max-w-7xl px-3 sm:px-6 lg:px-8">
-        
+
         {/* 1. HEADER */}
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-4 sm:gap-6 mb-8 sm:mb-12">
           <div>
@@ -93,11 +93,10 @@ export default function Services() {
             <button
               key={cat.key}
               onClick={() => handleTabChange(cat.key)}
-              className={`w-full md:w-auto rounded-xl md:rounded-full px-1.5 sm:px-3 md:px-5 py-2 md:py-2.5 text-[11px] xs:text-xs sm:text-sm font-bold text-center transition-all duration-200 cursor-pointer flex items-center justify-center ${
-                activeTab === cat.key
+              className={`w-full md:w-auto rounded-xl md:rounded-full px-1.5 sm:px-3 md:px-5 py-2 md:py-2.5 text-[11px] xs:text-xs sm:text-sm font-bold text-center transition-all duration-200 cursor-pointer flex items-center justify-center ${activeTab === cat.key
                   ? 'bg-navy text-white shadow-md'
                   : 'bg-[#F0F2F5] text-navy/70 hover:bg-navy/10 hover:text-navy'
-              }`}
+                }`}
             >
               <span className="truncate">{cat.label}</span>
             </button>

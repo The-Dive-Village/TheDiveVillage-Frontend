@@ -39,66 +39,66 @@ import { getIslandsForCountry, getSitesForIsland, getIslandForSite } from '../ut
 // certifications are hidden in Step 2, and Step 3 is skipped.
 const SERVICE_TO_PROGRAM = {
   // Introductory Programs -> Scuba Diving
-  'prog-1': { courseId: 'try-dive',            experience: 'Scuba Diving' },
-  'prog-2': { courseId: 'dsd-lite',             experience: 'Scuba Diving' },
-  'prog-3': { courseId: 'padi-dsd',             experience: 'Scuba Diving' },
-  'prog-4': { courseId: 'add-dive-after-dsd',   experience: 'Scuba Diving' },
-  'prog-5': { courseId: 'padi-bubblemaker',     experience: 'Scuba Diving' },
+  'prog-1': { courseId: 'try-dive', experience: 'Scuba Diving' },
+  'prog-2': { courseId: 'dsd-lite', experience: 'Scuba Diving' },
+  'prog-3': { courseId: 'padi-dsd', experience: 'Scuba Diving' },
+  'prog-4': { courseId: 'add-dive-after-dsd', experience: 'Scuba Diving' },
+  'prog-5': { courseId: 'padi-bubblemaker', experience: 'Scuba Diving' },
   // Snorkeling -> Snorkeling
   'snork-1': { courseId: 'discover-snorkeling', experience: 'Snorkeling' },
-  'snork-2': { courseId: 'reef-explorer',       experience: 'Snorkeling' },
-  'snork-3': { courseId: 'ocean-explorer',      experience: 'Snorkeling' },
+  'snork-2': { courseId: 'reef-explorer', experience: 'Snorkeling' },
+  'snork-3': { courseId: 'ocean-explorer', experience: 'Snorkeling' },
   // Certification Courses -> Scuba Diving
-  'course-1':  { courseId: 'padi-skin-diver',        experience: 'Scuba Diving' },
-  'course-2':  { courseId: 'padi-scuba-diver',        experience: 'Scuba Diving' },
-  'course-3':  { courseId: 'padi-open-water',         experience: 'Scuba Diving' },
-  'course-4':  { courseId: 'padi-adventure-diver',    experience: 'Scuba Diving' },
-  'course-5':  { courseId: 'padi-advanced-ow',        experience: 'Scuba Diving' },
-  'course-6':  { courseId: 'efr-primary-secondary',   experience: 'Scuba Diving' },
-  'course-7':  { courseId: 'padi-rescue-diver',       experience: 'Scuba Diving' },
-  'course-8':  { courseId: 'padi-reactivate',         experience: 'Scuba Diving' },
-  'course-9':  { courseId: 'full-refresher',          experience: 'Scuba Diving' },
-  'course-10': { courseId: 'lite-refresher',          experience: 'Scuba Diving' },
+  'course-1': { courseId: 'padi-skin-diver', experience: 'Scuba Diving' },
+  'course-2': { courseId: 'padi-scuba-diver', experience: 'Scuba Diving' },
+  'course-3': { courseId: 'padi-open-water', experience: 'Scuba Diving' },
+  'course-4': { courseId: 'padi-adventure-diver', experience: 'Scuba Diving' },
+  'course-5': { courseId: 'padi-advanced-ow', experience: 'Scuba Diving' },
+  'course-6': { courseId: 'efr-primary-secondary', experience: 'Scuba Diving' },
+  'course-7': { courseId: 'padi-rescue-diver', experience: 'Scuba Diving' },
+  'course-8': { courseId: 'padi-reactivate', experience: 'Scuba Diving' },
+  'course-9': { courseId: 'full-refresher', experience: 'Scuba Diving' },
+  'course-10': { courseId: 'lite-refresher', experience: 'Scuba Diving' },
   // Specialties -> Scuba Diving
-  'spec-1': { courseId: 'peak-buoyancy',       experience: 'Scuba Diving' },
-  'spec-2': { courseId: 'project-aware',       experience: 'Scuba Diving' },
-  'spec-3': { courseId: 'deep-diver',          experience: 'Scuba Diving' },
-  'spec-4': { courseId: 'wreck-diver',         experience: 'Scuba Diving' },
-  'spec-5': { courseId: 'night-diver',         experience: 'Scuba Diving' },
+  'spec-1': { courseId: 'peak-buoyancy', experience: 'Scuba Diving' },
+  'spec-2': { courseId: 'project-aware', experience: 'Scuba Diving' },
+  'spec-3': { courseId: 'deep-diver', experience: 'Scuba Diving' },
+  'spec-4': { courseId: 'wreck-diver', experience: 'Scuba Diving' },
+  'spec-5': { courseId: 'night-diver', experience: 'Scuba Diving' },
   'spec-6': { courseId: 'enriched-air-nitrox', experience: 'Scuba Diving' },
-  'spec-7': { courseId: 'drift-diver',         experience: 'Scuba Diving' },
+  'spec-7': { courseId: 'drift-diver', experience: 'Scuba Diving' },
   // Combos & Packages -> Scuba Diving
-  'combo-1':        { courseId: 'padi-dsd-ow-combo',  experience: 'Scuba Diving' },
-  'combo-2':        { courseId: 'padi-ow-aow-combo',  experience: 'Scuba Diving' },
-  'combo-3':        { courseId: 'efr-rescue-combo',   experience: 'Scuba Diving' },
-  'combo-fundives': { courseId: 'fun-day-dive',       experience: 'Scuba Diving', funDivesCount: 'fun-2' },
+  'combo-1': { courseId: 'padi-dsd-ow-combo', experience: 'Scuba Diving' },
+  'combo-2': { courseId: 'padi-ow-aow-combo', experience: 'Scuba Diving' },
+  'combo-3': { courseId: 'efr-rescue-combo', experience: 'Scuba Diving' },
+  'combo-fundives': { courseId: 'fun-day-dive', experience: 'Scuba Diving', funDivesCount: 'fun-2' },
   // Pro Courses -> Scuba Diving
-  'pro-1': { courseId: 'padi-divemaster',       experience: 'Scuba Diving' },
-  'pro-2': { courseId: 'efr-rescue-dm-combo',   experience: 'Scuba Diving' },
+  'pro-1': { courseId: 'padi-divemaster', experience: 'Scuba Diving' },
+  'pro-2': { courseId: 'efr-rescue-dm-combo', experience: 'Scuba Diving' },
   'pro-3': { courseId: 'efr-rescue-dm-prereqs', experience: 'Scuba Diving' },
-  'pro-4': { courseId: 'zero-to-hero',          experience: 'Scuba Diving' },
+  'pro-4': { courseId: 'zero-to-hero', experience: 'Scuba Diving' },
   // Freediving -> FreeDiving
   'free-1': { courseId: 'padi-basic-freediver', experience: 'FreeDiving' },
-  'free-2': { courseId: 'padi-freediver',       experience: 'FreeDiving' },
+  'free-2': { courseId: 'padi-freediver', experience: 'FreeDiving' },
   // Surfing -> Surfing
-  'surf-1': { courseId: 'discover-surfing',      experience: 'Surfing' },
-  'surf-3': { courseId: '3-day-surf-academy',    experience: 'Surfing' },
+  'surf-1': { courseId: 'discover-surfing', experience: 'Surfing' },
+  'surf-3': { courseId: '3-day-surf-academy', experience: 'Surfing' },
   // Fun Dives (individual packages) -> Scuba Diving
-  'fun-day-dive':   { courseId: 'fun-day-dive',   experience: 'Scuba Diving', funDivesCount: 'fun-2' },
-  'fun-dawn-dive':  { courseId: 'fun-dawn-dive',  experience: 'Scuba Diving', funDivesCount: 'fun-dawn-1' },
+  'fun-day-dive': { courseId: 'fun-day-dive', experience: 'Scuba Diving', funDivesCount: 'fun-2' },
+  'fun-dawn-dive': { courseId: 'fun-dawn-dive', experience: 'Scuba Diving', funDivesCount: 'fun-dawn-1' },
   'fun-night-dive': { courseId: 'fun-night-dive', experience: 'Scuba Diving', funDivesCount: 'fun-night-1' },
-  'fun-1':          { courseId: 'fun-day-dive',   experience: 'Scuba Diving', funDivesCount: 'fun-1' },
-  'fun-2':          { courseId: 'fun-day-dive',   experience: 'Scuba Diving', funDivesCount: 'fun-2' },
-  'fun-4':          { courseId: 'fun-day-dive',   experience: 'Scuba Diving', funDivesCount: 'fun-4' },
-  'fun-6':          { courseId: 'fun-day-dive',   experience: 'Scuba Diving', funDivesCount: 'fun-6' },
-  'fun-8':          { courseId: 'fun-day-dive',   experience: 'Scuba Diving', funDivesCount: 'fun-8' },
-  'fun-10':         { courseId: 'fun-day-dive',   experience: 'Scuba Diving', funDivesCount: 'fun-10' },
-  'fun-12':         { courseId: 'fun-day-dive',   experience: 'Scuba Diving', funDivesCount: 'fun-12' },
-  'fun-post':       { courseId: 'fun-day-dive',   experience: 'Scuba Diving', funDivesCount: 'fun-post' },
-  'fun-dawn-1':     { courseId: 'fun-dawn-dive',  experience: 'Scuba Diving', funDivesCount: 'fun-dawn-1' },
-  'fun-dawn-2':     { courseId: 'fun-dawn-dive',  experience: 'Scuba Diving', funDivesCount: 'fun-dawn-2' },
-  'fun-night-1':    { courseId: 'fun-night-dive', experience: 'Scuba Diving', funDivesCount: 'fun-night-1' },
-  'fun-night-2':    { courseId: 'fun-night-dive', experience: 'Scuba Diving', funDivesCount: 'fun-night-2' },
+  'fun-1': { courseId: 'fun-day-dive', experience: 'Scuba Diving', funDivesCount: 'fun-1' },
+  'fun-2': { courseId: 'fun-day-dive', experience: 'Scuba Diving', funDivesCount: 'fun-2' },
+  'fun-4': { courseId: 'fun-day-dive', experience: 'Scuba Diving', funDivesCount: 'fun-4' },
+  'fun-6': { courseId: 'fun-day-dive', experience: 'Scuba Diving', funDivesCount: 'fun-6' },
+  'fun-8': { courseId: 'fun-day-dive', experience: 'Scuba Diving', funDivesCount: 'fun-8' },
+  'fun-10': { courseId: 'fun-day-dive', experience: 'Scuba Diving', funDivesCount: 'fun-10' },
+  'fun-12': { courseId: 'fun-day-dive', experience: 'Scuba Diving', funDivesCount: 'fun-12' },
+  'fun-post': { courseId: 'fun-day-dive', experience: 'Scuba Diving', funDivesCount: 'fun-post' },
+  'fun-dawn-1': { courseId: 'fun-dawn-dive', experience: 'Scuba Diving', funDivesCount: 'fun-dawn-1' },
+  'fun-dawn-2': { courseId: 'fun-dawn-dive', experience: 'Scuba Diving', funDivesCount: 'fun-dawn-2' },
+  'fun-night-1': { courseId: 'fun-night-dive', experience: 'Scuba Diving', funDivesCount: 'fun-night-1' },
+  'fun-night-2': { courseId: 'fun-night-dive', experience: 'Scuba Diving', funDivesCount: 'fun-night-2' },
 }
 
 export default function BookUs() {
@@ -426,7 +426,7 @@ export default function BookUs() {
         setContact((prev) => ({ ...prev, phone: clamped }))
         return
       }
-    } catch {}
+    } catch { }
     setContact((prev) => ({ ...prev, phone: val }))
   }, [])
 
@@ -456,7 +456,7 @@ export default function BookUs() {
     let callingCodeLen = 2
     try {
       callingCodeLen = getCountryCallingCode(phoneCountry || 'IN').length
-    } catch {}
+    } catch { }
 
     const currentDigits = (e.currentTarget.value || '').replace(/\D/g, '')
     if (currentDigits.length >= callingCodeLen + 10) {
@@ -1067,8 +1067,8 @@ export default function BookUs() {
         {/* Bottom Ultra-Smooth Dissolve & Merge Layer */}
         <div
           className={`absolute bottom-0 inset-x-0 h-28 sm:h-36 lg:h-44 pointer-events-none z-[5] transition-colors duration-500 ${isNightDive
-              ? 'bg-gradient-to-t from-[#0b1726] via-[#0b1726]/85 via-45% to-transparent'
-              : 'bg-gradient-to-t from-[#FAFAFA] via-[#FAFAFA]/90 via-45% to-transparent'
+            ? 'bg-gradient-to-t from-[#0b1726] via-[#0b1726]/85 via-45% to-transparent'
+            : 'bg-gradient-to-t from-[#FAFAFA] via-[#FAFAFA]/90 via-45% to-transparent'
             }`}
         />
 
@@ -1142,10 +1142,10 @@ export default function BookUs() {
                               <span
                                 key={s}
                                 className={`h-2 rounded-full transition-all duration-300 ${currentStep === s
-                                    ? 'w-7 bg-navy'
-                                    : currentStep > s
-                                      ? 'w-2 bg-navy'
-                                      : 'w-2 bg-slate-300'
+                                  ? 'w-7 bg-navy'
+                                  : currentStep > s
+                                    ? 'w-2 bg-navy'
+                                    : 'w-2 bg-slate-300'
                                   }`}
                               />
                             ))}
@@ -1212,16 +1212,15 @@ export default function BookUs() {
                             onChange={(e) => handleIslandChange(e.target.value)}
                             disabled={!country}
                             required
-                            className={`w-full rounded-lg sm:rounded-2xl bg-[#F0F2F5] px-3 py-2 sm:px-5 sm:py-4 pr-8 sm:pr-10 text-[11px] sm:text-sm font-semibold sm:font-bold outline-none focus:ring-2 focus:ring-accent/50 transition cursor-pointer appearance-none ${
-                              !country ? 'opacity-60 cursor-not-allowed text-navy/40' : !island ? 'text-navy/50' : 'text-navy'
-                            }`}
+                            className={`w-full rounded-lg sm:rounded-2xl bg-[#F0F2F5] px-3 py-2 sm:px-5 sm:py-4 pr-8 sm:pr-10 text-[11px] sm:text-sm font-semibold sm:font-bold outline-none focus:ring-2 focus:ring-accent/50 transition cursor-pointer appearance-none ${!country ? 'opacity-60 cursor-not-allowed text-navy/40' : !island ? 'text-navy/50' : 'text-navy'
+                              }`}
                           >
                             <option value="">
                               {!country
                                 ? 'Select a country first'
                                 : availableIslands.length === 0
-                                ? (allDiveSites.length === 0 ? 'Loading islands...' : 'No specific islands listed')
-                                : 'Select an island / region'}
+                                  ? (allDiveSites.length === 0 ? 'Loading islands...' : 'No specific islands listed')
+                                  : 'Select an island / region'}
                             </option>
                             {availableIslands.map((isl) => (
                               <option key={isl.name} value={isl.name}>
@@ -1255,22 +1254,21 @@ export default function BookUs() {
                             onChange={(e) => handleSiteChange(e.target.value)}
                             disabled={!country || (!island && availableIslands.length > 0)}
                             required
-                            className={`w-full rounded-lg sm:rounded-2xl bg-[#F0F2F5] px-3 py-2 sm:px-5 sm:py-4 pr-8 sm:pr-10 text-[11px] sm:text-sm font-semibold sm:font-bold outline-none focus:ring-2 focus:ring-accent/50 transition cursor-pointer appearance-none ${
-                              !country || (!island && availableIslands.length > 0)
+                            className={`w-full rounded-lg sm:rounded-2xl bg-[#F0F2F5] px-3 py-2 sm:px-5 sm:py-4 pr-8 sm:pr-10 text-[11px] sm:text-sm font-semibold sm:font-bold outline-none focus:ring-2 focus:ring-accent/50 transition cursor-pointer appearance-none ${!country || (!island && availableIslands.length > 0)
                                 ? 'opacity-60 cursor-not-allowed text-navy/40'
                                 : !location
-                                ? 'text-navy/50'
-                                : 'text-navy'
-                            }`}
+                                  ? 'text-navy/50'
+                                  : 'text-navy'
+                              }`}
                           >
                             <option value="">
                               {!country
                                 ? 'Select a country first'
                                 : !island && availableIslands.length > 0
-                                ? 'Select an island / region first'
-                                : availableSitesForIsland.length === 0
-                                ? 'No dive sites listed for this selection'
-                                : `Select a Dive Site (${availableSitesForIsland.length} available)`}
+                                  ? 'Select an island / region first'
+                                  : availableSitesForIsland.length === 0
+                                    ? 'No dive sites listed for this selection'
+                                    : `Select a Dive Site (${availableSitesForIsland.length} available)`}
                             </option>
                             {/* Retain selected site if picked from map or search params */}
                             {location && !availableSitesForIsland.some((s) => s.siteName === location) && (
@@ -1343,19 +1341,17 @@ export default function BookUs() {
                           <button
                             type="button"
                             onClick={() => handleToggleAddOn('None')}
-                            className={`group relative flex items-center justify-between px-3.5 py-3 rounded-2xl text-xs sm:text-sm font-bold transition-all text-left border cursor-pointer col-span-1 ${
-                              selectedAddOns.includes('None')
+                            className={`group relative flex items-center justify-between px-3.5 py-3 rounded-2xl text-xs sm:text-sm font-bold transition-all text-left border cursor-pointer ${selectedAddOns.includes('None')
                                 ? 'bg-navy text-white border-navy shadow-md ring-1 ring-navy'
                                 : 'bg-[#F0F2F5] text-navy/80 border-transparent hover:bg-[#E5E9EF] hover:text-navy'
-                            }`}
+                              }`}
                           >
-                            <span className="whitespace-nowrap pr-2">None</span>
+                            <span className="truncate pr-2">None</span>
                             <span
-                              className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 text-[9px] transition-all ${
-                                selectedAddOns.includes('None')
+                              className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 text-[9px] transition-all ${selectedAddOns.includes('None')
                                   ? 'border-white bg-white text-navy font-black scale-105'
                                   : 'border-navy/20 bg-white/60 group-hover:border-navy/40'
-                              }`}
+                                }`}
                             >
                               {selectedAddOns.includes('None') ? '✓' : ''}
                             </span>
@@ -1363,33 +1359,22 @@ export default function BookUs() {
 
                           {ADD_ON_OPTIONS.map((addOn) => {
                             const isSelected = selectedAddOns.includes(addOn)
-                            const spanClass =
-                              addOn === 'Local Sightseeing'
-                                ? 'col-span-2 sm:col-span-2'
-                                : addOn === 'Camping / Camper'
-                                  ? 'col-span-2 sm:col-span-2'
-                                  : addOn === 'Liveaboard'
-                                    ? 'col-span-2 sm:col-span-1'
-                                    : 'col-span-1'
-
                             return (
                               <button
                                 key={addOn}
                                 type="button"
                                 onClick={() => handleToggleAddOn(addOn)}
-                                className={`group relative flex items-center justify-between px-3.5 py-3 rounded-2xl text-xs sm:text-sm font-bold transition-all text-left border cursor-pointer ${spanClass} ${
-                                  isSelected
+                                className={`group relative flex items-center justify-between px-3.5 py-3 rounded-2xl text-xs sm:text-sm font-bold transition-all text-left border cursor-pointer ${isSelected
                                     ? 'bg-navy text-white border-navy shadow-md ring-1 ring-navy'
                                     : 'bg-[#F0F2F5] text-navy/80 border-transparent hover:bg-[#E5E9EF] hover:text-navy'
-                                }`}
+                                  }`}
                               >
-                                <span className="whitespace-nowrap pr-2">{addOn}</span>
+                                <span className="truncate pr-2">{addOn}</span>
                                 <span
-                                  className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 text-[9px] transition-all ${
-                                    isSelected
+                                  className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 text-[9px] transition-all ${isSelected
                                       ? 'border-white bg-white text-navy font-black scale-105'
                                       : 'border-navy/20 bg-white/60 group-hover:border-navy/40'
-                                  }`}
+                                    }`}
                                 >
                                   {isSelected ? '✓' : ''}
                                 </span>
@@ -1480,724 +1465,722 @@ export default function BookUs() {
                           />
                         </div>
                       </div>
-                  </motion.div>
-                )}
+                    </motion.div>
+                  )}
 
-                {/* STEP 2: Name, Age & Certification Eligibility for Each Person */}
-                {currentStep === 2 && (
-                  <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="space-y-3.5 sm:space-y-6">
-                    <div className="hidden sm:block">
-                      <span className="text-[9px] sm:text-xs font-bold uppercase tracking-widest text-accent mb-0.5 block">
-                        Step 2 of {((!experience && selectedAddOns.some((item) => item !== 'None')) || isDirectActivity(experience)) ? 2 : 3}
-                      </span>
-                      <h3 className="font-heading text-lg sm:text-3xl font-bold text-navy">
-                        {isCourseService ? 'Participant Details' : 'Participants & Programs'}
-                      </h3>
-                      <p className="text-[10px] sm:text-xs text-navy/60 mt-0.5">
-                        {isCourseService
-                          ? `Confirm participant details for ${selectedCourseProgram?.name || serviceItem?.title || experience}.`
-                          : `Enter age, prior certification, and choose your preferred course for ${experience}.`}
-                      </p>
-                    </div>
+                  {/* STEP 2: Name, Age & Certification Eligibility for Each Person */}
+                  {currentStep === 2 && (
+                    <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="space-y-3.5 sm:space-y-6">
+                      <div className="hidden sm:block">
+                        <span className="text-[9px] sm:text-xs font-bold uppercase tracking-widest text-accent mb-0.5 block">
+                          Step 2 of {((!experience && selectedAddOns.some((item) => item !== 'None')) || isDirectActivity(experience)) ? 2 : 3}
+                        </span>
+                        <h3 className="font-heading text-lg sm:text-3xl font-bold text-navy">
+                          {isCourseService ? 'Participant Details' : 'Participants & Programs'}
+                        </h3>
+                        <p className="text-[10px] sm:text-xs text-navy/60 mt-0.5">
+                          {isCourseService
+                            ? `Confirm participant details for ${selectedCourseProgram?.name || serviceItem?.title || experience}.`
+                            : `Enter age, prior certification, and choose your preferred course for ${experience}.`}
+                        </p>
+                      </div>
 
-                    <div data-lenis-prevent className="space-y-3 sm:space-y-6 max-h-[500px] sm:max-h-[550px] overflow-y-auto overscroll-contain pr-1">
-                      {participants.map((p, idx) => {
-                        const ageNum = parseInt(p.age, 10)
-                        const isAgeValid = !isNaN(ageNum) && ageNum >= 8 && ageNum <= 110
-                        const eligibleCourses = isAgeValid ? getEligibleCourses(p.age, p.hasCertification, p.certifications, experience) : []
-                        const availableCertOptions = sortCoursesByDifficulty(
-                          getAvailableCertificationsForAge(p.age, experience)
-                        )
-                        const programName = selectedCourseProgram?.name || serviceItem?.title || 'Selected Program'
+                      <div data-lenis-prevent className="space-y-3 sm:space-y-6 max-h-[500px] sm:max-h-[550px] overflow-y-auto overscroll-contain pr-1">
+                        {participants.map((p, idx) => {
+                          const ageNum = parseInt(p.age, 10)
+                          const isAgeValid = !isNaN(ageNum) && ageNum >= 8 && ageNum <= 110
+                          const eligibleCourses = isAgeValid ? getEligibleCourses(p.age, p.hasCertification, p.certifications, experience) : []
+                          const availableCertOptions = sortCoursesByDifficulty(
+                            getAvailableCertificationsForAge(p.age, experience)
+                          )
+                          const programName = selectedCourseProgram?.name || serviceItem?.title || 'Selected Program'
 
-                        return (
-                          <div key={p.id} className="rounded-xl sm:rounded-3xl bg-[#FAFAFA] border border-navy/10 p-3 sm:p-6 space-y-2.5 sm:space-y-5">
-                            <div className="flex justify-between items-center border-b border-navy/5 pb-2 sm:pb-3">
-                              <span className="font-heading font-bold text-navy text-xs sm:text-lg">
-                                Person {idx + 1} Details
-                              </span>
-                              <span className="text-[8px] sm:text-[11px] text-navy/50 font-bold uppercase tracking-wider">
-                                Participant #{idx + 1}
-                              </span>
-                            </div>
-
-                            {/* Name and Age Inputs */}
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-4">
-                              <div>
-                                <label className="mb-1 sm:mb-2 block text-[9px] sm:text-xs font-bold text-navy/70">Full Name</label>
-                                <input
-                                  type="text"
-                                  placeholder={`Name of Person ${idx + 1}`}
-                                  value={p.name}
-                                  onChange={(e) => handleParticipantChange(idx, 'name', e.target.value)}
-                                  required
-                                  className="w-full rounded-lg sm:rounded-2xl bg-white border border-navy/10 px-2.5 py-1.5 sm:px-4 sm:py-3.5 text-[11px] sm:text-sm placeholder:text-[10px] sm:placeholder:text-sm font-semibold sm:font-bold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition"
-                                />
+                          return (
+                            <div key={p.id} className="rounded-xl sm:rounded-3xl bg-[#FAFAFA] border border-navy/10 p-3 sm:p-6 space-y-2.5 sm:space-y-5">
+                              <div className="flex justify-between items-center border-b border-navy/5 pb-2 sm:pb-3">
+                                <span className="font-heading font-bold text-navy text-xs sm:text-lg">
+                                  Person {idx + 1} Details
+                                </span>
+                                <span className="text-[8px] sm:text-[11px] text-navy/50 font-bold uppercase tracking-wider">
+                                  Participant #{idx + 1}
+                                </span>
                               </div>
 
-                              <div>
-                                <label className="mb-1 sm:mb-2 block text-[9px] sm:text-xs font-bold text-navy/70">Age (Years)</label>
-                                <input
-                                  type="number"
-                                  min="8"
-                                  max="110"
-                                  placeholder="e.g. 12"
-                                  value={p.age}
-                                  onChange={(e) => {
-                                    let rawVal = e.target.value
-                                    if (rawVal !== '') {
-                                      const parsed = parseInt(rawVal, 10)
-                                      if (!isNaN(parsed) && parsed > 110) {
-                                        rawVal = '110'
-                                      }
-                                    }
-                                    handleParticipantChange(idx, 'age', rawVal)
-                                  }}
-                                  required
-                                  className="w-full rounded-lg sm:rounded-2xl bg-white border border-navy/10 px-2.5 py-1.5 sm:px-4 sm:py-3.5 text-[11px] sm:text-sm placeholder:text-[10px] sm:placeholder:text-sm font-semibold sm:font-bold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition"
-                                />
-                              </div>
-                            </div>
-
-                            {/* Compulsory Circular Parental Consent Checkbox for Age < 12 */}
-                            {isAgeValid && ageNum < 12 && (
-                              <div
-                                onClick={() => handleParticipantChange(idx, 'parentalConsent', !p.parentalConsent)}
-                                className={`p-3 sm:p-4 rounded-xl sm:rounded-2xl border transition-all cursor-pointer flex items-center gap-3 select-none ${
-                                  p.parentalConsent
-                                    ? 'bg-amber-500/10 border-amber-500/50 text-navy'
-                                    : 'bg-white border-amber-300 hover:border-amber-400'
-                                }`}
-                              >
-                                <div
-                                  className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
-                                    p.parentalConsent
-                                      ? 'bg-navy border-navy text-white shadow-sm'
-                                      : 'border-amber-500 bg-white'
-                                  }`}
-                                >
-                                  {p.parentalConsent && (
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
-                                      <polyline points="20 6 9 17 4 12" />
-                                    </svg>
-                                  )}
-                                </div>
-                                <div className="flex-1">
-                                  <span className="text-[11px] sm:text-xs font-bold text-navy block leading-snug">
-                                    Yes I have proper experience and Parental Consent <span className="text-red-500">*</span>
-                                  </span>
-                                  <span className="text-[9px] sm:text-[10px] text-navy/60 font-medium block mt-0.5">
-                                    Compulsory verification for participants under 12 years of age
-                                  </span>
-                                </div>
-                              </div>
-                            )}
-
-                            {/* Before age is entered */}
-                            {p.age === '' && (
-                              <div className="rounded-lg sm:rounded-2xl bg-navy/[0.03] border border-navy/10 p-2.5 sm:p-4 text-[10px] sm:text-xs font-medium text-navy/70 flex items-center gap-2">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-navy/50"><circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" /></svg>
-                                <span>{isCourseService ? 'Enter age to continue.' : 'Enter age to see available programs.'}</span>
-                              </div>
-                            )}
-
-                            {/* Invalid age notice */}
-                            {p.age !== '' && !isAgeValid && (
-                              <div className="rounded-lg sm:rounded-2xl bg-red-50 border border-red-200 p-2.5 sm:p-4 text-[10px] sm:text-xs font-medium text-red-600 flex items-start gap-2">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-red-600 mt-0.5"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" /></svg>
+                              {/* Name and Age Inputs */}
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-4">
                                 <div>
-                                  <span className="font-bold block mb-0.5">
-                                    {ageNum < 8 ? 'Minimum Age Requirement (8 Years)' : 'Maximum Age Limit (110 Years)'}
-                                  </span>
-                                  <span>
-                                    {ageNum < 8
-                                      ? 'The minimum age for participating in activities is 8 years old.'
-                                      : 'Please enter a valid age up to 110 years.'}
-                                  </span>
+                                  <label className="mb-1 sm:mb-2 block text-[9px] sm:text-xs font-bold text-navy/70">Full Name</label>
+                                  <input
+                                    type="text"
+                                    placeholder={`Name of Person ${idx + 1}`}
+                                    value={p.name}
+                                    onChange={(e) => handleParticipantChange(idx, 'name', e.target.value)}
+                                    required
+                                    className="w-full rounded-lg sm:rounded-2xl bg-white border border-navy/10 px-2.5 py-1.5 sm:px-4 sm:py-3.5 text-[11px] sm:text-sm placeholder:text-[10px] sm:placeholder:text-sm font-semibold sm:font-bold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition"
+                                  />
+                                </div>
+
+                                <div>
+                                  <label className="mb-1 sm:mb-2 block text-[9px] sm:text-xs font-bold text-navy/70">Age (Years)</label>
+                                  <input
+                                    type="number"
+                                    min="8"
+                                    max="110"
+                                    placeholder="e.g. 12"
+                                    value={p.age}
+                                    onChange={(e) => {
+                                      let rawVal = e.target.value
+                                      if (rawVal !== '') {
+                                        const parsed = parseInt(rawVal, 10)
+                                        if (!isNaN(parsed) && parsed > 110) {
+                                          rawVal = '110'
+                                        }
+                                      }
+                                      handleParticipantChange(idx, 'age', rawVal)
+                                    }}
+                                    required
+                                    className="w-full rounded-lg sm:rounded-2xl bg-white border border-navy/10 px-2.5 py-1.5 sm:px-4 sm:py-3.5 text-[11px] sm:text-sm placeholder:text-[10px] sm:placeholder:text-sm font-semibold sm:font-bold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition"
+                                  />
                                 </div>
                               </div>
-                            )}
 
-                            {/* FOR SERVICE FLOW: Show only the automatically filled Program and no certification questions */}
-                            {isCourseService ? (
-                              isAgeValid && (
-                                <div className="rounded-xl sm:rounded-2xl bg-white border border-navy/10 p-3 sm:p-4 shadow-sm flex items-center justify-between gap-3">
-                                  <div className="min-w-0">
-                                    <span className="text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider text-navy/50 block">
-                                      Program
+                              {/* Compulsory Circular Parental Consent Checkbox for Age < 12 */}
+                              {isAgeValid && ageNum < 12 && (
+                                <div
+                                  onClick={() => handleParticipantChange(idx, 'parentalConsent', !p.parentalConsent)}
+                                  className={`p-3 sm:p-4 rounded-xl sm:rounded-2xl border transition-all cursor-pointer flex items-center gap-3 select-none ${p.parentalConsent
+                                      ? 'bg-amber-500/10 border-amber-500/50 text-navy'
+                                      : 'bg-white border-amber-300 hover:border-amber-400'
+                                    }`}
+                                >
+                                  <div
+                                    className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${p.parentalConsent
+                                        ? 'bg-navy border-navy text-white shadow-sm'
+                                        : 'border-amber-500 bg-white'
+                                      }`}
+                                  >
+                                    {p.parentalConsent && (
+                                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                                        <polyline points="20 6 9 17 4 12" />
+                                      </svg>
+                                    )}
+                                  </div>
+                                  <div className="flex-1">
+                                    <span className="text-[11px] sm:text-xs font-bold text-navy block leading-snug">
+                                      Yes I have proper experience and Parental Consent <span className="text-red-500">*</span>
                                     </span>
-                                    <span className="font-heading font-bold text-navy text-xs sm:text-base truncate block mt-0.5">
-                                      Program - "{programName}"
+                                    <span className="text-[9px] sm:text-[10px] text-navy/60 font-medium block mt-0.5">
+                                      Compulsory verification for participants under 12 years of age
                                     </span>
                                   </div>
-                                  <span className="px-2.5 py-1 rounded-full bg-accent/20 text-navy text-[10px] sm:text-xs font-extrabold shrink-0">
-                                    Selected
-                                  </span>
                                 </div>
-                              )
-                            ) : (
-                              /* FOR REGULAR BOOK US FLOW: Certification Choice & Levels */
-                              isAgeValid && (
-                                <div className="space-y-2.5 pt-1">
-                                  {/* Certification Choice only for Scuba Diving */}
-                                  {normalizeExperienceKey(experience) === 'scuba' && (
-                                    <div>
-                                      <label className="mb-1.5 block text-[9px] sm:text-xs font-bold text-navy/80 uppercase tracking-wider">
-                                        Do you already have a certification?
-                                      </label>
-                                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
-                                        <button
-                                          type="button"
-                                          onClick={() => handleParticipantChange(idx, 'hasCertification', false)}
-                                          className={`p-2.5 sm:p-4 rounded-lg sm:rounded-2xl border text-left transition-all flex items-center justify-between gap-2 ${!p.hasCertification
-                                            ? 'bg-navy text-white border-navy shadow-sm'
-                                            : 'bg-white text-navy border-navy/15 hover:border-navy/30'
-                                            }`}
-                                        >
-                                          <div>
-                                            <span className="font-bold text-[11px] sm:text-sm block">Without Certificate</span>
-                                            <span className={`text-[9px] sm:text-[11px] block mt-0.5 ${!p.hasCertification ? 'text-white/70' : 'text-navy/50'}`}>
-                                              Beginner, introductory & pathway options
-                                            </span>
-                                          </div>
-                                          <div className={`w-3.5 h-3.5 sm:w-5 sm:h-5 rounded-full border flex items-center justify-center shrink-0 ${!p.hasCertification ? 'border-white bg-white text-navy' : 'border-navy/20'
-                                            }`}>
-                                            {!p.hasCertification && <span className="text-[8px] sm:text-[10px] font-bold">✓</span>}
-                                          </div>
-                                        </button>
+                              )}
 
-                                        <button
-                                          type="button"
-                                          onClick={() => handleParticipantChange(idx, 'hasCertification', true)}
-                                          className={`p-2.5 sm:p-4 rounded-lg sm:rounded-2xl border text-left transition-all flex items-center justify-between gap-2 ${p.hasCertification
-                                            ? 'bg-navy text-white border-navy shadow-sm'
-                                            : 'bg-white text-navy border-navy/15 hover:border-navy/30'
-                                            }`}
-                                        >
-                                          <div>
-                                            <span className="font-bold text-[11px] sm:text-sm block">
-                                              With Certificate
-                                            </span>
-                                            <span className={`text-[9px] sm:text-[11px] block mt-0.5 ${p.hasCertification ? 'text-white/70' : 'text-navy/50'}`}>
-                                              {ageNum === 8 ? 'Junior certified diver programs' : 'Choose your current diving certificate'}
-                                            </span>
-                                          </div>
-                                          <div className={`w-3.5 h-3.5 sm:w-5 sm:h-5 rounded-full border flex items-center justify-center shrink-0 ${p.hasCertification ? 'border-white bg-white text-navy' : 'border-navy/20'
-                                            }`}>
-                                            {p.hasCertification && <span className="text-[8px] sm:text-[10px] font-bold">✓</span>}
-                                          </div>
-                                        </button>
-                                      </div>
-                                    </div>
-                                  )}
+                              {/* Before age is entered */}
+                              {p.age === '' && (
+                                <div className="rounded-lg sm:rounded-2xl bg-navy/[0.03] border border-navy/10 p-2.5 sm:p-4 text-[10px] sm:text-xs font-medium text-navy/70 flex items-center gap-2">
+                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-navy/50"><circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" /></svg>
+                                  <span>{isCourseService ? 'Enter age to continue.' : 'Enter age to see available programs.'}</span>
+                                </div>
+                              )}
 
-                                  {/* If Certified & Above 8+: Ask which certificate (Only Scuba Diving) */}
-                                  {normalizeExperienceKey(experience) === 'scuba' && p.hasCertification && ageNum > 8 && availableCertOptions.length > 0 && (
-                                    <div className="space-y-1.5 pt-1">
-                                      <label className="block text-[9px] sm:text-xs font-bold text-navy/80 uppercase tracking-wider">
-                                        Which certificate do you currently have?
-                                      </label>
-                                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-2">
-                                        {availableCertOptions.map((opt) => {
-                                          const isSelected = (p.certifications || []).includes(opt.id)
-                                          return (
-                                            <button
-                                              key={opt.id}
-                                              type="button"
-                                              onClick={() => handleSelectCertification(idx, opt.id)}
-                                              className={`p-2 sm:p-3 rounded-lg border text-left text-[10px] sm:text-xs font-semibold sm:font-bold transition flex items-center justify-between gap-1.5 ${isSelected
-                                                ? 'bg-navy text-white border-navy shadow-sm'
-                                                : 'bg-white text-navy/80 border-navy/10 hover:border-navy/30 hover:bg-navy/[0.02]'
-                                                }`}
-                                            >
-                                              <span className="truncate">{getCourseDisplayName(opt.name)}</span>
-                                              <span className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full border flex items-center justify-center shrink-0 text-[8px] sm:text-[10px] ${isSelected ? 'bg-white text-navy border-white font-bold' : 'border-navy/20'
-                                                }`}>
-                                                {isSelected ? '✓' : ''}
-                                              </span>
-                                            </button>
-                                          )
-                                        })}
-                                      </div>
-                                    </div>
-                                  )}
+                              {/* Invalid age notice */}
+                              {p.age !== '' && !isAgeValid && (
+                                <div className="rounded-lg sm:rounded-2xl bg-red-50 border border-red-200 p-2.5 sm:p-4 text-[10px] sm:text-xs font-medium text-red-600 flex items-start gap-2">
+                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-red-600 mt-0.5"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" /></svg>
+                                  <div>
+                                    <span className="font-bold block mb-0.5">
+                                      {ageNum < 8 ? 'Minimum Age Requirement (8 Years)' : 'Maximum Age Limit (110 Years)'}
+                                    </span>
+                                    <span>
+                                      {ageNum < 8
+                                        ? 'The minimum age for participating in activities is 8 years old.'
+                                        : 'Please enter a valid age up to 110 years.'}
+                                    </span>
+                                  </div>
+                                </div>
+                              )}
 
-                                  {/* Dynamic Eligibility Badge */}
-                                  <div className="rounded-lg sm:rounded-2xl bg-emerald-500/10 border border-emerald-500/20 p-2 sm:p-3.5 text-[10px] sm:text-xs text-emerald-800 font-medium flex items-center justify-between gap-2">
-                                    <div className="flex items-center gap-1.5 sm:gap-2">
-                                      <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-500 shrink-0 animate-pulse" />
-                                      <span>
-                                        {eligibleCourses.length} {normalizeExperienceKey(experience) === 'scuba' ? 'course(s)' : 'program(s)'} available for {experience || 'selected experience'}
+                              {/* FOR SERVICE FLOW: Show only the automatically filled Program and no certification questions */}
+                              {isCourseService ? (
+                                isAgeValid && (
+                                  <div className="rounded-xl sm:rounded-2xl bg-white border border-navy/10 p-3 sm:p-4 shadow-sm flex items-center justify-between gap-3">
+                                    <div className="min-w-0">
+                                      <span className="text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider text-navy/50 block">
+                                        Program
+                                      </span>
+                                      <span className="font-heading font-bold text-navy text-xs sm:text-base truncate block mt-0.5">
+                                        Program - "{programName}"
                                       </span>
                                     </div>
-                                    <span className="font-bold text-[9px] sm:text-[11px] uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-emerald-500/15">
-                                      {eligibleCourses.length} Available
+                                    <span className="px-2.5 py-1 rounded-full bg-accent/20 text-navy text-[10px] sm:text-xs font-extrabold shrink-0">
+                                      Selected
                                     </span>
                                   </div>
-
-                                  {/* INLINE ELIGIBLE COURSES & PROGRAMS (Integrated directly into Step 2) */}
-                                  <div className="pt-2 sm:pt-3 border-t border-navy/10 space-y-2.5">
-                                    <div className="flex justify-between items-center">
-                                      <label htmlFor={`select-program-${p.id}`} className="text-[9px] sm:text-xs font-bold text-navy/80 uppercase tracking-wider">
-                                        Select Course / Program <span className="text-red-500">*</span>
-                                      </label>
-                                      <span className="text-[9px] sm:text-[11px] text-navy/50 font-medium">Choose from unlocked courses</span>
-                                    </div>
-
-                                    {eligibleCourses.length === 0 ? (
-                                      <div className="rounded-lg sm:rounded-2xl bg-navy/[0.04] border border-navy/10 p-3 text-[10px] sm:text-xs font-medium text-navy/80">
-                                        No courses available for this combination.
-                                      </div>
-                                    ) : (
-                                      <div className="space-y-2">
-                                        {/* Dropdown Selector */}
-                                        <div className="relative">
-                                          <select
-                                            id={`select-program-${p.id}`}
-                                            value={p.selectedProgram}
-                                            onChange={(e) => handleParticipantChange(idx, 'selectedProgram', e.target.value)}
-                                            required
-                                            aria-label={`Select course for ${p.name || `Person ${idx + 1}`}`}
-                                            className="w-full rounded-lg sm:rounded-2xl bg-white border border-navy/15 px-2.5 py-2 sm:px-4 sm:py-3.5 text-[11px] sm:text-sm font-semibold sm:font-bold text-navy outline-none focus:ring-2 focus:ring-navy/20 transition appearance-none shadow-sm cursor-pointer pr-8"
+                                )
+                              ) : (
+                                /* FOR REGULAR BOOK US FLOW: Certification Choice & Levels */
+                                isAgeValid && (
+                                  <div className="space-y-2.5 pt-1">
+                                    {/* Certification Choice only for Scuba Diving */}
+                                    {normalizeExperienceKey(experience) === 'scuba' && (
+                                      <div>
+                                        <label className="mb-1.5 block text-[9px] sm:text-xs font-bold text-navy/80 uppercase tracking-wider">
+                                          Do you already have a certification?
+                                        </label>
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+                                          <button
+                                            type="button"
+                                            onClick={() => handleParticipantChange(idx, 'hasCertification', false)}
+                                            className={`p-2.5 sm:p-4 rounded-lg sm:rounded-2xl border text-left transition-all flex items-center justify-between gap-2 ${!p.hasCertification
+                                              ? 'bg-navy text-white border-navy shadow-sm'
+                                              : 'bg-white text-navy border-navy/15 hover:border-navy/30'
+                                              }`}
                                           >
-                                            <option value="" disabled>Select an eligible course...</option>
-                                            {eligibleCourses.map((prog) => (
-                                              <option key={prog.id} value={prog.id}>
-                                                {getCourseDisplayName(prog.name)} [{prog.category}] — {prog.certLabel}
-                                              </option>
-                                            ))}
-                                          </select>
-                                          <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-navy/40">
-                                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 9l6 6 6-6" /></svg>
-                                          </div>
-                                        </div>
+                                            <div>
+                                              <span className="font-bold text-[11px] sm:text-sm block">Without Certificate</span>
+                                              <span className={`text-[9px] sm:text-[11px] block mt-0.5 ${!p.hasCertification ? 'text-white/70' : 'text-navy/50'}`}>
+                                                Beginner, introductory & pathway options
+                                              </span>
+                                            </div>
+                                            <div className={`w-3.5 h-3.5 sm:w-5 sm:h-5 rounded-full border flex items-center justify-center shrink-0 ${!p.hasCertification ? 'border-white bg-white text-navy' : 'border-navy/20'
+                                              }`}>
+                                              {!p.hasCertification && <span className="text-[8px] sm:text-[10px] font-bold">✓</span>}
+                                            </div>
+                                          </button>
 
-                                        {/* Quick-Pick Course Cards */}
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2.5 pt-1">
-                                          {eligibleCourses.map((prog) => {
-                                            const isSelected = p.selectedProgram === prog.id
+                                          <button
+                                            type="button"
+                                            onClick={() => handleParticipantChange(idx, 'hasCertification', true)}
+                                            className={`p-2.5 sm:p-4 rounded-lg sm:rounded-2xl border text-left transition-all flex items-center justify-between gap-2 ${p.hasCertification
+                                              ? 'bg-navy text-white border-navy shadow-sm'
+                                              : 'bg-white text-navy border-navy/15 hover:border-navy/30'
+                                              }`}
+                                          >
+                                            <div>
+                                              <span className="font-bold text-[11px] sm:text-sm block">
+                                                With Certificate
+                                              </span>
+                                              <span className={`text-[9px] sm:text-[11px] block mt-0.5 ${p.hasCertification ? 'text-white/70' : 'text-navy/50'}`}>
+                                                {ageNum === 8 ? 'Junior certified diver programs' : 'Choose your current diving certificate'}
+                                              </span>
+                                            </div>
+                                            <div className={`w-3.5 h-3.5 sm:w-5 sm:h-5 rounded-full border flex items-center justify-center shrink-0 ${p.hasCertification ? 'border-white bg-white text-navy' : 'border-navy/20'
+                                              }`}>
+                                              {p.hasCertification && <span className="text-[8px] sm:text-[10px] font-bold">✓</span>}
+                                            </div>
+                                          </button>
+                                        </div>
+                                      </div>
+                                    )}
+
+                                    {/* If Certified & Above 8+: Ask which certificate (Only Scuba Diving) */}
+                                    {normalizeExperienceKey(experience) === 'scuba' && p.hasCertification && ageNum > 8 && availableCertOptions.length > 0 && (
+                                      <div className="space-y-1.5 pt-1">
+                                        <label className="block text-[9px] sm:text-xs font-bold text-navy/80 uppercase tracking-wider">
+                                          Which certificate do you currently have?
+                                        </label>
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-2">
+                                          {availableCertOptions.map((opt) => {
+                                            const isSelected = (p.certifications || []).includes(opt.id)
                                             return (
-                                              <div
-                                                key={prog.id}
-                                                onClick={() => handleParticipantChange(idx, 'selectedProgram', prog.id)}
-                                                className={`rounded-lg sm:rounded-2xl p-2.5 sm:p-3.5 border transition-all cursor-pointer flex flex-col justify-between gap-1.5 ${isSelected
-                                                  ? 'bg-navy text-white border-navy shadow-md ring-1 ring-navy'
-                                                  : 'bg-white text-navy border-navy/10 hover:border-navy/30 hover:bg-navy/[0.02]'
+                                              <button
+                                                key={opt.id}
+                                                type="button"
+                                                onClick={() => handleSelectCertification(idx, opt.id)}
+                                                className={`p-2 sm:p-3 rounded-lg border text-left text-[10px] sm:text-xs font-semibold sm:font-bold transition flex items-center justify-between gap-1.5 ${isSelected
+                                                  ? 'bg-navy text-white border-navy shadow-sm'
+                                                  : 'bg-white text-navy/80 border-navy/10 hover:border-navy/30 hover:bg-navy/[0.02]'
                                                   }`}
                                               >
-                                                <div className="flex justify-between items-start gap-1.5">
-                                                  <div>
-                                                    <span className={`text-[8px] sm:text-[9px] font-bold uppercase tracking-widest block mb-0.5 ${isSelected ? 'text-cyan-300' : 'text-navy/50'}`}>
-                                                      {prog.category}
-                                                    </span>
-                                                    <h5 className="font-heading font-bold text-[11px] sm:text-sm leading-snug">
-                                                      {getCourseDisplayName(prog.name)}
-                                                    </h5>
-                                                  </div>
-                                                  <div className={`w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full border shrink-0 flex items-center justify-center mt-0.5 ${isSelected ? 'border-white bg-white text-navy' : 'border-navy/20 bg-transparent'}`}>
-                                                    {isSelected && <span className="text-[8px] sm:text-[9px] font-bold">✓</span>}
-                                                  </div>
-                                                </div>
-
-                                                <div className="flex flex-wrap items-center gap-1 pt-1 text-[8px] sm:text-[9px]">
-                                                  
-                                                  <span className={`truncate max-w-[200px] sm:max-w-[260px] ${isSelected ? 'text-white/70' : 'text-navy/50'}`}>
-                                                    {prog.certLabel}
-                                                  </span>
-                                                </div>
-                                              </div>
+                                                <span className="truncate">{getCourseDisplayName(opt.name)}</span>
+                                                <span className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full border flex items-center justify-center shrink-0 text-[8px] sm:text-[10px] ${isSelected ? 'bg-white text-navy border-white font-bold' : 'border-navy/20'
+                                                  }`}>
+                                                  {isSelected ? '✓' : ''}
+                                                </span>
+                                              </button>
                                             )
                                           })}
                                         </div>
-
-                                        {/* Fun Dives Package Selector if Fun Dives is picked */}
-                                        {['fun-day-dive', 'fun-dawn-dive', 'fun-night-dive'].includes(p.selectedProgram) && (
-                                          <div className="mt-2.5 pt-2.5 border-t border-navy/10">
-                                            <label className="text-[9px] sm:text-xs font-bold text-navy/70 uppercase tracking-wider mb-1.5 block">
-                                              Select Number of Dives <span className="text-red-500">*</span>
-                                            </label>
-                                            <div className="relative">
-                                              <select
-                                                value={p.funDivesCount || ''}
-                                                onChange={(e) => handleParticipantChange(idx, 'funDivesCount', e.target.value)}
-                                                required
-                                                className="w-full rounded-lg sm:rounded-2xl bg-[#F0F2F5] border border-navy/5 px-2.5 py-2 sm:px-4 sm:py-3.5 text-[11px] sm:text-sm font-semibold sm:font-bold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition appearance-none shadow-inner cursor-pointer pr-8"
-                                              >
-                                                <option value="" disabled>Choose your dive package...</option>
-                                                {FUN_DIVES_PACKAGES.map((pkg) => (
-                                                  <option key={pkg.id} value={pkg.id}>{pkg.title} - {pkg.duration}</option>
-                                                ))}
-                                              </select>
-                                              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-navy/50">
-                                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 9l6 6 6-6" /></svg>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        )}
                                       </div>
                                     )}
+
+                                    {/* Dynamic Eligibility Badge */}
+                                    <div className="rounded-lg sm:rounded-2xl bg-emerald-500/10 border border-emerald-500/20 p-2 sm:p-3.5 text-[10px] sm:text-xs text-emerald-800 font-medium flex items-center justify-between gap-2">
+                                      <div className="flex items-center gap-1.5 sm:gap-2">
+                                        <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-500 shrink-0 animate-pulse" />
+                                        <span>
+                                          {eligibleCourses.length} {normalizeExperienceKey(experience) === 'scuba' ? 'course(s)' : 'program(s)'} available for {experience || 'selected experience'}
+                                        </span>
+                                      </div>
+                                      <span className="font-bold text-[9px] sm:text-[11px] uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-emerald-500/15">
+                                        {eligibleCourses.length} Available
+                                      </span>
+                                    </div>
+
+                                    {/* INLINE ELIGIBLE COURSES & PROGRAMS (Integrated directly into Step 2) */}
+                                    <div className="pt-2 sm:pt-3 border-t border-navy/10 space-y-2.5">
+                                      <div className="flex justify-between items-center">
+                                        <label htmlFor={`select-program-${p.id}`} className="text-[9px] sm:text-xs font-bold text-navy/80 uppercase tracking-wider">
+                                          Select Course / Program <span className="text-red-500">*</span>
+                                        </label>
+                                        <span className="text-[9px] sm:text-[11px] text-navy/50 font-medium">Choose from unlocked courses</span>
+                                      </div>
+
+                                      {eligibleCourses.length === 0 ? (
+                                        <div className="rounded-lg sm:rounded-2xl bg-navy/[0.04] border border-navy/10 p-3 text-[10px] sm:text-xs font-medium text-navy/80">
+                                          No courses available for this combination.
+                                        </div>
+                                      ) : (
+                                        <div className="space-y-2">
+                                          {/* Dropdown Selector */}
+                                          <div className="relative">
+                                            <select
+                                              id={`select-program-${p.id}`}
+                                              value={p.selectedProgram}
+                                              onChange={(e) => handleParticipantChange(idx, 'selectedProgram', e.target.value)}
+                                              required
+                                              aria-label={`Select course for ${p.name || `Person ${idx + 1}`}`}
+                                              className="w-full rounded-lg sm:rounded-2xl bg-white border border-navy/15 px-2.5 py-2 sm:px-4 sm:py-3.5 text-[11px] sm:text-sm font-semibold sm:font-bold text-navy outline-none focus:ring-2 focus:ring-navy/20 transition appearance-none shadow-sm cursor-pointer pr-8"
+                                            >
+                                              <option value="" disabled>Select an eligible course...</option>
+                                              {eligibleCourses.map((prog) => (
+                                                <option key={prog.id} value={prog.id}>
+                                                  {getCourseDisplayName(prog.name)} [{prog.category}] — {prog.certLabel}
+                                                </option>
+                                              ))}
+                                            </select>
+                                            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-navy/40">
+                                              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 9l6 6 6-6" /></svg>
+                                            </div>
+                                          </div>
+
+                                          {/* Quick-Pick Course Cards */}
+                                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2.5 pt-1">
+                                            {eligibleCourses.map((prog) => {
+                                              const isSelected = p.selectedProgram === prog.id
+                                              return (
+                                                <div
+                                                  key={prog.id}
+                                                  onClick={() => handleParticipantChange(idx, 'selectedProgram', prog.id)}
+                                                  className={`rounded-lg sm:rounded-2xl p-2.5 sm:p-3.5 border transition-all cursor-pointer flex flex-col justify-between gap-1.5 ${isSelected
+                                                    ? 'bg-navy text-white border-navy shadow-md ring-1 ring-navy'
+                                                    : 'bg-white text-navy border-navy/10 hover:border-navy/30 hover:bg-navy/[0.02]'
+                                                    }`}
+                                                >
+                                                  <div className="flex justify-between items-start gap-1.5">
+                                                    <div>
+                                                      <span className={`text-[8px] sm:text-[9px] font-bold uppercase tracking-widest block mb-0.5 ${isSelected ? 'text-cyan-300' : 'text-navy/50'}`}>
+                                                        {prog.category}
+                                                      </span>
+                                                      <h5 className="font-heading font-bold text-[11px] sm:text-sm leading-snug">
+                                                        {getCourseDisplayName(prog.name)}
+                                                      </h5>
+                                                    </div>
+                                                    <div className={`w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full border shrink-0 flex items-center justify-center mt-0.5 ${isSelected ? 'border-white bg-white text-navy' : 'border-navy/20 bg-transparent'}`}>
+                                                      {isSelected && <span className="text-[8px] sm:text-[9px] font-bold">✓</span>}
+                                                    </div>
+                                                  </div>
+
+                                                  <div className="flex flex-wrap items-center gap-1 pt-1 text-[8px] sm:text-[9px]">
+
+                                                    <span className={`truncate max-w-[200px] sm:max-w-[260px] ${isSelected ? 'text-white/70' : 'text-navy/50'}`}>
+                                                      {prog.certLabel}
+                                                    </span>
+                                                  </div>
+                                                </div>
+                                              )
+                                            })}
+                                          </div>
+
+                                          {/* Fun Dives Package Selector if Fun Dives is picked */}
+                                          {['fun-day-dive', 'fun-dawn-dive', 'fun-night-dive'].includes(p.selectedProgram) && (
+                                            <div className="mt-2.5 pt-2.5 border-t border-navy/10">
+                                              <label className="text-[9px] sm:text-xs font-bold text-navy/70 uppercase tracking-wider mb-1.5 block">
+                                                Select Number of Dives <span className="text-red-500">*</span>
+                                              </label>
+                                              <div className="relative">
+                                                <select
+                                                  value={p.funDivesCount || ''}
+                                                  onChange={(e) => handleParticipantChange(idx, 'funDivesCount', e.target.value)}
+                                                  required
+                                                  className="w-full rounded-lg sm:rounded-2xl bg-[#F0F2F5] border border-navy/5 px-2.5 py-2 sm:px-4 sm:py-3.5 text-[11px] sm:text-sm font-semibold sm:font-bold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition appearance-none shadow-inner cursor-pointer pr-8"
+                                                >
+                                                  <option value="" disabled>Choose your dive package...</option>
+                                                  {FUN_DIVES_PACKAGES.map((pkg) => (
+                                                    <option key={pkg.id} value={pkg.id}>{pkg.title} - {pkg.duration}</option>
+                                                  ))}
+                                                </select>
+                                                <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-navy/50">
+                                                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 9l6 6 6-6" /></svg>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          )}
+                                        </div>
+                                      )}
+                                    </div>
                                   </div>
-                                </div>
-                              )
-                            )}
-                          </div>
-                        )
-                      })}
-                    </div>
-                  </motion.div>
-                )}
+                                )
+                              )}
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </motion.div>
+                  )}
 
-                {/* STEP 4: Contact Details & Special Requests */}
-                {currentStep === 4 && (
-                  <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="space-y-3.5 sm:space-y-6">
-                    <div className="hidden sm:block">
-                      <span className="text-[9px] sm:text-xs font-bold uppercase tracking-widest text-accent mb-0.5 block">
-                        Step {((!experience && selectedAddOns.some((item) => item !== 'None')) || isDirectActivity(experience)) ? 2 : 3} of {((!experience && selectedAddOns.some((item) => item !== 'None')) || isDirectActivity(experience)) ? 2 : 3}
-                      </span>
-                      <h3 className="font-heading text-lg sm:text-3xl font-bold text-navy">Contact & Booking Details</h3>
-                      <p className="text-[10px] sm:text-xs text-navy/60 mt-0.5">Please provide your contact information to finalize the booking request.</p>
-                    </div>
+                  {/* STEP 4: Contact Details & Special Requests */}
+                  {currentStep === 4 && (
+                    <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="space-y-3.5 sm:space-y-6">
+                      <div className="hidden sm:block">
+                        <span className="text-[9px] sm:text-xs font-bold uppercase tracking-widest text-accent mb-0.5 block">
+                          Step {((!experience && selectedAddOns.some((item) => item !== 'None')) || isDirectActivity(experience)) ? 2 : 3} of {((!experience && selectedAddOns.some((item) => item !== 'None')) || isDirectActivity(experience)) ? 2 : 3}
+                        </span>
+                        <h3 className="font-heading text-lg sm:text-3xl font-bold text-navy">Contact & Booking Details</h3>
+                        <p className="text-[10px] sm:text-xs text-navy/60 mt-0.5">Please provide your contact information to finalize the booking request.</p>
+                      </div>
 
-                    <div>
-                      <label className="mb-1 sm:mb-2 block text-[9px] sm:text-xs font-bold text-navy/70 uppercase tracking-wider">Primary Contact Name</label>
-                      <input
-                        type="text"
-                        placeholder="Your full name"
-                        value={contact.name}
-                        onChange={(e) => setContact((prev) => ({ ...prev, name: e.target.value }))}
-                        required
-                        className="w-full rounded-lg sm:rounded-2xl bg-[#F0F2F5] px-3 py-2 sm:px-5 sm:py-4 text-[11px] sm:text-sm placeholder:text-[10px] sm:placeholder:text-sm font-semibold sm:font-bold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition placeholder:text-navy/30"
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6">
                       <div>
-                        <label className="mb-1 sm:mb-2 block text-[9px] sm:text-xs font-bold text-navy/70 uppercase tracking-wider">Email Address</label>
+                        <label className="mb-1 sm:mb-2 block text-[9px] sm:text-xs font-bold text-navy/70 uppercase tracking-wider">Primary Contact Name</label>
                         <input
-                          type="email"
-                          placeholder="you@example.com"
-                          value={contact.email}
-                          onChange={(e) => setContact((prev) => ({ ...prev, email: e.target.value }))}
+                          type="text"
+                          placeholder="Your full name"
+                          value={contact.name}
+                          onChange={(e) => setContact((prev) => ({ ...prev, name: e.target.value }))}
                           required
                           className="w-full rounded-lg sm:rounded-2xl bg-[#F0F2F5] px-3 py-2 sm:px-5 sm:py-4 text-[11px] sm:text-sm placeholder:text-[10px] sm:placeholder:text-sm font-semibold sm:font-bold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition placeholder:text-navy/30"
                         />
                       </div>
 
-                      <div>
-                        <label className="mb-1 sm:mb-2 block text-[9px] sm:text-xs font-bold text-navy/70 uppercase tracking-wider">Phone Number</label>
-                        <div className="w-full rounded-lg sm:rounded-2xl bg-[#F0F2F5] px-3 py-2 sm:px-5 sm:py-3.5 focus-within:ring-2 focus-within:ring-accent/50 transition">
-                          <PhoneInput
-                            flags={flags}
-                            defaultCountry="IN"
-                            international
-                            withCountryCallingCode
-                            placeholder="Enter 10-digit phone number"
-                            value={contact.phone}
-                            onCountryChange={(c) => setPhoneCountry(c || 'IN')}
-                            onChange={handlePhoneChange}
-                            numberInputProps={{
-                              inputMode: 'numeric',
-                              autoComplete: 'tel',
-                              onKeyDown: handlePhoneKeyDown,
-                            }}
-                            className="w-full text-[11px] sm:text-sm font-semibold sm:font-bold text-navy outline-none placeholder:text-navy/30"
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6">
+                        <div>
+                          <label className="mb-1 sm:mb-2 block text-[9px] sm:text-xs font-bold text-navy/70 uppercase tracking-wider">Email Address</label>
+                          <input
+                            type="email"
+                            placeholder="you@example.com"
+                            value={contact.email}
+                            onChange={(e) => setContact((prev) => ({ ...prev, email: e.target.value }))}
+                            required
+                            className="w-full rounded-lg sm:rounded-2xl bg-[#F0F2F5] px-3 py-2 sm:px-5 sm:py-4 text-[11px] sm:text-sm placeholder:text-[10px] sm:placeholder:text-sm font-semibold sm:font-bold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition placeholder:text-navy/30"
                           />
                         </div>
-                      </div>
-                    </div>
 
-                    <div>
-                      <label className="mb-1 sm:mb-2 block text-[9px] sm:text-xs font-bold text-navy/70 uppercase tracking-wider">Special Requests / Notes</label>
-                      <textarea
-                        placeholder="Any medical conditions, dietary preferences, gear sizes, or custom requests?"
-                        value={contact.requests}
-                        onChange={(e) => setContact((prev) => ({ ...prev, requests: e.target.value }))}
-                        rows="3"
-                        className="w-full rounded-lg sm:rounded-2xl bg-[#F0F2F5] px-3 py-2 sm:px-5 sm:py-4 text-[11px] sm:text-sm placeholder:text-[10px] sm:placeholder:text-sm font-semibold sm:font-bold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition placeholder:text-navy/30 resize-y"
-                      ></textarea>
-                    </div>
-                  </motion.div>
+                        <div>
+                          <label className="mb-1 sm:mb-2 block text-[9px] sm:text-xs font-bold text-navy/70 uppercase tracking-wider">Phone Number</label>
+                          <div className="w-full rounded-lg sm:rounded-2xl bg-[#F0F2F5] px-3 py-2 sm:px-5 sm:py-3.5 focus-within:ring-2 focus-within:ring-accent/50 transition">
+                            <PhoneInput
+                              flags={flags}
+                              defaultCountry="IN"
+                              international
+                              withCountryCallingCode
+                              placeholder="Enter 10-digit phone number"
+                              value={contact.phone}
+                              onCountryChange={(c) => setPhoneCountry(c || 'IN')}
+                              onChange={handlePhoneChange}
+                              numberInputProps={{
+                                inputMode: 'numeric',
+                                autoComplete: 'tel',
+                                onKeyDown: handlePhoneKeyDown,
+                              }}
+                              className="w-full text-[11px] sm:text-sm font-semibold sm:font-bold text-navy outline-none placeholder:text-navy/30"
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="mb-1 sm:mb-2 block text-[9px] sm:text-xs font-bold text-navy/70 uppercase tracking-wider">Special Requests / Notes</label>
+                        <textarea
+                          placeholder="Any medical conditions, dietary preferences, gear sizes, or custom requests?"
+                          value={contact.requests}
+                          onChange={(e) => setContact((prev) => ({ ...prev, requests: e.target.value }))}
+                          rows="3"
+                          className="w-full rounded-lg sm:rounded-2xl bg-[#F0F2F5] px-3 py-2 sm:px-5 sm:py-4 text-[11px] sm:text-sm placeholder:text-[10px] sm:placeholder:text-sm font-semibold sm:font-bold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition placeholder:text-navy/30 resize-y"
+                        ></textarea>
+                      </div>
+                    </motion.div>
+                  )}
+
+                </div>
+
+                {/* Inline Step Error Message */}
+                {stepError && (
+                  <div className="mt-3 p-2.5 sm:p-3.5 rounded-lg sm:rounded-2xl bg-red-50 border border-red-200 text-red-600 text-[11px] sm:text-xs font-bold flex items-center gap-2">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-red-600"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" /></svg>
+                    <span>{stepError}</span>
+                  </div>
                 )}
 
-            </div>
+                {/* Navigation Controls */}
+                <div className="pt-3.5 sm:pt-6 mt-3.5 sm:mt-6 border-t border-navy/5 flex items-center justify-between gap-3">
+                  {currentStep > 1 ? (
+                    <button
+                      type="button"
+                      onClick={handlePrevStep}
+                      className="rounded-full px-3.5 py-2 sm:px-6 sm:py-3.5 text-[11px] sm:text-sm font-bold text-navy hover:bg-[#F0F2F5] active:scale-95 transition cursor-pointer flex items-center gap-1.5"
+                    >
+                      <span>← Back</span>
+                    </button>
+                  ) : (initialService ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (typeof window !== 'undefined' && window.history.length > 1) {
+                          window.history.back()
+                        } else {
+                          window.location.href = `/services/${initialService}`
+                        }
+                      }}
+                      className="rounded-full px-3.5 py-2 sm:px-5 sm:py-3 text-[11px] sm:text-xs font-bold text-navy/70 hover:text-navy hover:bg-[#F0F2F5] active:scale-95 transition cursor-pointer flex items-center gap-1.5 border border-navy/15"
+                      title="Return to selected service page"
+                    >
+                      <span>← Back to {selectedCourseProgram?.name || serviceItem?.title || 'Program'}</span>
+                    </button>
+                  ) : <div />)}
 
-            {/* Inline Step Error Message */}
-            {stepError && (
-              <div className="mt-3 p-2.5 sm:p-3.5 rounded-lg sm:rounded-2xl bg-red-50 border border-red-200 text-red-600 text-[11px] sm:text-xs font-bold flex items-center gap-2">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-red-600"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" /></svg>
-                <span>{stepError}</span>
-              </div>
-            )}
-
-            {/* Navigation Controls */}
-            <div className="pt-3.5 sm:pt-6 mt-3.5 sm:mt-6 border-t border-navy/5 flex items-center justify-between gap-3">
-              {currentStep > 1 ? (
-                <button
-                  type="button"
-                  onClick={handlePrevStep}
-                  className="rounded-full px-3.5 py-2 sm:px-6 sm:py-3.5 text-[11px] sm:text-sm font-bold text-navy hover:bg-[#F0F2F5] active:scale-95 transition cursor-pointer flex items-center gap-1.5"
-                >
-                  <span>← Back</span>
-                </button>
-              ) : (initialService ? (
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (typeof window !== 'undefined' && window.history.length > 1) {
-                      window.history.back()
-                    } else {
-                      window.location.href = `/services/${initialService}`
-                    }
-                  }}
-                  className="rounded-full px-3.5 py-2 sm:px-5 sm:py-3 text-[11px] sm:text-xs font-bold text-navy/70 hover:text-navy hover:bg-[#F0F2F5] active:scale-95 transition cursor-pointer flex items-center gap-1.5 border border-navy/15"
-                  title="Return to selected service page"
-                >
-                  <span>← Back to {selectedCourseProgram?.name || serviceItem?.title || 'Program'}</span>
-                </button>
-              ) : <div />)}
-
-              {currentStep < 4 ? (
-                <button
-                  type="button"
-                  onClick={handleNextStep}
-                  className="rounded-full bg-navy hover:!bg-accent hover:!text-navy active:scale-95 px-4 py-2 sm:px-8 sm:py-4 text-xs sm:text-sm font-bold text-white transition-all duration-200 shadow-md ml-auto cursor-pointer flex items-center gap-2"
-                >
-                  <span>Continue →</span>
-                </button>
-              ) : (
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="rounded-full bg-accent hover:!bg-navy hover:!text-white px-4 py-2 sm:px-8 sm:py-4 text-xs sm:text-sm font-extrabold text-[#001e3d] transition-all duration-200 shadow-md ml-auto cursor-pointer border border-[#FFCD00] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <span className="w-3.5 h-3.5 border-2 border-navy border-t-transparent rounded-full animate-spin inline-block" />
-                      <span>Confirming...</span>
-                    </>
+                  {currentStep < 4 ? (
+                    <button
+                      type="button"
+                      onClick={handleNextStep}
+                      className="rounded-full bg-navy hover:!bg-accent hover:!text-navy active:scale-95 px-4 py-2 sm:px-8 sm:py-4 text-xs sm:text-sm font-bold text-white transition-all duration-200 shadow-md ml-auto cursor-pointer flex items-center gap-2"
+                    >
+                      <span>Continue →</span>
+                    </button>
                   ) : (
-                    <span>Confirm Booking Request</span>
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="rounded-full bg-accent hover:!bg-navy hover:!text-white px-4 py-2 sm:px-8 sm:py-4 text-xs sm:text-sm font-extrabold text-[#001e3d] transition-all duration-200 shadow-md ml-auto cursor-pointer border border-[#FFCD00] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <span className="w-3.5 h-3.5 border-2 border-navy border-t-transparent rounded-full animate-spin inline-block" />
+                          <span>Confirming...</span>
+                        </>
+                      ) : (
+                        <span>Confirm Booking Request</span>
+                      )}
+                    </button>
                   )}
-                </button>
-              )}
+                </div>
+              </form>
             </div>
-          </form>
+          </div>
+
+          {/* Column 2: Interactive 2D Worldwide Dive Map (Beside Booking Form on Desktop, Directly Below on Mobile) */}
+          <div id="dive-explorer-map" data-lenis-prevent="true" className="lg:col-span-6 xl:col-span-7 w-full min-w-0 lg:sticky lg:top-28 self-start mt-6 sm:mt-10 lg:mt-0">
+            <DiveExplorerMap
+              onSelectSite={handleMapSelectSite}
+              onBookSite={handleMapSelectSite}
+              onSelectCountry={handleMapSelectCountry}
+              selectedCountry={country}
+              selectedIsland={island}
+              selectedSite={location}
+              selectedSiteId={locationId}
+              title="Dive Explorer"
+              subtitle="Explore 3,500+ worldwide dive sites on this interactive 2D map. Click any site to auto-fill your booking location!"
+              showHeading={true}
+            />
+          </div>
         </div>
-      </div>
 
-      {/* Column 2: Interactive 2D Worldwide Dive Map (Beside Booking Form on Desktop, Directly Below on Mobile) */}
-      <div id="dive-explorer-map" data-lenis-prevent="true" className="lg:col-span-6 xl:col-span-7 w-full min-w-0 lg:sticky lg:top-28 self-start mt-6 sm:mt-10 lg:mt-0">
-        <DiveExplorerMap
-          onSelectSite={handleMapSelectSite}
-          onBookSite={handleMapSelectSite}
-          onSelectCountry={handleMapSelectCountry}
-          selectedCountry={country}
-          selectedIsland={island}
-          selectedSite={location}
-          selectedSiteId={locationId}
-          title="Dive Explorer"
-          subtitle="Explore 3,500+ worldwide dive sites on this interactive 2D map. Click any site to auto-fill your booking location!"
-          showHeading={true}
-        />
-      </div>
-    </div>
-
-    {/* 5. ORDER SUMMARY & CONFIRMATION POPUP MODAL */}
-    <AnimatePresence>
-      {showSummaryModal && (
-        <div
-          data-lenis-prevent="true"
-          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/60 backdrop-blur-md overflow-hidden"
-          onClick={(e) => {
-            if (e.target === e.currentTarget && !isSubmitting) {
-              setShowSummaryModal(false)
-            }
-          }}
-        >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 15 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 15 }}
-            transition={{ duration: 0.2 }}
-            className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-navy/15 overflow-hidden text-navy"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Modal Header */}
-            <div className="p-5 sm:p-6 border-b border-navy/10 flex items-center justify-between bg-gradient-to-r from-navy to-[#003865] text-white shrink-0">
-              <div>
-                <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-[#FFCD00] block mb-0.5">
-                  Order Summary & Confirmation
-                </span>
-                <h3 className="font-heading text-lg sm:text-2xl font-bold">
-                  Review Your Booking Details
-                </h3>
-              </div>
-              <button
-                type="button"
-                onClick={() => setShowSummaryModal(false)}
-                className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition active:scale-90 cursor-pointer text-sm font-bold"
-                aria-label="Close summary modal"
-              >
-                ✕
-              </button>
-            </div>
-
-            {/* Modal Body */}
+        {/* 5. ORDER SUMMARY & CONFIRMATION POPUP MODAL */}
+        <AnimatePresence>
+          {showSummaryModal && (
             <div
               data-lenis-prevent="true"
-              className="p-5 sm:p-7 overflow-y-auto space-y-4 sm:space-y-6 text-xs sm:text-sm overscroll-contain flex-1"
+              className="fixed inset-0 z-[10001] flex items-center justify-center pt-20 sm:pt-24 pb-4 sm:pb-6 px-3 sm:px-6 bg-black/60 backdrop-blur-md overflow-hidden"
+              onClick={(e) => {
+                if (e.target === e.currentTarget && !isSubmitting) {
+                  setShowSummaryModal(false)
+                }
+              }}
             >
-              
-              {/* 1. Trip & Location Details */}
-              <div className="rounded-2xl bg-[#FAFAFA] border border-navy/10 p-4 space-y-2.5">
-                <span className="text-[10px] font-extrabold uppercase tracking-wider text-navy/50 block">
-                  1. Destination & Schedule
-                </span>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-navy">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95, y: 15 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 15 }}
+                transition={{ duration: 0.2 }}
+                className="bg-white rounded-3xl max-w-2xl w-full max-h-[72vh] sm:max-h-[75vh] flex flex-col shadow-2xl border border-navy/15 overflow-hidden text-navy"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* Modal Header */}
+                <div className="px-4 py-3 sm:px-6 sm:py-4 border-b border-navy/10 flex items-center justify-between bg-gradient-to-r from-navy to-[#003865] text-white shrink-0">
                   <div>
-                    <span className="text-navy/60 block text-[11px]">Country & Island:</span>
-                    <strong className="font-bold">{country} {island ? `• ${island}` : ''}</strong>
+                    <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-[#FFCD00] block mb-0.5">
+                      Order Summary & Confirmation
+                    </span>
+                    <h3 className="font-heading text-base sm:text-xl font-bold">
+                      Review Your Booking Details
+                    </h3>
                   </div>
-                  <div>
-                    <span className="text-navy/60 block text-[11px]">Dive Site / Location:</span>
-                    <strong className="font-bold">{location || 'To Be Arranged'}</strong>
-                  </div>
-                  <div>
-                    <span className="text-navy/60 block text-[11px]">Date:</span>
-                    <strong className="font-bold">{formatDateToDDMMYYYY(date)}</strong>
-                  </div>
-                  <div>
-                    <span className="text-navy/60 block text-[11px]">Total Group Size:</span>
-                    <strong className="font-bold">{participants.length} Person{participants.length > 1 ? 's' : ''}</strong>
-                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowSummaryModal(false)}
+                    className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition active:scale-90 cursor-pointer text-sm font-bold"
+                    aria-label="Close summary modal"
+                  >
+                    ✕
+                  </button>
                 </div>
-              </div>
 
-              {/* 2. Experience & Add-Ons */}
-              <div className="rounded-2xl bg-[#FAFAFA] border border-navy/10 p-4 space-y-2.5">
-                <span className="text-[10px] font-extrabold uppercase tracking-wider text-navy/50 block">
-                  2. Experience & Add-Ons
-                </span>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-navy">
-                  <div>
-                    <span className="text-navy/60 block text-[11px]">Primary Experience:</span>
-                    <strong className="font-bold">{experience || 'Direct Add-On / Custom'}</strong>
-                  </div>
-                  <div>
-                    <span className="text-navy/60 block text-[11px]">Selected Add-Ons:</span>
-                    <strong className="font-bold">
-                      {selectedAddOns.filter(a => a !== 'None').length > 0
-                        ? selectedAddOns.filter(a => a !== 'None').join(', ')
-                        : 'None'}
-                    </strong>
-                  </div>
-                </div>
-              </div>
+                {/* Modal Body */}
+                <div
+                  data-lenis-prevent="true"
+                  className="p-3.5 sm:p-5 overflow-y-auto space-y-3 sm:space-y-4 text-xs sm:text-sm overscroll-contain flex-1"
+                >
 
-              {/* 3. Participants & Program Breakdown */}
-              <div className="rounded-2xl bg-[#FAFAFA] border border-navy/10 p-4 space-y-3">
-                <span className="text-[10px] font-extrabold uppercase tracking-wider text-navy/50 block">
-                  3. Participants & Courses
-                </span>
-                <div className="space-y-2">
-                  {participants.map((p, idx) => {
-                    const progName = COURSE_CATALOG.find(c => c.id === p.selectedProgram)?.name || p.selectedProgram || 'Standard Activity'
-                    const isUnder12 = parseInt(p.age, 10) < 12
-                    return (
-                      <div key={p.id} className="p-3 bg-white rounded-xl border border-navy/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                        <div>
-                          <span className="font-bold text-navy">
-                            {idx + 1}. {p.name || `Participant ${idx + 1}`}
-                          </span>
-                          <span className="text-navy/60 ml-2 font-medium">
-                            (Age: {p.age})
-                          </span>
-                          {isUnder12 && p.parentalConsent && (
-                            <span className="block text-[10px] text-amber-700 font-semibold mt-0.5">
-                              ✓ Parental Consent Confirmed
-                            </span>
-                          )}
-                        </div>
-                        <div className="text-left sm:text-right">
-                          <span className="px-2.5 py-1 rounded-full bg-navy/5 text-navy font-bold text-[11px] inline-block">
-                            {progName}
-                          </span>
-                          {p.funDivesCount && (
-                            <span className="block text-[10px] text-navy/60 font-semibold mt-0.5">
-                              Package: {FUN_DIVES_PACKAGES.find(f => f.id === p.funDivesCount)?.title || p.funDivesCount}
-                            </span>
-                          )}
-                        </div>
+                  {/* 1. Trip & Location Details */}
+                  <div className="rounded-2xl bg-[#FAFAFA] border border-navy/10 p-4 space-y-2.5">
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-navy/50 block">
+                      1. Destination & Schedule
+                    </span>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-navy">
+                      <div>
+                        <span className="text-navy/60 block text-[11px]">Country & Island:</span>
+                        <strong className="font-bold">{country} {island ? `• ${island}` : ''}</strong>
                       </div>
-                    )
-                  })}
-                </div>
-              </div>
-
-              {/* 4. Contact Details & Notes */}
-              <div className="rounded-2xl bg-[#FAFAFA] border border-navy/10 p-4 space-y-2.5">
-                <span className="text-[10px] font-extrabold uppercase tracking-wider text-navy/50 block">
-                  4. Contact Information
-                </span>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-navy">
-                  <div>
-                    <span className="text-navy/60 block text-[11px]">Primary Contact:</span>
-                    <strong className="font-bold">{contact.name}</strong>
-                  </div>
-                  <div>
-                    <span className="text-navy/60 block text-[11px]">Email Address:</span>
-                    <strong className="font-bold">{contact.email}</strong>
-                  </div>
-                  <div>
-                    <span className="text-navy/60 block text-[11px]">Phone Number:</span>
-                    <strong className="font-bold">{contact.phone || 'Not provided'}</strong>
-                  </div>
-                  {contact.requests && (
-                    <div className="sm:col-span-2 mt-1">
-                      <span className="text-navy/60 block text-[11px]">Special Notes & Requests:</span>
-                      <p className="font-medium text-navy/80 whitespace-pre-line bg-white p-2.5 rounded-lg border border-navy/10 mt-1">
-                        {contact.requests}
-                      </p>
+                      <div>
+                        <span className="text-navy/60 block text-[11px]">Dive Site / Location:</span>
+                        <strong className="font-bold">{location || 'To Be Arranged'}</strong>
+                      </div>
+                      <div>
+                        <span className="text-navy/60 block text-[11px]">Date:</span>
+                        <strong className="font-bold">{formatDateToDDMMYYYY(date)}</strong>
+                      </div>
+                      <div>
+                        <span className="text-navy/60 block text-[11px]">Total Group Size:</span>
+                        <strong className="font-bold">{participants.length} Person{participants.length > 1 ? 's' : ''}</strong>
+                      </div>
                     </div>
-                  )}
+                  </div>
+
+                  {/* 2. Experience & Add-Ons */}
+                  <div className="rounded-2xl bg-[#FAFAFA] border border-navy/10 p-4 space-y-2.5">
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-navy/50 block">
+                      2. Experience & Add-Ons
+                    </span>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-navy">
+                      <div>
+                        <span className="text-navy/60 block text-[11px]">Primary Experience:</span>
+                        <strong className="font-bold">{experience || 'Direct Add-On / Custom'}</strong>
+                      </div>
+                      <div>
+                        <span className="text-navy/60 block text-[11px]">Selected Add-Ons:</span>
+                        <strong className="font-bold">
+                          {selectedAddOns.filter(a => a !== 'None').length > 0
+                            ? selectedAddOns.filter(a => a !== 'None').join(', ')
+                            : 'None'}
+                        </strong>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 3. Participants & Program Breakdown */}
+                  <div className="rounded-2xl bg-[#FAFAFA] border border-navy/10 p-4 space-y-3">
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-navy/50 block">
+                      3. Participants & Courses
+                    </span>
+                    <div className="space-y-2">
+                      {participants.map((p, idx) => {
+                        const progName = COURSE_CATALOG.find(c => c.id === p.selectedProgram)?.name || p.selectedProgram || 'Standard Activity'
+                        const isUnder12 = parseInt(p.age, 10) < 12
+                        return (
+                          <div key={p.id} className="p-3 bg-white rounded-xl border border-navy/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <div>
+                              <span className="font-bold text-navy">
+                                {idx + 1}. {p.name || `Participant ${idx + 1}`}
+                              </span>
+                              <span className="text-navy/60 ml-2 font-medium">
+                                (Age: {p.age})
+                              </span>
+                              {isUnder12 && p.parentalConsent && (
+                                <span className="block text-[10px] text-amber-700 font-semibold mt-0.5">
+                                  ✓ Parental Consent Confirmed
+                                </span>
+                              )}
+                            </div>
+                            <div className="text-left sm:text-right">
+                              <span className="px-2.5 py-1 rounded-full bg-navy/5 text-navy font-bold text-[11px] inline-block">
+                                {progName}
+                              </span>
+                              {p.funDivesCount && (
+                                <span className="block text-[10px] text-navy/60 font-semibold mt-0.5">
+                                  Package: {FUN_DIVES_PACKAGES.find(f => f.id === p.funDivesCount)?.title || p.funDivesCount}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+
+                  {/* 4. Contact Details & Notes */}
+                  <div className="rounded-2xl bg-[#FAFAFA] border border-navy/10 p-4 space-y-2.5">
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-navy/50 block">
+                      4. Contact Information
+                    </span>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-navy">
+                      <div>
+                        <span className="text-navy/60 block text-[11px]">Primary Contact:</span>
+                        <strong className="font-bold">{contact.name}</strong>
+                      </div>
+                      <div>
+                        <span className="text-navy/60 block text-[11px]">Email Address:</span>
+                        <strong className="font-bold">{contact.email}</strong>
+                      </div>
+                      <div>
+                        <span className="text-navy/60 block text-[11px]">Phone Number:</span>
+                        <strong className="font-bold">{contact.phone || 'Not provided'}</strong>
+                      </div>
+                      {contact.requests && (
+                        <div className="sm:col-span-2 mt-1">
+                          <span className="text-navy/60 block text-[11px]">Special Notes & Requests:</span>
+                          <p className="font-medium text-navy/80 whitespace-pre-line bg-white p-2.5 rounded-lg border border-navy/10 mt-1">
+                            {contact.requests}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
                 </div>
-              </div>
 
+                {/* Modal Footer Controls */}
+                <div className="p-3 sm:p-4 border-t border-navy/10 bg-[#FAFAFA] flex items-center justify-between gap-3 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => setShowSummaryModal(false)}
+                    className="rounded-full px-4 py-2 sm:px-6 sm:py-2.5 text-xs sm:text-sm font-bold text-navy hover:bg-navy/10 active:scale-95 transition cursor-pointer"
+                  >
+                    ← Edit Booking
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleFinalSubmit}
+                    disabled={isSubmitting}
+                    className="rounded-full bg-accent hover:!bg-navy hover:!text-white active:scale-95 px-5 py-2 sm:px-7 sm:py-2.5 text-xs sm:text-sm font-extrabold text-[#001e3d] transition-all duration-200 shadow-md cursor-pointer border border-[#FFCD00] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <span className="w-4 h-4 border-2 border-navy border-t-transparent rounded-full animate-spin inline-block" />
+                        <span>Submitting Booking...</span>
+                      </>
+                    ) : (
+                      <span>Confirm & Submit Booking ✓</span>
+                    )}
+                  </button>
+                </div>
+
+              </motion.div>
             </div>
-
-            {/* Modal Footer Controls */}
-            <div className="p-4 sm:p-6 border-t border-navy/10 bg-[#FAFAFA] flex items-center justify-between gap-3 shrink-0">
-              <button
-                type="button"
-                onClick={() => setShowSummaryModal(false)}
-                className="rounded-full px-4 py-2.5 sm:px-6 sm:py-3.5 text-xs sm:text-sm font-bold text-navy hover:bg-navy/10 active:scale-95 transition cursor-pointer"
-              >
-                ← Edit Booking
-              </button>
-
-              <button
-                type="button"
-                onClick={handleFinalSubmit}
-                disabled={isSubmitting}
-                className="rounded-full bg-accent hover:!bg-navy hover:!text-white active:scale-95 px-5 py-2.5 sm:px-8 sm:py-3.5 text-xs sm:text-sm font-extrabold text-[#001e3d] transition-all duration-200 shadow-md cursor-pointer border border-[#FFCD00] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-              >
-                {isSubmitting ? (
-                  <>
-                    <span className="w-4 h-4 border-2 border-navy border-t-transparent rounded-full animate-spin inline-block" />
-                    <span>Submitting Booking...</span>
-                  </>
-                ) : (
-                  <span>Confirm & Submit Booking ✓</span>
-                )}
-              </button>
-            </div>
-
-          </motion.div>
-        </div>
-      )}
-    </AnimatePresence>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
-  </div>
   )
 }
 
