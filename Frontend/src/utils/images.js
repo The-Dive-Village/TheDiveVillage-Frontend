@@ -1,18 +1,28 @@
 // Curated Gallery & High-Res Diving Photos from assets/Gallery
-import p1 from '../assets/Gallery/5.jpg'
+const p1 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scuba_Diving.webp';
 const p2 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458048/TDV-Media/Extras%20for%20Gallery/Blue_Lincka.webp';
-import p3 from '../assets/Gallery/Photo00086574.jpg'
-import p4 from '../assets/Gallery/Photo00086587.jpg'
-import p6 from '../assets/Gallery/Photo00086738.jpg'
-import p7 from '../assets/Gallery/Photo00086739.jpg'
-import p8 from '../assets/Gallery/Photo00086742.jpg'
-import p9 from '../assets/Gallery/Photo00086765.jpg'
-import p10 from '../assets/Gallery/Photo00086771.jpg'
-import p11 from '../assets/Gallery/Photo00086776.jpg'
-import p12 from '../assets/Gallery/Photo00086787.jpg'
+const p3 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458178/TDV-Media/Extras%20for%20Gallery/Open_Water_Scuba_Diving.webp';
+const p4 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458189/TDV-Media/Extras%20for%20Gallery/Scubadiving_2.webp';
+const p6 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458191/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp';
+const p7 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458192/TDV-Media/Extras%20for%20Gallery/Sea_fan.webp';
+const p8 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458193/TDV-Media/Extras%20for%20Gallery/Shoal.webp';
+const p9 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458204/TDV-Media/Extras%20for%20Gallery/Sunset.jpg';
+const p10 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791457833/TDV-Media/Extras%20for%20Gallery/Banded_Coral_Shrimp.webp';
+const p11 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458209/TDV-Media/Extras%20for%20Gallery/Varicose_Wart_Slug.webp';
+const p12 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458221/TDV-Media/Extras%20for%20Gallery/Yellowback_fusiliers.webp';
 
-const panelModules = import.meta.glob('../assets/Media/Panels/*.*', { eager: true, import: 'default' })
-export const PANEL_IMAGES = Object.values(panelModules)
+export const PANEL_IMAGES = [
+  "https://res.cloudinary.com/qvbunv8y/image/upload/v1791452129/TDV-Images/1Threadfin_Butterflyfish.webp",
+  "https://res.cloudinary.com/qvbunv8y/image/upload/v1791452131/TDV-Images/2Lionfish.webp",
+  "https://res.cloudinary.com/qvbunv8y/image/upload/v1791452132/TDV-Images/3Crown_Jellyfish.webp",
+  "https://res.cloudinary.com/qvbunv8y/image/upload/v1791452133/TDV-Images/4Blue_and_Gold_Fusilier.webp",
+  "https://res.cloudinary.com/qvbunv8y/image/upload/v1791452134/TDV-Images/5Bubble_Coral.webp",
+  "https://res.cloudinary.com/qvbunv8y/image/upload/v1791452136/TDV-Images/6Crown_of_thorns_Starfish.webp",
+  "https://res.cloudinary.com/qvbunv8y/image/upload/v1791452137/TDV-Images/7Toadstool_Leather_Coral.webp",
+  "https://res.cloudinary.com/qvbunv8y/image/upload/v1791452138/TDV-Images/8Feather_Star_2.webp",
+  "https://res.cloudinary.com/qvbunv8y/image/upload/v1791452139/TDV-Images/9Giant_Clam.webp",
+  "https://res.cloudinary.com/qvbunv8y/image/upload/v1791452128/TDV-Images/10Greenfish_Sea_Cucumber.webp"
+]
 export const CAROUSEL_IMAGES = PANEL_IMAGES.slice(0, 6)
 
 /** Verified high-resolution diving photography */

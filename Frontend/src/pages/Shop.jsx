@@ -11,8 +11,7 @@ import SEOHead from '../components/SEOHead'
 import { useLenis } from '../utils/lenisReact'
 
 import { triggerHaptic, triggerSuccessHaptic } from '../utils/haptics'
-import localBannerImg from '../assets/Media/banner.jpg'
-const bannerImg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791623336/TDV-Media/Products/banner_new.webp' || localBannerImg;
+const bannerImg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791686007/TDV-Media/Merch/banner.jpg';
 const pop1Local = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458274/TDV-Media/Products/pop1.webp';
 const pop2Local = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458275/TDV-Media/Products/pop2.webp';
 const pop1 = pop1Local
@@ -716,6 +715,11 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
     (typeof product.glb === 'string' && (product.glb.toLowerCase().includes('bag') || product.glb.toLowerCase().includes('backpack'))) ||
     (product.title && (product.title.toLowerCase().includes('bag') || product.title.toLowerCase().includes('backpack')))
   )
+  const isSweetheart = Boolean(
+    product.id === 'product-womens-shirt' ||
+    (typeof product.glb === 'string' && product.glb.toLowerCase().includes('sweetheart')) ||
+    (product.title && product.title.toLowerCase().includes('sweetheart'))
+  )
 
   useEffect(() => {
     let active = true
@@ -732,8 +736,15 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
               }
               const pbr = mat.pbrMetallicRoughness
               if (pbr) {
-                pbr.setRoughnessFactor(isCap ? 0.65 : isBag ? 0.75 : 0.82)
+                pbr.setRoughnessFactor(isSweetheart ? 1.0 : isCap ? 0.65 : isBag ? 0.75 : 0.85)
                 pbr.setMetallicFactor(0.0)
+              }
+              if (mat.clearcoat) {
+                mat.clearcoat.setClearcoatFactor(0.0)
+                mat.clearcoat.setClearcoatRoughnessFactor(1.0)
+              }
+              if (mat.specular) {
+                mat.specular.setSpecularFactor(isSweetheart ? 0.0 : 0.2)
               }
             })
           }
@@ -880,9 +891,9 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
                     min-camera-orbit="auto 75deg auto"
                     max-camera-orbit="auto 75deg auto"
                     interaction-prompt="none"
-                    environment-image="neutral"
-                    exposure={product.id === 'product-dive-cap' || (typeof product.glb === 'string' && product.glb.toLowerCase().includes('cap')) ? '2.5' : '1.35'}
-                    shadow-intensity={product.id === 'product-dive-cap' || (typeof product.glb === 'string' && product.glb.toLowerCase().includes('cap')) ? '0.08' : '0.4'}
+                    environment-image={isSweetheart ? "" : "neutral"}
+                    exposure={isSweetheart ? '1.05' : product.id === 'product-dive-cap' || (typeof product.glb === 'string' && product.glb.toLowerCase().includes('cap')) ? '2.5' : '1.35'}
+                    shadow-intensity={isSweetheart ? '0.15' : product.id === 'product-dive-cap' || (typeof product.glb === 'string' && product.glb.toLowerCase().includes('cap')) ? '0.08' : '0.4'}
                     shadow-softness="0.9"
                     tone-mapping="commerce"
                     bounds="tight"

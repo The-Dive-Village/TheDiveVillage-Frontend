@@ -1,10 +1,10 @@
 import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 
-import certifiedCoursesImg from '../assets/Media/Services Thumbnails/Certified Courses.webp'
-import introProgImg from '../assets/Media/Services Thumbnails/Introductory Programs.webp'
-import freeDivingImg from '../assets/Media/Services Thumbnails/Free Diving.webp'
-import flexibleFunDivesImg from '../assets/Media/Services Thumbnails/Flexible Fun Dives.webp'
+const certifiedCoursesImg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791452290/TDV-Images/Certified_Courses.webp'
+const introProgImg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791452294/TDV-Images/Introductory_Programs.webp'
+const freeDivingImg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791452292/TDV-Images/Free_Diving.webp'
+const flexibleFunDivesImg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791452291/TDV-Images/Flexible_Fun_Dives.webp'
 
 const SAFETY_PROMISES = [
   {

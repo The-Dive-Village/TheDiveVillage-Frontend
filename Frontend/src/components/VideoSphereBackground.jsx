@@ -4,28 +4,23 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
 import { useLocation } from 'react-router'
-import clownfishVideo from '../assets/Media/Background/ClownFish.mp4'
-import barracudaVideo from '../assets/Media/Background/baracuda_compressed.mp4'
-import turtleBgVideo from '../assets/Media/Background/Turtle.mp4'
-import nightDiveVideoLocal from '../assets/Media/Background/Night Dive.mp4'
-
-import underwaterAudio from '../assets/Audio.mp3'
-import { globalAudio } from '../utils/audioManager'
-import { setHeroVideoReady, getOrCreateHeroVideoElement, setHeroWebGLReady, HERO_VIDEO_SRC } from '../utils/mediaReadyManager'
-
-// Audio source fallback (public static /Audio.mp3 or bundled underwaterAudio)
-const AUDIO_SRC = '/Audio.mp3'
-
 // Cloudinary Full-Resolution Uncompressed Video URLs
 const CLOUDINARY_CLOWNFISH = 'https://res.cloudinary.com/qvbunv8y/video/upload/TDV-Media/Background/ClownFish.mp4'
 const CLOUDINARY_BARRACUDA = 'https://res.cloudinary.com/qvbunv8y/video/upload/TDV-Media/Background/baracuda.mp4'
 const CLOUDINARY_TURTLE = 'https://res.cloudinary.com/qvbunv8y/video/upload/TDV-Media/Background/Turtle.mp4'
 const CLOUDINARY_NIGHT_DIVE = 'https://res.cloudinary.com/qvbunv8y/video/upload/TDV-Media/Background/Night_Dive.mp4'
+const CLOUDINARY_AUDIO = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791685502/TDV-Media/Audio/Audio.mp3'
 
-const videoFile = CLOUDINARY_CLOWNFISH || HERO_VIDEO_SRC || clownfishVideo
-const bookFile = CLOUDINARY_BARRACUDA || barracudaVideo
-const turtleVideo = CLOUDINARY_TURTLE || turtleBgVideo
-const nightDiveVideo = CLOUDINARY_NIGHT_DIVE || nightDiveVideoLocal
+import { globalAudio } from '../utils/audioManager'
+import { setHeroVideoReady, getOrCreateHeroVideoElement, setHeroWebGLReady, HERO_VIDEO_SRC } from '../utils/mediaReadyManager'
+
+// Audio source fallback (Cloudinary CDN URL or static public)
+const AUDIO_SRC = CLOUDINARY_AUDIO
+
+const videoFile = CLOUDINARY_CLOWNFISH
+const bookFile = CLOUDINARY_BARRACUDA
+const turtleVideo = CLOUDINARY_TURTLE
+const nightDiveVideo = CLOUDINARY_NIGHT_DIVE
 
 function getOrCreateDomVideoContainer() {
   let container = document.getElementById('hero-360-video-dom-root')

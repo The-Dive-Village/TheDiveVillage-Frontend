@@ -4,7 +4,7 @@
  * with the application Preloader to guarantee a zero-gap, instant handoff.
  */
 
-import clownfishVideo from '../assets/Media/Background/ClownFish.mp4'
+const clownfishVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/TDV-Media/Background/ClownFish.mp4'
 
 export const HERO_VIDEO_SRC = 'https://res.cloudinary.com/qvbunv8y/video/upload/TDV-Media/Background/ClownFish.mp4' || clownfishVideo
 

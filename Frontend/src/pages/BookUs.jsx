@@ -24,8 +24,8 @@ import {
 } from '../utils/courseEligibility'
 import { triggerHaptic, triggerSuccessHaptic, triggerErrorHaptic } from '../utils/haptics'
 
-import turtleAnnaVideo from '../assets/Media/Background/Turtle.mp4'
-import compiledNightDiveVideo from '../assets/Media/Background/Night Dive.mp4'
+const turtleAnnaVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/TDV-Media/Background/Turtle.mp4'
+const compiledNightDiveVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/TDV-Media/Background/Night_Dive.mp4'
 import useNightDive from '../hooks/useNightDive'
 import DiveExplorerMap from '../components/DiveExplorerMap'
 import { loadDiveSites } from '../utils/diveSitesLoader'
@@ -426,9 +426,9 @@ export default function BookUs() {
         setStepError('Please select a dive site.')
         return false
       }
-      if (!experience && !selectedAddOn) {
+      if (!experience && (!selectedAddOn || selectedAddOn === 'None')) {
         triggerErrorHaptic()
-        setStepError('Please select an experience or add-on.')
+        setStepError('Please select a primary diving experience.')
         return false
       }
       if (!date || date < cooldownMinDateStr || date > maxDateStr) {
@@ -446,7 +446,7 @@ export default function BookUs() {
       setStepError('')
 
       // Direct activity skips course & participant cert eligibility steps directly to Contact Info (Step 4)
-      const isDirect = (!experience && Boolean(selectedAddOn)) || isDirectActivity(experience)
+      const isDirect = (!experience && Boolean(selectedAddOn) && selectedAddOn !== 'None') || isDirectActivity(experience)
       if (isDirect) {
         triggerHaptic(10)
         setCurrentStep(4)
@@ -1039,6 +1039,9 @@ export default function BookUs() {
                           >
                             <option value="">
                               Select Your Add Ons
+                            </option>
+                            <option value="None">
+                              None
                             </option>
                             {ADD_ON_OPTIONS.map((addOn) => (
                               <option key={addOn} value={addOn}>

@@ -145,6 +145,14 @@ export const POPULAR_ISLAND_REGIONS = {
     { name: 'Malta Island (Valletta & Cirkewwa)', lat: 35.9, lng: 14.4 },
     { name: 'Gozo & Comino (Blue Hole)', lat: 36.05, lng: 14.25 },
   ],
+  'India': [
+    { name: 'Andaman & Nicobar Islands', lat: 12.0, lng: 92.95 },
+    { name: 'Lakshadweep Islands', lat: 10.7, lng: 72.4 },
+    { name: 'Goa & Grande Island', lat: 15.35, lng: 73.77 },
+    { name: 'Kovalam & Kerala Coast', lat: 8.39, lng: 76.97 },
+    { name: 'Pondicherry & East Coast', lat: 11.9, lng: 79.95 },
+    { name: 'Netrani Island & Karnataka', lat: 14.01, lng: 74.32 },
+  ],
   'Sri Lanka': [
     { name: 'Mirissa & Weligama', lat: 5.94, lng: 80.46 },
     { name: 'Hikkaduwa & Galle', lat: 6.13, lng: 80.1 },

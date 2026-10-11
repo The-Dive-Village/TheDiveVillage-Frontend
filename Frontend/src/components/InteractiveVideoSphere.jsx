@@ -2,7 +2,7 @@ import { useState, useEffect, Suspense, useRef } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls, useVideoTexture } from '@react-three/drei'
 import * as THREE from 'three'
-import clownfishVideo from '../assets/Media/Background/ClownFish.mp4'
+const clownfishVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/TDV-Media/Background/ClownFish.mp4'
 const videoFile = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v2/dive-village/hero-360/cj9jvkh5j6sozf2fhf0x.mp4?v=2' || clownfishVideo
 
 function getOrCreateDomVideoContainer() {

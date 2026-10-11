@@ -18,6 +18,12 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
     productId === 'product-ocean-bag'
   )
 
+  const isSweetheart = Boolean(
+    (src && src.toLowerCase().includes('sweetheart')) ||
+    (alt && alt.toLowerCase().includes('sweetheart')) ||
+    productId === 'product-womens-shirt'
+  )
+
   useEffect(() => {
     const el = containerRef.current
     if (!el || typeof IntersectionObserver === 'undefined') return
@@ -159,8 +165,18 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
 
             const pbr = mat.pbrMetallicRoughness
             if (pbr) {
-              pbr.setRoughnessFactor(isCap ? 0.65 : isBag ? 0.75 : 0.82)
+              // Ultra matte for sweetheart top: 1.0 maximum roughness, 0.0 metallic
+              pbr.setRoughnessFactor(isSweetheart ? 1.0 : isCap ? 0.65 : isBag ? 0.75 : 0.85)
               pbr.setMetallicFactor(0.0)
+            }
+
+            // Remove specular/clearcoat glossiness if supported in GLTF extensions
+            if (mat.clearcoat) {
+              mat.clearcoat.setClearcoatFactor(0.0)
+              mat.clearcoat.setClearcoatRoughnessFactor(1.0)
+            }
+            if (mat.specular) {
+              mat.specular.setSpecularFactor(isSweetheart ? 0.0 : 0.2)
             }
           })
         }
@@ -177,7 +193,7 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
     return () => {
       viewer.removeEventListener('load', applyMatteAndDoubleSided)
     }
-  }, [src, scriptLoaded, isCap, isBag])
+  }, [src, scriptLoaded, isCap, isBag, isSweetheart])
 
   return (
     <div 
@@ -200,9 +216,9 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
         camera-target="auto auto auto"
         min-camera-orbit="auto 75deg auto"
         max-camera-orbit="auto 75deg auto"
-        environment-image="neutral"
-        exposure={isCap ? "2.5" : isBag ? "1.8" : "1.4"}
-        shadow-intensity={isCap ? "0.08" : isBag ? "0.2" : "0.35"}
+        environment-image={isSweetheart ? "" : "neutral"}
+        exposure={isSweetheart ? "1.05" : isCap ? "2.5" : isBag ? "1.8" : "1.4"}
+        shadow-intensity={isSweetheart ? "0.15" : isCap ? "0.08" : isBag ? "0.2" : "0.35"}
         shadow-softness="0.9"
         tone-mapping="commerce"
         bounds="tight"

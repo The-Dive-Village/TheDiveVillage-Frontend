@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import cursorVideoLocal from '../assets/cursor.webm'
-const cursorVideo = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790244012/dive-village/ui-videos/cursor_webm.webm'
-import cursorPng from '../assets/cursor.png'
-import cursorHoverPng from '../assets/cursor hover.png'
+const cursorVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791685230/TDV-Media/UI/cursor.webm'
+const cursorPng = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791452083/TDV-Images/Logo.png'
+const cursorHoverPng = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791452083/TDV-Images/Logo.png'
 import useNightDive from '../hooks/useNightDive'
 
 export default function CustomCursor() {

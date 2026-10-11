@@ -3,17 +3,17 @@ import { useNavigate } from 'react-router'
 import { motion, AnimatePresence } from 'framer-motion'
 import { PANEL_IMAGES } from '../utils/images'
 
-// Activity Media
-import vidSafari from '../assets/Media/Airport to Airport/gallery1.mp4'
-import imgSafari from '../assets/Media/Services/Add Ons/safari.webp'
-import vidTrekking from '../assets/Media/Services/Add Ons/Trekking/Trekking.mp4'
-import imgTrekking from '../assets/Media/Services/Add Ons/trekking.webp'
-import vidSightseeing from '../assets/Media/Services/Add Ons/sightseeing.mp4'
-import imgSightseeing from '../assets/Media/Services/Add Ons/sightseeing.webp'
-import vidCampers from '../assets/Media/Services/Add Ons/Campers/Campers.MP4'
-import imgCampers from '../assets/Media/Services/Add Ons/campers.webp'
-import vidLiveaboard from '../assets/Media/Services/Add Ons/liveaboard.mp4'
-import imgLiveaboard from '../assets/Media/Services/Add Ons/liveaboard.webp'
+// Activity Media (Cloudinary URLs)
+const vidSafari = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791191828/dive-village/gallery-videos/gallery1_mp4.mp4'
+const imgSafari = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791685504/TDV-Media/AddOns/safari.webp'
+const vidTrekking = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791685324/TDV-Media/AddOns/Trekking.mp4'
+const imgTrekking = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791685508/TDV-Media/AddOns/trekking.webp'
+const vidSightseeing = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791685371/TDV-Media/AddOns/sightseeing.mp4'
+const imgSightseeing = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791685509/TDV-Media/AddOns/sightseeing.webp'
+const vidCampers = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791686777/TDV-Media/AddOns/Campers.mp4'
+const imgCampers = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791685511/TDV-Media/AddOns/campers.webp'
+const vidLiveaboard = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791685388/TDV-Media/AddOns/liveaboard.mp4'
+const imgLiveaboard = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791685512/TDV-Media/AddOns/liveaboard.webp'
 import { useRef } from 'react'
 
 function HoverVideoPreview({ videoSrc, poster, displayName }) {

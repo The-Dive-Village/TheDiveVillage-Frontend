@@ -9,15 +9,15 @@ import SEOHead from '../components/SEOHead'
 import MerchBannerCTA from '../components/MerchBannerCTA'
 import { CAROUSEL_IMAGES } from '../utils/images'
 import { useReviews } from '../contexts/ReviewsContext'
-import aboutVid from '../assets/Media/Background/About.mp4'
-import nightDiveVideo from '../assets/Media/Background/Night Dive.mp4'
+const aboutVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/TDV-Media/Background/About.mp4'
+const nightDiveVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/TDV-Media/Background/Night_Dive.mp4'
 const divingVid = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790244035/dive-village/ui-videos/diving_1_mp4.mp4';
 import useNightDive from '../hooks/useNightDive'
 
-import certifiedCoursesImg from '../assets/Media/Services Thumbnails/Certified Courses.webp'
-import introProgImg from '../assets/Media/Services Thumbnails/Introductory Programs.webp'
-import freeDivingImg from '../assets/Media/Services Thumbnails/Free Diving.webp'
-import flexibleFunDivesImg from '../assets/Media/Services Thumbnails/Flexible Fun Dives.webp'
+const certifiedCoursesImg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791452290/TDV-Images/Certified_Courses.webp'
+const introProgImg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791452294/TDV-Images/Introductory_Programs.webp'
+const freeDivingImg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791452292/TDV-Images/Free_Diving.webp'
+const flexibleFunDivesImg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791452291/TDV-Images/Flexible_Fun_Dives.webp'
 
 const SAFETY_PROMISES = [
   {

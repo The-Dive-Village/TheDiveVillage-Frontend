@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router'
 import { motion } from 'framer-motion'
-import localBannerImg from '../assets/Media/banner.jpg'
-const bannerImg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791623336/TDV-Media/Products/banner_new.webp' || localBannerImg;
+const bannerImg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791686007/TDV-Media/Merch/banner.jpg';
 
 const pop1 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458274/TDV-Media/Products/pop1.webp';
 const pop2 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458275/TDV-Media/Products/pop2.webp';

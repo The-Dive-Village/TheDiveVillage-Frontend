@@ -1,5 +1,5 @@
 import { Link } from 'react-router'
-import LogoImg from '../assets/Logo.png'
+const LogoImg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791452083/TDV-Images/Logo.png'
 
 export default function Logo({ className = '', compact = false, light = false }) {
   return (

@@ -1,50 +1,50 @@
 // Distinct High-Res Images
-import imgPhoto86440 from '../assets/Gallery/Photo00086440.jpg'
-import imgPhoto86448 from '../assets/Gallery/Photo00086448.jpg'
-import imgIntroProg from '../assets/Media/Services Thumbnails/Introductory Programs.webp'
-import imgPhoto86450 from '../assets/Gallery/Photo00086450.jpg'
-import imgPhoto86726 from '../assets/Gallery/Photo00086726.jpg'
-import imgSnorkelingPng from '../assets/Media/Services Thumbnails/Snorkeling.webp'
-import imgPhoto86451 from '../assets/Gallery/Photo00086451.jpg'
-import imgPhoto86454 from '../assets/Gallery/Photo00086454.jpg'
-import imgPhoto86476 from '../assets/Gallery/Photo00086476.jpg'
-import imgScuba1Jpg from '../assets/Gallery/Scuba1.jpg'
-import imgCertCourses from '../assets/Media/Services Thumbnails/Certified Courses.webp'
-import imgScuba2Jpg from '../assets/Gallery/Scuba2.jpg'
-import imgScuba3Jpg from '../assets/Gallery/Scuba3.jpg'
-import imgStay from '../assets/Media/Airport to Airport/Stay.webp'
-import imgScuba4Jpg from '../assets/Gallery/Scuba4.jpg'
-import imgScuba5Jpg from '../assets/Gallery/Scuba5.jpg'
+const imgPhoto86440 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scuba_Diving.webp'
+const imgPhoto86448 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scuba_Diving.webp'
+const imgIntroProg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791452294/TDV-Images/Introductory_Programs.webp'
+const imgPhoto86450 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scuba_Diving.webp'
+const imgPhoto86726 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scuba_Diving.webp'
+const imgSnorkelingPng = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791452295/TDV-Images/Snorkeling.webp'
+const imgPhoto86451 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scuba_Diving.webp'
+const imgPhoto86454 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scuba_Diving.webp'
+const imgPhoto86476 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scuba_Diving.webp'
+const imgScuba1Jpg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scuba_Diving.webp'
+const imgCertCourses = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791452290/TDV-Images/Certified_Courses.webp'
+const imgScuba2Jpg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scuba_Diving.webp'
+const imgScuba3Jpg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scuba_Diving.webp'
+const imgStay = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791452086/TDV-Images/Stay.webp'
+const imgScuba4Jpg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scuba_Diving.webp'
+const imgScuba5Jpg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scuba_Diving.webp'
 const imgScubadiving = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458191/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp';
-import imgPhoto86485 from '../assets/Gallery/Photo00086485.jpg'
-import imgPhoto86509 from '../assets/Gallery/Photo00086509.jpg'
-import imgCrownOfThorns from '../assets/Gallery/Crown of thorns.JPG'
-import imgPhoto86561 from '../assets/Gallery/Photo00086561.jpg'
-import imgPhoto86567 from '../assets/Gallery/Photo00086567.jpg'
-import imgPhoto86573 from '../assets/Gallery/Photo00086573.jpg'
-import imgNightDive from '../assets/Gallery/Nightdive.jpg'
-import imgPhoto86574 from '../assets/Gallery/Photo00086574.jpg'
-import imgPhoto86576 from '../assets/Gallery/Photo00086576.jpg'
-import imgFlexFunDives from '../assets/Gallery/Flexible Fun Dives.png'
-import imgPhoto86578 from '../assets/Gallery/Photo00086578.jpg'
+const imgPhoto86485 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scuba_Diving.webp'
+const imgPhoto86509 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scuba_Diving.webp'
+const imgCrownOfThorns = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scuba_Diving.webp'
+const imgPhoto86561 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scuba_Diving.webp'
+const imgPhoto86567 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scuba_Diving.webp'
+const imgPhoto86573 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scuba_Diving.webp'
+const imgNightDive = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scuba_Diving.webp'
+const imgPhoto86574 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scuba_Diving.webp'
+const imgPhoto86576 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scuba_Diving.webp'
+const imgFlexFunDives = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scuba_Diving.webp'
+const imgPhoto86578 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scuba_Diving.webp'
 const imgSeaFanJpg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458192/TDV-Media/Extras%20for%20Gallery/Sea_fan.webp';
-import imgPhoto86586 from '../assets/Gallery/Photo00086586.jpg'
-import imgPhoto86587 from '../assets/Gallery/Photo00086587.jpg'
-import imgPhoto86588 from '../assets/Gallery/Photo00086588.jpg'
-import imgPhoto86611 from '../assets/Gallery/Photo00086611.jpg'
-import imgPhoto86694 from '../assets/Gallery/Photo00086694.jpg'
-import imgPhoto86723 from '../assets/Gallery/Photo00086723.jpg'
-import imgSky1 from '../assets/Gallery/Sky1.jpg'
-import imgPhoto86738 from '../assets/Gallery/Photo00086738.jpg'
-import imgZero2Hero from '../assets/Gallery/zero2hero.jpg'
-import imgPhoto86739 from '../assets/Gallery/Photo00086739.jpg'
-import imgPhoto86742 from '../assets/Gallery/Photo00086742.jpg'
-import imgPhoto86760 from '../assets/Gallery/Photo00086760.jpg'
-import imgFreeDivingPng from '../assets/Media/Services Thumbnails/Free Diving.webp'
-import imgFreeDivingJpg from '../assets/Gallery/Free Diving.jpg'
-import imgPhoto86761 from '../assets/Gallery/Photo00086761.jpg'
-import imgPhoto86765 from '../assets/Gallery/Photo00086765.webp'
-import imgPhoto86771 from '../assets/Gallery/Photo00086771.webp'
+const imgPhoto86586 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scuba_Diving.webp'
+const imgPhoto86587 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scuba_Diving.webp'
+const imgPhoto86588 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scuba_Diving.webp'
+const imgPhoto86611 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scuba_Diving.webp'
+const imgPhoto86694 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scuba_Diving.webp'
+const imgPhoto86723 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scuba_Diving.webp'
+const imgSky1 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scuba_Diving.webp'
+const imgPhoto86738 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scuba_Diving.webp'
+const imgZero2Hero = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scuba_Diving.webp'
+const imgPhoto86739 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scuba_Diving.webp'
+const imgPhoto86742 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scuba_Diving.webp'
+const imgPhoto86760 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scuba_Diving.webp'
+const imgFreeDivingPng = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791452292/TDV-Images/Free_Diving.webp'
+const imgFreeDivingJpg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scuba_Diving.webp'
+const imgPhoto86761 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scuba_Diving.webp'
+const imgPhoto86765 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scuba_Diving.webp'
+const imgPhoto86771 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scuba_Diving.webp'
 
 // Extras for Gallery
 const extScubaDiving = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scuba_Diving.webp';
@@ -67,6 +67,9 @@ const extTurtleVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v17914581
 const extTrevallyVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458043/TDV-Media/Extras%20for%20Gallery/Big_Eye_Trevally.mp4';
 const extStingrayVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458073/TDV-Media/Extras%20for%20Gallery/Bluespotted_Stingray.mp4';
 const extScubaDiverVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458185/TDV-Media/Extras%20for%20Gallery/Scuba_Diver.mp4';
+const extMorayEelVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791457997/TDV-Media/Extras%20for%20Gallery/A_Moray_Eel_in_a_Giant_Barrel_Sponge.mp4';
+const extAnemoneVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458085/TDV-Media/Extras%20for%20Gallery/Clownfish_and_Sea_Anemone.mp4';
+const extSeafanVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458006/TDV-Media/Extras%20for%20Gallery/A_Seafan.mp4';
 
 // Exact Service Media Video Imports from Assets/Media/Services
 const vidTryDive = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458850/TDV-Media/Services/Try_Dive.mp4';
@@ -108,17 +111,17 @@ const vid3DaySurf = 'https://res.cloudinary.com/qvbunv8y/video/upload/v179145853
 const vidDiscoverSurfing = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458614/TDV-Media/Services/discover_surfing.mp4';
 const vidCanoneering = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791460085/TDV-Media/Services/Other/Canoneering.mp4';
 
-// Add Ons Media
-import vidTrekking from '../assets/Media/Services/Add Ons/Trekking/Trekking.mp4'
-import imgTrekking from '../assets/Media/Services/Add Ons/trekking.webp'
-import vidSightseeing from '../assets/Media/Services/Add Ons/sightseeing.mp4'
-import imgSightseeing from '../assets/Media/Services/Add Ons/sightseeing.webp'
-import vidCampers from '../assets/Media/Services/Add Ons/Campers/Campers.MP4'
-import imgCampers from '../assets/Media/Services/Add Ons/campers.webp'
-import vidSafari from '../assets/Media/Airport to Airport/gallery1.mp4'
-import imgSafari from '../assets/Media/Services/Add Ons/safari.webp'
-import vidLiveaboard from '../assets/Media/Services/Add Ons/liveaboard.mp4'
-import imgLiveaboard from '../assets/Media/Services/Add Ons/liveaboard.webp'
+// Add Ons Media (Cloudinary URLs)
+const vidTrekking = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791685324/TDV-Media/AddOns/Trekking.mp4'
+const imgTrekking = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791685508/TDV-Media/AddOns/trekking.webp'
+const vidSightseeing = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791685371/TDV-Media/AddOns/sightseeing.mp4'
+const imgSightseeing = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791685509/TDV-Media/AddOns/sightseeing.webp'
+const vidCampers = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791686777/TDV-Media/AddOns/Campers.mp4'
+const imgCampers = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791685511/TDV-Media/AddOns/campers.webp'
+const vidSafari = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791191828/dive-village/gallery-videos/gallery1_mp4.mp4'
+const imgSafari = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791685504/TDV-Media/AddOns/safari.webp'
+const vidLiveaboard = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791685388/TDV-Media/AddOns/liveaboard.mp4'
+const imgLiveaboard = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791685512/TDV-Media/AddOns/liveaboard.webp'
 
 export const CATEGORIES = [
   { key: 'all', label: 'All Services' },
@@ -1188,7 +1191,7 @@ export const FUN_DIVES_PACKAGES = [
     funType: 'day',
     short_desc: 'Ten dive package for committed ocean divers.',
     long_desc: 'The perfect balance of cost and deep Andaman exploration.',
-    video: vidFunDive,
+    video: extMorayEelVid,
     image: extShoal,
     highlights: 'Certified divers only | Island-wide Sites',
     badge: 'Best Value',
@@ -1216,7 +1219,7 @@ export const FUN_DIVES_PACKAGES = [
     funType: 'day',
     short_desc: 'Add on two extra dives to keep exploring.',
     long_desc: 'Flexible add-on to extend your multi-day package anytime.',
-    video: vidFunDive,
+    video: extAnemoneVid,
     image: extBandedCoral,
     highlights: 'Certified divers only | Extension Pack',
     badge: 'Add-On',
