@@ -342,29 +342,14 @@ export default function Gallery() {
                 </button>
 
                 {currentItem.type === 'video' ? (
-                  currentItem.isVertical ? (
-                    <div className="w-auto h-full max-h-[75vh] sm:max-h-[80vh] aspect-[9/16] rounded-2xl overflow-hidden shadow-2xl border border-white/10 m-auto flex items-center justify-center relative bg-black">
-                      <div className="w-full h-full flex items-center justify-center overflow-hidden" style={{ transform: 'scale(3.16)' }}>
-                        <LazyVideo
-                          src={currentItem.src}
-                          controls
-                          autoPlay
-                          loop
-                          playsInline
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    </div>
-                  ) : (
-                    <LazyVideo
-                      src={currentItem.src}
-                      controls
-                      autoPlay
-                      loop
-                      playsInline
-                      className="w-full h-full max-w-full max-h-full object-contain flex items-center justify-center"
-                    />
-                  )
+                  <LazyVideo
+                    src={currentItem.src}
+                    controls
+                    autoPlay
+                    loop
+                    playsInline
+                    className="w-full h-full max-w-full max-h-full object-contain flex items-center justify-center"
+                  />
                 ) : (
                   <img
                     src={currentItem.src}
@@ -539,19 +524,14 @@ function GalleryGridCard({ item, idx, reduce, onClick }) {
       <div className="relative aspect-[4/3] sm:aspect-[16/11] w-full overflow-hidden bg-navy/10">
         {item.type === 'video' ? (
           <div className="w-full h-full transition-transform duration-700 ease-out group-hover:scale-105">
-            <div
-              className="w-full h-full flex items-center justify-center overflow-hidden"
-              style={item.isVertical ? { transform: 'scale(2.6)' } : undefined}
-            >
-              <LazyVideo
-                src={item.src}
-                muted
-                loop
-                playsInline
-                autoPlay={false}
-                className="w-full h-full object-cover"
-              />
-            </div>
+            <LazyVideo
+              src={item.src}
+              muted
+              loop
+              playsInline
+              autoPlay={false}
+              className="w-full h-full object-cover"
+            />
           </div>
         ) : (
           <SafeImage

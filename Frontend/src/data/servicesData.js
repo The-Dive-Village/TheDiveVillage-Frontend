@@ -92,7 +92,7 @@ const vidAddDiveAfterDSD = 'https://res.cloudinary.com/qvbunv8y/video/upload/v17
 const vidSkinDiver = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458841/TDV-Media/Services/Skin_Diver.mp4';
 const vidScubaDiver = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458832/TDV-Media/Services/Scuba_Diver.mp4';
 const vidOpenWater = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458719/TDV-Media/Services/Open_Water_Diver.mp4';
-const vidAdventureDiver = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458554/TDV-Media/Services/AdventureDiver.mp4';
+const vidAdventureDiver = 'https://res.cloudinary.com/qvbunv8y/video/upload/c_crop,w_608,h_1080,g_center/v1791458554/TDV-Media/Services/AdventureDiver.mp4';
 const vidAdvancedOpenWater = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458550/TDV-Media/Services/Advanced_Open_Water.mp4';
 const vidEFR = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458635/TDV-Media/Services/EFR_Primary_Secondary_Care.mp4';
 const vidRescueDiver = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458823/TDV-Media/Services/Rescue_Diver.mp4';
@@ -105,7 +105,7 @@ const vidDeepDiver = 'https://res.cloudinary.com/qvbunv8y/video/upload/v17914585
 const vidWreckDiver = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458856/TDV-Media/Services/Wreck_Diver.mp4';
 const vidNightDiveBackground = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458701/TDV-Media/Services/Night_Diver.mp4';
 const vidNitrox = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458669/TDV-Media/Services/Enriched_Air_Nitrox.mp4';
-const vidFunDive = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458693/TDV-Media/Services/Fun_Dive.mp4';
+const vidFunDive = extTurtleVid;
 const vidDSDOpenWater = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458588/TDV-Media/Services/Discover_Scuba_Dive_Open_Water.mp4';
 const vidOWAdvanced = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458729/TDV-Media/Services/Open_water_Advanced_Openwater.mp4';
 const vidEFRRescue = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458642/TDV-Media/Services/Emergency_First_Response_Rescue_Diver.mp4';
@@ -416,7 +416,6 @@ export const SERVICES_DATA = [
     long_desc: 'Expand skills in areas like navigation, buoyancy, or night diving.',
     video: vidAdventureDiver,
     image: getVideoThumbnail(vidAdventureDiver),
-    isVertical: true,
     highlights: 'Duration: 1–2 days | Credit toward Advanced | Prequisites: Open Water Diver',
     days_min: 1.0,
     days_max: 2.0,
@@ -814,7 +813,6 @@ export const SERVICES_DATA = [
     long_desc: 'Explore reefs and walls with flexible guided dive packages tailored directly to your schedule. Choose from 1 to 12+ dives, specialized Night Dives, and Dawn Dives with certified Divemasters.',
     video: vidFunDive,
     image: getVideoThumbnail(vidFunDive),
-    isVertical: true,
     highlights: 'Certified divers only | 1 to 12+ Dives | Custom Packages',
     isFunDivesContainer: true,
     faqs: [
@@ -1248,8 +1246,8 @@ export const FUN_DIVES_PACKAGES = [
     funType: 'dawn',
     short_desc: 'Witness early morning pelagic activity as the reef awakens.',
     long_desc: 'Drop in at first light to experience schooling trevally, hunting sharks, and pristine visibility.',
-    video: extTrevallyVid,
-    image: getVideoThumbnail(extTrevallyVid),
+    video: vidAdventureDiver,
+    image: getVideoThumbnail(vidAdventureDiver),
     highlights: 'Certified divers only | First Light Departure',
     badge: 'Dawn Special',
     duration: 'Early Morning (1 Dive)',

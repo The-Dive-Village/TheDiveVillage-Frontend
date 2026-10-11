@@ -100,7 +100,7 @@ export default function LazyVideo({
     <div
       ref={containerRef}
       onMouseEnter={handleMouseEnter}
-      className={`relative overflow-hidden ${className}`}
+      className={`${className.includes('absolute') ? '' : 'relative'} overflow-hidden ${className}`}
     >
       {isInView && src && (
         <video
