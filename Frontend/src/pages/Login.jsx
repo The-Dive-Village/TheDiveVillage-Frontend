@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { useAuth } from '../hooks/useAuth'
 import { firebaseAuth } from '../services/firebase'
-const vidBarracuda = 'https://res.cloudinary.com/qvbunv8y/video/upload/TDV-Media/Background/baracuda.mp4'
+const vidDiscoverScuba = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458604/TDV-Media/Services/Discover_Scuba_Dive.mp4'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -82,7 +82,7 @@ export default function Login() {
       {/* Left side - Background Video (hidden on mobile) */}
       <div className="hidden lg:block lg:w-[60%] xl:w-[62%] shrink-0 relative bg-white overflow-hidden">
         <LazyVideo
-          src={vidBarracuda}
+          src={vidDiscoverScuba}
           autoPlay
           loop
           muted

@@ -39,7 +39,7 @@ export default function ViberQRModal({ isOpen, onClose }) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="relative w-full max-w-md bg-white rounded-[32px] p-6 sm:p-8 shadow-2xl border border-navy/10 z-10 text-navy pointer-events-auto max-h-[90vh] overflow-y-auto text-center"
+            className="relative w-full max-w-lg bg-white rounded-[32px] p-6 sm:p-8 shadow-2xl border border-navy/10 z-10 text-navy pointer-events-auto max-h-[90vh] overflow-y-auto text-center"
           >
             {/* Header */}
             <div className="flex items-center justify-between border-b border-navy/10 pb-4 mb-6">

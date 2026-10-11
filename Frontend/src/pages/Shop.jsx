@@ -9,6 +9,7 @@ import { useAuth } from '../hooks/useAuth'
 import Button from '../components/Button'
 import SEOHead from '../components/SEOHead'
 import { useLenis } from '../utils/lenisReact'
+import useNightDive from '../hooks/useNightDive'
 
 import { triggerHaptic, triggerSuccessHaptic } from '../utils/haptics'
 const bannerImg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791686007/TDV-Media/Merch/banner.jpg';
@@ -41,6 +42,7 @@ const MOBILE_PRODUCT_ORDER = [
 ]
 
 export default function Shop() {
+  const isNightDive = useNightDive()
   const { user } = useAuth()
   const navigate = useNavigate()
   const [productsList, setProductsList] = useState(SHOP_PRODUCTS)
@@ -159,7 +161,7 @@ export default function Shop() {
   }, [productsList, selectedCategory, deferredSearchQuery, sortBy, priceFilter, isMobile])
 
   return (
-    <div className="bg-[#FAFAFA] min-h-screen text-navy font-body pt-20 md:pt-32 pb-24 overflow-x-hidden">
+    <div className={`min-h-screen font-body pt-20 md:pt-32 pb-24 overflow-x-hidden transition-colors duration-500 ${isNightDive ? 'bg-[#0b1726] text-white' : 'bg-[#FAFAFA] text-navy'}`}>
       <SEOHead
         title="Dive Shop & Sustainable Marine Apparel | The Dive Village"
         description="Shop high-performance ocean gear, eco-friendly dive apparel, dive suits, and diving accessories. Designed for comfort, durability, and marine conservation."
@@ -446,6 +448,7 @@ export default function Shop() {
               <ProductCardItem
                 key={product.id}
                 product={product}
+                isNightDive={isNightDive}
                 onQuickAdd={handleQuickAdd}
                 isWishlisted={isWishlisted(product.id)}
                 onToggleWishlist={(e) => {
@@ -687,7 +690,7 @@ function GroupGallerySection() {
   )
 }
 
-function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }) {
+function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, isNightDive }) {
   const navigate = useNavigate()
   const [isHovered, setIsHovered] = useState(false)
   const [hasHovered, setHasHovered] = useState(false)
@@ -842,10 +845,10 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
 
   return (
     <>
-      {/* MOBILE PRODUCT CARD (md:hidden - Matches user reference screenshot) */}
+      {/* MOBILE PRODUCT CARD (md:hidden - Transparent BG for day/night mode) */}
       <div
         onClick={() => navigate(`/shop/${product.id}`)}
-        className="md:hidden group rounded-2xl bg-white border border-slate-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] p-2.5 xs:p-3 flex flex-col justify-between cursor-pointer relative transition active:scale-[0.99]"
+        className={`md:hidden group rounded-2xl bg-transparent border ${isNightDive ? 'border-white/15 text-white' : 'border-slate-200/80 text-navy'} shadow-sm p-2.5 xs:p-3 flex flex-col justify-between cursor-pointer relative transition active:scale-[0.99]`}
       >
         {/* Wishlist Button (Top Right) */}
         <button
@@ -854,7 +857,7 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
             e.stopPropagation()
             onToggleWishlist(e)
           }}
-          className="absolute top-2.5 right-2.5 z-10 w-7.5 h-7.5 xs:w-8 xs:h-8 rounded-full bg-slate-50/90 border border-slate-200/90 text-slate-700 flex items-center justify-center shadow-sm transition active:scale-90 hover:text-red-500 cursor-pointer"
+          className={`absolute top-2.5 right-2.5 z-10 w-7.5 h-7.5 xs:w-8 xs:h-8 rounded-full ${isNightDive ? 'bg-white/10 border-white/20 text-white' : 'bg-slate-50/90 border-slate-200/90 text-slate-700'} flex items-center justify-center shadow-sm transition active:scale-90 hover:text-red-500 cursor-pointer`}
           aria-label="Wishlist"
           title={isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}
         >
@@ -872,7 +875,7 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
         </button>
 
         {/* Product Image */}
-        <div className="w-full aspect-[4/5] flex items-center justify-center p-2 mb-1 bg-white">
+        <div className="w-full aspect-[4/5] flex items-center justify-center p-2 mb-1 bg-transparent">
           <img
             src={product.image}
             alt={product.title || product.name}
@@ -887,7 +890,7 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
             <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 block mb-0.5">
               {product.category || 'MERCH'}
             </span>
-            <h3 className="font-bold text-slate-900 text-xs xs:text-[13px] leading-snug line-clamp-2 min-h-[32px]">
+            <h3 className={`font-bold ${isNightDive ? 'text-white' : 'text-slate-900'} text-xs xs:text-[13px] leading-snug line-clamp-2 min-h-[32px]`}>
               {product.title || product.name}
             </h3>
           </div>
@@ -908,7 +911,7 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
         </button>
       </div>
 
-      {/* DESKTOP PRODUCT CARD (hidden md:flex - 100% Preserved) */}
+      {/* DESKTOP PRODUCT CARD (hidden md:flex - Transparent BG for day/night mode) */}
       <div
         onClick={() => navigate(`/shop/${product.id}`)}
         onMouseEnter={() => {
@@ -916,11 +919,11 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
           setHasHovered(true)
         }}
         onMouseLeave={() => setIsHovered(false)}
-        className="hidden md:flex group rounded-2xl sm:rounded-[32px] bg-white border border-navy/5 p-3 sm:p-6 shadow-card hover:shadow-float transition duration-300 flex-col justify-between cursor-pointer relative"
+        className={`hidden md:flex group rounded-2xl sm:rounded-[32px] bg-transparent border ${isNightDive ? 'border-white/15 text-white' : 'border-navy/10 text-navy'} p-3 sm:p-6 shadow-card hover:shadow-float transition duration-300 flex-col justify-between cursor-pointer relative`}
       >
         <div>
           <div className="relative mb-3 sm:mb-5">
-            <div className="aspect-[4/5] w-full rounded-xl sm:rounded-2xl overflow-hidden bg-white flex items-center justify-center p-2.5 sm:p-4 relative">
+            <div className="aspect-[4/5] w-full rounded-xl sm:rounded-2xl overflow-hidden bg-transparent flex items-center justify-center p-2.5 sm:p-4 relative">
               {/* Low-contrast Skeleton Shimmer Placeholder */}
               {!imgLoaded && (
                 <div className="absolute inset-0 skeleton-shimmer bg-navy/5 z-0" aria-hidden="true" />
@@ -933,7 +936,7 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
               />
               {product.glb && hasHovered && (
                 <div
-                  className={`absolute inset-0 w-full h-full z-10 bg-white flex items-center justify-center transition-opacity duration-300 cursor-grab active:cursor-grabbing ${show3D ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+                  className={`absolute inset-0 w-full h-full z-10 bg-transparent flex items-center justify-center transition-opacity duration-300 cursor-grab active:cursor-grabbing ${show3D ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
                 >
                   <model-viewer
                     ref={viewerRef}
@@ -970,18 +973,18 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist }
 
           <div className="mb-2 sm:mb-4">
             <span className="text-[9px] sm:text-[11px] font-bold uppercase tracking-wider text-accent block mb-0.5 sm:mb-1">{product.category}</span>
-            <h3 className="font-heading text-xs xs:text-sm sm:text-xl font-bold text-navy leading-tight sm:leading-snug group-hover:text-accent transition line-clamp-2 sm:line-clamp-none">{product.title}</h3>
-            <p className="text-[10px] sm:text-xs text-navy/70 line-clamp-1 sm:line-clamp-2 mt-1 sm:mt-2 leading-relaxed hidden xs:block">{product.description}</p>
+            <h3 className={`font-heading text-xs xs:text-sm sm:text-xl font-bold ${isNightDive ? 'text-white' : 'text-navy'} leading-tight sm:leading-snug group-hover:text-accent transition line-clamp-2 sm:line-clamp-none`}>{product.title}</h3>
+            <p className={`text-[10px] sm:text-xs ${isNightDive ? 'text-white/70' : 'text-navy/70'} line-clamp-1 sm:line-clamp-2 mt-1 sm:mt-2 leading-relaxed hidden xs:block`}>{product.description}</p>
           </div>
         </div>
 
-        <div className="pt-2 sm:pt-4 border-t border-navy/10 flex items-center justify-between gap-1.5 sm:gap-3">
+        <div className={`pt-2 sm:pt-4 border-t ${isNightDive ? 'border-white/15' : 'border-navy/10'} flex items-center justify-between gap-1.5 sm:gap-3`}>
           <span className="text-[9px] sm:text-[10px] text-emerald-600 font-bold hidden sm:inline">Inquire within</span>
           <div className="flex items-center gap-1.5 sm:gap-2 ml-auto sm:ml-0">
             <button
               type="button"
               onClick={onToggleWishlist}
-              className="w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-navy/10 hover:bg-navy border border-navy/20 text-navy hover:text-white flex items-center justify-center shadow-sm transition duration-200 hover:scale-110 active:scale-95 cursor-pointer shrink-0"
+              className={`w-7 h-7 sm:w-9 sm:h-9 rounded-full ${isNightDive ? 'bg-white/10 hover:bg-white/20 border-white/20 text-white' : 'bg-navy/10 hover:bg-navy border-navy/20 text-navy'} hover:text-white flex items-center justify-center shadow-sm transition duration-200 hover:scale-110 active:scale-95 cursor-pointer shrink-0`}
               aria-label="Wishlist"
               title={isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}
             >

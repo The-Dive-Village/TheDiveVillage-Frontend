@@ -167,14 +167,14 @@ export default function GalleryPreview() {
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
           onPointerCancel={handlePointerUp}
-          className="flex gap-2.5 sm:gap-4 overflow-x-auto scrollbar-none no-scrollbar cursor-grab active:cursor-grabbing select-none py-2 px-3 sm:px-6"
+          className="flex gap-2.5 sm:gap-4 overflow-x-auto scrollbar-none no-scrollbar cursor-grab active:cursor-grabbing select-none py-4 px-3 sm:px-6"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           {[...previewItems, ...previewItems, ...previewItems].map((item, i) => (
             <div
               key={`${item.id}-${i}`}
               onClick={goToGallery}
-              className="relative flex-shrink-0 w-[44vw] min-w-[155px] max-w-[210px] aspect-square sm:aspect-auto sm:w-[230px] sm:h-[310px] lg:w-[260px] lg:h-[350px] rounded-2xl overflow-hidden border border-white/20 shadow-2xl group cursor-pointer bg-[#00172b]"
+              className="relative flex-shrink-0 w-[44vw] min-w-[155px] max-w-[210px] aspect-square sm:aspect-auto sm:w-[230px] sm:h-[310px] lg:w-[260px] lg:h-[350px] rounded-2xl overflow-hidden border border-white/20 shadow-none group cursor-pointer bg-transparent"
             >
               {item.type === 'video' ? (
                 <LazyVideo
@@ -193,9 +193,12 @@ export default function GalleryPreview() {
                   loading="lazy"
                 />
               )}
-              {/* Overlay with Title */}
-              <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/30 to-transparent flex flex-col justify-end p-2.5 sm:p-4">
-                <h4 className="text-white font-heading font-bold text-xs sm:text-base leading-tight drop-shadow-md truncate">
+              {/* Title without black gradient overlay */}
+              <div className="absolute inset-0 flex flex-col justify-end p-2.5 sm:p-4 pointer-events-none">
+                <h4
+                  className="text-white font-heading font-bold text-xs sm:text-base leading-tight drop-shadow-md truncate"
+                  style={{ textShadow: '0 2px 8px rgba(0,0,0,0.95), 0 1px 3px rgba(0,0,0,0.9)' }}
+                >
                   {item.title}
                 </h4>
               </div>

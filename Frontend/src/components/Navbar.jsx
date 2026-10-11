@@ -93,12 +93,12 @@ export default function Navbar() {
           type="button"
           onClick={toggleNightDive}
           className="flex flex-col items-center justify-center cursor-pointer transition active:scale-95 px-1 py-0.5 shrink-0 rounded-xl focus:outline-none"
-          aria-label="Toggle Night Dive mode"
-          title={isNightDive ? 'Night Dive' : 'Day Dive'}
+          aria-label="Toggle Night Mode"
+          title={isNightDive ? 'Day Mode' : 'Night Mode'}
         >
           <ThemeToggle isNightDive={isNightDive} className="inline-block" />
           <span className="text-[9px] font-extrabold tracking-tight mt-0.5 text-white/90 uppercase whitespace-nowrap leading-none select-none">
-            {isNightDive ? 'Night Dive' : 'Day Dive'}
+            {isNightDive ? 'Day Mode' : 'Night Mode'}
           </span>
         </button>
       </div>
@@ -502,7 +502,7 @@ function CallModal({ isOpen, onClose, onOpenViberQr }) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="relative w-full max-w-md bg-white rounded-[32px] p-6 sm:p-8 shadow-2xl border border-navy/10 z-10 text-navy pointer-events-auto max-h-[90vh] overflow-y-auto"
+            className="relative w-full max-w-lg sm:max-w-xl bg-white rounded-[32px] p-5 xs:p-6 sm:p-8 shadow-2xl border border-navy/10 z-10 text-navy pointer-events-auto max-h-[90vh] overflow-y-auto"
           >
             {/* Header */}
             <div className="flex items-center justify-between border-b border-navy/10 pb-4 mb-6">
@@ -531,18 +531,18 @@ function CallModal({ isOpen, onClose, onOpenViberQr }) {
                   target={['whatsapp', 'messenger'].includes(opt.id) ? '_blank' : '_self'}
                   rel={['whatsapp', 'messenger'].includes(opt.id) ? 'noopener noreferrer' : undefined}
                   onClick={(e) => handleCardClick(opt, e)}
-                  className="flex items-center justify-between p-4 rounded-2xl bg-navy/5 hover:bg-navy/10 border border-navy/10 transition duration-200 group shadow-sm cursor-pointer"
+                  className="flex items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-navy/5 hover:bg-navy/10 border border-navy/10 transition duration-200 group shadow-sm cursor-pointer gap-3"
                 >
-                  <div className="flex items-center gap-3.5">
+                  <div className="flex items-center gap-3.5 min-w-0 flex-1">
                     <div className="w-10 h-10 rounded-xl bg-white border border-navy/10 flex items-center justify-center shadow-sm shrink-0">
                       {opt.icon}
                     </div>
-                    <div>
-                      <h4 className="font-bold text-navy text-sm group-hover:text-black transition-colors">{opt.title}</h4>
-                      <p className="text-xs text-navy/70 font-medium">{opt.subtitle}</p>
+                    <div className="min-w-0 flex-1">
+                      <h4 className="font-bold text-navy text-sm sm:text-base group-hover:text-black transition-colors">{opt.title}</h4>
+                      <p className="text-xs sm:text-[13px] text-navy/70 font-medium truncate sm:whitespace-normal">{opt.subtitle}</p>
                     </div>
                   </div>
-                  <span className="text-lg font-bold text-navy/40 group-hover:text-navy group-hover:translate-x-1 transition-all">
+                  <span className="text-lg font-bold text-navy/40 group-hover:text-navy group-hover:translate-x-1 transition-all shrink-0">
                     →
                   </span>
                 </a>

@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { useAuth } from '../hooks/useAuth'
+import LazyVideo from '../components/LazyVideo'
 import { IMAGES } from '../utils/images'
+const vidDiscoverScuba = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458604/TDV-Media/Services/Discover_Scuba_Dive.mp4'
 
 export default function Signup() {
   const navigate = useNavigate()
@@ -56,9 +58,16 @@ export default function Signup() {
   return (
     <div className="min-h-screen flex bg-white text-navy font-body relative overflow-hidden">
       
-      {/* Left side - Image (hidden on mobile) */}
+      {/* Left side - Background Video (hidden on mobile) */}
       <div className="hidden lg:block lg:w-[60%] xl:w-[62%] shrink-0 relative bg-white overflow-hidden">
-        <img src={IMAGES.gear1} alt="Diver underwater" className="w-full h-full object-cover scale-105 opacity-85" />
+        <LazyVideo
+          src={vidDiscoverScuba}
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover scale-105 opacity-85"
+        />
         <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/20 to-transparent pointer-events-none" />
 
         {/* Return to Home on Video Side */}

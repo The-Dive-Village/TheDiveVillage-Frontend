@@ -305,7 +305,7 @@ export default function Home() {
                   ) : null}
 
                   {/* Actual Card Background & Content */}
-                  <div className="h-full w-full rounded-[20px] sm:rounded-[32px] overflow-hidden border border-white/30 relative flex flex-col p-3.5 xs:p-4 sm:p-6 lg:p-7 pt-32 xs:pt-36 sm:pt-56 lg:pt-64 pb-4 sm:pb-8 z-10 transition duration-500 group-hover:border-white/60 shadow-2xl justify-end who-can-dive-card">
+                  <div className="h-full w-full rounded-[20px] sm:rounded-[32px] overflow-hidden border border-white/30 relative flex flex-col p-3.5 xs:p-4 sm:p-6 lg:p-7 pt-32 xs:pt-36 sm:pt-56 lg:pt-64 pb-4 sm:pb-8 z-10 transition duration-500 group-hover:border-white/60 shadow-none justify-end who-can-dive-card">
 
                     {item.bgImg ? (
                       <img
@@ -414,9 +414,9 @@ export default function Home() {
                       el.scrollIntoView({ behavior: 'smooth', block: 'start' })
                     }
                   } : undefined}
-                  className={`group relative h-full w-full rounded-2xl sm:rounded-[28px] lg:rounded-[32px] bg-[#00172b]/40 backdrop-blur-2xl border border-white/20 p-3 sm:p-5 lg:p-6 shadow-[0_8px_30px_rgba(0,0,0,0.3)] transition-all duration-500 hover:bg-[#00172b]/60 flex flex-col justify-between ${
+                  className={`group relative h-full w-full rounded-2xl sm:rounded-[28px] lg:rounded-[32px] bg-[#00172b]/40 backdrop-blur-2xl border border-white/20 p-3 sm:p-5 lg:p-6 shadow-none transition-all duration-500 hover:bg-[#00172b]/60 flex flex-col justify-between ${
                     i === 3
-                      ? 'cursor-pointer hover:-translate-y-3 hover:border-[#00AEC7] hover:shadow-[0_12px_40px_rgba(0,174,199,0.25)]'
+                      ? 'cursor-pointer hover:-translate-y-3 hover:border-[#00AEC7] hover:shadow-none'
                       : 'cursor-default'
                   }`}
                 >
@@ -439,7 +439,7 @@ export default function Home() {
                     </p>
 
                     {/* Media Frame (Video or Image) */}
-                    <div className="relative w-full aspect-[16/10] sm:aspect-[16/11] rounded-xl sm:rounded-2xl overflow-hidden bg-black/40 mb-1.5 sm:mb-5 border border-white/20 shadow-md flex-1">
+                    <div className="relative w-full aspect-[16/10] sm:aspect-[16/11] rounded-xl sm:rounded-2xl overflow-hidden bg-black/40 mb-1.5 sm:mb-5 border border-white/20 shadow-none flex-1">
                       {item.video ? (
                         <LazyVideo
                           src={item.video}
@@ -515,7 +515,7 @@ export default function Home() {
           <StaggerGrid data-no-bg-drag="true" className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none pb-4 gap-4 md:grid md:grid-cols-3 md:gap-8 items-stretch md:overflow-visible px-2 sm:px-4">
             {approvedReviews.slice(0, 3).map((t, i) => (
               <StaggerItem key={t.id || i} className="w-[85vw] max-w-[340px] xs:max-w-[360px] sm:w-[360px] shrink-0 md:w-auto snap-center h-full">
-                <div className="h-full flex flex-col justify-between bg-white/10 backdrop-blur-2xl rounded-2xl sm:rounded-3xl p-5 sm:p-8 border border-white/20 shadow-[0_8px_24px_rgba(0,0,0,0.25)] hover:bg-white/15 hover:border-white/40 hover:-translate-y-2 hover:shadow-[0_12px_32px_rgba(0,0,0,0.35)] transition-all duration-500">
+                <div className="h-full flex flex-col justify-between bg-white/10 backdrop-blur-2xl rounded-2xl sm:rounded-3xl p-5 sm:p-8 border border-white/20 shadow-none hover:bg-white/15 hover:border-white/40 hover:-translate-y-2 hover:shadow-none transition-all duration-500">
                   <div>
                     <div className="flex gap-1 mb-3 sm:mb-6">
                       {[...Array(t.rating || 5)].map((_, j) => (
@@ -964,32 +964,40 @@ function InteractiveHighlights() {
               key={`${current.id}-${i}`}
               onClick={(e) => handleNavigate(e, current.link)}
               style={{ width: `${cardWidth}px` }}
-              className="h-[290px] xs:h-[320px] sm:h-[450px] flex-shrink-0 rounded-[18px] sm:rounded-[28px] overflow-hidden shadow-2xl relative border border-white/20 bg-[#001E36] group cursor-pointer pointer-events-auto transition-all duration-500 hover:border-[#FFCD00]/70 hover:shadow-[0_12px_36px_rgba(0,0,0,0.85)] hover:-translate-y-1.5"
+              className="h-[290px] xs:h-[320px] sm:h-[450px] flex-shrink-0 rounded-[18px] sm:rounded-[28px] overflow-hidden shadow-none relative border border-white/20 bg-transparent group cursor-pointer pointer-events-auto transition-all duration-500 hover:border-[#FFCD00]/70 hover:shadow-none hover:-translate-y-1.5"
             >
               {current.image ? (
                 <img
                   src={current.image}
                   alt={current.title}
-                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110 opacity-90"
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110 opacity-100"
                 />
               ) : null}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#001224] via-[#001428]/60 to-transparent pointer-events-none" />
+
+              {/* Light dark blue overlay lightly at the bottom of each panel */}
+              <div className="absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-t from-[#00172b]/85 via-[#00172b]/40 to-transparent pointer-events-none" />
 
               <div className="absolute inset-0 p-3.5 xs:p-4 sm:p-6 lg:p-7 flex flex-col justify-end pointer-events-auto">
                 <div className="mt-auto flex flex-col">
-                  <span className="inline-flex items-center self-start text-[#FFCD00] font-heading font-bold text-[8px] xs:text-[9px] sm:text-[10px] uppercase tracking-widest bg-[#FFCD00]/15 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full border border-[#FFCD00]/30 mb-1.5 sm:mb-2.5 pointer-events-none shadow-sm backdrop-blur-md">
+                  <span className="inline-flex items-center self-start text-[#FFCD00] font-heading font-bold text-[8px] xs:text-[9px] sm:text-[10px] uppercase tracking-widest bg-black/30 backdrop-blur-md px-2 sm:px-3 py-0.5 sm:py-1 rounded-full border border-white/30 mb-1.5 sm:mb-2.5 pointer-events-none shadow-sm">
                     Featured
                   </span>
-                  <h3 className="font-heading text-sm xs:text-base sm:text-2xl font-bold text-white leading-tight mb-1 sm:mb-2 pointer-events-none drop-shadow-md line-clamp-2 sm:whitespace-normal">
+                  <h3
+                    className="font-heading text-sm xs:text-base sm:text-2xl font-bold text-white leading-tight mb-1 sm:mb-2 pointer-events-none line-clamp-2 sm:whitespace-normal"
+                    style={{ textShadow: '0 2px 8px rgba(0,0,0,0.95), 0 1px 3px rgba(0,0,0,0.9)' }}
+                  >
                     {current.title}
                   </h3>
-                  <p className="text-white/85 text-[11px] xs:text-xs sm:text-[13px] line-clamp-2 leading-relaxed mb-3 sm:mb-5 pointer-events-none text-left">
+                  <p
+                    className="text-white text-[11px] xs:text-xs sm:text-[13px] font-medium line-clamp-2 leading-relaxed mb-3 sm:mb-5 pointer-events-none text-left"
+                    style={{ textShadow: '0 1px 6px rgba(0,0,0,0.95), 0 1px 2px rgba(0,0,0,0.9)' }}
+                  >
                     {current.desc}
                   </p>
                   <button
                     type="button"
                     onClick={(e) => handleNavigate(e, current.link)}
-                    className="w-full py-1.5 xs:py-2 sm:py-3 px-2.5 sm:px-5 rounded-full bg-white/15 backdrop-blur-xl border border-white/30 text-white font-bold text-[9px] xs:text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-300 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] shadow-lg pointer-events-auto cursor-pointer relative z-30 flex items-center justify-center gap-1.5 sm:gap-2 group/btn"
+                    className="w-full py-1.5 xs:py-2 sm:py-3 px-2.5 sm:px-5 rounded-full bg-white/20 backdrop-blur-xl border border-white/30 text-white font-bold text-[9px] xs:text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-300 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] shadow-lg pointer-events-auto cursor-pointer relative z-30 flex items-center justify-center gap-1.5 sm:gap-2 group/btn"
                   >
                     <span>{current.btnText || 'Explore'}</span>
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="sm:w-3.5 sm:h-3.5 transition-transform duration-300 group-hover/btn:translate-x-1">
@@ -1071,7 +1079,7 @@ function AutoCarousel({ images, showContent = true }) {
   }, [images])
 
   return (
-    <div ref={containerRef} className="relative overflow-hidden rounded-[32px] sm:rounded-[40px] shadow-[0_20px_60px_rgba(0,0,0,0.8)] w-full h-[420px] lg:h-[480px] bg-[#001e3d] border border-white/20">
+    <div ref={containerRef} className="relative overflow-hidden rounded-[32px] sm:rounded-[40px] shadow-none w-full h-[420px] lg:h-[480px] bg-transparent border border-white/20">
       {/* Base Layer: Previous image stays 100% solid underneath so background is NEVER visible during transition */}
       {images[prevIndex] && (
         <img
@@ -1093,10 +1101,6 @@ function AutoCarousel({ images, showContent = true }) {
           loading="lazy"
         />
       ))}
-
-      {/* Full-bleed ambient overlay so image is completely visible across both sides of the panel without blank spaces */}
-      <div className="absolute inset-0 bg-[#00172b]/20 pointer-events-none z-10" />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20 pointer-events-none z-10" />
 
       {showContent && (
         <div className="absolute inset-0 z-20 flex flex-col justify-center p-6 sm:p-10 lg:p-16 pointer-events-none">

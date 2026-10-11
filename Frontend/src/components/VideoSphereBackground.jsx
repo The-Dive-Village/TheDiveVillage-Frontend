@@ -667,6 +667,7 @@ export default function VideoSphereBackground() {
   if (!mounted) return null
 
   const isHiddenJoystickPath =
+    location.pathname.startsWith('/about') ||
     location.pathname.startsWith('/gallery') ||
     location.pathname.startsWith('/services') ||
     location.pathname.startsWith('/courses') ||

@@ -349,6 +349,8 @@ export default function Gallery() {
                     autoPlay
                     loop
                     playsInline
+                    muted={true}
+                    defaultMuted={true}
                     className="w-full h-full max-w-full max-h-full object-contain flex items-center justify-center"
                   />
                 ) : (
@@ -530,7 +532,8 @@ function GalleryGridCard({ item, idx, reduce, onClick }) {
           <div className="w-full h-full transition-transform duration-700 ease-out group-hover:scale-105">
             <LazyVideo
               src={item.src}
-              muted
+              muted={true}
+              defaultMuted={true}
               loop
               playsInline
               autoPlay={false}

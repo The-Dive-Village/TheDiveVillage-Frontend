@@ -81,14 +81,7 @@ export const GALLERY_ITEMS = [
     "category": "marine",
     "filename": "Hawksbill Sea Turtle (2).mp4"
   },
-  {
-    "id": "gallery-item-9",
-    "type": "video",
-    "src": "https://res.cloudinary.com/qvbunv8y/video/upload/c_crop,ar_9:16/v1791458108/TDV-Media/Extras%20for%20Gallery/Hawksbill_Sea_Turtle_3.mp4",
-    "title": "Hawksbill Sea Turtle",
-    "category": "marine",
-    "filename": "Hawksbill Sea Turtle (3).mp4"
-  },
+
   {
     "id": "gallery-item-10",
     "type": "video",
