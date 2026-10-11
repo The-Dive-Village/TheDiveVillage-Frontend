@@ -1343,13 +1343,13 @@ export default function BookUs() {
                           <button
                             type="button"
                             onClick={() => handleToggleAddOn('None')}
-                            className={`group relative flex items-center justify-between px-3.5 py-3 rounded-2xl text-xs sm:text-sm font-bold transition-all text-left border cursor-pointer ${
+                            className={`group relative flex items-center justify-between px-3.5 py-3 rounded-2xl text-xs sm:text-sm font-bold transition-all text-left border cursor-pointer col-span-1 ${
                               selectedAddOns.includes('None')
                                 ? 'bg-navy text-white border-navy shadow-md ring-1 ring-navy'
                                 : 'bg-[#F0F2F5] text-navy/80 border-transparent hover:bg-[#E5E9EF] hover:text-navy'
                             }`}
                           >
-                            <span className="truncate pr-2">None</span>
+                            <span className="whitespace-nowrap pr-2">None</span>
                             <span
                               className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 text-[9px] transition-all ${
                                 selectedAddOns.includes('None')
@@ -1363,18 +1363,27 @@ export default function BookUs() {
 
                           {ADD_ON_OPTIONS.map((addOn) => {
                             const isSelected = selectedAddOns.includes(addOn)
+                            const spanClass =
+                              addOn === 'Local Sightseeing'
+                                ? 'col-span-2 sm:col-span-2'
+                                : addOn === 'Camping / Camper'
+                                  ? 'col-span-2 sm:col-span-2'
+                                  : addOn === 'Liveaboard'
+                                    ? 'col-span-2 sm:col-span-1'
+                                    : 'col-span-1'
+
                             return (
                               <button
                                 key={addOn}
                                 type="button"
                                 onClick={() => handleToggleAddOn(addOn)}
-                                className={`group relative flex items-center justify-between px-3.5 py-3 rounded-2xl text-xs sm:text-sm font-bold transition-all text-left border cursor-pointer ${
+                                className={`group relative flex items-center justify-between px-3.5 py-3 rounded-2xl text-xs sm:text-sm font-bold transition-all text-left border cursor-pointer ${spanClass} ${
                                   isSelected
                                     ? 'bg-navy text-white border-navy shadow-md ring-1 ring-navy'
                                     : 'bg-[#F0F2F5] text-navy/80 border-transparent hover:bg-[#E5E9EF] hover:text-navy'
                                 }`}
                               >
-                                <span className="truncate pr-2">{addOn}</span>
+                                <span className="whitespace-nowrap pr-2">{addOn}</span>
                                 <span
                                   className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 text-[9px] transition-all ${
                                     isSelected
