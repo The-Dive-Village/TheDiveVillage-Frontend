@@ -161,7 +161,8 @@ export default function CommandPalette({ isOpen, onClose }) {
   return (
     <AnimatePresence>
       <div 
-        className="fixed inset-0 z-[10000] flex items-start justify-center pt-16 sm:pt-24 px-4 bg-black/70 backdrop-blur-md pointer-events-auto"
+        className="fixed left-0 right-0 bottom-0 top-[64px] lg:top-[68px] z-[9990] flex items-start justify-center pt-4 sm:pt-6 px-4 bg-black/70 backdrop-blur-md pointer-events-auto overflow-hidden"
+        style={{ top: 'var(--toolbar-bottom, 64px)' }}
         onClick={onClose}
       >
         <motion.div
@@ -169,7 +170,7 @@ export default function CommandPalette({ isOpen, onClose }) {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.96, y: -20 }}
           transition={{ duration: 0.18 }}
-          className="relative w-full max-w-2xl bg-[#00192e] text-white rounded-3xl border border-cyan-400/30 shadow-[0_20px_60px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col max-h-[80vh]"
+          className="relative w-full max-w-2xl bg-[#00192e] text-white rounded-3xl border border-cyan-400/30 shadow-[0_20px_60px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col max-h-[calc(100vh-var(--toolbar-bottom,64px)-32px)]"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Top Search Input Bar */}

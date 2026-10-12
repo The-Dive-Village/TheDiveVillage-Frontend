@@ -111,9 +111,9 @@ export default function Footer() {
 
   return (
     <>
-      <footer className="bg-navy text-white mt-auto relative z-10 pointer-events-auto">
+      <footer className={`${isNightDive ? 'bg-[#001C39]' : 'bg-navy'} text-white mt-auto relative z-10 pointer-events-auto`}>
         {/* ================= MOBILE FOOTER (md:hidden) ================= */}
-        <div className="md:hidden bg-[#071d37] text-white px-5 sm:px-6 pt-10 pb-8">
+        <div className={`md:hidden ${isNightDive ? 'bg-[#001C39]' : 'bg-[#071d37]'} text-white px-5 sm:px-6 pt-10 pb-8`}>
           {/* Centered Brand Block */}
           <div className="flex flex-col items-center text-center">
             <Link to="/" className="inline-block transition-opacity active:opacity-80">

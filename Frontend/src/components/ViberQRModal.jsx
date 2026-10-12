@@ -19,14 +19,17 @@ export default function ViberQRModal({ isOpen, onClose }) {
   return createPortal(
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[100010] flex items-center justify-center p-4 pointer-events-auto">
+        <div
+          className="fixed left-0 right-0 bottom-0 top-[64px] lg:top-[68px] z-[9990] flex items-center justify-center p-4 pointer-events-auto overflow-hidden"
+          style={{ top: 'var(--toolbar-bottom, 64px)' }}
+        >
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/60 backdrop-blur-md cursor-pointer"
+            className="absolute inset-0 bg-black/60 backdrop-blur-md cursor-pointer"
             aria-hidden="true"
           />
 
@@ -37,9 +40,9 @@ export default function ViberQRModal({ isOpen, onClose }) {
             aria-labelledby="viber-qr-title"
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            exit={{ opacity: 0, scale: 0.9, y: 0 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="relative w-full max-w-lg bg-white rounded-[32px] p-6 sm:p-8 shadow-2xl border border-navy/10 z-10 text-navy pointer-events-auto max-h-[90vh] overflow-y-auto text-center"
+            className="relative w-full max-w-lg bg-white rounded-[32px] p-6 sm:p-8 shadow-2xl border border-navy/10 z-10 text-navy pointer-events-auto max-h-[calc(100vh-var(--toolbar-bottom,64px)-24px)] overflow-y-auto text-center"
           >
             {/* Header */}
             <div className="flex items-center justify-between border-b border-navy/10 pb-4 mb-6">

@@ -4,11 +4,11 @@ export const getVideoThumbnail = (videoUrl) => {
   if (videoUrl.includes('res.cloudinary.com') && videoUrl.includes('/video/upload/')) {
     if (videoUrl.includes('/c_crop,ar_9:16/')) {
       return videoUrl
-        .replace('/c_crop,ar_9:16/', '/c_crop,ar_9:16/so_0,w_800,q_auto,f_auto/')
+        .replace('/c_crop,ar_9:16/', '/c_crop,ar_9:16/so_2,w_800,q_auto,f_auto/')
         .replace(/\.(mp4|MP4)$/i, '.jpg')
     }
     return videoUrl
-      .replace('/video/upload/', '/video/upload/so_0,w_800,q_auto,f_auto/')
+      .replace('/video/upload/', '/video/upload/so_2,w_800,q_auto,f_auto/')
       .replace(/\.(mp4|MP4)$/i, '.jpg')
   }
   return videoUrl.replace(/\.(mp4|MP4)$/i, '.jpg')

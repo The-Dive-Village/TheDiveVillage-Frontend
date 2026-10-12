@@ -319,11 +319,13 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
   return (
     <div 
       ref={containerRef}
-      className="relative w-full h-full min-h-[300px] sm:min-h-[340px] bg-white rounded-[28px] overflow-hidden flex items-center justify-center select-none"
-      style={{ contentVisibility: 'auto', containIntrinsicSize: '100% 340px' }}
+      data-product-media="true"
+      className="product-3d-wrapper relative w-full h-full min-h-[260px] bg-white rounded-[28px] overflow-hidden flex items-center justify-center select-none"
+      style={{ backgroundColor: '#ffffff', contentVisibility: 'auto', containIntrinsicSize: '100% 390px' }}
     >
       <model-viewer
         ref={modelRef}
+        data-product-media="true"
         src={src ? src : undefined}
         alt={alt}
         poster={poster || undefined}
@@ -346,11 +348,11 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
         shadow-softness="1.0"
         tone-mapping="neutral"
         bounds="tight"
-        style={{ width: '100%', height: '100%', minHeight: '340px' }}
+        style={{ width: '100%', height: '100%', minHeight: '260px', backgroundColor: '#ffffff' }}
       >
-        <div slot="poster" className="w-full h-full flex flex-col items-center justify-center bg-white p-4">
+        <div slot="poster" data-product-media="true" style={{ backgroundColor: '#ffffff' }} className="w-full h-full flex flex-col items-center justify-center bg-white p-4">
           {poster ? (
-            <img src={poster} alt={alt} className="max-h-full max-w-full object-contain" />
+            <img src={poster} alt={alt} data-product-media="true" style={{ backgroundColor: '#ffffff' }} className="max-h-full max-w-full object-contain bg-white" />
           ) : (
             <>
               <div className="w-9 h-9 border-4 border-navy border-t-transparent rounded-full animate-spin mb-2" />

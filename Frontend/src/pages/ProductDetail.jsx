@@ -117,8 +117,13 @@ export default function ProductDetail() {
     }
     if (floatingImage) {
       window.addEventListener('keydown', handleKeyDown)
+      const origOverflow = document.body.style.overflow
+      document.body.style.overflow = 'hidden'
+      return () => {
+        window.removeEventListener('keydown', handleKeyDown)
+        document.body.style.overflow = origOverflow
+      }
     }
-    return () => window.removeEventListener('keydown', handleKeyDown)
   }, [floatingImage])
 
   const swipeTouchStartX = useRef(0)
@@ -219,11 +224,16 @@ export default function ProductDetail() {
 
   const handleShare = async () => {
     triggerHaptic(15)
-    await shareContent({
+    const result = await shareContent({
       title: `${product.title || product.name} | The Dive Village`,
-      text: product.description || 'Check out this ocean gear from The Dive Village!',
+      text: `${product.title || product.name} - ${product.description || 'Check out this ocean gear from The Dive Village!'}`,
       url: window.location.href,
+      imageUrl: product.image || (product.images && product.images[0]),
     })
+    if (result?.copied) {
+      setToastMessage('Product link copied to clipboard!')
+      setTimeout(() => setToastMessage(null), 3000)
+    }
   }
 
   // Keyboard arrow navigation for desktop media gallery
@@ -260,12 +270,13 @@ export default function ProductDetail() {
   }
 
   return (
-    <div className="bg-[#FAFAFA] min-h-screen text-navy font-body pt-20 sm:pt-24 pb-32 sm:pb-24 overflow-x-hidden">
+    <div className="bg-[#FAFAFA] min-h-screen text-navy font-body pt-[68px] sm:pt-[70px] lg:pt-[72px] xl:pt-[74px] 2xl:pt-24 pb-32 sm:pb-24 overflow-x-hidden">
       <SEOHead
         title={`${product.title || product.name} | Ocean Apparel | The Dive Village`}
         description={`${product.description}. Premium quality dive gear and eco-friendly apparel crafted by The Dive Village.`}
         keywords={`${product.title || product.name}, dive apparel, ocean wear, scuba gear, sustainable marine clothing, ${product.category}`}
         canonicalUrl={`https://thedivevillage.com/shop/${product.id}`}
+        ogImage={product.image || (product.images && product.images[0])}
       />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         
@@ -294,7 +305,7 @@ export default function ProductDetail() {
 
         {/* Breadcrumb Navigation Header */}
         {/* Top Header Bar: Back Button & Breadcrumbs */}
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-2.5 sm:mb-3">
           <div className="flex items-center gap-3 sm:gap-4 overflow-x-auto whitespace-nowrap scrollbar-none py-1">
             <button
               type="button"
@@ -326,22 +337,29 @@ export default function ProductDetail() {
         </div>
 
         {/* Main Product Details Split */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 mb-20 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 min-[1440px]:gap-10 2xl:gap-12 mb-20 items-start">
           
           {/* Left Column: Integrated Multi-Media Showcase (Photos + Video + 3D Model) */}
-          <div className="lg:col-span-6 flex flex-col gap-4">
+          <div className="lg:col-span-6 flex flex-col gap-2.5 sm:gap-3 min-[1440px]:gap-4">
             {/* Main Product Card Media Display with Touch Swipe & Zoom Support */}
             <div 
               onTouchStart={activeMedia?.type !== 'glb' ? handleMediaTouchStart : undefined}
               onTouchEnd={activeMedia?.type !== 'glb' ? handleMediaTouchEnd : undefined}
-              className="w-full rounded-[28px] overflow-hidden bg-white border border-navy/10 h-[380px] xs:h-[420px] sm:h-[480px] lg:h-[500px] relative shadow-card group"
+              data-product-media="true"
+              data-product-showcase="true"
+              style={{ backgroundColor: '#ffffff' }}
+              className="w-full rounded-[28px] overflow-hidden bg-white border border-navy/10 product-media-panel relative shadow-card group"
             >
               {activeMedia?.type === 'glb' ? (
-                <div className="w-full h-full rounded-[28px] overflow-hidden">
+                <div 
+                  data-product-media="true"
+                  style={{ backgroundColor: '#ffffff' }}
+                  className="w-full h-full rounded-[28px] overflow-hidden bg-white"
+                >
                   <Product3DViewer key={activeMedia.src} src={activeMedia.src} alt={product.title} productId={product.id} poster={product.image} />
                 </div>
               ) : activeMedia?.type === 'video' ? (
-                <div className="w-full h-full rounded-[28px] overflow-hidden">
+                <div className="w-full h-full rounded-[28px] overflow-hidden bg-black">
                   <LazyVideo
                     src={activeMedia.src}
                     controls
@@ -407,44 +425,57 @@ export default function ProductDetail() {
               <div
                 ref={thumbsRef}
                 onScroll={checkThumbScroll}
-                className="flex items-center gap-3 overflow-x-auto w-full py-2 px-1 scrollbar-none scroll-smooth"
+                className="flex items-center gap-2.5 sm:gap-3 min-[1440px]:gap-3.5 2xl:gap-4 overflow-x-auto w-full py-1 min-[1440px]:py-2 px-1 scrollbar-none scroll-smooth"
               >
-                {mediaItems.map((item, i) => (
-                  <div key={item.id || i} className="flex flex-col items-center gap-1 shrink-0">
-                    <button
-                      onClick={() => {
-                        triggerHaptic(8)
-                        setActiveMedia(item)
-                      }}
-                      className={`flex-shrink-0 w-16 h-20 sm:w-18 sm:h-22 rounded-2xl overflow-hidden border-2 transition relative cursor-pointer ${
-                        activeMedia?.id === item.id || activeMedia?.src === item.src
-                          ? 'border-navy shadow-md ring-2 ring-navy/20 scale-102'
-                          : 'border-navy/10 hover:border-navy/30 bg-white'
-                      }`}
-                    >
-                      {item.type === 'image' ? (
-                        <img src={item.src} alt={item.label} className="w-full h-full object-cover bg-white" />
-                      ) : item.type === 'video' ? (
-                        <div className="relative w-full h-full bg-black flex items-center justify-center">
-                          <LazyVideo src={item.src} className="w-full h-full object-cover opacity-70 pointer-events-none" muted />
-                          <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-                            <span className="w-6 h-6 rounded-full bg-accent text-navy flex items-center justify-center text-xs font-bold shadow-sm">
-                              ▶
-                            </span>
+                {mediaItems.map((item, i) => {
+                  const isSelected = activeMedia?.id === item.id || activeMedia?.src === item.src
+                  return (
+                    <div key={item.id || i} className="flex flex-col items-center gap-1 shrink-0">
+                      <button
+                        onClick={() => {
+                          triggerHaptic(8)
+                          setActiveMedia(item)
+                        }}
+                        data-thumb-btn="true"
+                        data-active={isSelected ? 'true' : 'false'}
+                        data-product-media={item.type === 'image' ? 'true' : undefined}
+                        style={item.type === 'image' ? { backgroundColor: '#ffffff' } : undefined}
+                        className={`product-thumb-btn flex-shrink-0 w-13 h-16 sm:w-15 sm:h-18 lg:w-14 lg:h-17 min-[1440px]:w-18 min-[1440px]:h-22 2xl:w-20 2xl:h-24 rounded-2xl overflow-hidden border-2 transition relative cursor-pointer ${
+                          isSelected
+                            ? 'border-navy shadow-md ring-2 ring-navy/20 scale-102'
+                            : 'border-navy/10 hover:border-navy/30 bg-white'
+                        }`}
+                      >
+                        {item.type === 'image' ? (
+                          <img 
+                            src={item.src} 
+                            alt={item.label} 
+                            data-product-media="true"
+                            style={{ backgroundColor: '#ffffff' }}
+                            className="w-full h-full object-cover bg-white" 
+                          />
+                        ) : item.type === 'video' ? (
+                          <div className="relative w-full h-full bg-black flex items-center justify-center">
+                            <LazyVideo src={item.src} className="w-full h-full object-cover opacity-70 pointer-events-none" muted />
+                            <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                              <span className="w-6 h-6 rounded-full bg-accent text-navy flex items-center justify-center text-xs font-bold shadow-sm">
+                                ▶
+                              </span>
+                            </div>
                           </div>
-                        </div>
-                      ) : (
-                        <div className="relative w-full h-full bg-[#001E36] flex flex-col items-center justify-center text-[#FFCD00] p-1 border border-[#FFCD00]/30 shadow-inner">
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" /><polyline points="3.27 6.96 12 12.01 20.73 6.96" /><line x1="12" y1="22.08" x2="12" y2="12" /></svg>
-                          <span className="text-[8px] font-bold tracking-wider uppercase text-white mt-1">3D MODEL</span>
-                        </div>
-                      )}
-                    </button>
-                    <span className="text-[10px] font-bold text-navy/80 tracking-tight text-center max-w-[72px] leading-tight">
-                      {item.label}
-                    </span>
-                  </div>
-                ))}
+                        ) : (
+                          <div className="relative w-full h-full bg-[#001E36] flex flex-col items-center justify-center text-[#FFCD00] p-1 border border-[#FFCD00]/30 shadow-inner">
+                            <svg width="20" height="20" className="min-[1440px]:w-6 min-[1440px]:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" /><polyline points="3.27 6.96 12 12.01 20.73 6.96" /><line x1="12" y1="22.08" x2="12" y2="12" /></svg>
+                            <span className="text-[8px] min-[1440px]:text-[9px] font-bold tracking-wider uppercase text-white mt-1">3D MODEL</span>
+                          </div>
+                        )}
+                      </button>
+                      <span className="text-[10px] min-[1440px]:text-xs font-bold text-navy/80 tracking-tight text-center max-w-[72px] min-[1440px]:max-w-[84px] leading-tight">
+                        {item.label}
+                      </span>
+                    </div>
+                  )
+                })}
               </div>
 
               {/* Right Scroll Arrow */}
@@ -464,7 +495,7 @@ export default function ProductDetail() {
           </div>
 
           {/* Right Column: Sticky Desktop Product Specifications & Actions */}
-          <div className="lg:col-span-6 flex flex-col justify-start lg:sticky lg:top-28 lg:self-start">
+          <div className="lg:col-span-6 flex flex-col justify-start lg:sticky lg:top-20 xl:top-24 2xl:top-28 lg:self-start">
             
             {/* Category & Native Share Header */}
             <div className="flex items-center justify-between mb-3">
@@ -474,11 +505,11 @@ export default function ProductDetail() {
                 </span>
               </div>
 
-              {/* Native Share Button */}
+              {/* Native Share Button (Desktop only, hidden on mobile) */}
               <button
                 type="button"
                 onClick={handleShare}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-navy/15 text-navy text-xs font-bold hover:bg-navy hover:text-white transition shadow-sm active:scale-95 cursor-pointer"
+                className="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-navy/15 text-navy text-xs font-bold hover:bg-navy hover:text-white transition shadow-sm active:scale-95 cursor-pointer"
                 title="Share this product"
                 aria-label="Share product"
               >
@@ -844,74 +875,76 @@ export default function ProductDetail() {
 
       </div>
 
-      {/* Sticky Mobile Add to Cart Bar */}
-      <div className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-xl border-t border-navy/10 px-4 py-3 shadow-[0_-8px_30px_rgba(0,0,0,0.1)] pb-[max(0.75rem,env(safe-area-inset-bottom))] flex items-center justify-between gap-2.5 animate-fade-in">
-        <div className="flex flex-col min-w-0">
-          <span className="text-xs font-bold text-navy uppercase tracking-wider truncate max-w-[150px]">
-            {product.title}
-          </span>
-        </div>
+      {/* Sticky Mobile Bottom Bar: Cart on extreme left, Wishlist next to it, Share next to it */}
+      <div className="product-mobile-bottom-bar md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-xl border-t border-navy/10 px-4 py-3 shadow-[0_-8px_30px_rgba(0,0,0,0.1)] pb-[max(0.75rem,env(safe-area-inset-bottom))] flex items-center justify-start gap-2.5 sm:gap-3 animate-fade-in pr-20">
+        {/* Extreme Left: Add to Cart button (Elongated) */}
+        <button
+          onClick={handleAddToCart}
+          disabled={isAdding}
+          className="bottom-bar-add-btn flex-1 max-w-xs sm:max-w-sm bg-navy active:scale-95 hover:bg-[#002b4e] text-white font-bold py-3 px-6 rounded-full transition shadow-md flex items-center justify-center gap-2.5 text-xs sm:text-sm cursor-pointer disabled:opacity-50"
+          aria-label="Add to cart"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="shrink-0">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <path d="M16 10a4 4 0 0 1-8 0" />
+          </svg>
+          <span className="truncate">{isAdding ? 'Adding...' : 'Add to Cart'}</span>
+        </button>
 
-        <div className="flex items-center gap-1.5">
-          <button
-            type="button"
-            onClick={handleShare}
-            className="w-10 h-10 rounded-full bg-navy/5 border border-navy/15 flex items-center justify-center text-navy active:scale-90 transition shrink-0"
-            aria-label="Share"
-            title="Share"
+        {/* Next to Cart: Heart / Wishlist button */}
+        <button
+          type="button"
+          onClick={() => {
+            triggerHaptic(15)
+            toggleWishlist(product)
+          }}
+          className="bottom-bar-icon-btn w-10 h-10 rounded-full bg-navy/5 border border-navy/15 flex items-center justify-center text-navy active:scale-90 transition shrink-0 cursor-pointer"
+          aria-label="Wishlist"
+          title="Wishlist"
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill={isWishlisted(product.id) ? '#FFCD00' : 'none'}
+            stroke={isWishlisted(product.id) ? '#FFCD00' : 'currentColor'}
+            strokeWidth="2"
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
-              <polyline points="16 6 12 2 8 6" />
-              <line x1="12" y1="2" x2="12" y2="15" />
-            </svg>
-          </button>
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+          </svg>
+        </button>
 
-          <button
-            type="button"
-            onClick={() => {
-              triggerHaptic(15)
-              toggleWishlist(product)
-            }}
-            className="w-10 h-10 rounded-full bg-navy/5 border border-navy/15 flex items-center justify-center text-navy active:scale-90 transition shrink-0"
-            aria-label="Wishlist"
-          >
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill={isWishlisted(product.id) ? '#FFCD00' : 'none'}
-              stroke={isWishlisted(product.id) ? '#FFCD00' : 'currentColor'}
-              strokeWidth="2"
-            >
-              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-            </svg>
-          </button>
-
-          <button
-            onClick={handleAddToCart}
-            disabled={isAdding}
-            className="bg-navy active:scale-95 hover:bg-[#002b4e] text-white font-bold py-2.5 px-4 sm:px-5 rounded-full transition shadow-md flex items-center gap-1.5 text-xs cursor-pointer disabled:opacity-50"
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <path d="M16 10a4 4 0 0 1-8 0" />
-            </svg>
-            <span>{isAdding ? 'Adding...' : 'Add to Cart'}</span>
-          </button>
-        </div>
+        {/* Next to Wishlist: Share button */}
+        <button
+          type="button"
+          onClick={handleShare}
+          className="bottom-bar-icon-btn w-10 h-10 rounded-full bg-navy/5 border border-navy/15 flex items-center justify-center text-navy active:scale-90 transition shrink-0 cursor-pointer"
+          aria-label="Share product"
+          title="Share"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+            <polyline points="16 6 12 2 8 6" />
+            <line x1="12" y1="2" x2="12" y2="15" />
+          </svg>
+        </button>
       </div>
 
-      {/* Floating Window Lightbox Modal - Simple, Big & Clean */}
+      {/* Product Image Lightbox Modal - Only Image & Close Button, Positioned Below Toolbar */}
       <AnimatePresence>
         {floatingImage && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            data-lenis-prevent="true"
+            style={{
+              overscrollBehavior: 'contain',
+              touchAction: 'none',
+            }}
             onClick={() => setFloatingImage(null)}
-            className="fixed inset-0 z-50 bg-black/85 backdrop-blur-xl flex items-center justify-center p-3 sm:p-6 md:p-8 select-none"
+            className="fixed inset-0 z-[9990] bg-black/85 backdrop-blur-xl flex items-center justify-center p-3 sm:p-6 md:p-8 pt-[calc(var(--toolbar-bottom,64px)+12px)] sm:pt-[calc(var(--toolbar-bottom,64px)+16px)] select-none overflow-hidden cursor-pointer"
           >
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
@@ -919,37 +952,33 @@ export default function ProductDetail() {
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative max-w-5xl w-full bg-white rounded-3xl sm:rounded-[36px] shadow-2xl border border-navy/10 flex flex-col overflow-hidden max-h-[92vh]"
+              data-product-media="true"
+              data-floating-image-card="true"
+              style={{ backgroundColor: '#ffffff' }}
+              className="relative max-w-4xl max-h-[calc(100vh-var(--toolbar-bottom,64px)-32px)] w-auto bg-white rounded-2xl sm:rounded-3xl shadow-2xl border border-navy/10 flex items-center justify-center p-3 sm:p-5 select-none overflow-hidden cursor-default"
             >
-              {/* Floating Header */}
-              <div className="flex items-center justify-between px-5 py-4 sm:px-7 sm:py-5 border-b border-navy/10 bg-slate-50/90 backdrop-blur-md">
-                <div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-accent block">Product Visual Preview</span>
-                  <h3 className="font-heading text-sm sm:text-lg font-bold text-navy">{product.title}</h3>
-                </div>
+              {/* Close Button Only */}
+              <button
+                type="button"
+                onClick={() => {
+                  triggerHaptic(8)
+                  setFloatingImage(null)
+                }}
+                className="absolute top-3 right-3 sm:top-4 sm:right-4 z-30 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-navy/85 hover:bg-[#FFCD00] text-white hover:text-[#001e3d] flex items-center justify-center transition shadow-lg active:scale-90 cursor-pointer font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md"
+                aria-label="Close product image"
+              >
+                ✕
+              </button>
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    triggerHaptic(8)
-                    setFloatingImage(null)
-                  }}
-                  className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-navy/10 hover:bg-[#FFCD00] text-navy hover:text-[#001e3d] flex items-center justify-center transition shadow-sm active:scale-90 cursor-pointer font-bold text-base"
-                  aria-label="Close floating window"
-                >
-                  ✕
-                </button>
-              </div>
-
-              {/* Big Center Content Container */}
-              <div className="relative w-full h-[70vh] sm:h-[78vh] bg-white flex items-center justify-center p-4 sm:p-8 overflow-hidden">
-                <img
-                  src={floatingImage}
-                  alt={product.title}
-                  className="max-h-full max-w-full w-auto h-auto object-contain select-none drop-shadow-md rounded-2xl"
-                  draggable={false}
-                />
-              </div>
+              {/* Only The Image */}
+              <img
+                src={floatingImage}
+                alt={product.title}
+                data-product-media="true"
+                style={{ backgroundColor: '#ffffff' }}
+                className="max-h-[calc(100vh-var(--toolbar-bottom,64px)-56px)] max-w-[85vw] sm:max-w-[80vw] w-auto h-auto object-contain select-none drop-shadow-md rounded-xl bg-white"
+                draggable={false}
+              />
             </motion.div>
           </motion.div>
         )}
@@ -1070,14 +1099,18 @@ function InteractiveProductImage({ src, alt, onOpenFloating }) {
       onTouchEnd={handleTouchEnd}
       onClick={() => onOpenFloating && onOpenFloating(src)}
       data-normal-cursor="true"
+      data-product-media="true"
+      style={{ backgroundColor: '#ffffff' }}
       className="normal-cursor w-full h-full rounded-[28px] overflow-hidden flex items-center justify-center touch-none relative select-none cursor-crosshair group/img bg-white"
     >
       {/* Base Product Image */}
       <img
         src={src}
         alt={alt}
-        className="w-full h-full object-contain p-6 pointer-events-none select-none transition-transform duration-300"
+        data-product-media="true"
+        className="w-full h-full object-contain p-6 pointer-events-none select-none transition-transform duration-300 bg-white"
         style={{
+          backgroundColor: '#ffffff',
           transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
         }}
         draggable={false}
@@ -1086,8 +1119,10 @@ function InteractiveProductImage({ src, alt, onOpenFloating }) {
       {/* On-Image Magnifier Square Lens — desktop only */}
       {!isMobile && isHovered && (
         <div
+          data-product-media="true"
           className="pointer-events-none absolute z-30 rounded-lg border-[3px] border-white shadow-[0_20px_50px_rgba(0,30,61,0.45),0_0_0_1px_rgba(0,0,0,0.12)] overflow-hidden bg-white select-none transition-opacity duration-150"
           style={{
+            backgroundColor: '#ffffff',
             width: `${LENS_SIZE}px`,
             height: `${LENS_SIZE}px`,
             left: `${lensLeft}px`,
@@ -1095,12 +1130,14 @@ function InteractiveProductImage({ src, alt, onOpenFloating }) {
           }}
         >
           {/* Zoomed Image Inside the Square View Box */}
-          <div className="relative w-full h-full overflow-hidden bg-white">
+          <div data-product-media="true" style={{ backgroundColor: '#ffffff' }} className="relative w-full h-full overflow-hidden bg-white">
             <img
               src={src}
               alt={alt}
-              className="absolute max-w-none pointer-events-none select-none"
+              data-product-media="true"
+              className="absolute max-w-none pointer-events-none select-none bg-white"
               style={{
+                backgroundColor: '#ffffff',
                 width: `${containerDimensions.width * ZOOM_FACTOR}px`,
                 height: `${containerDimensions.height * ZOOM_FACTOR}px`,
                 objectFit: 'contain',

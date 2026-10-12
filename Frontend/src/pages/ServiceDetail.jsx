@@ -91,14 +91,14 @@ export default function ServiceDetail() {
               playsInline
               preload="auto"
               onPlay={(e) => { e.currentTarget.playbackRate = 0.75 }}
-              className="w-full h-full object-cover scale-110 origin-center transition-all duration-700"
+              className="w-full h-full object-cover object-center transition-all duration-700"
             />
           ) : (
             <SafeImage
               key={activeHeroImage}
               src={activeHeroImage}
               alt={activeHeroTitle}
-              className="w-full h-full object-cover scale-110 origin-center transition-all duration-700"
+              className="w-full h-full object-cover object-center transition-all duration-700"
             />
           )}
           <div className="absolute inset-0 bg-gradient-to-b from-[#001428]/70 via-[#001428]/30 to-transparent pointer-events-none" />

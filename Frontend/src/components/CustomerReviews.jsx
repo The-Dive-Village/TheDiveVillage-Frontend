@@ -74,7 +74,12 @@ export default function CustomerReviews({ className = '' }) {
       <AnimatePresence>
         {activeMedia && (
           <div
-            className="fixed inset-0 z-[999] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md cursor-pointer"
+            className="fixed left-0 right-0 bottom-0 top-[64px] lg:top-[68px] z-[9990] flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-md cursor-pointer overflow-hidden"
+            style={{
+              top: 'var(--toolbar-bottom, 64px)',
+              overscrollBehavior: 'contain',
+              touchAction: 'none',
+            }}
             onClick={() => setActiveMedia(null)}
           >
             <motion.div
@@ -82,12 +87,12 @@ export default function CustomerReviews({ className = '' }) {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative max-w-4xl max-h-[90vh] rounded-3xl overflow-hidden bg-black flex items-center justify-center shadow-2xl border border-white/20"
+              className="relative max-w-4xl max-h-[calc(100vh-var(--toolbar-bottom,64px)-24px)] rounded-3xl overflow-hidden bg-black flex items-center justify-center shadow-2xl border border-white/20 cursor-default"
             >
               <button
                 type="button"
                 onClick={() => setActiveMedia(null)}
-                className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-black/70 text-white flex items-center justify-center font-bold text-lg hover:bg-black transition cursor-pointer"
+                className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-black/70 hover:bg-[#FFCD00] hover:text-[#001e3d] text-white flex items-center justify-center font-bold text-lg transition cursor-pointer"
                 aria-label="Close"
               >
                 ✕
@@ -100,13 +105,13 @@ export default function CustomerReviews({ className = '' }) {
                   autoPlay
                   loop
                   playsInline
-                  className="max-h-[85vh] max-w-full object-contain"
+                  className="max-h-[calc(100vh-var(--toolbar-bottom,64px)-48px)] max-w-full object-contain"
                 />
               ) : (
                 <img
                   src={activeMedia.src}
                   alt={activeMedia.alt}
-                  className="max-h-[85vh] max-w-full object-contain"
+                  className="max-h-[calc(100vh-var(--toolbar-bottom,64px)-48px)] max-w-full object-contain"
                 />
               )}
             </motion.div>

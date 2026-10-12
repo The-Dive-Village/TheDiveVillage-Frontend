@@ -100,6 +100,92 @@ export async function loadDiveSites(csvUrl = '/data/dive-sites.csv') {
         // Punta Osejava - Croatia (ID: 24743)
         '24743': { latitude: 43.28666666666666, longitude: 17.019444444444442 },
 
+        // User requested moves from land to authentic coastal waters (Punta Cautius and similar sites):
+        // Mallorca
+        '378': { latitude: 39.46380, longitude: 2.50350 }, // Punta Cautius (Calvià cliff drop-off)
+        '377': { latitude: 39.46580, longitude: 2.49650 }, // Punta Martin
+        '14877': { latitude: 39.46150, longitude: 2.50250 }, // Punta Marc
+        '383': { latitude: 39.45450, longitude: 2.51800 }, // Carlotta
+        '14639': { latitude: 39.45400, longitude: 2.52400 }, // Punta Cala Figuera
+        '384': { latitude: 39.47350, longitude: 2.52150 }, // Portalls Vells
+        '381': { latitude: 39.53250, longitude: 2.59250 }, // Illetes
+        '9487': { latitude: 39.51650, longitude: 2.54100 }, // Palmanova Bay
+        '10242': { latitude: 39.52450, longitude: 2.43350 }, // Cala Montjo
+        '14617': { latitude: 39.54450, longitude: 2.62550 }, // Palma Cavern
+        '2150': { latitude: 39.75650, longitude: 2.61750 }, // Sa Foradada
+        '19369': { latitude: 39.93950, longitude: 3.18400 }, // Es Castellet - The Pinnacle
+        '19370': { latitude: 39.96350, longitude: 3.17600 }, // Gorgonias Garden / El Eden De Gorgonias
+        '19372': { latitude: 39.92150, longitude: 3.05650 }, // Cala Molins - Cala Carbó
+        '17513': { latitude: 39.63100, longitude: 3.43550 }, // Hide And Seek
+
+        // Menorca
+        '7189': { latitude: 40.01150, longitude: 3.79300 }, // Pont d'En Gil
+        '11694': { latitude: 40.01150, longitude: 3.79350 }, // Sa Cigonya
+        '11695': { latitude: 39.96650, longitude: 3.83150 }, // Cala Blanca
+        '11705': { latitude: 39.97200, longitude: 3.82650 }, // Canyons
+        '2237': { latitude: 40.02150, longitude: 4.20850 }, // Coves De Addaia
+        '2241': { latitude: 40.02350, longitude: 4.19700 }, // Punta Grossa
+        '2243': { latitude: 40.03150, longitude: 4.19450 }, // La Cueva Grande
+        '2244': { latitude: 40.03180, longitude: 4.19450 }, // La Chimenea
+        '7413': { latitude: 40.02600, longitude: 4.19350 }, // El Queso Suizo / Swiss Cheese
+        '7348': { latitude: 40.06950, longitude: 4.14350 }, // Lightning Corner / Es Racó Des Llamp
+        '7349': { latitude: 40.06900, longitude: 4.14850 }, // Cueva De Los Ingleses / English Cave
+        '17633': { latitude: 40.07600, longitude: 4.09200 }, // Ad Jatia
+
+        // Ibiza & Formentera
+        '2057': { latitude: 39.11700, longitude: 1.50900 }, // Punta Jaime
+        '2056': { latitude: 39.11750, longitude: 1.52250 }, // Sa Aigua Blanca
+        '2074': { latitude: 39.11500, longitude: 1.54200 }, // Las Anclas
+        '2073': { latitude: 39.10350, longitude: 1.55150 }, // Bajo De Ses Caletes
+        '2077': { latitude: 39.08000, longitude: 1.40250 }, // Portitxol
+        '5587': { latitude: 38.93150, longitude: 1.50450 }, // The Arches Of Cala Olivera
+
+        // Canary Islands
+        '333': { latitude: 28.91800, longitude: -13.66850 }, // Cathedral
+        '354': { latitude: 28.85700, longitude: -13.84300 }, // Flamingo
+        '370': { latitude: 28.91880, longitude: -13.66800 }, // Playa Chica Bay
+        '371': { latitude: 28.91950, longitude: -13.67050 }, // Harbour Wall
+        '924': { latitude: 28.91850, longitude: -13.67000 }, // Shrimp Cave
+        '926': { latitude: 28.91850, longitude: -13.65400 }, // Waikiki
+        '927': { latitude: 28.91800, longitude: -13.65800 }, // Richies Reef
+        '1061': { latitude: 28.04950, longitude: -16.72200 }, // Playa Las Vistas
+        '1109': { latitude: 28.91900, longitude: -13.66500 }, // Playa Grande
+        '1110': { latitude: 28.91800, longitude: -13.66600 }, // Veril De Fariones
+        '1111': { latitude: 28.91750, longitude: -13.66400 }, // Los Arcos
+        '1112': { latitude: 28.91720, longitude: -13.66100 }, // La Pared
+        '1182': { latitude: 28.91830, longitude: -13.66950 }, // Red Coral (Playa Chica Wall)
+        '1184': { latitude: 29.08350, longitude: -13.44900 }, // Mala (Charco Del Palo)
+        '1185': { latitude: 29.07650, longitude: -13.45250 }, // The Elevator (Skulls Cave)
+
+        // Costa Brava
+        '87': { latitude: 41.72250, longitude: 2.94000 }, // Mar Menuda
+        '770': { latitude: 41.67400, longitude: 2.80200 }, // Punta Santa Anna
+        '822': { latitude: 42.35000, longitude: 3.22650 }, // Agua Dolç
+        '826': { latitude: 42.34150, longitude: 3.23800 }, // Figarola
+        '2152': { latitude: 41.84800, longitude: 3.14100 }, // Margarita
+        '3057': { latitude: 42.10500, longitude: 3.17950 }, // Cova De La Sal
+        '3059': { latitude: 42.10670, longitude: 3.17450 }, // Port Del Rei
+        '3067': { latitude: 42.11350, longitude: 3.17300 }, // La Xinxa
+        '3068': { latitude: 42.11580, longitude: 3.16850 }, // Punta Del Ferro
+        '14890': { latitude: 41.72050, longitude: 2.94100 }, // Santa Anna
+        '15242': { latitude: 41.88750, longitude: 3.18300 }, // Port Pelegri
+        '20164': { latitude: 42.06660, longitude: 3.21050 }, // Negre Del Falaguer
+
+        // Costa Blanca / Cabo de Palos
+        '79': { latitude: 37.63050, longitude: -0.70150 }, // Balky Point
+        '9358': { latitude: 38.76500, longitude: 0.22350 }, // San Martin Norte
+        '14378': { latitude: 38.63600, longitude: 0.08000 }, // La Higuera
+        '16208': { latitude: 37.63220, longitude: -0.69020 }, // Cala De La Escalerica
+        '16209': { latitude: 37.63460, longitude: -0.68900 }, // Cala Fria
+        '20174': { latitude: 38.76500, longitude: 0.22400 }, // San Martin Norte (La Virgen)
+        '20175': { latitude: 38.76400, longitude: 0.22380 }, // San Martin Sur
+        '20176': { latitude: 38.76200, longitude: 0.22350 }, // Piedras Rotas
+        '20178': { latitude: 38.75400, longitude: 0.22900 }, // Termas
+        '20181': { latitude: 38.74600, longitude: 0.22900 }, // Pared Negra
+        '20184': { latitude: 38.74200, longitude: 0.23150 }, // Cueva De Las Gambas
+        '20185': { latitude: 38.74050, longitude: 0.23350 }, // Montaña Hundida
+        '22532': { latitude: 38.63500, longitude: 0.07050 }, // Racó
+
         // Exclusions: duplicates, controversial names, and gibberish clubs
         '12386': { exclude: true }, // AREA 51
         '12041': { exclude: true }, // FORREST 05 GUMP

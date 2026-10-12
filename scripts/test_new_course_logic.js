@@ -21,6 +21,7 @@ const tests = [
   'advanced-open-water-diver',
   'adventure-diver',
   'rescue-diver',
+  'efr',
   'dive-master'
 ]
 

@@ -5,58 +5,62 @@ import 'maplibre-gl/dist/maplibre-gl.css'
 import { loadDiveSites } from '../utils/diveSitesLoader'
 import { getIslandForSite } from '../utils/diveIslandCatalog'
 
+import pinIconUrl from '../assets/pin.png'
+
 // Official Vite worker setup for MapLibre GL JS
 setWorkerUrl(workerUrl)
 
 const DEFAULT_CENTER = [15, 20]
 const DEFAULT_ZOOM = 1.8
 
+// Preload the yellow dive goggles pin icon from assets/pin.png (#FFD500)
+let preloadedPinImg = null
+const preloadPinImage = () => {
+  if (preloadedPinImg && preloadedPinImg.complete && preloadedPinImg.naturalWidth > 0) {
+    return Promise.resolve(preloadedPinImg)
+  }
+  return new Promise((resolve) => {
+    const img = new Image()
+    img.crossOrigin = 'anonymous'
+    img.onload = () => {
+      preloadedPinImg = img
+      resolve(img)
+    }
+    img.onerror = () => resolve(null)
+    img.src = pinIconUrl
+    if (img.complete && img.naturalWidth > 0) {
+      preloadedPinImg = img
+      resolve(img)
+    }
+  })
+}
+
+// Trigger preload immediately in browser environment
+if (typeof window !== 'undefined') {
+  preloadPinImage()
+}
+
 /**
- * Generates a crisp canvas location tag / pin icon (📍) for MapLibre WebGL.
- * Anchored at the bottom point so it points exactly to the geographic coordinates.
- * Configured with a clean white border and compact dimensions.
+ * Generates a crisp #FFD500 yellow dive goggles pin icon from assets/pin.png for MapLibre WebGL.
+ * Features a subtle dark drop shadow so it pops cleanly over both deep blue ocean and light coastlines.
  */
-function createLocationPinIcon(width = 18, height = 24, fillColor = '#00223D', strokeColor = '#FFFFFF', innerDot = '#FFFFFF') {
+function createDiveGogglesPinIcon(img, width = 32, height = 18) {
+  const dpr = 2
+  const pad = 4
   const canvas = document.createElement('canvas')
-  canvas.width = width * 2
-  canvas.height = height * 2
+  canvas.width = (width + pad * 2) * dpr
+  canvas.height = (height + pad * 2) * dpr
   const ctx = canvas.getContext('2d')
-  ctx.scale(2, 2)
+  ctx.scale(dpr, dpr)
 
-  const cx = width / 2
-  const r = width * 0.36
-  const cy = r + 1.2
-  const tipX = cx
-  const tipY = height - 1.5
-
-  // Subtle drop shadow
-  ctx.shadowColor = 'rgba(0, 15, 30, 0.35)'
+  // Soft dark drop shadow for maximum crispness and depth against any basemap background
+  ctx.shadowColor = 'rgba(0, 15, 30, 0.75)'
   ctx.shadowBlur = 3
   ctx.shadowOffsetY = 1.5
 
-  // Classic teardrop location tag pin path
-  ctx.beginPath()
-  ctx.arc(cx, cy, r, Math.PI * 0.88, Math.PI * 2.12, false)
-  ctx.lineTo(tipX, tipY)
-  ctx.closePath()
+  ctx.drawImage(img, pad, pad, width, height)
 
-  // Dark blue body
-  ctx.fillStyle = fillColor
-  ctx.fill()
-
-  // Crisp White stroke outline
-  ctx.shadowColor = 'transparent'
-  ctx.lineWidth = 1.5
-  ctx.strokeStyle = strokeColor
-  ctx.stroke()
-
-  // Inner center dot
-  ctx.beginPath()
-  ctx.arc(cx, cy, r * 0.36, 0, Math.PI * 2)
-  ctx.fillStyle = innerDot
-  ctx.fill()
-
-  return ctx.getImageData(0, 0, width * 2, height * 2)
+  return ctx.getImageData(0, 0, canvas.width, canvas.height)
 }
 
 export default function DiveExplorerMap({
@@ -75,23 +79,6 @@ export default function DiveExplorerMap({
 }) {
   const mapContainerRef = useRef(null)
   const mapRef = useRef(null)
-  // Prevent wheel/touch events inside map from leaking to page scroll, while keeping the window scrollbar intact
-  useEffect(() => {
-    const el = mapContainerRef.current
-    if (!el) return
-
-    const stopScroll = (e) => {
-      e.stopPropagation()
-    }
-
-    el.addEventListener('wheel', stopScroll, { passive: true })
-    el.addEventListener('touchmove', stopScroll, { passive: true })
-
-    return () => {
-      el.removeEventListener('wheel', stopScroll)
-      el.removeEventListener('touchmove', stopScroll)
-    }
-  }, [])
 
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -260,12 +247,33 @@ export default function DiveExplorerMap({
         maxZoom: 18,
         attributionControl: true,
         renderWorldCopies: true,
+        dragRotate: false,
+        touchPitch: false,
+        scrollZoom: false,
       })
+
+      // Ensure touchPitch, rotation, and scrollZoom are disabled so 2-finger gestures move the map cleanly
+      if (map.touchPitch) map.touchPitch.disable()
+      if (map.touchZoomRotate) map.touchZoomRotate.disableRotation()
+      if (map.scrollZoom) map.scrollZoom.disable()
 
       // Add navigation controls
       map.addControl(new NavigationControl({ showCompass: true, showZoom: true }), 'top-right')
 
-      map.on('load', () => {
+      // Handle missing image dynamically as safety guard
+      map.on('styleimagemissing', async (e) => {
+        const id = e.id
+        if (id === 'country-pin-icon' || id === 'site-pin-icon') {
+          const pinImg = await preloadPinImage()
+          if (pinImg && !map.hasImage(id)) {
+            const w = id === 'country-pin-icon' ? 34 : 28
+            const h = id === 'country-pin-icon' ? 19 : 16
+            map.addImage(id, createDiveGogglesPinIcon(pinImg, w, h), { pixelRatio: 2 })
+          }
+        }
+      })
+
+      map.on('load', async () => {
         if (isCancelled) return
 
         mapRef.current = map
@@ -319,13 +327,22 @@ export default function DiveExplorerMap({
           console.warn('[DiveExplorer] Water styling notice:', e)
         }
 
-        // 3. Register crisp dark blue location tag icons with WHITE border (smaller & sleeker)
+        // 3. Register #FFD500 yellow dive goggles pin icons from assets/pin.png
         try {
-          if (!map.hasImage('country-pin-icon')) {
-            map.addImage('country-pin-icon', createLocationPinIcon(18, 24, '#00223D', '#FFFFFF', '#FFFFFF'), { pixelRatio: 2 })
-          }
-          if (!map.hasImage('site-pin-icon')) {
-            map.addImage('site-pin-icon', createLocationPinIcon(14, 19, '#004B87', '#FFFFFF', '#FFFFFF'), { pixelRatio: 2 })
+          const pinImg = await preloadPinImage()
+          if (pinImg) {
+            if (!map.hasImage('country-pin-icon')) {
+              map.addImage('country-pin-icon', createDiveGogglesPinIcon(pinImg, 34, 19), { pixelRatio: 2 })
+            }
+            if (!map.hasImage('site-pin-icon')) {
+              map.addImage('site-pin-icon', createDiveGogglesPinIcon(pinImg, 28, 16), { pixelRatio: 2 })
+            }
+          } else {
+            const res = await map.loadImage(pinIconUrl)
+            if (res && res.data) {
+              if (!map.hasImage('country-pin-icon')) map.addImage('country-pin-icon', res.data, { pixelRatio: 4.4 })
+              if (!map.hasImage('site-pin-icon')) map.addImage('site-pin-icon', res.data, { pixelRatio: 5.3 })
+            }
           }
         } catch (e) {
           console.warn('[DiveExplorer] Icon registration notice:', e)
@@ -339,7 +356,7 @@ export default function DiveExplorerMap({
           data: geojsonCountriesRef.current,
         })
 
-        // 1. Main Country Pin (Dark Blue Location Tag with White Border & English Name)
+        // 1. Main Country Pin (Yellow #FFD500 Dive Goggles with White Border Halo Text)
         map.addLayer({
           id: 'country-pin',
           type: 'symbol',
@@ -353,7 +370,7 @@ export default function DiveExplorerMap({
             'text-field': ['get', 'country'],
             'text-font': ['Noto Sans Bold'],
             'text-size': 10,
-            'text-offset': [0, 0.3],
+            'text-offset': [0, 0.4],
             'text-anchor': 'top',
             'text-optional': true,
           },
@@ -372,7 +389,7 @@ export default function DiveExplorerMap({
           data: countrySitesGeoJSONRef.current,
         })
 
-        // 2. Individual Dive Site Location Tag Pin (Compact with White Border)
+        // 2. Individual Dive Site Location Pin (Yellow #FFD500 Dive Goggles)
         map.addLayer({
           id: 'site-pin',
           type: 'symbol',
@@ -385,7 +402,7 @@ export default function DiveExplorerMap({
             'text-field': ['get', 'siteName'],
             'text-font': ['Noto Sans Bold'],
             'text-size': 9.5,
-            'text-offset': [0, 0.3],
+            'text-offset': [0, 0.4],
             'text-anchor': 'top',
             'text-optional': true,
           },
@@ -504,21 +521,149 @@ export default function DiveExplorerMap({
     }
   }, [syncMapData, onSelectSite])
 
-  // 3b. Prevent outer page / background from scrolling when scrolling over the map
+  // 3b. Two-finger Pan & Zoom Navigation (Trackpad 2-finger move & Touchscreen 2-finger drag)
   useEffect(() => {
     const container = mapContainerRef.current
     if (!container) return
     const wrapper = container.parentElement || container
 
-    const stopBackgroundScroll = (e) => {
-      // Prevent browser from scrolling the webpage while the user is wheel-scrolling on the map
-      e.preventDefault()
+    let lastTrackpadStreamTime = 0
+    let twoFingerTouchState = {
+      active: false,
+      prevMidX: 0,
+      prevMidY: 0,
+      prevDist: 0,
     }
 
-    wrapper.addEventListener('wheel', stopBackgroundScroll, { passive: false })
+    // --- A) TRACKPAD 2-FINGER PAN & PINCH ZOOM / MOUSE WHEEL ---
+    const handleWheel = (e) => {
+      // Prevent browser from scrolling the webpage while interacting with the map
+      e.preventDefault()
+      e.stopPropagation()
+
+      const map = mapRef.current
+      if (!map) return
+
+      // 1. Pinch-to-zoom on trackpad (or Ctrl + mouse wheel)
+      // Browsers set e.ctrlKey to true when the user pinches on a laptop touchpad
+      if (e.ctrlKey) {
+        const zoomDelta = -e.deltaY * 0.008
+        const currentZoom = map.getZoom()
+        const targetZoom = Math.min(Math.max(currentZoom + zoomDelta, map.getMinZoom()), map.getMaxZoom())
+        const rect = container.getBoundingClientRect()
+        const anchor = map.unproject([e.clientX - rect.left, e.clientY - rect.top])
+        map.zoomTo(targetZoom, { around: anchor, duration: 0 })
+        return
+      }
+
+      // 2. Trackpad detection (pixel mode deltaMode === 0, horizontal delta, continuous stream, or small/fractional values)
+      const isTrackpad =
+        e.deltaMode === 0 &&
+        (Math.abs(e.deltaX) > 0 ||
+          !Number.isInteger(e.deltaY) ||
+          Math.abs(e.deltaY) < 60 ||
+          Date.now() - lastTrackpadStreamTime < 300)
+
+      if (isTrackpad) {
+        lastTrackpadStreamTime = Date.now()
+        // Two fingers moving up, down, left, or right -> PAN THE MAP!
+        map.panBy([e.deltaX, e.deltaY], { duration: 0 })
+        return
+      }
+
+      // 3. Discrete physical mouse wheel notch: smooth zoom centered at cursor
+      const zoomStep = e.deltaY < 0 ? 0.35 : -0.35
+      const currentZoom = map.getZoom()
+      const targetZoom = Math.min(Math.max(currentZoom + zoomStep, map.getMinZoom()), map.getMaxZoom())
+      const rect = container.getBoundingClientRect()
+      const anchor = map.unproject([e.clientX - rect.left, e.clientY - rect.top])
+      map.zoomTo(targetZoom, { around: anchor, duration: 150 })
+    }
+
+    // --- B) TOUCHSCREEN 2-FINGER PAN & PINCH ZOOM ---
+    const handleTouchStart = (e) => {
+      if (e.touches.length === 2) {
+        const t0 = e.touches[0]
+        const t1 = e.touches[1]
+        const midX = (t0.clientX + t1.clientX) / 2
+        const midY = (t0.clientY + t1.clientY) / 2
+        const dist = Math.hypot(t1.clientX - t0.clientX, t1.clientY - t0.clientY)
+        twoFingerTouchState = {
+          active: true,
+          prevMidX: midX,
+          prevMidY: midY,
+          prevDist: dist,
+        }
+      } else {
+        twoFingerTouchState.active = false
+      }
+    }
+
+    const handleTouchMove = (e) => {
+      if (e.touches.length === 2) {
+        // Prevent browser page from scrolling or pinch-zooming while two fingers move on map
+        e.preventDefault()
+        e.stopPropagation()
+
+        const map = mapRef.current
+        if (!map) return
+
+        const t0 = e.touches[0]
+        const t1 = e.touches[1]
+        const midX = (t0.clientX + t1.clientX) / 2
+        const midY = (t0.clientY + t1.clientY) / 2
+        const dist = Math.hypot(t1.clientX - t0.clientX, t1.clientY - t0.clientY)
+
+        if (twoFingerTouchState.active) {
+          const dx = midX - twoFingerTouchState.prevMidX
+          const dy = midY - twoFingerTouchState.prevMidY
+
+          // 1. Two fingers moving up, down, left, or right -> PAN THE MAP!
+          if (dx !== 0 || dy !== 0) {
+            map.panBy([-dx, -dy], { duration: 0 })
+          }
+
+          // 2. Pinch zoom if distance between the two fingers changes
+          if (twoFingerTouchState.prevDist > 0 && Math.abs(dist - twoFingerTouchState.prevDist) > 1.2) {
+            const scale = dist / twoFingerTouchState.prevDist
+            const zoomDelta = Math.log2(scale)
+            if (Math.abs(zoomDelta) > 0.003) {
+              const rect = container.getBoundingClientRect()
+              const anchor = map.unproject([midX - rect.left, midY - rect.top])
+              const currentZoom = map.getZoom()
+              const targetZoom = Math.min(Math.max(currentZoom + zoomDelta, map.getMinZoom()), map.getMaxZoom())
+              map.zoomTo(targetZoom, { around: anchor, duration: 0 })
+            }
+          }
+        }
+
+        twoFingerTouchState.prevMidX = midX
+        twoFingerTouchState.prevMidY = midY
+        twoFingerTouchState.prevDist = dist
+        twoFingerTouchState.active = true
+      } else {
+        twoFingerTouchState.active = false
+      }
+    }
+
+    const handleTouchEnd = (e) => {
+      if (e.touches.length < 2) {
+        twoFingerTouchState.active = false
+      }
+    }
+
+    wrapper.addEventListener('wheel', handleWheel, { passive: false })
+    wrapper.addEventListener('touchstart', handleTouchStart, { passive: true })
+    wrapper.addEventListener('touchmove', handleTouchMove, { passive: false })
+    wrapper.addEventListener('touchend', handleTouchEnd, { passive: true })
+    wrapper.addEventListener('touchcancel', handleTouchEnd, { passive: true })
 
     return () => {
-      wrapper.removeEventListener('wheel', stopBackgroundScroll)
+      wrapper.removeEventListener('wheel', handleWheel)
+      wrapper.removeEventListener('touchstart', handleTouchStart)
+      wrapper.removeEventListener('touchmove', handleTouchMove)
+      wrapper.removeEventListener('touchend', handleTouchEnd)
+      wrapper.removeEventListener('touchcancel', handleTouchEnd)
     }
   }, [])
 

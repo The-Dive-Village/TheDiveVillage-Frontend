@@ -41,7 +41,7 @@ export default function CustomCursor() {
       if (!target) return false
       const el = target instanceof Element ? target : target.parentElement
       if (!el || !(el instanceof Element)) return false
-      return !!el.closest('a, button, input, select, textarea, [role="button"], .cursor-pointer, [data-cursor-interactive], label')
+      return !!el.closest('a, button, input, select, textarea, [role="button"], .cursor-pointer, [data-cursor-interactive], label, [data-360-toggle="clickable"], [data-gallery-close], [aria-label="Close Lightbox"]')
     }
 
     const checkRadiusForInteractive = (x, y) => {
@@ -64,6 +64,76 @@ export default function CustomCursor() {
       return false
     }
 
+    let cachedToggleCenter = null
+    let lastToggleCheckTime = 0
+
+    const isNear360Toggle = (x, y, target) => {
+      if (typeof document === 'undefined') return false
+
+      if (document.body.hasAttribute('data-360-dragging')) {
+        return true
+      }
+
+      if (target instanceof Element && target.closest('[data-360-toggle], .joystick-container')) {
+        return true
+      }
+
+      if (x < window.innerWidth - 220) {
+        return false
+      }
+
+      const now = performance.now()
+      if (!cachedToggleCenter || now - lastToggleCheckTime > 150) {
+        lastToggleCheckTime = now
+        const toggleEl = document.querySelector('[data-360-toggle="clickable"]') || document.querySelector('.joystick-container')
+        if (toggleEl && toggleEl.offsetParent !== null) {
+          const rect = toggleEl.getBoundingClientRect()
+          cachedToggleCenter = {
+            x: rect.left + rect.width / 2,
+            y: rect.top + rect.height / 2,
+          }
+        } else {
+          cachedToggleCenter = null
+        }
+      }
+
+      if (!cachedToggleCenter) return false
+
+      const dist = Math.hypot(x - cachedToggleCenter.x, y - cachedToggleCenter.y)
+      return dist <= 140
+    }
+
+    let cachedGalleryCloseCenter = null
+    let lastGalleryCloseCheckTime = 0
+
+    const isNearGalleryClose = (x, y, target) => {
+      if (typeof document === 'undefined') return false
+
+      if (target instanceof Element && target.closest('[data-gallery-close], [aria-label="Close Lightbox"], [data-cursor-static], #gallery-preview-close')) {
+        return true
+      }
+
+      const now = performance.now()
+      if (!cachedGalleryCloseCenter || now - lastGalleryCloseCheckTime > 150) {
+        lastGalleryCloseCheckTime = now
+        const closeBtn = document.querySelector('[data-gallery-close], [aria-label="Close Lightbox"], [data-cursor-static], #gallery-preview-close')
+        if (closeBtn && closeBtn.offsetParent !== null) {
+          const rect = closeBtn.getBoundingClientRect()
+          cachedGalleryCloseCenter = {
+            x: rect.left + rect.width / 2,
+            y: rect.top + rect.height / 2,
+          }
+        } else {
+          cachedGalleryCloseCenter = null
+        }
+      }
+
+      if (!cachedGalleryCloseCenter) return false
+
+      const dist = Math.hypot(x - cachedGalleryCloseCenter.x, y - cachedGalleryCloseCenter.y)
+      return dist <= 140
+    }
+
     let lastRenderX = -100
     let lastRenderY = -100
     let currentRotation = 0
@@ -78,8 +148,12 @@ export default function CustomCursor() {
         lastRenderX = latestX
         lastRenderY = latestY
 
-        // Update target orientation
-        if (isHoveringInteractive) {
+        const near360 = isNear360Toggle(latestX, latestY, currentTarget)
+        const nearGalleryClose = isNearGalleryClose(latestX, latestY, currentTarget)
+        const isNearStaticZone = near360 || nearGalleryClose
+
+        // Update target orientation - completely stop flipping and rotating when interactive or in vicinity of 360 toggle / gallery close button
+        if (isHoveringInteractive || isNearStaticZone) {
           targetRotation = 0
           targetScaleX = 1
         } else if (Math.abs(dx) > 1 || Math.abs(dy) > 1) {
@@ -92,8 +166,9 @@ export default function CustomCursor() {
           }
         }
 
-        currentRotation += (targetRotation - currentRotation) * 0.15
-        currentScaleX += (targetScaleX - currentScaleX) * 0.15
+        const lerpFactor = isNearStaticZone ? 0.35 : 0.15
+        currentRotation += (targetRotation - currentRotation) * lerpFactor
+        currentScaleX += (targetScaleX - currentScaleX) * lerpFactor
 
         cursorRef.current.style.transform = `translate3d(${latestX}px, ${latestY}px, 0) rotate(${currentRotation}deg) scaleX(${currentScaleX})`
 
@@ -232,8 +307,15 @@ export default function CustomCursor() {
       videoRef.current.play().catch(() => {})
     }
 
+    const onResize = () => {
+      cachedToggleCenter = null
+      cachedGalleryCloseCenter = null
+    }
+    window.addEventListener('resize', onResize)
+
     return () => {
       if (rafId) cancelAnimationFrame(rafId)
+      window.removeEventListener('resize', onResize)
       window.removeEventListener('pointermove', onMouseMove, { capture: true })
       window.removeEventListener('mousemove', onMouseMove, { capture: true })
       window.removeEventListener('pointerdown', onMouseMove, { capture: true })

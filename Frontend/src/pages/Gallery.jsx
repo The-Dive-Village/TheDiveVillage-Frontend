@@ -291,23 +291,30 @@ export default function Gallery() {
         {selectedMediaIndex !== null && currentItem && (
           <div 
             data-lenis-prevent="true"
-            className="fixed inset-0 z-[100] flex flex-col items-center justify-end pt-[56px] xs:pt-[60px] sm:pt-[70px] lg:pt-[76px] pb-1.5 sm:pb-2 px-2 sm:px-4 bg-black/90 backdrop-blur-sm overflow-hidden select-none"
-            style={{ overscrollBehavior: 'contain', touchAction: 'none' }}
+            className="fixed left-0 right-0 bottom-0 top-[64px] lg:top-[68px] z-[9990] flex flex-col items-center justify-center p-2 sm:p-4 bg-black/90 backdrop-blur-sm overflow-hidden select-none"
+            style={{
+              top: 'var(--toolbar-bottom, 64px)',
+              overscrollBehavior: 'contain',
+              touchAction: 'none',
+            }}
             onClick={() => setSelectedMediaIndex(null)}
             onTouchStart={handleLightboxTouchStart}
             onTouchEnd={handleLightboxTouchEnd}
           >
-            {/* Dark Blue, Full Height Preview Panel Extending to Toolbar & Extreme Bottom */}
+            {/* Dark Blue, Preview Panel strictly below toolbar */}
             <motion.div
               initial={{ opacity: 0, scale: 0.97, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.97, y: 10 }}
               transition={{ duration: 0.2 }}
-              className="relative bg-navy rounded-2xl sm:rounded-3xl shadow-2xl p-2 sm:p-3.5 max-w-4xl sm:max-w-5xl lg:max-w-6xl w-full h-full max-h-full flex flex-col gap-2 select-none border border-white/15 overflow-hidden"
+              className="relative bg-navy rounded-2xl sm:rounded-3xl shadow-2xl p-2 sm:p-3.5 max-w-4xl sm:max-w-5xl lg:max-w-6xl w-full h-full max-h-[calc(100vh-var(--toolbar-bottom,64px)-16px)] flex flex-col gap-2 select-none border border-white/15 overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Floating Top-Right Close Button */}
               <button
+                id="gallery-preview-close"
+                data-gallery-close="true"
+                data-cursor-static="true"
                 type="button"
                 onClick={() => setSelectedMediaIndex(null)}
                 className="absolute top-2 right-2 sm:top-3 sm:right-3 z-30 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/60 hover:bg-[#FFCD00] hover:text-[#001e3d] text-white flex items-center justify-center transition active:scale-90 cursor-pointer font-bold text-xs sm:text-sm border border-white/20 shadow-lg backdrop-blur-md"

@@ -114,7 +114,7 @@ export default function Services() {
                 {group.category.label}
               </h2>
             </div>
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-6 lg:gap-8">
+            <div className={`grid grid-cols-2 gap-2.5 sm:gap-6 lg:gap-8 ${group.services.length === 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-3'}`}>
               {group.services.map((service, i) => (
                 <motion.div
                   key={service.id}
@@ -125,7 +125,7 @@ export default function Services() {
                   onClick={() => navigate(`/services/${service.id}`)}
                   className="group rounded-2xl sm:rounded-[32px] bg-white border border-navy/5 shadow-sm hover:shadow-float transition duration-300 flex flex-col justify-between cursor-pointer overflow-hidden relative active:scale-[0.99]"
                 >
-                  <div className="relative h-28 xs:h-36 sm:h-56 w-full overflow-hidden bg-[#00172b] shrink-0">
+                  <div className="relative aspect-[16/10] sm:aspect-[16/10] w-full overflow-hidden bg-[#00172b] shrink-0">
                     {service.video ? (
                       <LazyVideo
                         src={service.video}

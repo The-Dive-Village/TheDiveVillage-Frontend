@@ -863,6 +863,14 @@ function JoystickControl({ joystickVelocity }) {
   const containerRef = useRef(null)
   const isDragging = useRef(false)
   const [thumbPos, setThumbPos] = useState({ x: 0, y: 0 })
+  const [isHovered, setIsHovered] = useState(false)
+  const [isDraggingState, setIsDraggingState] = useState(false)
+
+  useEffect(() => {
+    return () => {
+      document.body.removeAttribute('data-360-dragging')
+    }
+  }, [])
 
   if (
     location.pathname.startsWith('/gallery') ||
@@ -882,8 +890,12 @@ function JoystickControl({ joystickVelocity }) {
 
   const handlePointerDown = (e) => {
     isDragging.current = true
+    setIsDraggingState(true)
+    document.body.setAttribute('data-360-dragging', 'true')
     updateJoystick(e)
-    e.target.setPointerCapture(e.pointerId)
+    try {
+      e.target.setPointerCapture(e.pointerId)
+    } catch {}
   }
 
   const handlePointerMove = (e) => {
@@ -893,9 +905,13 @@ function JoystickControl({ joystickVelocity }) {
 
   const handlePointerUp = (e) => {
     isDragging.current = false
+    setIsDraggingState(false)
+    document.body.removeAttribute('data-360-dragging')
     setThumbPos({ x: 0, y: 0 })
     if (joystickVelocity) joystickVelocity.current = { x: 0, y: 0 }
-    e.target.releasePointerCapture(e.pointerId)
+    try {
+      e.target.releasePointerCapture(e.pointerId)
+    } catch {}
   }
 
   const updateJoystick = (e) => {
@@ -923,24 +939,43 @@ function JoystickControl({ joystickVelocity }) {
     }
   }
 
+  const isDarkBlue = isHovered || isDraggingState
+
   return (
-    <div className="fixed top-1/2 right-2 sm:right-6 -translate-y-1/2 z-[8000] flex flex-col items-center gap-1.5 sm:gap-2 pointer-events-auto joystick-container scale-90 sm:scale-100 origin-right">
-      <span className="text-[9px] sm:text-[10px] font-bold text-white/90 uppercase tracking-widest bg-white/10 border border-white/25 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md backdrop-blur-2xl shadow-[0_4px_16px_rgba(0,0,0,0.25)] select-none">
+    <div
+      data-360-toggle="container"
+      className="fixed top-1/2 right-2 sm:right-6 -translate-y-1/2 z-[8000] flex flex-col items-center gap-1.5 sm:gap-2 pointer-events-auto joystick-container scale-90 sm:scale-100 origin-right"
+    >
+      <span className="text-[9px] sm:text-[10px] font-bold text-white/90 uppercase tracking-widest bg-white/10 border border-white/25 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md backdrop-blur-2xl shadow-[0_4px_16px_rgba(0,0,0,0.25)] select-none pointer-events-none">
         360° Toggle
       </span>
       <div
         ref={containerRef}
+        data-360-toggle="clickable"
+        data-cursor-interactive="true"
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerUp}
-        className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-full border border-white/30 bg-white/10 backdrop-blur-2xl flex items-center justify-center shadow-[0_8px_32px_rgba(0,0,0,0.3)] cursor-grab active:cursor-grabbing touch-none transition-all duration-300 hover:bg-white/15 hover:border-white/40"
+        onPointerEnter={() => setIsHovered(true)}
+        onPointerLeave={() => {
+          if (!isDragging.current) {
+            setIsHovered(false)
+          }
+        }}
+        className="group/toggle relative w-14 h-14 sm:w-16 sm:h-16 rounded-full border border-white/30 bg-white/10 backdrop-blur-2xl flex items-center justify-center shadow-[0_8px_32px_rgba(0,0,0,0.3)] cursor-grab active:cursor-grabbing touch-none transition-all duration-300 hover:bg-white/15 hover:border-white/40 [clip-path:circle(50%)]"
       >
         <div
-          className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/30 backdrop-blur-xl shadow-[0_2px_12px_rgba(255,255,255,0.25)] border border-white/50"
+          className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full backdrop-blur-xl transition-all duration-300 pointer-events-none ${
+            isDarkBlue
+              ? '!bg-[#001e3d] border-white/70 shadow-[0_0_16px_rgba(0,30,61,0.6)]'
+              : 'bg-white/30 border-white/50 shadow-[0_2px_12px_rgba(255,255,255,0.25)]'
+          } border group-hover/toggle:!bg-[#001e3d] group-hover/toggle:border-white/70 group-hover/toggle:shadow-[0_0_16px_rgba(0,30,61,0.6)]`}
           style={{
             transform: `translate(${thumbPos.x}px, ${thumbPos.y}px)`,
-            transition: isDragging.current ? 'none' : 'transform 0.2s ease-out',
+            transition: isDragging.current
+              ? 'none'
+              : 'transform 0.2s ease-out, background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease',
           }}
         />
       </div>

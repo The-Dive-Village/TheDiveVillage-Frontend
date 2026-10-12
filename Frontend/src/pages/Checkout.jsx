@@ -890,9 +890,10 @@ export default function Checkout() {
         <div
           role="dialog"
           aria-modal="true"
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-navy/80 backdrop-blur-md animate-fade-in"
+          className="fixed left-0 right-0 bottom-0 top-[64px] lg:top-[68px] z-[9990] flex items-center justify-center p-3 sm:p-6 bg-navy/80 backdrop-blur-md animate-fade-in overflow-hidden"
+          style={{ top: 'var(--toolbar-bottom, 64px)' }}
         >
-          <div className="relative w-full max-w-2xl bg-white rounded-[28px] sm:rounded-[36px] shadow-2xl border border-navy/10 overflow-hidden my-auto max-h-[92vh] flex flex-col animate-scale-up">
+          <div className="relative w-full max-w-2xl bg-white rounded-[28px] sm:rounded-[36px] shadow-2xl border border-navy/10 overflow-hidden my-auto max-h-[calc(100vh-var(--toolbar-bottom,64px)-24px)] flex flex-col animate-scale-up">
             
             {/* Modal Header */}
             <div className="px-6 sm:px-8 pt-6 sm:pt-7 pb-5 border-b border-navy/10 flex items-start justify-between bg-gradient-to-r from-navy/[0.03] to-transparent">

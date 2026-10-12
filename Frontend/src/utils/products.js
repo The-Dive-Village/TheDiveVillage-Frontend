@@ -1,6 +1,5 @@
 import imgFullWetsuitFront from '../assets/Media/done/Full Wet Suit/Black Wetsuit with Dive Village Logos.png';
 import imgFullWetsuitBack from '../assets/Media/done/Full Wet Suit/Rear-View Black Wetsuit with Cyan Zipper Strap.png';
-import imgCommunity from '../assets/Media/done/community.jpeg';
 
 // 3D GLB Model Imports
 const glbCap = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791610525/TDV-Media/Products/TDV%20-%203D%20Product%20Files/The_Dive_Village_Foldable_Cap.glb';
@@ -110,7 +109,6 @@ const imgGroup15 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458265
 export const GROUP_PHOTOS = [
   { id: 'g-1', src: imgGroup1, title: 'The Dive Village Squad' },
   { id: 'g-2', src: imgGroup2, title: 'Ocean Exploration Team' },
-  { id: 'g-3', src: imgCommunity, title: 'The Dive Village Community' },
   { id: 'g-4', src: imgGroup5, title: 'Reef Explorers' },
   { id: 'g-5', src: imgGroup6, title: 'Divemaster Family' },
   { id: 'g-6', src: imgGroup8, title: 'Ocean Ambassadors' },

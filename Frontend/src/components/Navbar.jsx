@@ -30,9 +30,31 @@ export default function Navbar() {
   const reduce = useReducedMotion()
 
   const location = useLocation()
-  const [isNightDive, setIsNightDive] = useState(false)
+  const [isNightDive, setIsNightDive] = useState(() => {
+    if (typeof document !== 'undefined') {
+      try {
+        if (localStorage.getItem('tdv_night_dive') === 'true') {
+          document.body.classList.add('night-dive')
+          return true
+        }
+      } catch (e) {}
+      return document.body.classList.contains('night-dive')
+    }
+    return false
+  })
 
   useEffect(() => {
+    try {
+      const stored = localStorage.getItem('tdv_night_dive')
+      if (stored === 'true') {
+        document.body.classList.add('night-dive')
+        setIsNightDive(true)
+      } else if (stored === 'false') {
+        document.body.classList.remove('night-dive')
+        setIsNightDive(false)
+      }
+    } catch (e) {}
+
     const observer = new MutationObserver(() => {
       setIsNightDive(document.body.classList.contains('night-dive'))
     })
@@ -41,23 +63,48 @@ export default function Navbar() {
     return () => observer.disconnect()
   }, [])
 
+  useEffect(() => {
+    const updateToolbarBottom = () => {
+      const header = document.getElementById('main-toolbar')
+      if (header) {
+        const visibleBar = header.querySelector('.pointer-events-auto')
+        const bottom = visibleBar ? visibleBar.getBoundingClientRect().bottom : header.getBoundingClientRect().bottom
+        if (bottom > 0) {
+          document.documentElement.style.setProperty('--toolbar-bottom', `${Math.round(bottom)}px`)
+        }
+      }
+    }
+
+    updateToolbarBottom()
+    window.addEventListener('resize', updateToolbarBottom)
+    window.addEventListener('orientationchange', updateToolbarBottom)
+    return () => {
+      window.removeEventListener('resize', updateToolbarBottom)
+      window.removeEventListener('orientationchange', updateToolbarBottom)
+    }
+  }, [])
+
   const toggleNightDive = () => {
     const isNight = document.body.classList.contains('night-dive')
     if (isNight) {
       document.body.classList.remove('night-dive')
       setIsNightDive(false)
+      try { localStorage.setItem('tdv_night_dive', 'false') } catch (e) {}
     } else {
       document.body.classList.add('night-dive')
       setIsNightDive(true)
+      try { localStorage.setItem('tdv_night_dive', 'true') } catch (e) {}
     }
   }
 
   const isHomePage = location.pathname === '/'
 
-  // Home page keeps original translucent styling; all other pages get full opaque blue
-  const containerGlass = isHomePage
-    ? 'border border-white/25 bg-[#001e3d]/55 backdrop-blur-2xl text-white shadow-[0_8px_32px_0_rgba(0,0,0,0.35)]'
-    : 'border border-white/20 bg-[#003865] text-white shadow-[0_8px_32px_0_rgba(0,0,0,0.35)]'
+  // Night dive gets #001C39 without shadow; Home page keeps original translucent styling; all other pages get full opaque blue
+  const containerGlass = isNightDive
+    ? 'border border-white/20 bg-[#001C39] text-white shadow-none'
+    : isHomePage
+      ? 'border border-white/25 bg-[#001e3d]/55 backdrop-blur-2xl text-white shadow-[0_8px_32px_0_rgba(0,0,0,0.35)]'
+      : 'border border-white/20 bg-[#003865] text-white shadow-[0_8px_32px_0_rgba(0,0,0,0.35)]'
 
   const textColor = 'text-white'
   const borderColor = 'border-white/20'
@@ -65,7 +112,7 @@ export default function Navbar() {
   const btnText = 'text-white'
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-[9999] w-full pointer-events-none flex flex-col items-center pt-2.5 sm:pt-0 px-3 xs:px-4 sm:px-4 lg:px-8">
+    <header id="main-toolbar" className="fixed top-0 left-0 right-0 z-[9999] w-full pointer-events-none flex flex-col items-center pt-2.5 sm:pt-0 px-3 xs:px-4 sm:px-4 lg:px-8">
       {/* MOBILE TOOLBAR (sm:hidden - Exact match to design) */}
       <div className={`sm:hidden pointer-events-auto mx-auto flex h-[54px] w-full items-center justify-between rounded-2xl ${containerGlass} px-3 transition-all duration-300`}>
         {/* Left: Hamburger Menu Button */}
@@ -221,8 +268,7 @@ export default function Navbar() {
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className={`pointer-events-auto mt-2 w-full max-w-7xl 2xl:max-w-[1700px] overflow-hidden rounded-3xl border border-white/20 shadow-2xl ${!isHomePage ? 'bg-[#003865]' : 'bg-[#001e3d]/90'
-              } backdrop-blur-3xl text-white`}
+            className={`pointer-events-auto mt-2 w-full max-w-7xl 2xl:max-w-[1700px] overflow-hidden rounded-3xl border border-white/20 ${isNightDive ? 'bg-[#001C39] shadow-none' : (!isHomePage ? 'bg-[#003865] shadow-2xl' : 'bg-[#001e3d]/90 shadow-2xl')} backdrop-blur-3xl text-white`}
           >
             <div className="px-5 py-4">
               {/* Quick Actions Strip: Cart & Wishlist */}
@@ -486,23 +532,26 @@ function CallModal({ isOpen, onClose, onOpenViberQr }) {
   return createPortal(
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[100000] flex items-center justify-center p-4 pointer-events-auto">
+        <div
+          className="fixed left-0 right-0 bottom-0 top-[64px] lg:top-[68px] z-[9990] flex items-center justify-center p-4 pointer-events-auto overflow-hidden"
+          style={{ top: 'var(--toolbar-bottom, 64px)' }}
+        >
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/60 backdrop-blur-md cursor-pointer"
+            className="absolute inset-0 bg-black/60 backdrop-blur-md cursor-pointer"
           />
 
           {/* Modal Box */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            exit={{ opacity: 0, scale: 0.9, y: 0 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="relative w-full max-w-lg sm:max-w-xl bg-white rounded-[32px] p-5 xs:p-6 sm:p-8 shadow-2xl border border-navy/10 z-10 text-navy pointer-events-auto max-h-[90vh] overflow-y-auto"
+            className="relative w-full max-w-lg sm:max-w-xl bg-white rounded-[32px] p-5 xs:p-6 sm:p-8 shadow-2xl border border-navy/10 z-10 text-navy pointer-events-auto max-h-[calc(100vh-var(--toolbar-bottom,64px)-24px)] overflow-y-auto"
           >
             {/* Header */}
             <div className="flex items-center justify-between border-b border-navy/10 pb-4 mb-6">

@@ -150,26 +150,36 @@ export default function CustomizeExperiencePanel({ className = '', images = PANE
     })
   }
 
-  const handleContactUs = () => {
-    const fullMessage = customText.trim()
+  const handleSubmit = () => {
+    const selectedNames = CUSTOM_ACTIVITIES
+      .filter((a) => selectedActivities.includes(a.id))
+      .map((a) => a.name)
+
+    const extraNotes = customText
+      ? customText
+          .split('\n')
+          .filter((line) => !line.toLowerCase().startsWith('selected activities:'))
+          .join('\n')
+          .trim()
+      : ''
 
     const searchParams = new URLSearchParams()
-    if (fullMessage) {
-      searchParams.set('message', fullMessage)
-      searchParams.set('subject', 'Special Request')
-    } else {
-      searchParams.set('subject', 'Special Request')
+    if (selectedNames.length > 0) {
+      searchParams.set('addons', selectedNames.join(','))
+    }
+    if (extraNotes) {
+      searchParams.set('notes', extraNotes)
     }
 
     navigate(
       {
-        pathname: '/contact',
-        search: `?${searchParams.toString()}`,
+        pathname: '/book-us',
+        search: searchParams.toString() ? `?${searchParams.toString()}` : '',
       },
       {
         state: {
-          message: fullMessage,
-          subject: 'Special Request',
+          selectedAddOns: selectedNames,
+          requests: extraNotes,
         },
       }
     )
@@ -357,10 +367,10 @@ export default function CustomizeExperiencePanel({ className = '', images = PANE
 
             <button
               type="button"
-              onClick={handleContactUs}
+              onClick={handleSubmit}
               className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-white/15 backdrop-blur-xl border border-white/30 text-white font-heading font-bold text-xs sm:text-sm uppercase tracking-wider py-4 px-6 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] transition-all duration-300 hover:scale-105 active:scale-95 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] cursor-pointer"
             >
-              <span>Continue</span>
+              <span>Submit</span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M5 12h14M12 5l7 7-7 7" />
               </svg>

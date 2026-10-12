@@ -161,7 +161,7 @@ export default function Shop() {
   }, [productsList, selectedCategory, deferredSearchQuery, sortBy, priceFilter, isMobile])
 
   return (
-    <div className={`min-h-screen font-body pt-20 md:pt-32 pb-24 overflow-x-hidden transition-colors duration-500 ${isNightDive ? 'bg-[#0b1726] text-white' : 'bg-[#FAFAFA] text-navy'}`}>
+    <div className={`min-h-screen font-body pt-20 md:pt-32 pb-24 overflow-x-hidden transition-colors duration-500 ${isNightDive ? 'bg-[#003865] text-white' : 'bg-[#FAFAFA] text-navy'}`}>
       <SEOHead
         title="Dive Shop & Sustainable Marine Apparel | The Dive Village"
         description="Shop high-performance ocean gear, eco-friendly dive apparel, dive suits, and diving accessories. Designed for comfort, durability, and marine conservation."
@@ -187,7 +187,7 @@ export default function Shop() {
 
       {/* 1. HERO BANNER */}
       <section className="mx-auto max-w-7xl px-3.5 sm:px-6 lg:px-8 mb-4 sm:mb-10">
-        <div className="relative rounded-[20px] sm:rounded-[36px] lg:rounded-[40px] overflow-hidden bg-[#001428] shadow-lift border border-white/10 w-full h-[160px] xs:h-[200px] sm:h-[280px] lg:h-[450px] flex items-center justify-end">
+        <div className="relative rounded-[20px] sm:rounded-[36px] lg:rounded-[40px] overflow-hidden bg-[#001428] shadow-lift border border-white/10 w-full h-[180px] xs:h-[220px] sm:h-[300px] md:h-[340px] lg:h-[410px] xl:h-[440px] 2xl:h-[460px] flex items-center justify-end">
           <img
             src={bannerImg}
             alt="Merchandise Banner"
@@ -212,7 +212,7 @@ export default function Shop() {
           </div>
 
           {/* Right Column: 3D Flipping Product Tag */}
-          <div className="absolute right-2.5 xs:right-4 sm:right-8 lg:right-12 top-0 bottom-0 z-10 shrink-0 h-full flex items-center">
+          <div className="absolute right-2 xs:right-3.5 sm:right-8 lg:right-12 top-0 bottom-0 z-10 shrink-0 h-full flex items-center">
             <FlippingProductTag />
           </div>
         </div>
@@ -469,14 +469,17 @@ export default function Shop() {
       {/* 5. MOBILE FILTER DRAWER MODAL (md:hidden) */}
       <AnimatePresence>
         {isFilterDrawerOpen && (
-          <div className="fixed inset-0 z-[9999] flex items-end justify-center">
+          <div
+            className="fixed left-0 right-0 bottom-0 top-[64px] lg:top-[68px] z-[9990] flex items-end justify-center pointer-events-auto"
+            style={{ top: 'var(--toolbar-bottom, 64px)' }}
+          >
             {/* Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsFilterDrawerOpen(false)}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm cursor-pointer"
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm cursor-pointer"
             />
 
             {/* Bottom Sheet */}
@@ -485,7 +488,7 @@ export default function Shop() {
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="relative z-10 w-full max-w-lg rounded-t-3xl bg-white p-5 text-slate-800 shadow-2xl max-h-[85vh] overflow-y-auto"
+              className="relative z-10 w-full max-w-lg rounded-t-3xl bg-white p-5 text-slate-800 shadow-2xl max-h-[calc(100vh-var(--toolbar-bottom,64px)-16px)] overflow-y-auto"
             >
               {/* Handle */}
               <div className="w-12 h-1 bg-slate-300 rounded-full mx-auto mb-4" />
@@ -658,16 +661,20 @@ function GroupGallerySection() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             data-lenis-prevent="true"
-            style={{ overscrollBehavior: 'contain', touchAction: 'none' }}
+            style={{
+              top: 'var(--toolbar-bottom, 64px)',
+              overscrollBehavior: 'contain',
+              touchAction: 'none',
+            }}
             onClick={() => setSelectedPhoto(null)}
-            className="fixed inset-0 z-[9999] bg-black/90 backdrop-blur-md flex items-center justify-center p-4 sm:p-8 cursor-pointer"
+            className="fixed left-0 right-0 bottom-0 top-[64px] lg:top-[68px] z-[9990] bg-black/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 cursor-pointer overflow-hidden"
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative max-w-5xl max-h-[90vh] rounded-3xl overflow-hidden bg-navy/95 border border-white/15 shadow-2xl flex flex-col items-center justify-center p-2.5 sm:p-4"
+              className="relative max-w-5xl max-h-[calc(100vh-var(--toolbar-bottom,64px)-24px)] rounded-3xl overflow-hidden bg-navy/95 border border-white/15 shadow-2xl flex flex-col items-center justify-center p-2.5 sm:p-4 cursor-default"
             >
               <button
                 type="button"
@@ -680,7 +687,7 @@ function GroupGallerySection() {
               <img
                 src={selectedPhoto.src}
                 alt="Community Photo"
-                className="max-h-[85vh] w-auto max-w-full object-contain rounded-2xl shadow-inner"
+                className="max-h-[calc(100vh-var(--toolbar-bottom,64px)-48px)] w-auto max-w-full object-contain rounded-2xl shadow-inner"
               />
             </motion.div>
           </motion.div>
@@ -1073,12 +1080,12 @@ function FlippingProductTag() {
       </style>
       <div className="relative h-full flex flex-col items-center justify-center select-none py-2 sm:py-4 group cursor-pointer">
         {/* Hanging Cord */}
-        <div className="w-0.5 h-2.5 sm:h-3.5 lg:h-4 bg-white/90 shadow-[0_0_6px_rgba(255,255,255,0.7)] mb-[-2px] relative z-20 shrink-0 pointer-events-none">
-          <div className="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-white -top-1 -left-[2px] sm:-left-[3px] absolute shadow-[0_0_6px_rgba(255,255,255,0.9)]" />
+        <div className="w-0.5 h-1.5 xs:h-2 sm:h-3.5 lg:h-4 bg-white/90 shadow-[0_0_6px_rgba(255,255,255,0.7)] mb-[-2px] relative z-20 shrink-0 pointer-events-none">
+          <div className="w-1 xs:w-1.5 sm:w-2 h-1 xs:h-1.5 sm:h-2 rounded-full bg-white -top-1 -left-[2px] sm:-left-[3px] absolute shadow-[0_0_6px_rgba(255,255,255,0.9)]" />
         </div>
 
         {/* 3D Perspective Container matched to exact 447x864 image aspect ratio */}
-        <div className="perspective-1000 h-[105px] xs:h-[125px] sm:h-[160px] lg:h-[195px] aspect-[447/864] relative">
+        <div className="perspective-1000 h-[68px] xs:h-[82px] sm:h-[160px] lg:h-[195px] aspect-[447/864] relative">
           <div
             className="w-full h-full preserve-3d relative rounded-xl sm:rounded-2xl shadow-[0_15px_35px_rgba(0,0,0,0.4)] animate-[spinY_18s_linear_infinite] group-hover:[animation-play-state:paused]"
             style={{ transformStyle: 'preserve-3d' }}

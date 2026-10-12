@@ -3,79 +3,18 @@ import { COUNTRY_CENTROIDS } from '../data/countryCentroids'
 import { diveSiteService, getLocationDisplayName, normalizeCountryKey } from '../services/diveSiteService'
 import { getDiveSiteImage, getDiveSiteCreatureInfo } from '../data/diveSiteImages'
 import { loadCesium } from '../services/cesiumLoader'
+import pinIconUrl from '../assets/pin.png'
 
 // Memoization cache for generated marker SVG data URIs
 const svgCache = new Map()
 
-// Generate high-resolution SVG billboard pin for countries
+// Generate billboard pin for countries and dive locations from assets/pin.png (#FFD500 yellow)
 const createSitePinSvg = () => {
-  const cacheKey = 'site_pin_icon'
-  if (svgCache.has(cacheKey)) return svgCache.get(cacheKey)
-
-  const svg = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(`
-    <svg width="44" height="52" viewBox="0 0 44 52" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <filter id="badgeShadow" x="-30%" y="-30%" width="160%" height="160%">
-          <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000000" flood-opacity="0.8"/>
-          <feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#00E5FF" flood-opacity="0.55"/>
-        </filter>
-      </defs>
-      
-      <g transform="translate(8, 6)" filter="url(#badgeShadow)">
-        <path d="M14 2C8.477 2 4 6.477 4 12c0 8 10 18 10 18s10-10 10-18c0-5.523-4.477-10-10-10z" fill="#00E5FF" stroke="#ffffff" stroke-width="2"/>
-        <polygon points="14,6.5 16,11 20.5,11.5 17,15 18,19.5 14,17 10,19.5 11,15 7.5,11.5 12,11" fill="#00223D"/>
-      </g>
-    </svg>
-  `)
-  svgCache.set(cacheKey, svg)
-  return svg
+  return pinIconUrl
 }
 
-// Generate premium Google Earth style glowing SVG billboard pin for PADI dive locations
 const createPadiPinSvg = (isSelected = false, isDimmed = false) => {
-  const cacheKey = `padi_pin_${isSelected ? '1' : '0'}_${isDimmed ? '1' : '0'}`
-  if (svgCache.has(cacheKey)) return svgCache.get(cacheKey)
-
-  let pinColor = '#00AEC7'
-  let pinStroke = '#FFFFFF'
-  let iconFill = '#FFFFFF'
-  let glowColor = '#00E5FF'
-  let glowOpacity = '0.6'
-  let overallOpacity = isDimmed ? '0.55' : '1.0'
-  let pinScale = isSelected ? '1.25' : '1.0'
-
-  if (isSelected) {
-    pinColor = '#FFCD00'
-    pinStroke = '#00223D'
-    iconFill = '#00223D'
-    glowColor = '#FFD700'
-    glowOpacity = '0.9'
-    overallOpacity = '1.0'
-  }
-
-  const svg = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(`
-    <svg width="48" height="56" viewBox="0 0 48 56" xmlns="http://www.w3.org/2000/svg" opacity="${overallOpacity}">
-      <defs>
-        <filter id="padiGlow" x="-40%" y="-40%" width="180%" height="180%">
-          <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#000000" flood-opacity="0.8"/>
-          <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="${glowColor}" flood-opacity="${glowOpacity}"/>
-        </filter>
-      </defs>
-      
-      ${isSelected ? `
-      <!-- Pulse radar ring behind active pin -->
-      <circle cx="24" cy="40" r="14" fill="none" stroke="#FFCD00" stroke-width="2" opacity="0.8" stroke-dasharray="3,3"/>
-      ` : ''}
-
-      <!-- Pin Drop Marker -->
-      <g transform="translate(10, 8) scale(${pinScale})" filter="url(#padiGlow)">
-        <path d="M14 2C8.477 2 4 6.477 4 12c0 8 10 18 10 18s10-10 10-18c0-5.523-4.477-10-10-10z" fill="${pinColor}" stroke="${pinStroke}" stroke-width="2"/>
-        <polygon points="14,6.5 16,11 20.5,11.5 17,15 18,19.5 14,17 10,19.5 11,15 7.5,11.5 12,11" fill="${iconFill}"/>
-      </g>
-    </svg>
-  `)
-  svgCache.set(cacheKey, svg)
-  return svg
+  return pinIconUrl
 }
 
 export default function InteractiveDiveMap({
@@ -663,8 +602,8 @@ export default function InteractiveDiveMap({
               show: true,
               billboard: {
                 image: createSitePinSvg(),
-                width: 38,
-                height: 46,
+                width: 42,
+                height: 24,
                 verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
                 eyeOffset: new Cesium.Cartesian3(0, 0, -50),
                 scaleByDistance: new Cesium.NearFarScalar(1.0e6, 1.0, 1.8e7, 0.48),
@@ -1196,8 +1135,8 @@ export default function InteractiveDiveMap({
             position: Cesium.Cartesian3.fromDegrees(Number(loc.longitude), Number(loc.latitude)),
             billboard: {
               image: createPadiPinSvg(isSel, isDimmed),
-              width: isSel ? 48 : 38,
-              height: isSel ? 56 : 46,
+              width: isSel ? 46 : 34,
+              height: isSel ? 26 : 19,
               verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
               eyeOffset: new Cesium.Cartesian3(0, 0, isSel ? -250 : -80),
               scaleByDistance: new Cesium.NearFarScalar(2.0e4, 1.0, 1.2e7, 0.5),
@@ -1293,8 +1232,8 @@ export default function InteractiveDiveMap({
         const isDimmed = hasSelection && !isSel
         if (entity.billboard) {
           entity.billboard.image = createPadiPinSvg(isSel, isDimmed)
-          entity.billboard.width = isSel ? 48 : 38
-          entity.billboard.height = isSel ? 56 : 46
+          entity.billboard.width = isSel ? 46 : 34
+          entity.billboard.height = isSel ? 26 : 19
           entity.billboard.eyeOffset = new window.Cesium.Cartesian3(0, 0, isSel ? -250 : -80)
         }
       }
@@ -1575,13 +1514,13 @@ function GlobeJoystick({ viewerRef }) {
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerUp}
-        className="relative w-16 h-16 rounded-full border-2 border-white/20 bg-white/10 backdrop-blur-md flex items-center justify-center shadow-lg cursor-grab active:cursor-grabbing touch-none select-none"
+        className="group/map-toggle relative w-16 h-16 rounded-full border-2 border-white/20 bg-white/10 backdrop-blur-md flex items-center justify-center shadow-lg cursor-grab active:cursor-grabbing touch-none select-none [clip-path:circle(50%)]"
       >
         <div
-          className="w-8 h-8 rounded-full bg-white/80 shadow-soft border border-white/50"
+          className="w-8 h-8 rounded-full bg-white/80 shadow-soft border border-white/50 transition-colors duration-200 group-hover/map-toggle:!bg-[#001e3d] group-hover/map-toggle:border-white/70 pointer-events-none"
           style={{ 
             transform: `translate(${thumbPos.x}px, ${thumbPos.y}px)`, 
-            transition: isDragging.current ? 'none' : 'transform 0.2s ease-out' 
+            transition: isDragging.current ? 'none' : 'transform 0.2s ease-out, background-color 0.2s ease, border-color 0.2s ease' 
           }}
         />
       </div>

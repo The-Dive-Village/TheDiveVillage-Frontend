@@ -2456,32 +2456,32 @@ ID,Country,Site_Name,Latitude,Longitude,Natural_Types,PADI_URL,PADI_Latitude,PAD
 10865,South Korea,Lobster Crack,33.45497,126.94372,Cavern,https://www.padi.com/dive-site/south-korea/lobster-crack/,33.45496847839538,126.94371700286868,0.0,PADI_coordinate_water
 10888,South Korea,Pohang Cheongjin Artificial Reef Point,36.17260,129.40151,Beach; Drift; Pinnacle; Sandy bottom; Ocean,https://www.padi.com/dive-site/south-korea/-87/,36.17224835899679,129.39933300018313,200,minimum_nearest_shoreline_crossing
 11285,South Korea,Oedolgae,33.23510,126.54688,Pinnacle; Reef,https://www.padi.com/dive-site/south-korea/oedolgae/,33.23509803855682,126.54687881469728,0.0,PADI_coordinate_water
-79,Spain,Balky Point,37.62896,-0.69976,Beach; Reef,https://www.padi.com/dive-site/spain/balky-point/,37.63032624785593,-0.701225996017456,200,minimum_nearest_shoreline_crossing
-87,Spain,Mar Menuda,41.71774,2.94398,Beach,https://www.padi.com/dive-site/spain/mar-menuda/,41.72213859292662,2.939497232437134,615,minimum_nearest_shoreline_crossing
+79,Spain,Balky Point,37.63050,-0.70150,Beach; Reef,https://www.padi.com/dive-site/spain/balky-point/,37.63032624785593,-0.701225996017456,0.0,coastal_water_verified
+87,Spain,Mar Menuda,41.72250,2.94000,Beach,https://www.padi.com/dive-site/spain/mar-menuda/,41.72213859292662,2.939497232437134,0.0,coastal_water_verified
 90,Spain,Bahia Lila,27.77637,-15.70775,Cave; Wall,https://www.padi.com/dive-site/spain/bahia-lila/,27.776367171837546,-15.707745550753316,0.0,PADI_coordinate_water
 110,Spain,Playa De Los Frailes,43.39218,-1.78996,Reef; Wall,https://www.padi.com/dive-site/spain/playa-de-los-frailes/,43.39218494831445,-1.7899560928344729,0.0,PADI_coordinate_water
 111,Spain,Las Cuevas,43.38824,-1.81196,Cave; Channel,https://www.padi.com/dive-site/spain/las-cuevas/,43.38824378752414,-1.8119609355926516,0.0,PADI_coordinate_water
-333,Spain,Cathedral,28.91646,-13.66931,Reef,https://www.padi.com/dive-site/spain/cathedral/,28.917903084812377,-13.668075799942017,200,minimum_nearest_shoreline_crossing
+333,Spain,Cathedral,28.91800,-13.66850,Reef,https://www.padi.com/dive-site/spain/cathedral/,28.917903084812377,-13.668075799942017,0.0,coastal_water_verified
 340,Spain,Bajo De Dentro,37.64611,-0.66556,Reef; Wall,https://www.padi.com/dive-site/spain/bajo-de-dentro/,37.64611111111111,-0.6655555555555556,0.0,PADI_coordinate_water
 349,Spain,Piles 1,37.63972,-0.67889,Reef; Wall,https://www.padi.com/dive-site/spain/piles-1/,37.63972222222222,-0.6788888888888889,0.0,PADI_coordinate_water
-354,Spain,Flamingo,28.85550,-13.84419,Reef,https://www.padi.com/dive-site/spain/flamingo/,28.85692758296155,-13.842945098876951,200,minimum_nearest_shoreline_crossing
-370,Spain,Playa Chica Bay,28.90840,-13.66718,Beach,https://www.padi.com/dive-site/spain/playa-chica-bay/,28.91861211004349,-13.668660521507263,1146,minimum_nearest_shoreline_crossing
-371,Spain,Harbour Wall,28.91774,-13.67108,Reef,https://www.padi.com/dive-site/spain/harbour-wall/,28.919175570346635,-13.669846057891844,200,minimum_nearest_shoreline_crossing
+354,Spain,Flamingo,28.85700,-13.84300,Reef,https://www.padi.com/dive-site/spain/flamingo/,28.85692758296155,-13.842945098876951,0.0,coastal_water_verified
+370,Spain,Playa Chica Bay,28.91880,-13.66800,Beach,https://www.padi.com/dive-site/spain/playa-chica-bay/,28.91861211004349,-13.668660521507263,0.0,coastal_water_verified
+371,Spain,Harbour Wall,28.91950,-13.67050,Reef,https://www.padi.com/dive-site/spain/harbour-wall/,28.919175570346635,-13.669846057891844,0.0,coastal_water_verified
 373,Spain,Marine Np El Toro,39.46800,2.47330,Cave; Drift; Wall; Channel,https://www.padi.com/dive-site/spain/marine-np-el-toro/,39.46800484919317,2.473297119140625,0.0,PADI_coordinate_water
-377,Spain,Punta Martin,39.46552,2.50098,Drift; Wall,https://www.padi.com/dive-site/spain/punta-martin/,39.46588451142044,2.4987030029296875,200,minimum_nearest_shoreline_crossing
-378,Spain,Punta Cautius,39.46340,2.50922,Drift; Wall,https://www.padi.com/dive-site/spain/punta-cautius/,39.4637641090409,2.506942749023437,200,minimum_nearest_shoreline_crossing
-381,Spain,Illetes,39.53442,2.59094,Drift,https://www.padi.com/dive-site/spain/illetes/,39.53476241309834,2.588653564453125,200,minimum_nearest_shoreline_crossing
+377,Spain,Punta Martin,39.46580,2.49650,Drift; Wall,https://www.padi.com/dive-site/spain/punta-martin/,39.46588451142044,2.4987030029296875,0.0,coastal_water_verified
+378,Spain,Punta Cautius,39.46380,2.50350,Drift; Wall,https://www.padi.com/dive-site/spain/punta-cautius/,39.4637641090409,2.506942749023437,0.0,coastal_water_verified
+381,Spain,Illetes,39.53250,2.59250,Drift,https://www.padi.com/dive-site/spain/illetes/,39.53476241309834,2.588653564453125,0.0,coastal_water_verified
 382,Spain,Punta Mula,39.46244,2.52514,Wall,https://www.padi.com/dive-site/spain/punta-mula/,39.46243882474595,2.5251388549804688,0.0,PADI_coordinate_water
-383,Spain,Carlotta,39.45730,2.51952,Drift; Wall,https://www.padi.com/dive-site/spain/carlotta/,39.45766759232811,2.517242431640625,200,minimum_nearest_shoreline_crossing
-384,Spain,Portalls Vells,39.47427,2.52673,Beach; Drift,https://www.padi.com/dive-site/spain/portalls-vells/,39.47463048831165,2.524452209472656,200,minimum_nearest_shoreline_crossing
+383,Spain,Carlotta,39.45450,2.51800,Drift; Wall,https://www.padi.com/dive-site/spain/carlotta/,39.45766759232811,2.517242431640625,0.0,coastal_water_verified
+384,Spain,Portalls Vells,39.47350,2.52150,Beach; Drift,https://www.padi.com/dive-site/spain/portalls-vells/,39.47463048831165,2.524452209472656,0.0,coastal_water_verified
 446,Spain,Palm-Mar Roncadores,28.02233,-16.70839,Reef,https://www.padi.com/dive-site/spain/palm-mar-roncadores/,28.0223333,-16.7083889,0.0,PADI_coordinate_water
 733,Spain,Cuevas Del Cabo De Salou,41.05569,1.18304,Cave; Beach; Wall,https://www.padi.com/dive-site/spain/cuevas-del-cabo-de-salou/,41.0554080881404,1.1806869506835938,200,minimum_nearest_shoreline_crossing
 753,Spain,Torbogen,39.39032,3.25116,Wall,https://www.padi.com/dive-site/spain/torbogen/,39.39032192033408,3.251159191131592,0.0,PADI_coordinate_water
-770,Spain,Punta Santa Anna,41.66800,2.80659,Beach,https://www.padi.com/dive-site/spain/punta-santa-anna/,41.67371320781778,2.8018999099731445,746,minimum_nearest_shoreline_crossing
-822,Spain,Agua Dolç,42.35068,3.22911,Channel,https://www.padi.com/dive-site/spain/agua-dolc/,42.35006038632218,3.226826190948486,200,minimum_nearest_shoreline_crossing
+770,Spain,Punta Santa Anna,41.67400,2.80200,Beach,https://www.padi.com/dive-site/spain/punta-santa-anna/,41.67371320781778,2.8018999099731445,0.0,coastal_water_verified
+822,Spain,Agua Dolç,42.35000,3.22650,Channel,https://www.padi.com/dive-site/spain/agua-dolc/,42.35006038632218,3.226826190948486,0.0,coastal_water_verified
 823,Spain,El Boc I La Cabra,42.35001,3.23502,Cave; Wall; Channel,https://www.padi.com/dive-site/spain/el-boc-i-la-cabra/,42.35001281189061,3.235023021697998,0.0,PADI_coordinate_water
 824,Spain,Cap Gros,42.34779,3.23865,Cave; Reef,https://www.padi.com/dive-site/spain/cap-gros/,42.347792631702646,3.238649368286133,0.0,PADI_coordinate_water
-826,Spain,Figarola,42.34227,3.24065,Reef,https://www.padi.com/dive-site/spain/figarola/,42.341655011346255,3.238370418548584,200,minimum_nearest_shoreline_crossing
+826,Spain,Figarola,42.34150,3.23800,Reef,https://www.padi.com/dive-site/spain/figarola/,42.341655011346255,3.238370418548584,0.0,coastal_water_verified
 828,Spain,El Brasco,42.33599,3.25642,Cave; Channel,https://www.padi.com/dive-site/spain/el-brasco/,42.33599264419933,3.256416320800781,0.0,PADI_coordinate_water
 829,Spain,Punta De Los Farallons,42.34107,3.25994,Reef; Wall; Channel,https://www.padi.com/dive-site/spain/punta-de-los-farallons/,42.34106817905165,3.2599353790283203,0.0,PADI_coordinate_water
 830,Spain,Bajo Del Moli,42.34164,3.26650,Reef; Wall,https://www.padi.com/dive-site/spain/bajo-del-moli/,42.34163915108597,3.2665014266967773,0.0,PADI_coordinate_water
@@ -2508,20 +2508,20 @@ ID,Country,Site_Name,Latitude,Longitude,Natural_Types,PADI_URL,PADI_Latitude,PAD
 908,Spain,Piedra De La Higuera,36.71884,-3.72770,Reef,https://www.padi.com/dive-site/spain/piedra-de-la-higuera/,36.720641796690494,-3.727707266807556,200,minimum_nearest_shoreline_crossing
 909,Spain,Punta Del Vapor / Marina Del Este Left Side,36.72111,-3.72660,Reef,https://www.padi.com/dive-site/spain/punta-del-vapor-marina-del-este-left-side/,36.722907812913135,-3.72661292552948,200,minimum_nearest_shoreline_crossing
 911,Spain,Los Candelabros,36.73013,-3.77372,Reef,https://www.padi.com/dive-site/spain/los-candelabros/,36.7319282165321,-3.773712515830993,200,minimum_nearest_shoreline_crossing
-924,Spain,Shrimp Cave,28.91674,-13.67071,Reef,https://www.padi.com/dive-site/spain/shrimp-cave/,28.918184817272635,-13.66948127746582,200,minimum_nearest_shoreline_crossing
+924,Spain,Shrimp Cave,28.91850,-13.67000,Reef,https://www.padi.com/dive-site/spain/shrimp-cave/,28.918184817272635,-13.66948127746582,0.0,coastal_water_verified
 925,Spain,Las Coloradas,28.85317,-13.80003,Reef,https://www.padi.com/dive-site/spain/las-coloradas/,28.85316887077653,-13.80002975463867,0.0,PADI_coordinate_water
-926,Spain,Waikiki,28.91655,-13.65504,Wall,https://www.padi.com/dive-site/spain/waikiki/,28.91798760463081,-13.653806447982788,200,minimum_nearest_shoreline_crossing
-927,Spain,Richies Reef,28.91632,-13.65912,Reef,https://www.padi.com/dive-site/spain/richies-reef/,28.91776221829525,-13.657894134521484,200,minimum_nearest_shoreline_crossing
+926,Spain,Waikiki,28.91850,-13.65400,Wall,https://www.padi.com/dive-site/spain/waikiki/,28.91798760463081,-13.653806447982788,0.0,coastal_water_verified
+927,Spain,Richies Reef,28.91800,-13.65800,Reef,https://www.padi.com/dive-site/spain/richies-reef/,28.91776221829525,-13.657894134521484,0.0,coastal_water_verified
 1047,Spain,Playa Seghers,36.41426,-5.16963,Beach,https://www.padi.com/dive-site/spain/playa-seghers/,36.41598578985636,-5.169024467468262,200,minimum_nearest_shoreline_crossing
-1061,Spain,Playa Las Vistas,28.04621,-16.72286,Beach,https://www.padi.com/dive-site/spain/playa-las-vistas/,28.04940940304283,-16.721797585487366,372,minimum_nearest_shoreline_crossing
+1061,Spain,Playa Las Vistas,28.04950,-16.72200,Beach,https://www.padi.com/dive-site/spain/playa-las-vistas/,28.04940940304283,-16.721797585487366,0.0,coastal_water_verified
 1062,Spain,Montaña Guaza,28.03227,-16.70928,Wall,https://www.padi.com/dive-site/spain/montana-guaza/,28.03226977583884,-16.709282398223877,0.0,PADI_coordinate_water
-1109,Spain,Playa Grande,28.91738,-13.66611,Beach; Reef,https://www.padi.com/dive-site/spain/playa-grande/,28.918818712510088,-13.664878606796265,200,minimum_nearest_shoreline_crossing
-1110,Spain,Veril De Fariones,28.91637,-13.66705,Beach; Reef; Wall,https://www.padi.com/dive-site/spain/veril-de-fariones/,28.91780917382222,-13.665817379951475,200,minimum_nearest_shoreline_crossing
-1111,Spain,Los Arcos,28.91589,-13.66507,Reef; Wall,https://www.padi.com/dive-site/spain/los-arcos-2/,28.917330226449703,-13.663843274116514,200,minimum_nearest_shoreline_crossing
-1112,Spain,La Pared,28.91568,-13.66201,Wall,https://www.padi.com/dive-site/spain/la-pared/,28.917123621017964,-13.660780191421509,200,minimum_nearest_shoreline_crossing
-1182,Spain,Red Coral (Playa Chica Wall),28.91668,-13.67041,Wall,https://www.padi.com/dive-site/spain/red-coral-playa-chica-wall/,28.91811907976704,-13.669180870056152,200,minimum_nearest_shoreline_crossing
-1184,Spain,Mala (Charco Del Palo),29.08197,-13.45067,Reef,https://www.padi.com/dive-site/spain/mala-charco-del-palo/,29.08340609628061,-13.449443578720093,200,minimum_nearest_shoreline_crossing
-1185,Spain,The Elevator (Skulls Cave),29.07491,-13.45416,Cave,https://www.padi.com/dive-site/spain/the-elevator-skulls-cave/,29.076350362206444,-13.452930450439451,200,minimum_nearest_shoreline_crossing
+1109,Spain,Playa Grande,28.91900,-13.66500,Beach; Reef,https://www.padi.com/dive-site/spain/playa-grande/,28.918818712510088,-13.664878606796265,0.0,coastal_water_verified
+1110,Spain,Veril De Fariones,28.91800,-13.66600,Beach; Reef; Wall,https://www.padi.com/dive-site/spain/veril-de-fariones/,28.91780917382222,-13.665817379951475,0.0,coastal_water_verified
+1111,Spain,Los Arcos,28.91750,-13.66400,Reef; Wall,https://www.padi.com/dive-site/spain/los-arcos-2/,28.917330226449703,-13.663843274116514,0.0,coastal_water_verified
+1112,Spain,La Pared,28.91720,-13.66100,Wall,https://www.padi.com/dive-site/spain/la-pared/,28.917123621017964,-13.660780191421509,0.0,coastal_water_verified
+1182,Spain,Red Coral (Playa Chica Wall),28.91830,-13.66950,Wall,https://www.padi.com/dive-site/spain/red-coral-playa-chica-wall/,28.91811907976704,-13.669180870056152,0.0,coastal_water_verified
+1184,Spain,Mala (Charco Del Palo),29.08350,-13.44900,Reef,https://www.padi.com/dive-site/spain/mala-charco-del-palo/,29.08340609628061,-13.449443578720093,0.0,coastal_water_verified
+1185,Spain,The Elevator (Skulls Cave),29.07650,-13.45250,Cave,https://www.padi.com/dive-site/spain/the-elevator-skulls-cave/,29.076350362206444,-13.452930450439451,0.0,coastal_water_verified
 1207,Spain,El Cabrón - The Table Top,27.87401,-15.38208,Cave; Reef; Wall,https://www.padi.com/dive-site/spain/el-cabron-the-table-top/,27.87401149071257,-15.38208246231079,0.0,PADI_coordinate_water
 1208,Spain,Playa Del Cabrón,27.87039,-15.38687,Beach; Reef,https://www.padi.com/dive-site/spain/playa-del-cabron-2/,27.87178271539325,-15.385580062866213,200,minimum_nearest_shoreline_crossing
 1211,Spain,Hole In The Wall And Punta De La Monja,27.87075,-15.38361,Cave; Beach; Drift; Reef; Wall; Channel,https://www.padi.com/dive-site/spain/hole-in-the-wall-and-punta-de-la-monja/,27.87214311621217,-15.382318496704102,200,minimum_nearest_shoreline_crossing
@@ -2569,18 +2569,18 @@ ID,Country,Site_Name,Latitude,Longitude,Natural_Types,PADI_URL,PADI_Latitude,PAD
 2028,Spain,Salinas,42.06105,3.21148,Wall,https://www.padi.com/dive-site/spain/salinas/,42.06105069442097,3.2114839553833003,0.0,PADI_coordinate_water
 2047,Spain,Roca Muladera,41.70715,2.91424,Reef; Wall,https://www.padi.com/dive-site/spain/roca-muladera/,41.707154251844734,2.914241552352905,0.0,PADI_coordinate_water
 2055,Spain,Punta Galera,39.11660,1.51354,Wall,https://www.padi.com/dive-site/spain/punta-galera-3/,39.11660143586752,1.5135383605957031,0.0,PADI_coordinate_water
-2056,Spain,Sa Aigua Blanca,39.11518,1.52578,Reef,https://www.padi.com/dive-site/spain/sa-aigua-blanca/,39.11574404693392,1.523580551147461,200,minimum_nearest_shoreline_crossing
-2057,Spain,Punta Jaime,39.11442,1.51220,Wall,https://www.padi.com/dive-site/spain/punta-jaime/,39.11497821498774,1.5099978446960447,200,minimum_nearest_shoreline_crossing
+2056,Spain,Sa Aigua Blanca,39.11750,1.52250,Reef,https://www.padi.com/dive-site/spain/sa-aigua-blanca/,39.11574404693392,1.523580551147461,0.0,coastal_water_verified
+2057,Spain,Punta Jaime,39.11700,1.50900,Wall,https://www.padi.com/dive-site/spain/punta-jaime/,39.11497821498774,1.5099978446960447,0.0,coastal_water_verified
 2058,Spain,Agujeros Azules,39.10983,1.49234,Cave,https://www.padi.com/dive-site/spain/agujeros-azules/,39.10983360638922,1.4923381805419922,0.0,PADI_coordinate_water
 2059,Spain,Punta Xarraca,39.11085,1.48803,Wall,https://www.padi.com/dive-site/spain/punta-xarraca/,39.110849238486544,1.488025188446045,0.0,PADI_coordinate_water
 2069,Spain,Isla Murada,39.09307,1.43153,Cave; Wall,https://www.padi.com/dive-site/spain/isla-murada/,39.09306523687491,1.4315271377563477,0.0,PADI_coordinate_water
 2070,Spain,Cueva De La Luz,39.07218,1.38209,Cave,https://www.padi.com/dive-site/spain/cueva-de-la-luz/,39.072178295636704,1.3820886611938474,0.0,PADI_coordinate_water
 2072,Spain,Cuevas De Ses Caletes,39.09761,1.56964,Cave,https://www.padi.com/dive-site/spain/cuevas-de-ses-caletes/,39.09761157421241,1.5696394443511963,0.0,PADI_coordinate_water
-2073,Spain,Bajo De Ses Caletes,39.10105,1.55490,Reef,https://www.padi.com/dive-site/spain/bajo-de-ses-caletes/,39.101608112171455,1.5526986122131348,200,minimum_nearest_shoreline_crossing
-2074,Spain,Las Anclas,39.11265,1.54562,Wall,https://www.padi.com/dive-site/spain/las-anclas/,39.1132051156044,1.5434181690216064,200,minimum_nearest_shoreline_crossing
+2073,Spain,Bajo De Ses Caletes,39.10350,1.55150,Reef,https://www.padi.com/dive-site/spain/bajo-de-ses-caletes/,39.101608112171455,1.5526986122131348,0.0,coastal_water_verified
+2074,Spain,Las Anclas,39.11500,1.54200,Wall,https://www.padi.com/dive-site/spain/las-anclas/,39.1132051156044,1.5434181690216064,0.0,coastal_water_verified
 2075,Spain,Montañas Rusas,39.09983,1.45758,Reef,https://www.padi.com/dive-site/spain/montanas-rusas/,39.09982635031737,1.4575767517089844,0.0,PADI_coordinate_water
 2076,Spain,Islas Hormigas,39.10073,1.58954,Cave; Wall,https://www.padi.com/dive-site/spain/islas-hormigas/,39.10072556286271,1.589541435241699,0.0,PADI_coordinate_water
-2077,Spain,Portitxol,39.07714,1.40578,Wall,https://www.padi.com/dive-site/spain/portitxol/,39.07772543092478,1.4035892486572266,200,minimum_nearest_shoreline_crossing
+2077,Spain,Portitxol,39.08000,1.40250,Wall,https://www.padi.com/dive-site/spain/portitxol/,39.07772543092478,1.4035892486572266,0.0,coastal_water_verified
 2121,Spain,La Bota,38.87593,1.19039,Wall,https://www.padi.com/dive-site/spain/la-bota/,38.87593316088266,1.190385818481445,0.0,PADI_coordinate_water
 2122,Spain,La Aguja De Bestorre,38.86503,1.18999,Cave; Wall,https://www.padi.com/dive-site/spain/la-aguja-de-bestorre/,38.8650323485478,1.1899888515472412,0.0,PADI_coordinate_water
 2123,Spain,Cañones De Vedranell,38.86831,1.20672,Wall; Channel,https://www.padi.com/dive-site/spain/canones-de-vedranell/,38.86830694445929,1.206715106964111,0.0,PADI_coordinate_water
@@ -2588,17 +2588,17 @@ ID,Country,Site_Name,Latitude,Longitude,Natural_Types,PADI_URL,PADI_Latitude,PAD
 2125,Spain,Escalón De Espartà,38.95668,1.19926,Wall,https://www.padi.com/dive-site/spain/escalon-de-esparta/,38.95668069244375,1.19925856590271,0.0,PADI_coordinate_water
 2126,Spain,Las Gorgonias,38.96902,1.16561,Wall,https://www.padi.com/dive-site/spain/las-gorgonias/,38.96901887678791,1.1656129360198972,0.0,PADI_coordinate_water
 2127,Spain,Abades Bay,28.14151,-16.44138,Beach; Reef,https://www.padi.com/dive-site/spain/abades-bay-2/,28.14284328774692,-16.44001007080078,200,minimum_nearest_shoreline_crossing
-2150,Spain,Sa Foradada,39.75458,2.62238,Reef,https://www.padi.com/dive-site/spain/sa-foradada/,39.75484472209397,2.620067596435547,200,minimum_nearest_shoreline_crossing
+2150,Spain,Sa Foradada,39.75650,2.61750,Reef,https://www.padi.com/dive-site/spain/sa-foradada/,39.75484472209397,2.620067596435547,0.0,coastal_water_verified
 2151,Spain,Sa Cova Des Pintor,39.78572,2.66667,Cave; Reef,https://www.padi.com/dive-site/spain/sa-cova-des-pintor/,39.78571905170522,2.6666736602783203,0.0,PADI_coordinate_water
-2152,Spain,Margarita,41.84464,3.14308,Beach,https://www.padi.com/dive-site/spain/margarita/,41.84776202305861,3.1408560276031494,393,minimum_nearest_shoreline_crossing
+2152,Spain,Margarita,41.84800,3.14100,Beach,https://www.padi.com/dive-site/spain/margarita/,41.84776202305861,3.1408560276031494,0.0,coastal_water_verified
 2155,Spain,Illes Formigues,41.86202,3.18913,Wall,https://www.padi.com/dive-site/spain/illes-formigues/,41.862018386633096,3.189125061035156,0.0,PADI_coordinate_water
 2236,Spain,Illa De Ses Àguiles,40.01458,4.21281,Cave; Reef,https://www.padi.com/dive-site/spain/illa-de-ses-aguiles/,40.01457528749469,4.212806224822998,0.0,PADI_coordinate_water
-2237,Spain,Coves De Addaia,40.01999,4.21319,Cave; Reef; Wall,https://www.padi.com/dive-site/spain/coves-de-addaia/,40.02012154428829,4.210853576660156,200,minimum_nearest_shoreline_crossing
+2237,Spain,Coves De Addaia,40.02150,4.20850,Cave; Reef; Wall,https://www.padi.com/dive-site/spain/coves-de-addaia/,40.02012154428829,4.210853576660156,0.0,coastal_water_verified
 2238,Spain,Pared De La Illa Petita,40.01838,4.21175,Cave; Reef,https://www.padi.com/dive-site/spain/pared-de-la-illa-petita/,40.01837965737674,4.21175479888916,0.0,PADI_coordinate_water
-2241,Spain,Punta Grossa,40.02163,4.20079,Reef; Wall,https://www.padi.com/dive-site/spain/punta-grossa/,40.02176479306557,4.198451042175293,200,minimum_nearest_shoreline_crossing
+2241,Spain,Punta Grossa,40.02350,4.19700,Reef; Wall,https://www.padi.com/dive-site/spain/punta-grossa/,40.02176479306557,4.198451042175293,0.0,coastal_water_verified
 2242,Spain,El Cormorán,40.03560,4.18781,Reef,https://www.padi.com/dive-site/spain/el-cormoran/,40.0355993782536,4.187808036804199,0.0,PADI_coordinate_water
-2243,Spain,La Cueva Grande,40.02977,4.19802,Cave,https://www.padi.com/dive-site/spain/la-cueva-grande/,40.02989829171239,4.195683002471924,200,minimum_nearest_shoreline_crossing
-2244,Spain,La Chimenea,40.03024,4.19781,Cave; Reef,https://www.padi.com/dive-site/spain/la-chimenea/,40.03036655453518,4.195468425750732,200,minimum_nearest_shoreline_crossing
+2243,Spain,La Cueva Grande,40.03150,4.19450,Cave,https://www.padi.com/dive-site/spain/la-cueva-grande/,40.02989829171239,4.195683002471924,0.0,coastal_water_verified
+2244,Spain,La Chimenea,40.03180,4.19450,Cave; Reef,https://www.padi.com/dive-site/spain/la-chimenea/,40.03036655453518,4.195468425750732,0.0,coastal_water_verified
 2333,Spain,La Catedral,37.27525,-1.71910,Cave; Wall,https://www.padi.com/dive-site/spain/la-catedral-3/,37.27524804321179,-1.7191028594970703,0.0,PADI_coordinate_water
 2334,Spain,La Losa Del Payo,37.28515,-1.71430,Reef; Wall,https://www.padi.com/dive-site/spain/la-losa-del-payo/,37.28515067423309,-1.7142963409423828,0.0,PADI_coordinate_water
 2335,Spain,El Ala De La Avioneta,36.99138,-1.88308,Reef; Wall,https://www.padi.com/dive-site/spain/el-ala-de-la-avioneta/,36.99137899432711,-1.883082389831543,0.0,PADI_coordinate_water
@@ -2626,16 +2626,16 @@ ID,Country,Site_Name,Latitude,Longitude,Natural_Types,PADI_URL,PADI_Latitude,PAD
 2980,Spain,Las Cabras,28.46057,-17.82372,Beach,https://www.padi.com/dive-site/spain/las-cabras/,28.46572977089449,-17.83104658126831,919,minimum_nearest_shoreline_crossing
 2981,Spain,La Bajtia,28.61170,-17.73958,Beach,https://www.padi.com/dive-site/spain/la-bajtia/,28.61485335699994,-17.754217386245728,1473,minimum_nearest_shoreline_crossing
 3023,Spain,Calimera,28.85881,-13.86204,Beach; Reef,https://www.padi.com/dive-site/spain/calimera/,28.860235137291365,-13.860797882080078,200,minimum_nearest_shoreline_crossing
-3057,Spain,Cova De La Sal,42.10552,3.18199,Cave,https://www.padi.com/dive-site/spain/cova-de-la-sal/,42.10497277661064,3.1796836853027344,200,minimum_nearest_shoreline_crossing
+3057,Spain,Cova De La Sal,42.10500,3.17950,Cave,https://www.padi.com/dive-site/spain/cova-de-la-sal/,42.10497277661064,3.1796836853027344,0.0,coastal_water_verified
 3058,Spain,Trencabraços,42.11144,3.17745,Cave; Cavern,https://www.padi.com/dive-site/spain/trencabracos/,42.11143589637176,3.177452087402344,0.0,PADI_coordinate_water
-3059,Spain,Port Del Rei,42.10724,3.17680,Reef,https://www.padi.com/dive-site/spain/port-del-rei/,42.10669209447197,3.1744909286499023,200,minimum_nearest_shoreline_crossing
+3059,Spain,Port Del Rei,42.10670,3.17450,Reef,https://www.padi.com/dive-site/spain/port-del-rei/,42.10669209447197,3.1744909286499023,0.0,coastal_water_verified
 3060,Spain,Cala Viuda,42.10500,3.18277,Cave; Cavern,https://www.padi.com/dive-site/spain/cala-viuda/,42.10500461625404,3.18277359008789,0.0,PADI_coordinate_water
 3061,Spain,Baix De Cols,42.10077,3.18689,Reef,https://www.padi.com/dive-site/spain/baix-de-cols/,42.10076980332238,3.1868934631347656,0.0,PADI_coordinate_water
 3062,Spain,Correc Llarg,42.09701,3.18998,Reef; Channel,https://www.padi.com/dive-site/spain/correc-llarg/,42.097012364077706,3.189983367919922,0.0,PADI_coordinate_water
 3064,Spain,Puig De La Sardina,42.07344,3.20809,Reef,https://www.padi.com/dive-site/spain/puig-de-la-sardina/,42.07344368607959,3.208093643188477,0.0,PADI_coordinate_water
 3065,Spain,Illa Ferriol,42.08587,3.19822,Reef,https://www.padi.com/dive-site/spain/illa-ferriol/,42.085866107624646,3.198223114013672,0.0,PADI_coordinate_water
-3067,Spain,La Xinxa,42.11409,3.17530,Reef,https://www.padi.com/dive-site/spain/la-xinxa/,42.113537064298185,3.172988891601562,200,minimum_nearest_shoreline_crossing
-3068,Spain,Punta Del Ferro,42.11635,3.17096,Cave; Reef; Cavern,https://www.padi.com/dive-site/spain/punta-del-ferro/,42.11579733384277,3.168654441833496,200,minimum_nearest_shoreline_crossing
+3067,Spain,La Xinxa,42.11350,3.17300,Reef,https://www.padi.com/dive-site/spain/la-xinxa/,42.113537064298185,3.172988891601562,0.0,coastal_water_verified
+3068,Spain,Punta Del Ferro,42.11580,3.16850,Cave; Reef; Cavern,https://www.padi.com/dive-site/spain/punta-del-ferro/,42.11579733384277,3.168654441833496,0.0,coastal_water_verified
 3070,Spain,El Gat,42.23627,3.26448,Reef,https://www.padi.com/dive-site/spain/el-gat/,42.23627059792278,3.264484405517578,0.0,PADI_coordinate_water
 3426,Spain,El Cabrón - Cueva Grande (The Big Cave),27.87275,-15.38239,Reef; Wall; Cavern; Ocean,https://www.padi.com/dive-site/spain/el-cabron-cueva-grande-the-big-cave/,27.87275,-15.382394,0.0,PADI_coordinate_water
 3429,Spain,Tobogán,40.09208,4.07778,Reef; Wall; Ocean,https://www.padi.com/dive-site/spain/tobogan/,40.092083,4.077784,0.0,PADI_coordinate_water
@@ -2662,7 +2662,7 @@ ID,Country,Site_Name,Latitude,Longitude,Natural_Types,PADI_URL,PADI_Latitude,PAD
 4466,Spain,Museo Atlantico,28.85362,-13.80930,Ocean,https://www.padi.com/dive-site/spain/museo-atlantico/,28.85362,-13.809299,0.0,PADI_coordinate_water
 4766,Spain,Punta Del Bisbe,39.80155,4.28203,Reef; Cavern,https://www.padi.com/dive-site/spain/punta-del-bisbe/,39.801547,4.282029,0.0,PADI_coordinate_water
 4768,Spain,Es Cargol,39.80953,4.25346,Reef,https://www.padi.com/dive-site/spain/es-cargol/,39.809525,4.253458,0.0,PADI_coordinate_water
-5587,Spain,The Arches Of Cala Olivera,38.92982,1.50345,Cave; Wall,https://www.padi.com/dive-site/spain/arcos-de-cala-olivera/,38.930446,1.501286,200,minimum_nearest_shoreline_crossing
+5587,Spain,The Arches Of Cala Olivera,38.93150,1.50450,Cave; Wall,https://www.padi.com/dive-site/spain/arcos-de-cala-olivera/,38.930446,1.501286,0.0,coastal_water_verified
 5588,Spain,Bajo Del Lladó North,38.91141,1.50328,Reef; Wall,https://www.padi.com/dive-site/spain/bajo-llado-norte/,38.911406,1.503282,0.0,PADI_coordinate_water
 5590,Spain,Bajo De Las Xelles,38.88554,1.43653,Reef; Wall,https://www.padi.com/dive-site/spain/bajo-xelles/,38.885538,1.436527,0.0,PADI_coordinate_water
 5761,Spain,2ª Ensenada Reserva Marina Del Cabo De San Antonio,38.80381,0.19715,Wall; Cavern,https://www.padi.com/dive-site/spain/2a-ensenada-reserva-marina-del-cabo-de-san-antonio/,38.804659,0.195125,200,minimum_nearest_shoreline_crossing
@@ -2717,7 +2717,7 @@ ID,Country,Site_Name,Latitude,Longitude,Natural_Types,PADI_URL,PADI_Latitude,PAD
 7184,Spain,Tunnel Vision,40.00013,3.79478,Cave; Drift; Reef; Wall; Cavern,https://www.padi.com/dive-site/spain/tunnel-vision/,40.00012825404302,3.79478394985199,0.0,PADI_coordinate_water
 7186,Spain,S'Olla,40.08566,4.09614,Wall; Ocean,https://www.padi.com/dive-site/spain/solla/,40.085656,4.096141,0.0,PADI_coordinate_water
 7188,Spain,Moon Pool / Pozo De La Luna,39.82681,4.20585,Cave,https://www.padi.com/dive-site/spain/moon-pool-pozo-de-la-luna/,39.82680972534197,4.205853939056397,0.0,PADI_coordinate_water
-7189,Spain,Pont d'En Gil,40.01132,3.79687,Cavern,https://www.padi.com/dive-site/spain/pont-den-gil/,40.01146096940992,3.7945318222045903,200,minimum_nearest_shoreline_crossing
+7189,Spain,Pont d'En Gil,40.01150,3.79300,Cavern,https://www.padi.com/dive-site/spain/pont-den-gil/,40.01146096940992,3.7945318222045903,0.0,coastal_water_verified
 7190,Spain,Punta d'En Siulet / Macaret Point,40.02222,4.20210,Reef; Wall,https://www.padi.com/dive-site/spain/punta-den-siulet-o-macaret-point/,40.02222489563135,4.202098846435547,0.0,PADI_coordinate_water
 7195,Spain,Submarine Rock / El Submarino,39.99746,3.80056,Drift; Reef; Wall,https://www.padi.com/dive-site/spain/submarine-rock-el-submarino/,39.99746121764687,3.800556063652039,0.0,PADI_coordinate_water
 7208,Spain,Malvin Sur,38.88408,1.43466,Reef; Wall,https://www.padi.com/dive-site/spain/malvin-sur/,38.884085,1.43466,0.0,PADI_coordinate_water
@@ -2727,11 +2727,11 @@ ID,Country,Site_Name,Latitude,Longitude,Natural_Types,PADI_URL,PADI_Latitude,PAD
 7212,Spain,Esponja,38.87513,1.42608,Pinnacle; Wall,https://www.padi.com/dive-site/spain/esponja-3/,38.87513131900919,1.4260768890380862,0.0,PADI_coordinate_water
 7239,Spain,Cala De Los Frailes,43.39218,-1.78996,Reef; Wall,https://www.padi.com/dive-site/spain/cala-de-los-frailes/,43.39218494831445,-1.7899560928344729,0.0,PADI_coordinate_water
 7288,Spain,Acuario I,36.99365,-1.88585,Reef; Sandy bottom; Wall; Channel,https://www.padi.com/dive-site/spain/acuario-i-2/,36.9936455670859,-1.8858450651168823,0.0,PADI_coordinate_water
-7348,Spain,Lightning Corner / Es Racó Des Llamp / Las Cuatro Cuevas,40.06748,4.14689,Cave; Cavern,https://www.padi.com/dive-site/spain/lightning-corner-es-raco-des-llamp-las-cuatro-cuevas/,40.06759547761235,4.144549369812013,200,minimum_nearest_shoreline_crossing
-7349,Spain,Cueva De Los Ingleses / English Cave,40.06725,4.15152,Wall; Cavern,https://www.padi.com/dive-site/spain/cueva-de-los-ingleses-english-cave/,40.06736557976783,4.149184226989747,200,minimum_nearest_shoreline_crossing
+7348,Spain,Lightning Corner / Es Racó Des Llamp / Las Cuatro Cuevas,40.06950,4.14350,Cave; Cavern,https://www.padi.com/dive-site/spain/lightning-corner-es-raco-des-llamp-las-cuatro-cuevas/,40.06759547761235,4.144549369812013,0.0,coastal_water_verified
+7349,Spain,Cueva De Los Ingleses / English Cave,40.06900,4.14850,Wall; Cavern,https://www.padi.com/dive-site/spain/cueva-de-los-ingleses-english-cave/,40.06736557976783,4.149184226989747,0.0,coastal_water_verified
 7352,Spain,La Llosa Del Patró Pere,40.08510,4.09996,Drift; Pinnacle; Channel,https://www.padi.com/dive-site/spain/la-llosa-del-patro-pere/,40.08509827752617,4.099960327148438,0.0,PADI_coordinate_water
 7355,Spain,Fossil Cave / Els Fossils,39.82644,4.20608,Cave; Reef,https://www.padi.com/dive-site/spain/fossil-cave-els-fossils/,39.82644306333922,4.206079244613648,0.0,PADI_coordinate_water
-7413,Spain,El Queso Suizo / Swiss Cheese,40.02473,4.19683,Pinnacle; Reef; Wall; Cavern,https://www.padi.com/dive-site/spain/el-queso-suizo/,40.024862,4.194492,200,minimum_nearest_shoreline_crossing
+7413,Spain,El Queso Suizo / Swiss Cheese,40.02600,4.19350,Pinnacle; Reef; Wall; Cavern,https://www.padi.com/dive-site/spain/el-queso-suizo/,40.024862,4.194492,0.0,coastal_water_verified
 7475,Spain,Marina Del Este Nerja,36.72200,-3.72803,Beach; Reef; Sandy bottom; Wall; Ocean,https://www.padi.com/dive-site/spain/marina-del-este-nerja/,36.72379968251003,-3.728041649737862,200,minimum_nearest_shoreline_crossing
 8539,Spain,Las Piscinas,36.00152,-5.60756,Reef,https://www.padi.com/dive-site/spain/las-piscinas/,36.00321535144332,-5.606846809387208,200,minimum_nearest_shoreline_crossing
 8540,Spain,La Garita I,36.00322,-5.60713,Reef,https://www.padi.com/dive-site/spain/la-garita-i/,36.00491650662338,-5.606417655944824,200,minimum_nearest_shoreline_crossing
@@ -2740,10 +2740,10 @@ ID,Country,Site_Name,Latitude,Longitude,Natural_Types,PADI_URL,PADI_Latitude,PAD
 8809,Spain,El Balito / Marazur,28.13884,-16.79175,Cave; Wall; Cavern; Ocean,https://www.padi.com/dive-site/spain/el-balito-marazur/,28.1388414582274,-16.791754961013797,0.0,PADI_coordinate_water
 8854,Spain,Marbella,41.39615,2.21706,Beach; Sea Loch,https://www.padi.com/dive-site/spain/marbella/,41.39963631481146,2.2133159637451176,498,minimum_nearest_shoreline_crossing
 8868,Spain,Isla De Cabrera,39.14354,2.94598,Reef; Sandy bottom; Wall; Ocean,https://www.padi.com/dive-site/spain/isla-de-cabrera-2/,39.14354290120668,2.9459753015544266,0.0,PADI_coordinate_water
-9358,Spain,San Martin Norte,38.76376,0.22582,Drift,https://www.padi.com/dive-site/spain/san-martin-norte/,38.76462463270797,0.2238035202026367,200,minimum_nearest_shoreline_crossing
-9487,Spain,Palmanova Bay,39.51343,2.54412,Beach,https://www.padi.com/dive-site/spain/palmanova-bay/,39.51377513087695,2.5418329238891606,200,minimum_nearest_shoreline_crossing
+9358,Spain,San Martin Norte,38.76500,0.22350,Drift,https://www.padi.com/dive-site/spain/san-martin-norte/,38.76462463270797,0.2238035202026367,0.0,coastal_water_verified
+9487,Spain,Palmanova Bay,39.51650,2.54100,Beach,https://www.padi.com/dive-site/spain/palmanova-bay/,39.51377513087695,2.5418329238891606,0.0,coastal_water_verified
 9845,Spain,The Cannyon,29.10298,-13.45203,Wall,https://www.padi.com/dive-site/spain/the-cannyon/,29.10297678210169,-13.452029228210453,0.0,PADI_coordinate_water
-10242,Spain,Cala Montjo,39.52754,2.43302,Cave; Reef,https://www.padi.com/dive-site/spain/cala-montjo/,39.52789424530593,2.43072509765625,200,minimum_nearest_shoreline_crossing
+10242,Spain,Cala Montjo,39.52450,2.43350,Cave; Reef,https://www.padi.com/dive-site/spain/cala-montjo/,39.52789424530593,2.43072509765625,0.0,coastal_water_verified
 10424,Spain,El Bajon,27.63306,-17.98889,Pinnacle; Reef; Wall; Ocean,https://www.padi.com/dive-site/spain/el-bajon-5/,27.63305555555556,-17.98888888888889,0.0,PADI_coordinate_water
 10459,Spain,Veril Grande Jandia,28.04204,-14.33146,Reef; Sandy bottom; Wall,https://www.padi.com/dive-site/spain/veril-grande-jandia/,28.042043,-14.331461,0.0,PADI_coordinate_water
 10460,Spain,Pared Del Muelle,28.04733,-14.36136,Sandy bottom; Wall,https://www.padi.com/dive-site/spain/pared-del-muelle/,28.047326,-14.361362,0.0,PADI_coordinate_water
@@ -2770,11 +2770,11 @@ ID,Country,Site_Name,Latitude,Longitude,Natural_Types,PADI_URL,PADI_Latitude,PAD
 11689,Spain,El Gaudi,39.99547,3.81904,Cave; Drift; Wall,https://www.padi.com/dive-site/spain/el-gaudi/,39.99546806388788,3.819036483764649,0.0,PADI_coordinate_water
 11690,Spain,Cales Piques,40.00155,3.79548,Wall,https://www.padi.com/dive-site/spain/cales-piques/,40.00155008295607,3.795475959777833,0.0,PADI_coordinate_water
 11691,Spain,Cala'n Forcat,39.99777,3.80186,Cave; Wall,https://www.padi.com/dive-site/spain/calan-forcat/,39.99776943210689,3.801859617233277,0.0,PADI_coordinate_water
-11694,Spain,Sa Cigonya,40.01130,3.79668,Sandy bottom; Wall,https://www.padi.com/dive-site/spain/sa-cigonya/,40.01144453463675,3.794338703155518,200,minimum_nearest_shoreline_crossing
-11695,Spain,Cala Blanca,39.96623,3.83539,Sandy bottom; Wall,https://www.padi.com/dive-site/spain/cala-blanca/,39.96638195175554,3.833048343658448,200,minimum_nearest_shoreline_crossing
+11694,Spain,Sa Cigonya,40.01150,3.79350,Sandy bottom; Wall,https://www.padi.com/dive-site/spain/sa-cigonya/,40.01144453463675,3.794338703155518,0.0,coastal_water_verified
+11695,Spain,Cala Blanca,39.96650,3.83150,Sandy bottom; Wall,https://www.padi.com/dive-site/spain/cala-blanca/,39.96638195175554,3.833048343658448,0.0,coastal_water_verified
 11696,Spain,Es Clot De Barcelona,39.99889,3.80832,Wall,https://www.padi.com/dive-site/spain/es-clot-de-barcelona/,39.99888721154424,3.808318376541138,0.0,PADI_coordinate_water
 11697,Spain,Cala Borp,39.99772,3.80434,Wall,https://www.padi.com/dive-site/spain/cala-borp/,39.99772011788677,3.8043379783630376,0.0,PADI_coordinate_water
-11705,Spain,Canyons,39.97191,3.83035,Cave,https://www.padi.com/dive-site/spain/canyons-2/,39.972055455377685,3.828005790710449,200,minimum_nearest_shoreline_crossing
+11705,Spain,Canyons,39.97200,3.82650,Cave,https://www.padi.com/dive-site/spain/canyons-2/,39.972055455377685,3.828005790710449,0.0,coastal_water_verified
 11724,Spain,Piedra De En Medio,36.71586,-3.72559,Beach,https://www.padi.com/dive-site/spain/piedra-de-en-medio/,36.72141147573209,-3.727841377258301,650,minimum_nearest_shoreline_crossing
 11725,Spain,Sa Ferradura,39.54539,3.35225,Wall,https://www.padi.com/dive-site/spain/sa-ferradura/,39.54538604734229,3.352246284484864,0.0,PADI_coordinate_water
 11830,Spain,Carai Bernat,42.04141,3.22980,Ocean,https://www.padi.com/dive-site/spain/carai-bernat/,42.04140938618109,3.229795665706069,0.0,PADI_coordinate_water
@@ -2798,26 +2798,26 @@ ID,Country,Site_Name,Latitude,Longitude,Natural_Types,PADI_URL,PADI_Latitude,PAD
 14001,Spain,Nido Del Águila,38.63212,0.07770,Wall,https://www.padi.com/dive-site/spain/nido-del-aguila/,38.632121408306,0.0777035951614379,0.0,PADI_coordinate_water
 14376,Spain,Tres Piedras,38.63237,0.07219,Sandy bottom,https://www.padi.com/dive-site/spain/tres-piedras/,38.63237283940014,0.0721943378448486,0.0,PADI_coordinate_water
 14377,Spain,Final Del Paseo,38.63232,0.07546,Sandy bottom; Wall,https://www.padi.com/dive-site/spain/final-del-paseo/,38.632322553251846,0.075455904006958,0.0,PADI_coordinate_water
-14378,Spain,La Higuera,38.63465,0.08213,Sandy bottom; Wall,https://www.padi.com/dive-site/spain/la-higuera/,38.63558688919975,0.0801658630371093,200,minimum_nearest_shoreline_crossing
+14378,Spain,La Higuera,38.63600,0.08000,Sandy bottom; Wall,https://www.padi.com/dive-site/spain/la-higuera/,38.63558688919975,0.0801658630371093,0.0,coastal_water_verified
 14379,Spain,Roca Plana,38.63213,0.07376,Sandy bottom,https://www.padi.com/dive-site/spain/roca-plana/,38.63212559883144,0.0737553834915161,0.0,PADI_coordinate_water
 14380,Spain,Roca Langosta,38.63034,0.08256,Muck; Sandy bottom; Wall,https://www.padi.com/dive-site/spain/roca-langosta/,38.63034041281097,0.0825637578964233,0.0,PADI_coordinate_water
-14617,Spain,Palma Cavern,39.54714,2.62253,Cave,https://www.padi.com/dive-site/spain/palma-cavern/,39.547470868779406,2.6202392578125,200,minimum_nearest_shoreline_crossing
-14639,Spain,Punta Cala Figuera,39.45650,2.52433,Drift; Wall,https://www.padi.com/dive-site/spain/punta-cala-figuera/,39.45687235512798,2.5220489501953125,200,minimum_nearest_shoreline_crossing
-14877,Spain,Punta Marc,39.46161,2.50660,Reef; Wall,https://www.padi.com/dive-site/spain/punta-marc/,39.46197496928061,2.504324913024903,200,minimum_nearest_shoreline_crossing
+14617,Spain,Palma Cavern,39.54450,2.62550,Cave,https://www.padi.com/dive-site/spain/palma-cavern/,39.547470868779406,2.6202392578125,0.0,coastal_water_verified
+14639,Spain,Punta Cala Figuera,39.45400,2.52400,Drift; Wall,https://www.padi.com/dive-site/spain/punta-cala-figuera/,39.45687235512798,2.5220489501953125,0.0,coastal_water_verified
+14877,Spain,Punta Marc,39.46150,2.50250,Reef; Wall,https://www.padi.com/dive-site/spain/punta-marc/,39.46197496928061,2.504324913024903,0.0,coastal_water_verified
 14886,Spain,Ullastres III,41.88643,3.20389,Pinnacle; Reef; Wall,https://www.padi.com/dive-site/spain/ullastres/,41.886432216946986,3.203887939453125,0.0,PADI_coordinate_water
-14890,Spain,Santa Anna,41.72055,2.94332,Pinnacle,https://www.padi.com/dive-site/spain/santa-anna/,41.72011258750629,2.9409885406494145,200,minimum_nearest_shoreline_crossing
-15242,Spain,Port Pelegri,41.87741,3.18971,Beach,https://www.padi.com/dive-site/spain/port-pelegri/,41.88722295406421,3.1828057765960693,1234,minimum_nearest_shoreline_crossing
+14890,Spain,Santa Anna,41.72050,2.94100,Pinnacle,https://www.padi.com/dive-site/spain/santa-anna/,41.72011258750629,2.9409885406494145,0.0,coastal_water_verified
+15242,Spain,Port Pelegri,41.88750,3.18300,Beach,https://www.padi.com/dive-site/spain/port-pelegri/,41.88722295406421,3.1828057765960693,0.0,coastal_water_verified
 15678,Spain,Montaña Amarilla,28.00823,-16.63952,Reef; Sandy bottom; Ocean,https://www.padi.com/dive-site/spain/montana-amarilla-2/,28.00955793247135,-16.638148705656118,200,minimum_nearest_shoreline_crossing
-16208,Spain,Cala De La Escalerica,37.63062,-0.68846,Beach; Reef,https://www.padi.com/dive-site/spain/cala-de-la-escalerica/,37.63199161761261,-0.6899285316467285,200,minimum_nearest_shoreline_crossing
-16209,Spain,Cala Fria,37.63304,-0.68718,Beach,https://www.padi.com/dive-site/spain/cala-fria/,37.63440463818762,-0.6886625289916991,200,minimum_nearest_shoreline_crossing
+16208,Spain,Cala De La Escalerica,37.63220,-0.69020,Beach; Reef,https://www.padi.com/dive-site/spain/cala-de-la-escalerica/,37.63199161761261,-0.6899285316467285,0.0,coastal_water_verified
+16209,Spain,Cala Fria,37.63460,-0.68900,Beach,https://www.padi.com/dive-site/spain/cala-fria/,37.63440463818762,-0.6886625289916991,0.0,coastal_water_verified
 16560,Spain,La Cama De Los Novios,37.37725,-1.62327,Drift; Pinnacle; Sandy bottom; Wall,https://www.padi.com/dive-site/spain/la-cama-de-los-novios/,37.37725092757962,-1.6232728958129885,0.0,PADI_coordinate_water
 16561,Spain,El Castillo,37.39911,-1.58350,Sandy bottom; Wall,https://www.padi.com/dive-site/spain/el-castillo/,37.40067597647892,-1.584606170654297,200,minimum_nearest_shoreline_crossing
 16562,Spain,La Fuente,37.43343,-1.47579,Drift; Wall,https://www.padi.com/dive-site/spain/la-fuente/,37.43343130826439,-1.4757869058644604,0.0,PADI_coordinate_water
 16566,Spain,Embarcadero Del Hornillo,37.40697,-1.55843,Sandy bottom; Wall,https://www.padi.com/dive-site/spain/embarcadero-del-hornillo/,37.40852957145084,-1.5595543384552004,200,minimum_nearest_shoreline_crossing
 16568,Spain,Isla Del Fraile,37.40761,-1.54652,Drift; Wall,https://www.padi.com/dive-site/spain/isla-del-fraile/,37.40761343214035,-1.5465188026428225,0.0,PADI_coordinate_water
 16594,Spain,Calarreona,37.38008,-1.61918,Pinnacle; Sandy bottom; Wall,https://www.padi.com/dive-site/spain/calarreona/,37.38165007569084,-1.6202688217163088,200,minimum_nearest_shoreline_crossing
-17513,Spain,Hide And Seek,39.63229,3.43253,Beach; Wall,https://www.padi.com/dive-site/spain/hide-and-seek/,39.63255583122405,3.4302234649658208,200,minimum_nearest_shoreline_crossing
-17633,Spain,Ad Jatia,40.07443,4.09535,Cavern; Ocean,https://www.padi.com/dive-site/spain/ad-jatia/,40.07454541578219,4.093008112863857,200,minimum_nearest_shoreline_crossing
+17513,Spain,Hide And Seek,39.63100,3.43550,Beach; Wall,https://www.padi.com/dive-site/spain/hide-and-seek/,39.63255583122405,3.4302234649658208,0.0,coastal_water_verified
+17633,Spain,Ad Jatia,40.07600,4.09200,Cavern; Ocean,https://www.padi.com/dive-site/spain/ad-jatia/,40.07454541578219,4.093008112863857,0.0,coastal_water_verified
 18284,Spain,Batea Cabezos,42.29463,-8.83483,Sandy bottom; Wall,https://www.padi.com/dive-site/spain/batea-cabezos/,42.29462763289015,-8.834831927332743,0.0,PADI_coordinate_water
 19010,Spain,La Nao,38.16257,-0.46533,Cave; Reef,https://www.padi.com/dive-site/spain/la-nao/,38.16256835531742,-0.4653310775756836,0.0,PADI_coordinate_water
 19011,Spain,La Llosa (Merolandia),38.15906,-0.45447,Pinnacle,https://www.padi.com/dive-site/spain/la-llosa-merolandia/,38.15905903525341,-0.4544734954833984,0.0,PADI_coordinate_water
@@ -2827,9 +2827,9 @@ ID,Country,Site_Name,Latitude,Longitude,Natural_Types,PADI_URL,PADI_Latitude,PAD
 19015,Spain,La Llosa - Isla Benidorm,38.50081,-0.13132,Pinnacle; Wall; Cavern,https://www.padi.com/dive-site/spain/la-llosa-isla-benidorm/,38.50080862521001,-0.1313209533691406,0.0,PADI_coordinate_water
 19367,Spain,Punta De L'Avançada,39.90088,3.10862,Sandy bottom,https://www.padi.com/dive-site/spain/punta-de-lavancada/,39.90088059154865,3.108615875244141,0.0,PADI_coordinate_water
 19368,Spain,Isla Formentor,39.92198,3.14960,Wall; Cavern,https://www.padi.com/dive-site/spain/isla-formentor/,39.92198081387805,3.1496000289917,0.0,PADI_coordinate_water
-19369,Spain,Es Castellet - The Pinnacle,39.93816,3.18669,Wall; Cavern,https://www.padi.com/dive-site/spain/es-castellet-the-pinnacle/,39.93833641884113,3.184361457824707,200,minimum_nearest_shoreline_crossing
-19370,Spain,Gorgonias Garden / El Eden De Gorgonias,39.96156,3.17845,Wall,https://www.padi.com/dive-site/spain/gorgonias-garden-el-eden-de-gorgonias/,39.96172768273857,3.176121711730957,200,minimum_nearest_shoreline_crossing
-19372,Spain,Cala Molins - Cala Carbó,39.92480,3.06225,Beach,https://www.padi.com/dive-site/spain/cala-molins-cala-carbo/,39.920269337633975,3.057718276977539,635,minimum_nearest_shoreline_crossing
+19369,Spain,Es Castellet - The Pinnacle,39.93950,3.18400,Wall; Cavern,https://www.padi.com/dive-site/spain/es-castellet-the-pinnacle/,39.93833641884113,3.184361457824707,0.0,coastal_water_verified
+19370,Spain,Gorgonias Garden / El Eden De Gorgonias,39.96350,3.17600,Wall,https://www.padi.com/dive-site/spain/gorgonias-garden-el-eden-de-gorgonias/,39.96172768273857,3.176121711730957,0.0,coastal_water_verified
+19372,Spain,Cala Molins - Cala Carbó,39.92150,3.05650,Beach,https://www.padi.com/dive-site/spain/cala-molins-cala-carbo/,39.920269337633975,3.057718276977539,0.0,coastal_water_verified
 19373,Spain,Geronimo Cave,39.94975,3.20599,Wall; Cavern,https://www.padi.com/dive-site/spain/geronimo-cave/,39.94975340768179,3.205990791320801,0.0,PADI_coordinate_water
 19374,Spain,Swiss Cheese,39.89331,3.19252,Cavern,https://www.padi.com/dive-site/spain/swiss-cheese/,39.89330794446193,3.192515373229981,0.0,PADI_coordinate_water
 19385,Spain,Cantarijan,36.73364,-3.77605,Ocean,https://www.padi.com/dive-site/spain/cantarijan/,36.7354449409363,-3.776035308837891,200,minimum_nearest_shoreline_crossing
@@ -2838,19 +2838,19 @@ ID,Country,Site_Name,Latitude,Longitude,Natural_Types,PADI_URL,PADI_Latitude,PAD
 20056,Spain,La Ola,36.81203,-2.04918,Beach,https://www.padi.com/dive-site/spain/la-ola/,36.81370835938332,-2.0499587791275857,200,minimum_nearest_shoreline_crossing
 20157,Spain,Cabo San Antonio,38.79992,0.19735,Pinnacle; Wall,https://www.padi.com/dive-site/spain/cabo-san-antonio/,38.79991847063498,0.1973461721235381,0.0,PADI_coordinate_water
 20158,Spain,La Cullera,38.80889,0.18850,Cave; Sandy bottom,https://www.padi.com/dive-site/spain/la-cullera/,38.80974243699282,0.186467170715332,200,minimum_nearest_shoreline_crossing
-20164,Spain,Negre Del Falaguer,42.06716,3.21315,Wall,https://www.padi.com/dive-site/spain/negre-del-falaguer/,42.06662624711202,3.2108402252197266,200,minimum_nearest_shoreline_crossing
-20174,Spain,San Martin Norte (La Virgen,38.76371,0.22642,Wall; Cavern,https://www.padi.com/dive-site/spain/san-martin-norte-la-virgen/,38.7645660739152,0.2244043350219726,200,minimum_nearest_shoreline_crossing
-20175,Spain,San Martin Sur,38.76284,0.22613,Wall; Cavern,https://www.padi.com/dive-site/spain/san-martin-sur/,38.763704417551,0.2241146686526018,200,minimum_nearest_shoreline_crossing
-20176,Spain,Piedras Rotas,38.76071,0.22585,Wall,https://www.padi.com/dive-site/spain/piedras-rotas/,38.7615795117574,0.2238252603159063,200,minimum_nearest_shoreline_crossing
+20164,Spain,Negre Del Falaguer,42.06660,3.21050,Wall,https://www.padi.com/dive-site/spain/negre-del-falaguer/,42.06662624711202,3.2108402252197266,0.0,coastal_water_verified
+20174,Spain,San Martin Norte (La Virgen,38.76500,0.22400,Wall; Cavern,https://www.padi.com/dive-site/spain/san-martin-norte-la-virgen/,38.7645660739152,0.2244043350219726,0.0,coastal_water_verified
+20175,Spain,San Martin Sur,38.76400,0.22380,Wall; Cavern,https://www.padi.com/dive-site/spain/san-martin-sur/,38.763704417551,0.2241146686526018,0.0,coastal_water_verified
+20176,Spain,Piedras Rotas,38.76200,0.22350,Wall,https://www.padi.com/dive-site/spain/piedras-rotas/,38.7615795117574,0.2238252603159063,0.0,coastal_water_verified
 20177,Spain,Portichol Norte,38.75746,0.22977,Drift; Pinnacle; Wall,https://www.padi.com/dive-site/spain/portichol-norte/,38.75746337251516,0.2297688227903327,0.0,PADI_coordinate_water
-20178,Spain,Termas,38.75261,0.23151,Pinnacle; Wall; Cavern,https://www.padi.com/dive-site/spain/termas/,38.75348086551005,0.2294899183828436,200,minimum_nearest_shoreline_crossing
+20178,Spain,Termas,38.75400,0.22900,Pinnacle; Wall; Cavern,https://www.padi.com/dive-site/spain/termas/,38.75348086551005,0.2294899183828436,0.0,coastal_water_verified
 20179,Spain,Piscinas De Neptuno,38.75398,0.23060,Wall; Cavern,https://www.padi.com/dive-site/spain/piscinas-de-neptuno/,38.75398287443092,0.2305951977126641,0.0,PADI_coordinate_water
 20180,Spain,Mª Claudia,38.75238,0.23166,Wall,https://www.padi.com/dive-site/spain/ma-claudia/,38.75237643345646,0.2316572722831945,0.0,PADI_coordinate_water
-20181,Spain,Pared Negra,38.74483,0.23136,Wall; Cavern,https://www.padi.com/dive-site/spain/pared-negra/,38.745699275769866,0.229339641452504,200,minimum_nearest_shoreline_crossing
+20181,Spain,Pared Negra,38.74600,0.22900,Wall; Cavern,https://www.padi.com/dive-site/spain/pared-negra/,38.745699275769866,0.229339641452504,0.0,coastal_water_verified
 20182,Spain,Cabo Negro,38.74615,0.23312,Pinnacle; Wall,https://www.padi.com/dive-site/spain/cabo-negro/,38.74615113320797,0.2331161708239282,0.0,PADI_coordinate_water
 20183,Spain,El Skull,38.74279,0.23397,Pinnacle; Wall; Cavern,https://www.padi.com/dive-site/spain/el-skull/,38.74278723701823,0.2339745265256843,0.0,PADI_coordinate_water
-20184,Spain,Cueva De Las Gambas,38.74063,0.23399,Wall; Cavern,https://www.padi.com/dive-site/spain/cueva-de-las-gambas/,38.741498538285526,0.2319791338780508,200,minimum_nearest_shoreline_crossing
-20185,Spain,Montaña Hundida,38.73920,0.23598,Pinnacle; Wall; Cavern,https://www.padi.com/dive-site/spain/montana-hundida/,38.74006755335252,0.2339745683688132,200,minimum_nearest_shoreline_crossing
+20184,Spain,Cueva De Las Gambas,38.74200,0.23150,Wall; Cavern,https://www.padi.com/dive-site/spain/cueva-de-las-gambas/,38.741498538285526,0.2319791338780508,0.0,coastal_water_verified
+20185,Spain,Montaña Hundida,38.74050,0.23350,Pinnacle; Wall; Cavern,https://www.padi.com/dive-site/spain/montana-hundida/,38.74006755335252,0.2339745683688132,0.0,coastal_water_verified
 20186,Spain,Isla Del Descubridor,38.72727,0.21689,Wall,https://www.padi.com/dive-site/spain/isla-del-descubridor/,38.72727109785982,0.2168943868913642,0.0,PADI_coordinate_water
 20187,Spain,Cueva De Cabo La Nao,38.73308,0.23095,Cave; Wall,https://www.padi.com/dive-site/spain/cueva-de-cabo-la-nao/,38.733079583487054,0.2309490749562126,0.0,PADI_coordinate_water
 21537,Spain,Plaza De Toros,43.47444,-3.75518,Drift; Sandy bottom; Channel; Ocean,https://www.padi.com/dive-site/spain/plaza-de-toros/,43.47444244476098,-3.7551784515380864,0.0,PADI_coordinate_water
@@ -2865,7 +2865,7 @@ ID,Country,Site_Name,Latitude,Longitude,Natural_Types,PADI_URL,PADI_Latitude,PAD
 22498,Spain,Radazul (Puerto),28.39951,-16.32243,Beach; Sandy bottom; Cavern,https://www.padi.com/dive-site/spain/radazul-puerto/,28.40083388490751,-16.321049892198864,200,minimum_nearest_shoreline_crossing
 22503,Spain,Mogan West,27.82219,-15.77375,Drift; Sandy bottom; Wall,https://www.padi.com/dive-site/spain/mogan-west/,27.82218772588542,-15.773749351501468,0.0,PADI_coordinate_water
 22511,Spain,Cala Del Faro,37.55925,-1.25523,Wall,https://www.padi.com/dive-site/spain/cala-del-aljibe/,37.55924563650599,-1.2552255392074587,0.0,PADI_coordinate_water
-22532,Spain,Racó,38.63385,0.07275,Beach; Sandy bottom,https://www.padi.com/dive-site/spain/raco/,38.63479491377599,0.0707888603210449,200,minimum_nearest_shoreline_crossing
+22532,Spain,Racó,38.63500,0.07050,Beach; Sandy bottom,https://www.padi.com/dive-site/spain/raco/,38.63479491377599,0.0707888603210449,0.0,coastal_water_verified
 22857,Spain,Farallon Norte,37.73237,-0.69858,Wall,https://www.padi.com/dive-site/spain/farallon-norte/,37.73237157147889,-0.6985752496129606,0.0,PADI_coordinate_water
 22858,Spain,Farallon Sur,37.73186,-0.69767,Wall,https://www.padi.com/dive-site/spain/farallon-sur/,37.73186245776889,-0.6976747930450712,0.0,PADI_coordinate_water
 22859,Spain,Cueva De Zeus,37.72633,-0.70613,Cave; Cavern,https://www.padi.com/dive-site/spain/cueva-de-zeus/,37.72632986309606,-0.706129456927247,0.0,PADI_coordinate_water

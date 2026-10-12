@@ -23,6 +23,134 @@
 }
 
 @layer base {
+  :root {
+    --toolbar-bottom: 64px;
+    --screen-scale: 1;
+  }
+  @media (min-width: 1024px) {
+    :root {
+      --toolbar-bottom: 68px;
+    }
+  }
+
+  /* ==========================================================================
+     AUTOMATIC PROPORTIONAL SCALING FOR LAPTOPS & 13-INCH SCREENS
+     Scales down typography, cards, paddings, gaps, and containers proportionately
+     so all content fits comfortably without horizontal or vertical clipping.
+     ========================================================================== */
+
+  /* 1. Standard 13-inch to 14-inch Laptops (1281px - 1439px, e.g. 1366x768, 1440x900) */
+  @media screen and (min-width: 1281px) and (max-width: 1439px) {
+    html {
+      font-size: 14.6px;
+      --screen-scale: 0.9125;
+    }
+  }
+
+  /* 2. Compact 13-inch Laptops / High-DPI Scaling (1024px - 1280px, e.g. 1280x800, 1920x1200 at 150%) */
+  @media screen and (min-width: 1024px) and (max-width: 1280px) {
+    html {
+      font-size: 14px;
+      --screen-scale: 0.875;
+    }
+  }
+
+  /* 3. Gentle Vertical Height Compensation for 13-inch Laptops (viewport height <= 850px) */
+  @media screen and (min-width: 1024px) and (max-width: 1439px) and (max-height: 850px) {
+    html {
+      font-size: clamp(13.4px, calc(0.75rem + 0.28vw), 14.6px);
+    }
+  }
+
+  /* ==========================================================================
+     PRODUCT DETAIL MEDIA PANEL (Images, Video, 3D Model Viewer)
+     Carefully calibrated for laptop screens below 15-inch / user screen size
+     so that the media view box and the thumbnail selector row beneath it
+     remain fully visible in the initial viewport without requiring scroll.
+     ========================================================================== */
+  .product-media-panel {
+    height: 350px;
+  }
+
+  @media screen and (min-width: 480px) {
+    .product-media-panel {
+      height: 390px;
+    }
+  }
+
+  @media screen and (min-width: 640px) {
+    .product-media-panel {
+      height: 430px;
+    }
+  }
+
+  /* 13-inch and 14-inch laptop screens (1024px - 1439px wide) */
+  @media screen and (min-width: 1024px) and (max-width: 1439px) {
+    .product-media-panel {
+      height: 335px;
+    }
+  }
+
+  /* Compact laptop heights (e.g. 1366x768 with browser chrome -> height <= 800px) */
+  @media screen and (min-width: 1024px) and (max-width: 1439px) and (max-height: 800px) {
+    .product-media-panel {
+      height: 315px;
+    }
+  }
+
+  /* Short / windowed laptop viewports (height <= 720px, e.g. 1354x640) */
+  @media screen and (min-width: 1024px) and (max-width: 1439px) and (max-height: 720px) {
+    .product-media-panel {
+      height: 290px;
+    }
+  }
+
+  /* Ultra-compact heights (height <= 650px) */
+  @media screen and (min-width: 1024px) and (max-width: 1439px) and (max-height: 650px) {
+    .product-media-panel {
+      height: 280px;
+    }
+  }
+
+  /* ==========================================================================
+     BIGGER SCREEN VIEW ONLY (ISOLATED) - Big monitors & Desktop displays (>= 1440px)
+     Restores the spacious view box and larger thumbnails the user had before.
+     ========================================================================== */
+  @media screen and (min-width: 1440px) {
+    .product-media-panel {
+      height: 460px;
+    }
+    .product-thumb-btn {
+      width: 4.5rem !important; /* 72px (w-18) */
+      height: 5.5rem !important; /* 88px (h-22) */
+    }
+  }
+
+  /* When viewport height has ample room (>= 820px), expand view box to full 500px */
+  @media screen and (min-width: 1440px) and (min-height: 820px) {
+    .product-media-panel {
+      height: 500px;
+    }
+  }
+
+  /* Full 2XL displays & Desktop displays (>= 1536px) with standard height */
+  @media screen and (min-width: 1536px) and (min-height: 850px) {
+    .product-media-panel {
+      height: 520px;
+    }
+  }
+
+  /* Ultra-wide / 1080p tall displays (min-width: 1536px with tall viewport >= 920px) */
+  @media screen and (min-width: 1536px) and (min-height: 920px) {
+    .product-media-panel {
+      height: 560px;
+    }
+    .product-thumb-btn {
+      width: 5rem !important; /* 80px (w-20) */
+      height: 6rem !important; /* 96px (h-24) */
+    }
+  }
+
   html {
     scroll-behavior: smooth;
     background-color: #001e3d !important;
@@ -31,6 +159,7 @@
     overflow-x: hidden;
     overflow-y: scroll;
     scrollbar-gutter: stable;
+    transition: font-size 0.2s ease-out;
   }
   
   *, *::before, *::after {
@@ -486,30 +615,28 @@
 }
 
 /* --- NIGHT DIVE MODE (DARK THEME OVERRIDES) --- */
+body.night-dive,
 .night-dive {
-  color: #f8fafc !important;
+  background-color: #003865 !important;
+  color: #ffffff !important;
 }
 
-.night-dive body {
-  background-color: transparent !important;
-  color: #f8fafc !important;
-}
-
+body.night-dive #root,
 .night-dive #root {
-  background-color: transparent !important;
-  color: #f8fafc !important;
+  background-color: #003865 !important;
+  color: #ffffff !important;
 }
 
 .night-dive .glass-premium {
-  background-color: rgba(8, 20, 36, 0.85) !important;
-  color: #f8fafc !important;
+  background-color: rgba(0, 30, 61, 0.88) !important;
+  color: #ffffff !important;
 }
 
 .night-dive section,
 .night-dive footer,
 .night-dive header,
 .night-dive main {
-  color: #f8fafc !important;
+  color: #ffffff !important;
 }
 
 /* Night Dive Mode Footer: headings in yellow, rest in white only */
@@ -529,40 +656,57 @@
   color: #ffffff !important;
 }
 
-/* Deep ocean dark backgrounds for page shells and containers */
-.night-dive [class*="bg-[#FAFAFA]"],
-.night-dive [class*="bg-[#F8FAFC]"],
-.night-dive [class*="bg-[#F0F2F5]"],
-.night-dive [class*="bg-[#f0f9ff]"] {
-  background-color: #030a12 !important;
-  color: #f8fafc !important;
+/* Night Dive mode background is #003865 */
+.night-dive [class*="bg-[#FAFAFA]"]:not(input):not(select):not(textarea),
+.night-dive [class*="bg-[#F8FAFC]"]:not(input):not(select):not(textarea),
+.night-dive [class*="bg-[#f0f9ff]"]:not(input):not(select):not(textarea),
+.night-dive [class*="bg-[#0b1726]"]:not(input):not(select):not(textarea),
+.night-dive [class*="bg-[#030a12]"]:not(input):not(select):not(textarea) {
+  background-color: #003865 !important;
+  color: #ffffff !important;
 }
 
-/* Primary surface cards, panels & modals (excluding product cards) */
-.night-dive [class*="bg-white"]:not([data-product-card]):not([data-product-media]),
+/* Primary surface cards, panels & modals in Night Dive Mode */
+.night-dive [class*="bg-white"]:not([data-product-card]):not([data-product-media]):not([data-product-showcase]):not(.product-media-panel):not(.product-3d-wrapper):not([data-floating-image-card]):not(.hero-btn):not(input):not(select):not(textarea),
 .night-dive aside nav {
-  background-color: #081424 !important;
-  color: #f8fafc !important;
-  border-color: rgba(255, 255, 255, 0.12) !important;
+  background-color: #001e3d !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
 }
 
 /* Sub-cards, metrics, widgets, empty states & table rows */
-.night-dive [class*="bg-slate-50"],
-.night-dive [class*="bg-slate-100"],
-.night-dive [class*="bg-gray-50"],
-.night-dive [class*="bg-gray-100"] {
-  background-color: #0f2038 !important;
-  color: #f8fafc !important;
-  border-color: rgba(255, 255, 255, 0.12) !important;
+.night-dive [class*="bg-slate-50"]:not(input):not(select):not(textarea),
+.night-dive [class*="bg-slate-100"]:not(input):not(select):not(textarea),
+.night-dive [class*="bg-gray-50"]:not(input):not(select):not(textarea),
+.night-dive [class*="bg-gray-100"]:not(input):not(select):not(textarea) {
+  background-color: #002747 !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
 }
 
+/* Remove box or panel shadows in Night Dive */
 .night-dive .shadow-card,
 .night-dive .shadow-lift,
 .night-dive .shadow-float,
 .night-dive .shadow-xs,
 .night-dive .shadow-sm,
-.night-dive .shadow-2xs {
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7) !important;
+.night-dive .shadow-md,
+.night-dive .shadow-lg,
+.night-dive .shadow-xl,
+.night-dive .shadow-2xl,
+.night-dive .shadow-2xs,
+.night-dive .shadow,
+.night-dive [class*="shadow"],
+.night-dive [class*="drop-shadow"],
+.night-dive .card,
+.night-dive [class*="card"],
+.night-dive [class*="panel"],
+.night-dive [class*="box"],
+.night-dive dialog,
+.night-dive [role="dialog"],
+.night-dive aside,
+.night-dive section > div[class*="rounded"] {
+  box-shadow: none !important;
 }
 
 /* Headings and high-contrast text elements */
@@ -616,7 +760,7 @@
   background-color: #FFCD00 !important;
   color: #001e3d !important;
   font-weight: 700 !important;
-  box-shadow: 0 4px 14px rgba(255, 205, 0, 0.35) !important;
+  box-shadow: none !important;
 }
 
 .night-dive aside nav a:not(.active),
@@ -638,7 +782,7 @@
   color: #001e3d !important;
   font-weight: 700 !important;
   border-color: #FFCD00 !important;
-  box-shadow: 0 4px 16px rgba(255, 205, 0, 0.25) !important;
+  box-shadow: none !important;
 }
 
 .night-dive button[class*="bg-slate-900"]:hover,
@@ -651,8 +795,8 @@
 /* Secondary / Outline Buttons */
 .night-dive button[class*="border-gray-300"],
 .night-dive a[class*="border-gray-300"],
-.night-dive button[class*="bg-white"],
-.night-dive a[class*="bg-white"] {
+.night-dive button[class*="bg-white"]:not([data-thumb-btn]):not([data-product-media]):not(.hero-btn),
+.night-dive a[class*="bg-white"]:not(.hero-btn) {
   background-color: rgba(255, 255, 255, 0.08) !important;
   color: #ffffff !important;
   border-color: rgba(255, 255, 255, 0.2) !important;
@@ -660,10 +804,54 @@
 
 .night-dive button[class*="border-gray-300"]:hover,
 .night-dive a[class*="border-gray-300"]:hover,
-.night-dive button[class*="bg-white"]:hover,
-.night-dive a[class*="bg-white"]:hover {
+.night-dive button[class*="bg-white"]:not([data-thumb-btn]):not([data-product-media]):not(.hero-btn):hover,
+.night-dive a[class*="bg-white"]:not(.hero-btn):hover {
   background-color: rgba(255, 255, 255, 0.15) !important;
   color: #ffffff !important;
+}
+
+/* Hero section buttons hover in Night Dive mode: yellow #FFCD00 with navy text/border/icon */
+.night-dive a.hero-btn {
+  background-color: rgba(255, 255, 255, 0.12) !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  box-shadow: none !important;
+}
+
+.hero-btn:hover,
+a.hero-btn:hover,
+.night-dive .hero-btn:hover,
+.night-dive a.hero-btn:hover,
+.night-dive a.hero-btn:focus-visible,
+html body.night-dive a.hero-btn:hover {
+  background-color: #FFCD00 !important;
+  color: #001e3d !important;
+  border-color: #FFCD00 !important;
+  box-shadow: none !important;
+}
+
+.hero-btn:hover *,
+a.hero-btn:hover *,
+.night-dive .hero-btn:hover *,
+.night-dive a.hero-btn:hover *,
+html body.night-dive a.hero-btn:hover * {
+  color: #001e3d !important;
+  stroke: #001e3d !important;
+}
+
+/* Night Dive Toolbar & Footer: background #001C39 without shadows */
+.night-dive #main-toolbar > div,
+.night-dive #main-toolbar .pointer-events-auto:not(button):not(a):not(input) {
+  background-color: #001C39 !important;
+  box-shadow: none !important;
+}
+
+.night-dive footer,
+.night-dive footer > div,
+.night-dive footer .bg-navy,
+.night-dive footer [class*="bg-[#071d37]"] {
+  background-color: #001C39 !important;
+  box-shadow: none !important;
 }
 
 /* Status Badges */
@@ -715,39 +903,118 @@
 }
 
 .night-dive [class*="from-navy"] {
-  --tw-gradient-from: #030a12 var(--tw-gradient-from-position) !important;
-  --tw-gradient-to: rgba(3, 10, 18, 0) var(--tw-gradient-to-position) !important;
+  --tw-gradient-from: #003865 var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgba(0, 56, 101, 0) var(--tw-gradient-to-position) !important;
   --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-from), var(--tw-gradient-to)) !important;
 }
 
 .night-dive [class*="via-navy"] {
-  --tw-gradient-via: rgba(3, 10, 18, 0.85) var(--tw-gradient-via-position) !important;
-  --tw-gradient-stops: var(--tw-gradient-from), rgba(3, 10, 18, 0.85), var(--tw-gradient-to) !important;
+  --tw-gradient-via: rgba(0, 56, 101, 0.85) var(--tw-gradient-via-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), rgba(0, 56, 101, 0.85), var(--tw-gradient-to) !important;
 }
 
-.night-dive input,
+/* ==========================================================================
+   NIGHT DIVE MODE: FORM INPUT BOXES (#003865) & WHITE TEXT ON FORMS
+   ========================================================================== */
+
+/* Boxes where you type in content like name, phone number, email, date, etc. */
+.night-dive input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="range"]):not(.switch__input),
 .night-dive select,
 .night-dive textarea,
-.night-dive .PhoneInputInput {
-  background-color: #112236 !important;
+.night-dive .PhoneInput,
+.night-dive .PhoneInputInput,
+.night-dive form div[class*="bg-[#F0F2F5]"],
+.night-dive form div[class*="bg-white"],
+.night-dive form button[class*="bg-[#F0F2F5]"],
+.night-dive form [class*="border-dashed"],
+.night-dive [data-input-box],
+.night-dive .phone-input-wrapper {
+  background-color: #003865 !important;
   color: #ffffff !important;
-  border-color: rgba(255, 255, 255, 0.2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  color-scheme: dark;
+}
+
+.night-dive input:focus,
+.night-dive select:focus,
+.night-dive textarea:focus,
+.night-dive .PhoneInputInput:focus,
+.night-dive form div[class*="bg-[#F0F2F5]"]:focus-within {
+  border-color: #FFCD00 !important;
+  box-shadow: 0 0 0 2px rgba(255, 205, 0, 0.35) !important;
 }
 
 .night-dive input::placeholder,
-.night-dive textarea::placeholder {
-  color: rgba(255, 255, 255, 0.5) !important;
+.night-dive textarea::placeholder,
+.night-dive .PhoneInputInput::placeholder {
+  color: rgba(255, 255, 255, 0.65) !important;
+  opacity: 1 !important;
 }
 
 .night-dive select option,
 .night-dive .PhoneInputCountrySelect option {
-  background-color: #0b1726 !important;
+  background-color: #003865 !important;
   color: #ffffff !important;
 }
 
-.night-dive .popover-calendar {
-  background-color: #0b1726 !important;
+.night-dive .PhoneInputCountrySelect {
+  background-color: transparent !important;
+  color: #ffffff !important;
+}
+
+.night-dive .PhoneInputCountryIcon,
+.night-dive .PhoneInputCountrySelectArrow {
+  opacity: 0.9 !important;
+}
+
+/* Calendar popover in night dive mode */
+.night-dive .popover-calendar,
+.night-dive [role="dialog"][aria-label*="preferred dive date"] {
+  background-color: #001e3d !important;
   border-color: rgba(255, 255, 255, 0.2) !important;
+  color: #ffffff !important;
+}
+
+.night-dive .popover-calendar * {
+  color: #ffffff !important;
+}
+
+.night-dive .popover-calendar button[class*="bg-[#F0F2F5]"] {
+  background-color: #003865 !important;
+  color: #ffffff !important;
+}
+
+/* --- TEXT COLOR WHITE ON THE FORMS --- */
+.night-dive form,
+.night-dive form label,
+.night-dive form label *,
+.night-dive form legend,
+.night-dive form p,
+.night-dive form span:not([class*="bg-accent"]):not(.bg-accent):not(.text-red-500):not(.text-red-600),
+.night-dive form h1,
+.night-dive form h2,
+.night-dive form h3,
+.night-dive form h4,
+.night-dive form h5,
+.night-dive form h6,
+.night-dive form [class*="text-navy"],
+.night-dive form [class*="text-slate"],
+.night-dive form [class*="text-gray"],
+.night-dive form [class*="text-blue-600"],
+.night-dive form button:not([type="submit"]):not([class*="bg-accent"]):not([class*="bg-navy"]) {
+  color: #ffffff !important;
+}
+
+/* Outside form container text (e.g. Contact Us card heading & intro) */
+.night-dive #contact-form-container,
+.night-dive #contact-form-container h2,
+.night-dive #contact-form-container p,
+.night-dive #contact-form-container span:not(.text-accent) {
+  color: #ffffff !important;
+}
+
+/* Ensure SVG icons inside forms are white */
+.night-dive form svg:not(.text-accent):not([fill*="#FFCD00"]):not(.text-red-500):not(.text-red-600):not(.text-emerald-600) {
   color: #ffffff !important;
 }
 
@@ -1073,20 +1340,65 @@ button, a, input, select, textarea {
 }
 
 /* ==========================================================================
-   PRODUCT CARDS IN NIGHT DIVE MODE - ALWAYS SOLID WHITE PANELS
+   PRODUCT CARDS & SUB PRODUCT MEDIA SHOWCASE PANELS IN NIGHT DIVE MODE
+   ALWAYS SOLID WHITE PANELS
+   Ensures 3D products, front and back images, magnifier lens, thumbnails and
+   modal windows remain on a clean solid white background so dark & black models
+   and products stand out with crystal clarity.
    ========================================================================== */
 html body.night-dive [data-product-card],
 html body.night-dive [data-product-card] div:not(.product-wishlist-btn):not(.product-add-btn):not(.product-add-btn-mobile),
 html body.night-dive [data-product-card] [data-product-media],
 html body.night-dive [data-product-card] [slot="poster"],
-html body.night-dive [data-product-card] model-viewer {
+html body.night-dive [data-product-card] model-viewer,
+html body.night-dive [data-product-media],
+html body.night-dive [data-product-showcase],
+html body.night-dive .product-media-panel,
+html body.night-dive .product-3d-wrapper,
+html body.night-dive model-viewer,
+html body.night-dive model-viewer [slot="poster"],
+html body.night-dive [data-floating-image-card],
+html body.night-dive button[data-thumb-btn][style*="#ffffff"],
+html body.night-dive button[data-thumb-btn]:not([style*="001E36"]):not([style*="black"]) {
+  background-color: #ffffff !important;
+  background: #ffffff !important;
+  --poster-color: #ffffff !important;
+}
+
+html body.night-dive .product-media-panel > div,
+html body.night-dive .product-media-panel img,
+html body.night-dive [data-product-showcase] > div,
+html body.night-dive [data-product-showcase] img,
+html body.night-dive [data-product-media] img,
+html body.night-dive .product-3d-wrapper > div,
+html body.night-dive [data-floating-image-card] img {
   background-color: #ffffff !important;
   background: #ffffff !important;
 }
 
+html body.night-dive .product-media-panel,
+html body.night-dive [data-product-showcase] {
+  border-color: rgba(255, 255, 255, 0.18) !important;
+  box-shadow: none !important;
+}
+
+html body.night-dive [data-floating-image-card] {
+  border-color: rgba(255, 255, 255, 0.22) !important;
+  box-shadow: none !important;
+}
+
+html body.night-dive button[data-thumb-btn][data-active="true"] {
+  border-color: #FFCD00 !important;
+  box-shadow: 0 0 0 2px rgba(255, 205, 0, 0.5) !important;
+}
+
+html body.night-dive button[data-thumb-btn][data-active="false"] {
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
 html body.night-dive [data-product-card] {
   border-color: rgba(0, 30, 61, 0.12) !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35) !important;
+  box-shadow: none !important;
   color: #001e3d !important;
 }
 
@@ -1146,4 +1458,14 @@ html body.night-dive [data-product-card] .product-add-btn-mobile {
 }
 html body.night-dive [data-product-card] .product-add-btn-mobile span {
   color: #000000 !important;
+}
+
+/* Night Dive Preloader Screen & White Diver Video Animation */
+.night-dive #preloader-container {
+  background-color: #003865 !important;
+  color: #ffffff !important;
+}
+
+.night-dive #preloader-container canvas {
+  filter: brightness(0) invert(1) drop-shadow(0 0 10px rgba(255, 255, 255, 0.4)) !important;
 }

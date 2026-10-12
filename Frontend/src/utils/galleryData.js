@@ -58,14 +58,6 @@ export const GALLERY_ITEMS = [
     "filename": "Clownfish and Sea Anemone.mp4"
   },
   {
-    "id": "gallery-item-6",
-    "type": "video",
-    "src": "https://res.cloudinary.com/qvbunv8y/video/upload/v1791458096/TDV-Media/Extras%20for%20Gallery/Free_Diving.mp4",
-    "title": "Free Diving",
-    "category": "marine",
-    "filename": "Free Diving.mp4"
-  },
-  {
     "id": "gallery-item-7",
     "type": "video",
     "src": "https://res.cloudinary.com/qvbunv8y/video/upload/c_crop,ar_9:16/v1791458098/TDV-Media/Extras%20for%20Gallery/Giant_Barrel_Sponge.mp4",
@@ -315,14 +307,6 @@ export const GALLERY_ITEMS = [
     "filename": "Moon Jellyfish.webp"
   },
   {
-    "id": "gallery-item-41",
-    "type": "image",
-    "src": "https://res.cloudinary.com/qvbunv8y/image/upload/v1791458178/TDV-Media/Extras%20for%20Gallery/Open_Water_Scuba_Diving.webp",
-    "title": "Open Water Scuba Diving",
-    "category": "marine",
-    "filename": "Open Water Scuba Diving.webp"
-  },
-  {
     "id": "gallery-item-42",
     "type": "image",
     "src": "https://res.cloudinary.com/qvbunv8y/image/upload/v1791458179/TDV-Media/Extras%20for%20Gallery/School_of_Baitball.webp",
@@ -337,14 +321,6 @@ export const GALLERY_ITEMS = [
     "title": "Scuba Diving",
     "category": "marine",
     "filename": "Scuba Diving.webp"
-  },
-  {
-    "id": "gallery-item-45",
-    "type": "image",
-    "src": "https://res.cloudinary.com/qvbunv8y/image/upload/v1791458191/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp",
-    "title": "Scubadiving",
-    "category": "marine",
-    "filename": "Scubadiving.webp"
   },
   {
     "id": "gallery-item-46",

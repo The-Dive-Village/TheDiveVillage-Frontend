@@ -241,9 +241,10 @@ export default function LazyVideo({
               setIsVideoPlaying(false)
             }
           }}
-          className={`w-full h-full ${fitClass} transition-opacity duration-300 ease-out relative z-[2] ${
+          className={`absolute inset-0 w-full h-full ${fitClass} transition-opacity duration-300 ease-out z-[2] ${
             isVideoPlaying ? 'opacity-100' : 'opacity-0'
           }`}
+          style={{ objectFit: fitClass === 'object-contain' ? 'contain' : 'cover' }}
           {...props}
         />
       )}

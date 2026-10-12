@@ -154,7 +154,7 @@ export default function Home() {
       />
 
       {/* 1. HERO */}
-      <section className="relative flex min-h-[100dvh] sm:min-h-screen items-start sm:items-end justify-start pb-12 sm:pb-32 md:pb-40 lg:pb-48 pt-36 xs:pt-40 sm:pt-[120px] pointer-events-none">
+      <section className="relative flex min-h-[100dvh] sm:min-h-screen items-start sm:items-end justify-start pb-12 sm:pb-28 md:pb-32 lg:pb-32 xl:pb-44 pt-36 xs:pt-40 sm:pt-[120px] pointer-events-none">
 
         <div className="relative z-10 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 pointer-events-none">
           <div className="max-w-3xl">
@@ -164,7 +164,7 @@ export default function Home() {
               transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
               className="pointer-events-auto mt-4 xs:mt-6 sm:mt-0"
             >
-              <h1 className="mt-2 sm:mt-5 font-heading text-[3.2rem] xs:text-[3.9rem] sm:text-[4.5rem] md:text-[5.5rem] lg:text-[7rem] font-bold uppercase tracking-tight sm:tracking-normal text-white leading-[0.92] flex flex-col drop-shadow-2xl">
+              <h1 className="mt-2 sm:mt-5 font-heading text-[3.2rem] xs:text-[3.9rem] sm:text-[4.5rem] md:text-[5.5rem] lg:text-[5.8rem] xl:text-[6.8rem] 2xl:text-[7.2rem] font-bold uppercase tracking-tight sm:tracking-normal text-white leading-[0.92] flex flex-col drop-shadow-2xl">
                 <span className="block text-xs xs:text-sm sm:text-lg font-bold tracking-[0.22em] mb-1.5 sm:mb-3 text-white/90">MORE THAN A DESTINATION</span>
                 <span className="block text-white mb-0.5 sm:mb-2">IT'S A</span>
                 <span className="block text-[#FFCD00]">COMMUNITY.</span>
@@ -176,17 +176,17 @@ export default function Home() {
               <div className="mt-5 sm:mt-10 flex flex-col items-start gap-2.5 sm:flex-row sm:items-center sm:gap-6">
                 <Link
                   to="/book-us"
-                  className="w-[215px] xs:w-[235px] sm:w-fit inline-flex items-center justify-between gap-3 rounded-full bg-white/20 sm:bg-white/10 backdrop-blur-xl border border-white/40 px-5 xs:px-6 sm:px-8 py-3 sm:py-4 font-body text-xs sm:text-sm tracking-widest font-bold text-white uppercase shadow-[0_8px_32px_0_rgba(0,0,0,0.25)] transition-all duration-300 hover:scale-105 hover:bg-[#FFCD00] hover:text-navy hover:border-[#FFCD00] active:scale-95 group"
+                  className="hero-btn w-[215px] xs:w-[235px] sm:w-fit inline-flex items-center justify-between gap-3 rounded-full bg-white/20 sm:bg-white/10 backdrop-blur-xl border border-white/40 px-5 xs:px-6 sm:px-8 py-3 sm:py-4 font-body text-xs sm:text-sm tracking-widest font-bold text-white uppercase shadow-[0_8px_32px_0_rgba(0,0,0,0.25)] transition-all duration-300 hover:scale-105 hover:!bg-[#FFCD00] hover:!text-navy hover:!border-[#FFCD00] active:scale-95 group"
                 >
-                  <span>Book Your Dive</span>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-1 shrink-0"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+                  <span className="group-hover:!text-navy transition-colors">Book Your Dive</span>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-1 group-hover:!stroke-navy shrink-0"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
                 </Link>
                 <Link
                   to="/shop"
-                  className="w-[215px] xs:w-[235px] sm:w-fit inline-flex items-center justify-between gap-3 rounded-full bg-white/20 sm:bg-white/10 backdrop-blur-xl border border-white/40 px-5 xs:px-6 sm:px-8 py-3 sm:py-4 font-body text-xs sm:text-sm tracking-widest font-bold text-white uppercase shadow-[0_8px_32px_0_rgba(0,0,0,0.25)] transition-all duration-300 hover:scale-105 hover:bg-[#FFCD00] hover:text-navy hover:border-[#FFCD00] active:scale-95 group"
+                  className="hero-btn w-[215px] xs:w-[235px] sm:w-fit inline-flex items-center justify-between gap-3 rounded-full bg-white/20 sm:bg-white/10 backdrop-blur-xl border border-white/40 px-5 xs:px-6 sm:px-8 py-3 sm:py-4 font-body text-xs sm:text-sm tracking-widest font-bold text-white uppercase shadow-[0_8px_32px_0_rgba(0,0,0,0.25)] transition-all duration-300 hover:scale-105 hover:!bg-[#FFCD00] hover:!text-navy hover:!border-[#FFCD00] active:scale-95 group"
                 >
-                  <span>Shop Merch</span>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-1 shrink-0"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+                  <span className="group-hover:!text-navy transition-colors">Shop Merch</span>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-1 group-hover:!stroke-navy shrink-0"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
                 </Link>
               </div>
             </motion.div>
@@ -555,7 +555,8 @@ export default function Home() {
             <div
               data-lenis-prevent="true"
               onClick={() => setShowReviewModal(false)}
-              className="fixed inset-0 z-[99999] flex items-center justify-center p-3.5 sm:p-4 bg-black/60 backdrop-blur-sm pointer-events-auto select-auto"
+              className="fixed left-0 right-0 bottom-0 top-[64px] lg:top-[68px] z-[9990] flex items-center justify-center p-3.5 sm:p-4 bg-black/60 backdrop-blur-sm pointer-events-auto select-auto overflow-hidden"
+              style={{ top: 'var(--toolbar-bottom, 64px)' }}
             >
               <motion.div
                 initial={{ scale: 0.92, opacity: 0, y: 10 }}
@@ -564,7 +565,7 @@ export default function Home() {
                 transition={{ duration: 0.22, ease: 'easeOut' }}
                 onClick={(e) => e.stopPropagation()}
                 onTouchStart={(e) => e.stopPropagation()}
-                className="bg-[#00172b]/80 backdrop-blur-2xl border border-white/25 rounded-2xl sm:rounded-3xl p-5 sm:p-6 max-w-sm sm:max-w-md w-full shadow-[0_20px_50px_rgba(0,0,0,0.85)] relative text-left select-auto pointer-events-auto"
+                className="bg-[#00172b]/80 backdrop-blur-2xl border border-white/25 rounded-2xl sm:rounded-3xl p-5 sm:p-6 max-w-sm sm:max-w-md w-full max-h-[calc(100vh-var(--toolbar-bottom,64px)-24px)] overflow-y-auto shadow-[0_20px_50px_rgba(0,0,0,0.85)] relative text-left select-auto pointer-events-auto"
               >
                 <button
                   type="button"

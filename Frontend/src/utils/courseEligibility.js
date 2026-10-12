@@ -16,7 +16,9 @@ export const ADD_ON_OPTIONS = [
   'Canyoneering',
   'Safari',
   'Trekking',
+  'Surfing',
   'Local Sightseeing',
+  'Snorkeling',
   'Camping / Camper',
   'Liveaboard',
 ]
@@ -44,7 +46,7 @@ export function getCourseDisplayName(courseOrName) {
 }
 
 /**
- * 7 selectable certificate choices for age > 8 (with certificate)
+ * Selectable certificate choices for age > 8 (with certificate)
  */
 export const SCUBA_CERTIFICATES = [
   { id: 'scuba-diver', name: 'Scuba Diver' },
@@ -53,10 +55,31 @@ export const SCUBA_CERTIFICATES = [
   { id: 'advanced-open-water-diver', name: 'Advanced Open Water Diver' },
   { id: 'adventure-diver', name: 'Adventure Diver' },
   { id: 'rescue-diver', name: 'Rescue Diver' },
+  { id: 'efr', name: 'Emergency First Response (EFR)' },
   { id: 'dive-master', name: 'Dive Master' },
 ]
 
 export const CERTIFICATION_OPTIONS = SCUBA_CERTIFICATES
+
+/**
+ * Specialty courses unlocked for divers holding Open Water, Advanced Open Water, Rescue, EFR, or Dive Master certifications:
+ * - Peak Performance Buoyancy
+ * - Deep Diver
+ * - Wreck Diver
+ * - Night Diver
+ * - Enriched Air Nitrox
+ * - Project AWARE
+ * - Drift Diver
+ */
+export const SPECIALTY_COURSE_IDS = [
+  'peak-buoyancy',
+  'deep-diver',
+  'wreck-diver',
+  'night-diver',
+  'enriched-air-nitrox',
+  'project-aware',
+  'drift-diver',
+]
 
 /**
  * Comprehensive Course Catalog with user-specified titles and metadata
@@ -253,7 +276,7 @@ export const COURSE_CATALOG = [
     category: 'Specialties',
     minimumAge: 10,
     maxAge: null,
-    certLabel: 'Dive Master / Certified Diver',
+    certLabel: 'Certified Diver',
     experience: 'Scuba Diving',
   },
   {
@@ -262,7 +285,7 @@ export const COURSE_CATALOG = [
     category: 'Specialties',
     minimumAge: 15,
     maxAge: null,
-    certLabel: 'Dive Master / Certified Diver',
+    certLabel: 'Certified Diver',
     experience: 'Scuba Diving',
   },
   {
@@ -271,7 +294,7 @@ export const COURSE_CATALOG = [
     category: 'Specialties',
     minimumAge: 15,
     maxAge: null,
-    certLabel: 'Dive Master / Certified Diver',
+    certLabel: 'Certified Diver',
     experience: 'Scuba Diving',
   },
   {
@@ -280,7 +303,7 @@ export const COURSE_CATALOG = [
     category: 'Specialties',
     minimumAge: 12,
     maxAge: null,
-    certLabel: 'Dive Master / Certified Diver',
+    certLabel: 'Certified Diver',
     experience: 'Scuba Diving',
   },
   {
@@ -289,7 +312,7 @@ export const COURSE_CATALOG = [
     category: 'Specialties',
     minimumAge: 12,
     maxAge: null,
-    certLabel: 'Dive Master / Certified Diver',
+    certLabel: 'Certified Diver',
     experience: 'Scuba Diving',
   },
   {
@@ -298,7 +321,7 @@ export const COURSE_CATALOG = [
     category: 'Conservation',
     minimumAge: 10,
     maxAge: null,
-    certLabel: 'Dive Master / Conservation track',
+    certLabel: 'Certified Diver / Conservation track',
     experience: 'Scuba Diving',
   },
   {
@@ -307,7 +330,7 @@ export const COURSE_CATALOG = [
     category: 'Specialties',
     minimumAge: 12,
     maxAge: null,
-    certLabel: 'Dive Master / Certified Diver',
+    certLabel: 'Certified Diver',
     experience: 'Scuba Diving',
   },
 
@@ -463,11 +486,12 @@ export function getAvailableCertificationsForAge(age, experience = 'Scuba Diving
  * 3. User is above 8+ (with certificate): ask which certificate:
  *    - Scuba Diver: Zero to Hero, Skin Dive, Open Water Dive, Open Water + Advanced Open Water, Reactivate (with dive)
  *    - Skin Diver: Reactivate (with dive), Open Water Dive
- *    - Open Water Diver: Advanced Open Water
- *    - Advanced Open Water Diver: Adventure Dive
+ *    - Open Water Diver: Advanced Open Water + all specialties (Peak Performance Buoyancy, Deep Diver, Wreck Diver, Night Diver, Enriched Air Nitrox, Project AWARE, Drift Diver)
+ *    - Advanced Open Water Diver: Adventure Dive + all specialties
  *    - Adventure Diver: Rescue Diver, Emergency First Response + Rescue Diver, Emergency First Response + Rescue Diver+ Dive Master(Prerequisites), Emergency First Response + Rescue Diver+ Dive Master
- *    - Rescue Diver: Emergency First Response Primary & Secondary Care, Lite Refresher (confined only), Full Refresher (with Dive), Dive Master
- *    - Dive Master: Peak Performance Buoyancy, Deep Diver, Wreck Diver, Night Diver, Enriched Air Nitrox, Project AWARE, Drift Diver
+ *    - Rescue Diver: Emergency First Response Primary & Secondary Care, Lite Refresher (confined only), Full Refresher (with Dive), Dive Master + all specialties
+ *    - Emergency First Response (EFR): all specialties
+ *    - Dive Master: all specialties
  */
 export function getEligibleCourses(age, hasCert = false, userCerts = [], experience = 'Scuba Diving', catalog = COURSE_CATALOG) {
   const numericAge = parseInt(age, 10)
@@ -498,7 +522,6 @@ export function getEligibleCourses(age, hasCert = false, userCerts = [], experie
 
   // --- SCUBA DIVING RULES ---
   const certList = Array.isArray(userCerts) ? userCerts : (userCerts ? [userCerts] : [])
-  const primaryCert = certList[0] || ''
 
   // Case 1: Without Certificate (Age 8 and above)
   if (!hasCert) {
@@ -531,66 +554,71 @@ export function getEligibleCourses(age, hasCert = false, userCerts = [], experie
   }
 
   // Case 3: Above 8+ with certificate (based on selected certificate)
-  const normCert = String(primaryCert).toLowerCase().replace(/[\s_-]+/g, '')
+  const allTargetIds = []
 
-  let targetIds = []
+  for (const cert of (certList.length > 0 ? certList : [''])) {
+    const normCert = String(cert).toLowerCase().replace(/[\s_-]+/g, '')
+    if (!normCert) continue
 
-  if (normCert.includes('scubadiver')) {
-    // Scuba Diver: Zero to Hero, Skin Dive, Open Water Dive, Open Water + Advanced Open Water, Reactivate (with dive)
-    targetIds = [
-      'zero-to-hero',
-      'padi-skin-diver',
-      'padi-open-water',
-      'padi-ow-aow-combo',
-      'padi-reactivate',
-    ]
-  } else if (normCert.includes('skindiver')) {
-    // Skin Diver: Reactivate (with dive), Open Water Dive
-    targetIds = [
-      'padi-reactivate',
-      'padi-open-water',
-    ]
-  } else if (normCert.includes('openwater') && !normCert.includes('advanced')) {
-    // Open Water Diver: Advanced Open Water
-    targetIds = [
-      'padi-advanced-ow',
-    ]
-  } else if (normCert.includes('advancedopenwater') || normCert.includes('aow')) {
-    // Advanced Open Water Diver: Adventure Dive
-    targetIds = [
-      'padi-adventure-diver',
-    ]
-  } else if (normCert.includes('adventurediver')) {
-    // Adventure Diver: Rescue Diver, Emergency First Response + Rescue Diver, Emergency First Response + Rescue Diver+ Dive Master(Prerequisites), Emergency First Response + Rescue Diver+ Dive Master
-    targetIds = [
-      'padi-rescue-diver',
-      'efr-rescue-combo',
-      'efr-rescue-dm-prereqs',
-      'efr-rescue-dm-combo',
-    ]
-  } else if (normCert.includes('rescuediver')) {
-    // Rescue Diver: Emergency First Response Primary & Secondary Care, Lite Refresher (confined only), Full Refresher (with Dive), Dive Master
-    targetIds = [
-      'efr-primary-secondary',
-      'lite-refresher',
-      'full-refresher',
-      'padi-divemaster',
-    ]
-  } else if (normCert.includes('divemaster')) {
-    // Dive Master: Peak Performance Buoyancy, Deep Diver, Wreck Diver, Night Diver, Enriched Air Nitrox, Project AWARE, Drift Diver
-    targetIds = [
-      'peak-buoyancy',
-      'deep-diver',
-      'wreck-diver',
-      'night-diver',
-      'enriched-air-nitrox',
-      'project-aware',
-      'drift-diver',
-    ]
-  } else {
-    // If certificate is not yet chosen by user, return empty or fallback so they select a cert first
-    targetIds = []
+    if (normCert.includes('scubadiver')) {
+      // Scuba Diver: Zero to Hero, Skin Dive, Open Water Dive, Open Water + Advanced Open Water, Reactivate (with dive)
+      allTargetIds.push(
+        'zero-to-hero',
+        'padi-skin-diver',
+        'padi-open-water',
+        'padi-ow-aow-combo',
+        'padi-reactivate'
+      )
+    } else if (normCert.includes('skindiver')) {
+      // Skin Diver: Reactivate (with dive), Open Water Dive
+      allTargetIds.push(
+        'padi-reactivate',
+        'padi-open-water'
+      )
+    } else if (normCert.includes('openwater') && !normCert.includes('advanced')) {
+      // Open Water Diver: Advanced Open Water + all specialties
+      allTargetIds.push(
+        'padi-advanced-ow',
+        ...SPECIALTY_COURSE_IDS
+      )
+    } else if (normCert.includes('advancedopenwater') || normCert.includes('aow')) {
+      // Advanced Open Water Diver: Adventure Dive + all specialties
+      allTargetIds.push(
+        'padi-adventure-diver',
+        ...SPECIALTY_COURSE_IDS
+      )
+    } else if (normCert.includes('adventurediver')) {
+      // Adventure Diver: Rescue Diver, Emergency First Response + Rescue Diver, Emergency First Response + Rescue Diver+ Dive Master(Prerequisites), Emergency First Response + Rescue Diver+ Dive Master
+      allTargetIds.push(
+        'padi-rescue-diver',
+        'efr-rescue-combo',
+        'efr-rescue-dm-prereqs',
+        'efr-rescue-dm-combo'
+      )
+    } else if (normCert.includes('rescue')) {
+      // Rescue Diver: Emergency First Response Primary & Secondary Care, Lite Refresher (confined only), Full Refresher (with Dive), Dive Master + all specialties
+      allTargetIds.push(
+        'efr-primary-secondary',
+        'lite-refresher',
+        'full-refresher',
+        'padi-divemaster',
+        ...SPECIALTY_COURSE_IDS
+      )
+    } else if (normCert.includes('efr') || normCert.includes('emergencyfirstresponse')) {
+      // Emergency First Response (EFR): all specialties
+      allTargetIds.push(
+        ...SPECIALTY_COURSE_IDS
+      )
+    } else if (normCert.includes('divemaster')) {
+      // Dive Master: all specialties
+      allTargetIds.push(
+        ...SPECIALTY_COURSE_IDS
+      )
+    }
   }
+
+  // Deduplicate while preserving insertion order
+  const targetIds = Array.from(new Set(allTargetIds))
 
   return targetIds
     .map((id) => catalog.find((c) => c.id === id))
@@ -648,6 +676,7 @@ export default {
   getCourseDisplayName,
   SCUBA_CERTIFICATES,
   CERTIFICATION_OPTIONS,
+  SPECIALTY_COURSE_IDS,
   COURSE_CATALOG,
   getAvailableCertificationsForAge,
   getEligibleCourses,

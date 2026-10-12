@@ -1,6 +1,6 @@
 import LazyVideo from '../components/LazyVideo'
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
-import { useSearchParams } from 'react-router'
+import { useSearchParams, useLocation } from 'react-router'
 import { motion, AnimatePresence } from 'framer-motion'
 import PhoneInput, { parsePhoneNumber, getCountryCallingCode } from 'react-phone-number-input'
 import flags from 'react-phone-number-input/flags'
@@ -101,8 +101,35 @@ const SERVICE_TO_PROGRAM = {
   'fun-night-2': { courseId: 'fun-night-dive', experience: 'Scuba Diving', funDivesCount: 'fun-night-2' },
 }
 
+const normalizeAddOn = (raw) => {
+  if (!raw || typeof raw !== 'string') return ''
+  const trimmed = raw.trim()
+  if (!trimmed) return ''
+
+  // 1. Direct case-insensitive match against ADD_ON_OPTIONS
+  const exact = ADD_ON_OPTIONS.find((opt) => opt.toLowerCase() === trimmed.toLowerCase())
+  if (exact) return exact
+
+  // 2. Slug / keyword match
+  const clean = trimmed.toLowerCase().replace(/[^a-z0-9]/g, '')
+  if (clean.includes('canoneer') || clean.includes('canyon') || clean === 'addon1') return 'Canyoneering'
+  if (clean.includes('trek')) return 'Trekking'
+  if (clean.includes('sight')) return 'Local Sightseeing'
+  if (clean.includes('camp')) return 'Camping / Camper'
+  if (clean.includes('safari')) return 'Safari'
+  if (clean.includes('live')) return 'Liveaboard'
+  if (clean.includes('snorkel')) return 'Snorkeling'
+  if (clean.includes('surf')) return 'Surfing'
+
+  const alphaMatch = ADD_ON_OPTIONS.find(
+    (opt) => opt.toLowerCase().replace(/[^a-z0-9]/g, '') === clean
+  )
+  return alphaMatch || trimmed
+}
+
 export default function BookUs() {
   const isNightDive = useNightDive()
+  const routerLocation = useLocation()
   const [searchParams, setSearchParams] = useSearchParams()
   const initialProgram = searchParams.get('program') || ''
   const initialCountry = searchParams.get('country') || ''
@@ -155,8 +182,29 @@ export default function BookUs() {
     return COURSE_CATALOG.find((c) => c.id === initialFromService.courseId) || null
   }, [initialFromService])
 
-  // Pre-selected add-ons when arriving via add-on service
+  // Pre-selected add-ons when arriving via add-on service or custom dive panel
   const initialAddOns = useMemo(() => {
+    // 1. Check router navigation state (e.g. from CustomizeExperiencePanel)
+    const stateAddOns = routerLocation?.state?.selectedAddOns || routerLocation?.state?.addons
+    if (stateAddOns) {
+      const list = Array.isArray(stateAddOns)
+        ? stateAddOns
+        : typeof stateAddOns === 'string'
+          ? stateAddOns.split(',')
+          : []
+      const resolved = list.map(normalizeAddOn).filter(Boolean)
+      if (resolved.length > 0) return Array.from(new Set(resolved))
+    }
+
+    // 2. Check query params (?addons=... or ?addon=...)
+    const urlAddOns = searchParams.get('addons') || searchParams.get('addon')
+    if (urlAddOns) {
+      const list = urlAddOns.split(',').map((s) => s.trim()).filter(Boolean)
+      const resolved = list.map(normalizeAddOn).filter(Boolean)
+      if (resolved.length > 0) return Array.from(new Set(resolved))
+    }
+
+    // 3. Fallback: Pre-selected add-ons when arriving via add-on service
     if (initialService) {
       const lower = initialService.toLowerCase()
       if (lower.includes('trekking')) return ['Trekking']
@@ -176,7 +224,18 @@ export default function BookUs() {
       }
     }
     return []
-  }, [initialService, serviceItem])
+  }, [routerLocation?.state, searchParams, initialService, serviceItem])
+
+  const initialRequests = useMemo(() => {
+    return (
+      routerLocation?.state?.requests ||
+      routerLocation?.state?.message ||
+      searchParams.get('notes') ||
+      searchParams.get('requests') ||
+      searchParams.get('message') ||
+      ''
+    )
+  }, [routerLocation?.state, searchParams])
 
   const [currentStep, setCurrentStep] = useState(1)
 
@@ -206,6 +265,18 @@ export default function BookUs() {
   const [location, setLocation] = useState(initialSite)
   const [experience, setExperience] = useState(initialFromService?.experience || '')
   const [selectedAddOns, setSelectedAddOns] = useState(initialAddOns)
+
+  // Sync selected add-ons when initialAddOns updates
+  useEffect(() => {
+    if (initialAddOns && initialAddOns.length > 0) {
+      setSelectedAddOns((prev) => {
+        if (!prev || prev.length === 0 || (prev.length === 1 && prev[0] === 'None')) {
+          return initialAddOns
+        }
+        return Array.from(new Set([...prev.filter((i) => i !== 'None'), ...initialAddOns]))
+      })
+    }
+  }, [initialAddOns])
   const [date, setDate] = useState('')
   const [dateError, setDateError] = useState('')
   const [stepError, setStepError] = useState('')
@@ -381,8 +452,21 @@ export default function BookUs() {
     name: '',
     email: '',
     phone: '',
-    requests: ''
+    requests: initialRequests || ''
   })
+
+  // Sync initial special requests if provided via state or search params
+  useEffect(() => {
+    if (initialRequests) {
+      setContact((prev) => {
+        if (!prev.requests) return { ...prev, requests: initialRequests }
+        if (!prev.requests.includes(initialRequests)) {
+          return { ...prev, requests: `${prev.requests}\n\n${initialRequests}` }
+        }
+        return prev
+      })
+    }
+  }, [initialRequests])
 
   // Lock background scrolling and pause Lenis when order confirmation modal is open
   useEffect(() => {
@@ -1209,7 +1293,7 @@ export default function BookUs() {
   }
 
   return (
-    <div className={`min-h-screen text-navy font-body overflow-x-clip ${isNightDive ? 'bg-[#0b1726]' : 'bg-[#FAFAFA]'}`} style={{ textShadow: 'none' }}>
+    <div className={`min-h-screen text-navy font-body overflow-x-clip ${isNightDive ? 'bg-[#003865]' : 'bg-[#FAFAFA]'}`} style={{ textShadow: 'none' }}>
       <SEOHead
         title="Book Scuba Diving Courses & Expeditions Online | The Dive Village"
         description="Book certified scuba diving courses, Discovery dives, snorkeling trips, and freediving packages online with instant confirmation at The Dive Village."
@@ -1242,7 +1326,7 @@ export default function BookUs() {
         {/* Bottom Ultra-Smooth Dissolve & Merge Layer */}
         <div
           className={`absolute bottom-0 inset-x-0 h-28 sm:h-36 lg:h-44 pointer-events-none z-[5] transition-colors duration-500 ${isNightDive
-            ? 'bg-gradient-to-t from-[#0b1726] via-[#0b1726]/85 via-45% to-transparent'
+            ? 'bg-gradient-to-t from-[#003865] via-[#003865]/85 via-45% to-transparent'
             : 'bg-gradient-to-t from-[#FAFAFA] via-[#FAFAFA]/90 via-45% to-transparent'
             }`}
         />
@@ -1277,7 +1361,7 @@ export default function BookUs() {
           {/* Column 1: 4-Step Booking Wizard */}
           <div className="lg:col-span-6 xl:col-span-5 w-full min-w-0">
             <div className="flex flex-col w-full min-w-0">
-              <form ref={bookingFormRef} id="booking-wizard-form" onSubmit={handleSubmit} className="flex-1 flex flex-col bg-white p-4 sm:p-10 rounded-2xl sm:rounded-[36px] border border-navy/10 shadow-sm sm:shadow-card w-full min-w-0 max-w-full min-h-[auto] sm:min-h-[620px] justify-between">
+              <form ref={bookingFormRef} id="booking-wizard-form" onSubmit={handleSubmit} className="flex-1 flex flex-col bg-white p-4 sm:p-6 lg:p-8 xl:p-10 rounded-2xl sm:rounded-[36px] border border-navy/10 shadow-sm sm:shadow-card w-full min-w-0 max-w-full min-h-[auto] lg:min-h-[min(560px,calc(100vh-140px))] justify-between">
                 <div className="flex-1 space-y-3.5 sm:space-y-6">
 
                   {/* Mobile Step Header */}
@@ -2165,7 +2249,8 @@ export default function BookUs() {
           {showSummaryModal && (
             <div
               data-lenis-prevent="true"
-              className="fixed inset-0 z-[10001] flex items-center justify-center pt-20 sm:pt-24 pb-4 sm:pb-6 px-3 sm:px-6 bg-black/60 backdrop-blur-md overflow-hidden"
+              className="fixed left-0 right-0 bottom-0 top-[64px] lg:top-[68px] z-[9990] flex items-center justify-center p-3 sm:p-6 bg-black/60 backdrop-blur-md overflow-hidden"
+              style={{ top: 'var(--toolbar-bottom, 64px)' }}
               onClick={(e) => {
                 if (e.target === e.currentTarget && !isSubmitting) {
                   setShowSummaryModal(false)
@@ -2177,7 +2262,7 @@ export default function BookUs() {
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: 15 }}
                 transition={{ duration: 0.2 }}
-                className="bg-white rounded-3xl max-w-2xl w-full max-h-[72vh] sm:max-h-[75vh] flex flex-col shadow-2xl border border-navy/15 overflow-hidden text-navy"
+                className="bg-white rounded-3xl max-w-2xl w-full max-h-[calc(100vh-var(--toolbar-bottom,64px)-24px)] flex flex-col shadow-2xl border border-navy/15 overflow-hidden text-navy"
                 onClick={(e) => e.stopPropagation()}
               >
                 {/* Modal Header */}

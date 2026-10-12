@@ -181,8 +181,8 @@ export default function CompactTwoMonthCalendarPopover({
           transition={{ duration: 0.16, ease: 'easeOut' }}
           role="dialog"
           aria-label="Select preferred dive date"
-          className="absolute top-full left-0 mt-2 z-[9999] bg-white rounded-2xl sm:rounded-3xl border border-navy/15 shadow-[0_25px_70px_rgba(0,30,61,0.35)] p-3 sm:p-5 w-[calc(100vw-32px)] max-w-[320px] sm:w-[560px] sm:max-w-[580px] text-navy select-none"
-          style={{ textShadow: 'none', backgroundColor: '#ffffff' }}
+          className="absolute top-full left-0 mt-2 z-[9999] bg-white popover-calendar rounded-2xl sm:rounded-3xl border border-navy/15 shadow-[0_25px_70px_rgba(0,30,61,0.35)] p-3 sm:p-5 w-[calc(100vw-32px)] max-w-[320px] sm:w-[560px] sm:max-w-[580px] text-navy select-none"
+          style={{ textShadow: 'none' }}
         >
           {/* Dual Month Grids Container */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 sm:divide-x sm:divide-navy/10">
