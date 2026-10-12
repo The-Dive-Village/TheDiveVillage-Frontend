@@ -1038,26 +1038,27 @@ export default function BookUs() {
 
       if (isSuccess) {
         triggerSuccessHaptic()
+        const newBookingRecord = {
+          id: res?.data?.booking?.id || res?.booking?.id || `BK-${Date.now().toString(36).toUpperCase()}`,
+          type: 'Booking Request',
+          country,
+          island: island || null,
+          location,
+          experience: experience || addOnsSummary,
+          selectedAddOn: addOnsSummary || null,
+          selectedAddOns: activeAddOns,
+          date,
+          groupSize: participants.length,
+          contactName: contact.name,
+          contactEmail: contact.email,
+          contactPhone: contact.phone || null,
+          specialRequests: contact.requests || null,
+          participants: isDirect ? [] : participants,
+          status: 'Pending Review',
+          createdAt: new Date().toISOString(),
+        }
+
         try {
-          const newBookingRecord = {
-            id: res?.data?.booking?.id || res?.booking?.id || `BK-${Date.now().toString(36).toUpperCase()}`,
-            type: 'Booking Request',
-            country,
-            island: island || null,
-            location,
-            experience: experience || addOnsSummary,
-            selectedAddOn: addOnsSummary || null,
-            selectedAddOns: activeAddOns,
-            date,
-            groupSize: participants.length,
-            contactName: contact.name,
-            contactEmail: contact.email,
-            contactPhone: contact.phone || null,
-            specialRequests: contact.requests || null,
-            participants: isDirect ? [] : participants,
-            status: 'Pending Review',
-            createdAt: new Date().toISOString(),
-          }
           const existing = JSON.parse(localStorage.getItem('dive_village_bookings') || '[]')
           localStorage.setItem('dive_village_bookings', JSON.stringify([newBookingRecord, ...existing]))
         } catch (e) {
