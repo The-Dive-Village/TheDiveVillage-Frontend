@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router'
+import useNightDive from '../hooks/useNightDive'
 const footerLogoImg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791691227/TDV-Media/UI/footer%20logo.png'
 import ViberQRModal from './ViberQRModal'
 
@@ -88,6 +89,7 @@ const SOCIALS = [
 
 export default function Footer() {
   const [isViberQrOpen, setIsViberQrOpen] = useState(false)
+  const isNightDive = useNightDive()
 
   const handleSocialClick = (s, e) => {
     if (s.isViber) {
@@ -138,7 +140,7 @@ export default function Footer() {
           <div className="mt-9 grid grid-cols-2 gap-x-6 gap-y-4">
             {/* QUICK LINKS */}
             <div>
-              <h3 className="font-heading text-xl font-bold tracking-wider text-accent uppercase mb-3">
+              <h3 className={`font-heading text-xl font-bold tracking-wider uppercase mb-3 ${isNightDive ? 'text-[#FFCD00]' : 'text-accent'}`}>
                 QUICK LINKS
               </h3>
               <ul className="flex flex-col">
@@ -146,7 +148,7 @@ export default function Footer() {
                   <li key={item.label}>
                     <Link
                       to={item.to}
-                      className="flex items-center justify-between py-1.5 text-[15px] text-white/85 hover:text-white active:text-accent transition-colors"
+                      className={`flex items-center justify-between py-1.5 text-[15px] ${isNightDive ? 'text-white hover:text-white' : 'text-white/85 hover:text-white active:text-accent'} transition-colors`}
                     >
                       <span>{item.label}</span>
                       <svg
@@ -165,7 +167,7 @@ export default function Footer() {
 
             {/* LEGAL */}
             <div>
-              <h3 className="font-heading text-xl font-bold tracking-wider text-accent uppercase mb-3">
+              <h3 className={`font-heading text-xl font-bold tracking-wider uppercase mb-3 ${isNightDive ? 'text-[#FFCD00]' : 'text-accent'}`}>
                 LEGAL
               </h3>
               <ul className="flex flex-col">
@@ -173,7 +175,7 @@ export default function Footer() {
                   <li key={item.label}>
                     <Link
                       to={item.to}
-                      className="flex items-center justify-between py-1.5 text-[15px] text-white/85 hover:text-white active:text-accent transition-colors"
+                      className={`flex items-center justify-between py-1.5 text-[15px] ${isNightDive ? 'text-white hover:text-white' : 'text-white/85 hover:text-white active:text-accent'} transition-colors`}
                     >
                       <span>{item.label}</span>
                       <svg
@@ -196,7 +198,7 @@ export default function Footer() {
 
           {/* CONTACT */}
           <div>
-            <h3 className="font-heading text-xl font-bold tracking-wider text-accent uppercase mb-4">
+            <h3 className={`font-heading text-xl font-bold tracking-wider uppercase mb-4 ${isNightDive ? 'text-[#FFCD00]' : 'text-accent'}`}>
               CONTACT
             </h3>
             <div className="flex items-center justify-between flex-wrap gap-y-3">
@@ -223,15 +225,15 @@ export default function Footer() {
               {/* Email Link */}
               <a
                 href="mailto:sanjeev.bajaj@thedivevillage.com"
-                className="inline-flex items-center gap-2 text-white hover:text-accent active:opacity-80 transition-colors group min-w-0"
+                className={`inline-flex items-center gap-2 text-white ${isNightDive ? 'hover:text-white' : 'hover:text-accent'} active:opacity-80 transition-colors group min-w-0`}
               >
-                <div className="w-9 h-9 rounded-full border border-sky-400/40 flex items-center justify-center shrink-0 group-hover:border-accent transition-colors">
-                  <svg className="w-4 h-4 text-white group-hover:text-accent transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <div className={`w-9 h-9 rounded-full border ${isNightDive ? 'border-white/30' : 'border-sky-400/40 group-hover:border-accent'} flex items-center justify-center shrink-0 transition-colors`}>
+                  <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <rect x="2" y="4" width="20" height="16" rx="2" />
                     <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
                   </svg>
                 </div>
-                <span className="text-[13px] sm:text-sm font-normal text-white/95 group-hover:text-accent transition-colors truncate">
+                <span className="text-[13px] sm:text-sm font-normal text-white truncate">
                   sanjeev.bajaj@thedivevillage.com
                 </span>
               </a>
@@ -276,7 +278,7 @@ export default function Footer() {
             {/* Desktop: 3 Columns on same row (Quick Links, Legal, Contact) */}
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 sm:gap-8 lg:col-span-9 lg:grid-cols-3 items-stretch">
               <div className="flex flex-col col-start-1 sm:col-auto h-full">
-                <h3 className="font-heading text-base sm:text-lg font-bold uppercase tracking-wider sm:tracking-widest text-accent">
+                <h3 className={`font-heading text-base sm:text-lg font-bold uppercase tracking-wider sm:tracking-widest ${isNightDive ? 'text-[#FFCD00]' : 'text-accent'}`}>
                   Quick Links
                 </h3>
                 <ul className="mt-3 sm:mt-4 flex flex-1 flex-col justify-between space-y-2 sm:space-y-0">
@@ -284,7 +286,7 @@ export default function Footer() {
                     <li key={l.label}>
                       <Link
                         to={l.to}
-                        className="text-xs sm:text-sm text-white/80 transition duration-hover hover:text-accent whitespace-nowrap"
+                        className={`text-xs sm:text-sm ${isNightDive ? 'text-white hover:text-white' : 'text-white/80 hover:text-accent'} transition duration-hover whitespace-nowrap`}
                       >
                         {l.label}
                       </Link>
@@ -294,7 +296,7 @@ export default function Footer() {
               </div>
 
               <div className="flex flex-col col-start-2 sm:col-auto h-full">
-                <h3 className="font-heading text-base sm:text-lg font-bold uppercase tracking-wider sm:tracking-widest text-accent">
+                <h3 className={`font-heading text-base sm:text-lg font-bold uppercase tracking-wider sm:tracking-widest ${isNightDive ? 'text-[#FFCD00]' : 'text-accent'}`}>
                   Legal
                 </h3>
                 <ul className="mt-3 sm:mt-4 flex flex-1 flex-col justify-between space-y-2 sm:space-y-0">
@@ -302,7 +304,7 @@ export default function Footer() {
                     <li key={l.label}>
                       <Link
                         to={l.to}
-                        className="text-xs sm:text-sm text-white/80 transition duration-hover hover:text-accent whitespace-nowrap"
+                        className={`text-xs sm:text-sm ${isNightDive ? 'text-white hover:text-white' : 'text-white/80 hover:text-accent'} transition duration-hover whitespace-nowrap`}
                       >
                         {l.label}
                       </Link>
@@ -312,7 +314,7 @@ export default function Footer() {
               </div>
 
               <div className="flex flex-col col-start-1 col-span-2 sm:col-span-1 sm:col-start-auto mt-2 sm:mt-0 h-full">
-                <h3 className="font-heading text-base sm:text-lg font-bold uppercase tracking-wider sm:tracking-widest text-accent">
+                <h3 className={`font-heading text-base sm:text-lg font-bold uppercase tracking-wider sm:tracking-widest ${isNightDive ? 'text-[#FFCD00]' : 'text-accent'}`}>
                   Contact
                 </h3>
                 <div className="mt-3 sm:mt-4 flex flex-1 flex-col justify-between space-y-3">
@@ -324,12 +326,12 @@ export default function Footer() {
                           onClick={(e) => handleSocialClick(s, e)}
                           target={s.to.startsWith('http') ? '_blank' : '_self'}
                           rel={s.to.startsWith('http') ? 'noopener noreferrer' : undefined}
-                          className="group inline-flex items-center gap-3 text-xs sm:text-sm text-white/80 hover:text-white transition duration-200"
+                          className="group inline-flex items-center gap-3 text-xs sm:text-sm text-white hover:text-white transition duration-200"
                         >
                           <span className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 ${s.badgeBg} text-white shadow-sm transition-transform group-hover:scale-110`}>
                             {s.icon}
                           </span>
-                          <span className="font-medium group-hover:text-accent transition-colors whitespace-nowrap">
+                          <span className={`font-medium ${isNightDive ? 'text-white group-hover:text-white' : 'group-hover:text-accent'} transition-colors whitespace-nowrap`}>
                             {s.label}
                           </span>
                         </a>
@@ -341,15 +343,15 @@ export default function Footer() {
                   <div className="pt-2 border-t border-white/10">
                     <a
                       href="mailto:sanjeev.bajaj@thedivevillage.com"
-                      className="inline-flex items-center gap-2 text-white/80 hover:text-accent transition-colors group text-xs sm:text-sm"
+                      className={`inline-flex items-center gap-2 text-white ${isNightDive ? 'hover:text-white' : 'hover:text-accent'} transition-colors group text-xs sm:text-sm`}
                     >
-                      <div className="w-6 h-6 rounded-full border border-sky-400/40 flex items-center justify-center shrink-0 group-hover:border-accent transition-colors">
-                        <svg className="w-3.5 h-3.5 text-white/80 group-hover:text-accent transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <div className={`w-6 h-6 rounded-full border ${isNightDive ? 'border-white/30' : 'border-sky-400/40 group-hover:border-accent'} flex items-center justify-center shrink-0 transition-colors`}>
+                        <svg className="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <rect x="2" y="4" width="20" height="16" rx="2" />
                           <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
                         </svg>
                       </div>
-                      <span className="font-medium truncate group-hover:text-accent transition-colors">
+                      <span className="font-medium truncate transition-colors text-white">
                         sanjeev.bajaj@thedivevillage.com
                       </span>
                     </a>

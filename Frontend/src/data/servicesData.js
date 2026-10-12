@@ -2,6 +2,11 @@
 export const getVideoThumbnail = (videoUrl) => {
   if (!videoUrl) return ''
   if (videoUrl.includes('res.cloudinary.com') && videoUrl.includes('/video/upload/')) {
+    if (videoUrl.includes('/c_crop,ar_9:16/')) {
+      return videoUrl
+        .replace('/c_crop,ar_9:16/', '/c_crop,ar_9:16/so_0,w_800,q_auto,f_auto/')
+        .replace(/\.(mp4|MP4)$/i, '.jpg')
+    }
     return videoUrl
       .replace('/video/upload/', '/video/upload/so_0,w_800,q_auto,f_auto/')
       .replace(/\.(mp4|MP4)$/i, '.jpg')
@@ -74,7 +79,7 @@ const extBubbleCoral = 'https://res.cloudinary.com/qvbunv8y/image/upload/v179145
 const extBaitball = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458179/TDV-Media/Extras%20for%20Gallery/School_of_Baitball.webp';
 const extMantaRayVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458144/TDV-Media/Extras%20for%20Gallery/Manta_Ray_2.mp4';
 const extBarracudasVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458200/TDV-Media/Extras%20for%20Gallery/Silver_Barracudas.mp4';
-const extTurtleVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458118/TDV-Media/Extras%20for%20Gallery/Hawksbill_Sea_Turtle.mp4';
+const extTurtleVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/c_crop,ar_9:16/v1791458106/TDV-Media/Extras%20for%20Gallery/Hawksbill_Sea_Turtle_2.mp4';
 const extTrevallyVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458043/TDV-Media/Extras%20for%20Gallery/Big_Eye_Trevally.mp4';
 const extStingrayVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458073/TDV-Media/Extras%20for%20Gallery/Bluespotted_Stingray.mp4';
 const extScubaDiverVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458832/TDV-Media/Services/Scuba_Diver.mp4';

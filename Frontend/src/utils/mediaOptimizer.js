@@ -29,7 +29,13 @@ export function transformCloudinaryUrl(url, transformString) {
     }
   }
 
+  const existingTransforms = segments.slice(0, assetPathIndex).filter(Boolean)
   const assetPath = segments.slice(assetPathIndex).join('/')
+
+  if (existingTransforms.length > 0) {
+    return `${prefix}${existingTransforms.join('/')}/${transformString}/${assetPath}`
+  }
+
   return `${prefix}${transformString}/${assetPath}`
 }
 

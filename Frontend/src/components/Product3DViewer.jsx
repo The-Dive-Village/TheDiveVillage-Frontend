@@ -6,22 +6,10 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
   const modelRef = useRef(null)
   const containerRef = useRef(null)
 
-  const isCap = Boolean(
-    (src && src.toLowerCase().includes('cap')) ||
-    (alt && alt.toLowerCase().includes('cap')) ||
-    productId === 'product-dive-cap'
-  )
-
   const isBag = Boolean(
     (src && (src.toLowerCase().includes('bag') || src.toLowerCase().includes('backpack'))) ||
     (alt && (alt.toLowerCase().includes('bag') || alt.toLowerCase().includes('backpack'))) ||
     productId === 'product-ocean-bag'
-  )
-
-  const isSweetheart = Boolean(
-    (src && src.toLowerCase().includes('sweetheart')) ||
-    (alt && alt.toLowerCase().includes('sweetheart')) ||
-    productId === 'product-womens-shirt'
   )
 
   useEffect(() => {
@@ -147,16 +135,16 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
     }
   }, [scriptLoaded, isBag])
 
-  // Apply non-glossy, soft matte finish and double-sided rendering to 3D materials
+  // Apply non-glossy, soft matte finish, brighten dark tones, and double-sided rendering to 3D materials
   useEffect(() => {
     const viewer = modelRef.current
     if (!viewer) return
 
-    const applyMatteAndDoubleSided = () => {
+    const applyMatteAndBrighten = () => {
       try {
+        // 1. High-level ModelViewer Material API
         if (viewer.model && viewer.model.materials) {
           viewer.model.materials.forEach((mat) => {
-            // Enable double-sided rendering so inside of mesh doesn't disappear when turned
             if (typeof mat.setDoubleSided === 'function') {
               mat.setDoubleSided(true)
             } else {
@@ -165,19 +153,16 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
 
             const pbr = mat.pbrMetallicRoughness
             if (pbr) {
-              // Ultra matte for sweetheart top: 1.0 maximum roughness, 0.0 metallic
-              pbr.setRoughnessFactor(isSweetheart ? 1.0 : isCap ? 0.65 : isBag ? 0.75 : 0.85)
+              pbr.setRoughnessFactor(1.0)
               pbr.setMetallicFactor(0.0)
 
-              // Detach embedded roughness/metallic texture map so it doesn't force shiny spots
-              if (isSweetheart && pbr.metallicRoughnessTexture && typeof pbr.metallicRoughnessTexture.setTexture === 'function') {
+              if (pbr.metallicRoughnessTexture && typeof pbr.metallicRoughnessTexture.setTexture === 'function') {
                 try {
                   pbr.metallicRoughnessTexture.setTexture(null)
                 } catch (e) {}
               }
             }
 
-            // Remove specular/clearcoat glossiness if supported in GLTF extensions
             if (mat.clearcoat) {
               if (typeof mat.clearcoat.setClearcoatFactor === 'function') {
                 mat.clearcoat.setClearcoatFactor(0.0)
@@ -188,75 +173,136 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
             }
             if (mat.specular) {
               if (typeof mat.specular.setSpecularFactor === 'function') {
-                mat.specular.setSpecularFactor(isSweetheart ? 0.0 : 0.2)
+                mat.specular.setSpecularFactor(0.0)
               }
-              if (isSweetheart && typeof mat.specular.setSpecularColorFactor === 'function') {
+              if (typeof mat.specular.setSpecularColorFactor === 'function') {
                 mat.specular.setSpecularColorFactor([0, 0, 0])
               }
             }
-            if (isSweetheart && mat.ior && typeof mat.ior.setIor === 'function') {
+            if (mat.ior && typeof mat.ior.setIor === 'function') {
               try {
-                mat.ior.setIor(1.0) // 1.0 = no Fresnel reflection
+                mat.ior.setIor(1.0)
               } catch (e) {}
             }
-
-            // Deep configuration on underlying Three.js materials to eliminate all specular highlights
-            const applyToSymbols = (obj) => {
-              if (!obj) return
-              Object.getOwnPropertySymbols(obj).forEach((sym) => {
-                const val = obj[sym]
-                if (val && typeof val.forEach === 'function') {
-                  val.forEach((threeMat) => {
-                    if (threeMat && threeMat.isMaterial) {
-                      if (isSweetheart) {
-                        threeMat.roughness = 1.0
-                        threeMat.metalness = 0.0
-                        threeMat.roughnessMap = null
-                        threeMat.metalnessMap = null
-                        threeMat.envMapIntensity = 0.3
-                        if (threeMat.clearcoat !== undefined) threeMat.clearcoat = 0.0
-                        if (threeMat.sheen !== undefined) threeMat.sheen = 0.0
-                        if (threeMat.specularIntensity !== undefined) threeMat.specularIntensity = 0.0
-                        if (threeMat.ior !== undefined) threeMat.ior = 1.0
-                        if (threeMat.normalScale && typeof threeMat.normalScale.set === 'function') {
-                          threeMat.normalScale.set(0.4, 0.4)
-                        }
-                      } else {
-                        threeMat.roughness = isCap ? 0.65 : isBag ? 0.75 : 0.85
-                        threeMat.metalness = 0.0
-                        threeMat.envMapIntensity = 0.25
-                      }
-                      threeMat.needsUpdate = true
-                    }
-                  })
-                }
-              })
-            }
-
-            applyToSymbols(mat)
-            applyToSymbols(pbr)
           })
         }
+
+        // 2. Deep recursive traversal across all Three.js materials in the scene
+        const visited = new Set()
+        const threeMaterials = new Set()
+
+        const scan = (obj, depth = 0) => {
+          if (!obj || depth > 6 || visited.has(obj) || typeof obj !== 'object') return
+          visited.add(obj)
+
+          if (obj.isMaterial) {
+            threeMaterials.add(obj)
+            return
+          }
+          if (obj.isMesh && obj.material) {
+            if (Array.isArray(obj.material)) {
+              obj.material.forEach((m) => threeMaterials.add(m))
+            } else {
+              threeMaterials.add(obj.material)
+            }
+          }
+          if (obj.isScene || obj.isObject3D) {
+            obj.traverse((node) => {
+              if (node.isMesh && node.material) {
+                if (Array.isArray(node.material)) {
+                  node.material.forEach((m) => threeMaterials.add(m))
+                } else {
+                  threeMaterials.add(node.material)
+                }
+              }
+            })
+            return
+          }
+
+          if (typeof obj.forEach === 'function') {
+            try {
+              obj.forEach((item) => scan(item, depth + 1))
+            } catch (e) {}
+          }
+
+          Object.getOwnPropertySymbols(obj).forEach((sym) => {
+            try {
+              scan(obj[sym], depth + 1)
+            } catch (e) {}
+          })
+
+          Object.getOwnPropertyNames(obj).forEach((key) => {
+            try {
+              scan(obj[key], depth + 1)
+            } catch (e) {}
+          })
+        }
+
+        scan(viewer)
+        if (viewer.model) scan(viewer.model)
+
+        threeMaterials.forEach((threeMat) => {
+          if (!threeMat || !threeMat.isMaterial) return
+
+          // Soft matte finish - zero shine/gloss, gentle fabric texture
+          threeMat.roughness = 0.9
+          threeMat.metalness = 0.0
+
+          // Rich ambient diffuse lighting so garments are brightly lit and fully visible
+          threeMat.envMapIntensity = 0.95
+
+          if ('clearcoat' in threeMat) threeMat.clearcoat = 0.0
+          if ('clearcoatRoughness' in threeMat) threeMat.clearcoatRoughness = 1.0
+          if ('clearcoatMap' in threeMat) threeMat.clearcoatMap = null
+          if ('clearcoatNormalMap' in threeMat) threeMat.clearcoatNormalMap = null
+          if ('sheen' in threeMat) threeMat.sheen = 0.0
+          if ('specularIntensity' in threeMat) threeMat.specularIntensity = 0.0
+          if ('specularIntensityMap' in threeMat) threeMat.specularIntensityMap = null
+          if (threeMat.specularColor && typeof threeMat.specularColor.set === 'function') {
+            threeMat.specularColor.set(0, 0, 0)
+          }
+          if ('specularColorMap' in threeMat) threeMat.specularColorMap = null
+          if ('ior' in threeMat) threeMat.ior = 1.0
+          if ('reflectivity' in threeMat) threeMat.reflectivity = 0.0
+
+          // Natural fabric drape and fold definition
+          if (threeMat.normalScale && typeof threeMat.normalScale.set === 'function') {
+            threeMat.normalScale.set(0.75, 0.75)
+          }
+
+          // Lift dark tones so black models have rich graphite visibility instead of pitch-dark silhouettes
+          if (threeMat.color) {
+            threeMat.color.r = Math.max(threeMat.color.r, 0.22)
+            threeMat.color.g = Math.max(threeMat.color.g, 0.22)
+            threeMat.color.b = Math.max(threeMat.color.b, 0.22)
+          }
+
+          threeMat.needsUpdate = true
+        })
       } catch (err) {
         console.warn('Could not configure 3D material properties', err)
       }
     }
 
     const runMatte = () => {
-      applyMatteAndDoubleSided()
-      setTimeout(applyMatteAndDoubleSided, 150)
-      setTimeout(applyMatteAndDoubleSided, 600)
+      applyMatteAndBrighten()
+      setTimeout(applyMatteAndBrighten, 150)
+      setTimeout(applyMatteAndBrighten, 600)
     }
 
-    viewer.addEventListener('load', runMatte)
-    if (viewer.loaded) {
+    const handleLoad = () => {
       runMatte()
     }
 
-    return () => {
-      viewer.removeEventListener('load', runMatte)
+    viewer.addEventListener('load', handleLoad)
+    if (viewer.modelIsVisible || viewer.loaded) {
+      handleLoad()
     }
-  }, [src, scriptLoaded, isCap, isBag, isSweetheart])
+
+    return () => {
+      viewer.removeEventListener('load', handleLoad)
+    }
+  }, [src, scriptLoaded])
 
   return (
     <div 
@@ -283,10 +329,10 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
         min-camera-orbit="auto 75deg auto"
         max-camera-orbit="auto 75deg auto"
         environment-image="neutral"
-        exposure={isSweetheart ? "1.25" : isCap ? "2.5" : isBag ? "1.8" : "1.4"}
-        shadow-intensity={isSweetheart ? "0.15" : isCap ? "0.08" : isBag ? "0.2" : "0.35"}
+        exposure="1.85"
+        shadow-intensity="0.10"
         shadow-softness="1.0"
-        tone-mapping={isSweetheart ? "neutral" : "commerce"}
+        tone-mapping="neutral"
         bounds="tight"
         style={{ width: '100%', height: '100%', minHeight: '340px' }}
       >

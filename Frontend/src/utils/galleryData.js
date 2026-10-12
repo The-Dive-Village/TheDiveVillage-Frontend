@@ -85,7 +85,7 @@ export const GALLERY_ITEMS = [
   {
     "id": "gallery-item-10",
     "type": "video",
-    "src": "https://res.cloudinary.com/qvbunv8y/video/upload/v1791458118/TDV-Media/Extras%20for%20Gallery/Hawksbill_Sea_Turtle.mp4",
+    "src": "https://res.cloudinary.com/qvbunv8y/video/upload/c_crop,ar_9:16/v1791458106/TDV-Media/Extras%20for%20Gallery/Hawksbill_Sea_Turtle_2.mp4",
     "title": "Hawksbill Sea Turtle",
     "category": "marine",
     "filename": "Hawksbill Sea Turtle.mp4"
@@ -113,14 +113,6 @@ export const GALLERY_ITEMS = [
     "title": "Manta Ray",
     "category": "marine",
     "filename": "Manta Ray (2).mp4"
-  },
-  {
-    "id": "gallery-item-14",
-    "type": "video",
-    "src": "https://res.cloudinary.com/qvbunv8y/video/upload/v1791458169/TDV-Media/Extras%20for%20Gallery/Manta_Ray.mp4",
-    "title": "Manta Ray",
-    "category": "marine",
-    "filename": "Manta Ray.mp4"
   },
   {
     "id": "gallery-item-15",
@@ -353,14 +345,6 @@ export const GALLERY_ITEMS = [
     "title": "Scuba Diving",
     "category": "marine",
     "filename": "Scuba Diving.webp"
-  },
-  {
-    "id": "gallery-item-44",
-    "type": "image",
-    "src": "https://res.cloudinary.com/qvbunv8y/image/upload/v1791458189/TDV-Media/Extras%20for%20Gallery/Scubadiving_2.webp",
-    "title": "Scubadiving",
-    "category": "marine",
-    "filename": "Scubadiving (2).webp"
   },
   {
     "id": "gallery-item-45",

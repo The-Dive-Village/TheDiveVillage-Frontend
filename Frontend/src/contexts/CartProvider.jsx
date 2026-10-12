@@ -36,25 +36,18 @@ export function CartProvider({ children }) {
     prevUidRef.current = curUid
 
     if (!curUid) {
-      // Switched to guest mode (logged out)
-      if (prevUid) {
-        // Preserve current cart items so details do not disappear on logout
-        setItems((current) => {
-          localStorage.setItem('tdv_cart_guest', JSON.stringify(current))
-          return current
-        })
-      } else {
-        const cachedGuest = loadLocalCart('tdv_cart_guest')
-        setItems(cachedGuest)
-      }
+      // Switched to guest mode (logged out) - do not leak previous user's cart
+      setItems([])
+      localStorage.removeItem('tdv_cart_guest')
       setLoading(false)
       return
     }
 
-    // Switched to logged-in user mode
+    // Switched to logged-in user mode:
+    // A brand new account has no cached cart and starts completely empty ([]).
+    // An existing account restores its saved cart items indefinitely.
     const cached = loadLocalCart(storageKey)
-    const guestItems = loadLocalCart('tdv_cart_guest')
-    const initialItems = cached && cached.length > 0 ? cached : (guestItems || [])
+    const initialItems = Array.isArray(cached) && cached.length > 0 ? cached : []
     setItems(initialItems)
 
     // Fetch authoritative cart from backend for this user

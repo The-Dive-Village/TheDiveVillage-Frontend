@@ -4,7 +4,6 @@ import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import { loadDiveSites } from '../utils/diveSitesLoader'
 import { getIslandForSite } from '../utils/diveIslandCatalog'
-import { useLenis } from '../utils/lenisReact'
 
 // Official Vite worker setup for MapLibre GL JS
 setWorkerUrl(workerUrl)
@@ -76,36 +75,23 @@ export default function DiveExplorerMap({
 }) {
   const mapContainerRef = useRef(null)
   const mapRef = useRef(null)
-  const lenis = useLenis()
-
-  // Pin website scroll whenever user is hovering / interacting on the map
+  // Prevent wheel/touch events inside map from leaking to page scroll, while keeping the window scrollbar intact
   useEffect(() => {
     const el = mapContainerRef.current
     if (!el) return
 
-    const handlePointerEnter = () => {
-      if (lenis) lenis.stop()
-    }
-    const handlePointerLeave = () => {
-      if (lenis) lenis.start()
-    }
     const stopScroll = (e) => {
       e.stopPropagation()
     }
 
-    el.addEventListener('pointerenter', handlePointerEnter)
-    el.addEventListener('pointerleave', handlePointerLeave)
     el.addEventListener('wheel', stopScroll, { passive: true })
     el.addEventListener('touchmove', stopScroll, { passive: true })
 
     return () => {
-      if (lenis) lenis.start()
-      el.removeEventListener('pointerenter', handlePointerEnter)
-      el.removeEventListener('pointerleave', handlePointerLeave)
       el.removeEventListener('wheel', stopScroll)
       el.removeEventListener('touchmove', stopScroll)
     }
-  }, [lenis])
+  }, [])
 
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)

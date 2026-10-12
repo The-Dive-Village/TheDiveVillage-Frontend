@@ -707,22 +707,6 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, 
     }
   }, [])
 
-  const isCap = Boolean(
-    product.id === 'product-dive-cap' ||
-    (typeof product.glb === 'string' && product.glb.toLowerCase().includes('cap')) ||
-    (product.title && product.title.toLowerCase().includes('cap'))
-  )
-  const isBag = Boolean(
-    product.id === 'product-ocean-bag' ||
-    (typeof product.glb === 'string' && (product.glb.toLowerCase().includes('bag') || product.glb.toLowerCase().includes('backpack'))) ||
-    (product.title && (product.title.toLowerCase().includes('bag') || product.title.toLowerCase().includes('backpack')))
-  )
-  const isSweetheart = Boolean(
-    product.id === 'product-womens-shirt' ||
-    (typeof product.glb === 'string' && product.glb.toLowerCase().includes('sweetheart')) ||
-    (product.title && product.title.toLowerCase().includes('sweetheart'))
-  )
-
   useEffect(() => {
     let active = true
     const el = viewerRef.current
@@ -738,11 +722,10 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, 
               }
               const pbr = mat.pbrMetallicRoughness
               if (pbr) {
-                pbr.setRoughnessFactor(isSweetheart ? 1.0 : isCap ? 0.65 : isBag ? 0.75 : 0.85)
+                pbr.setRoughnessFactor(1.0)
                 pbr.setMetallicFactor(0.0)
 
-                // Detach embedded roughness/metallic texture map so it doesn't force shiny spots
-                if (isSweetheart && pbr.metallicRoughnessTexture && typeof pbr.metallicRoughnessTexture.setTexture === 'function') {
+                if (pbr.metallicRoughnessTexture && typeof pbr.metallicRoughnessTexture.setTexture === 'function') {
                   try {
                     pbr.metallicRoughnessTexture.setTexture(null)
                   } catch (e) {}
@@ -758,55 +741,112 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, 
               }
               if (mat.specular) {
                 if (typeof mat.specular.setSpecularFactor === 'function') {
-                  mat.specular.setSpecularFactor(isSweetheart ? 0.0 : 0.2)
+                  mat.specular.setSpecularFactor(0.0)
                 }
-                if (isSweetheart && typeof mat.specular.setSpecularColorFactor === 'function') {
+                if (typeof mat.specular.setSpecularColorFactor === 'function') {
                   mat.specular.setSpecularColorFactor([0, 0, 0])
                 }
               }
-              if (isSweetheart && mat.ior && typeof mat.ior.setIor === 'function') {
+              if (mat.ior && typeof mat.ior.setIor === 'function') {
                 try {
                   mat.ior.setIor(1.0)
                 } catch (e) {}
               }
-
-              // Deep configuration on underlying Three.js materials to eliminate all specular highlights
-              const applyToSymbols = (obj) => {
-                if (!obj) return
-                Object.getOwnPropertySymbols(obj).forEach((sym) => {
-                  const val = obj[sym]
-                  if (val && typeof val.forEach === 'function') {
-                    val.forEach((threeMat) => {
-                      if (threeMat && threeMat.isMaterial) {
-                        if (isSweetheart) {
-                          threeMat.roughness = 1.0
-                          threeMat.metalness = 0.0
-                          threeMat.roughnessMap = null
-                          threeMat.metalnessMap = null
-                          threeMat.envMapIntensity = 0.3
-                          if (threeMat.clearcoat !== undefined) threeMat.clearcoat = 0.0
-                          if (threeMat.sheen !== undefined) threeMat.sheen = 0.0
-                          if (threeMat.specularIntensity !== undefined) threeMat.specularIntensity = 0.0
-                          if (threeMat.ior !== undefined) threeMat.ior = 1.0
-                          if (threeMat.normalScale && typeof threeMat.normalScale.set === 'function') {
-                            threeMat.normalScale.set(0.4, 0.4)
-                          }
-                        } else {
-                          threeMat.roughness = isCap ? 0.65 : isBag ? 0.75 : 0.85
-                          threeMat.metalness = 0.0
-                          threeMat.envMapIntensity = 0.25
-                        }
-                        threeMat.needsUpdate = true
-                      }
-                    })
-                  }
-                })
-              }
-
-              applyToSymbols(mat)
-              applyToSymbols(pbr)
             })
           }
+
+          // Deep recursive traversal across all Three.js materials
+          const visited = new Set()
+          const threeMaterials = new Set()
+
+          const scan = (obj, depth = 0) => {
+            if (!obj || depth > 6 || visited.has(obj) || typeof obj !== 'object') return
+            visited.add(obj)
+
+            if (obj.isMaterial) {
+              threeMaterials.add(obj)
+              return
+            }
+            if (obj.isMesh && obj.material) {
+              if (Array.isArray(obj.material)) {
+                obj.material.forEach((m) => threeMaterials.add(m))
+              } else {
+                threeMaterials.add(obj.material)
+              }
+            }
+            if (obj.isScene || obj.isObject3D) {
+              obj.traverse((node) => {
+                if (node.isMesh && node.material) {
+                  if (Array.isArray(node.material)) {
+                    node.material.forEach((m) => threeMaterials.add(m))
+                  } else {
+                    threeMaterials.add(node.material)
+                  }
+                }
+              })
+              return
+            }
+
+            if (typeof obj.forEach === 'function') {
+              try {
+                obj.forEach((item) => scan(item, depth + 1))
+              } catch (e) {}
+            }
+
+            Object.getOwnPropertySymbols(obj).forEach((sym) => {
+              try {
+                scan(obj[sym], depth + 1)
+              } catch (e) {}
+            })
+
+            Object.getOwnPropertyNames(obj).forEach((key) => {
+              try {
+                scan(obj[key], depth + 1)
+              } catch (e) {}
+            })
+          }
+
+          scan(el)
+          if (el.model) scan(el.model)
+
+          threeMaterials.forEach((threeMat) => {
+            if (!threeMat || !threeMat.isMaterial) return
+
+            // Soft matte finish - zero shine/gloss, gentle fabric texture
+            threeMat.roughness = 0.9
+            threeMat.metalness = 0.0
+
+            // Rich ambient diffuse lighting so garments are brightly lit and fully visible
+            threeMat.envMapIntensity = 0.95
+
+            if ('clearcoat' in threeMat) threeMat.clearcoat = 0.0
+            if ('clearcoatRoughness' in threeMat) threeMat.clearcoatRoughness = 1.0
+            if ('clearcoatMap' in threeMat) threeMat.clearcoatMap = null
+            if ('clearcoatNormalMap' in threeMat) threeMat.clearcoatNormalMap = null
+            if ('sheen' in threeMat) threeMat.sheen = 0.0
+            if ('specularIntensity' in threeMat) threeMat.specularIntensity = 0.0
+            if ('specularIntensityMap' in threeMat) threeMat.specularIntensityMap = null
+            if (threeMat.specularColor && typeof threeMat.specularColor.set === 'function') {
+              threeMat.specularColor.set(0, 0, 0)
+            }
+            if ('specularColorMap' in threeMat) threeMat.specularColorMap = null
+            if ('ior' in threeMat) threeMat.ior = 1.0
+            if ('reflectivity' in threeMat) threeMat.reflectivity = 0.0
+
+            // Natural fabric drape and fold definition
+            if (threeMat.normalScale && typeof threeMat.normalScale.set === 'function') {
+              threeMat.normalScale.set(0.75, 0.75)
+            }
+
+            // Lift dark tones so black models have rich graphite visibility instead of pitch-dark silhouettes
+            if (threeMat.color) {
+              threeMat.color.r = Math.max(threeMat.color.r, 0.22)
+              threeMat.color.g = Math.max(threeMat.color.g, 0.22)
+              threeMat.color.b = Math.max(threeMat.color.b, 0.22)
+            }
+
+            threeMat.needsUpdate = true
+          })
         } catch (e) { }
       }
 
@@ -839,16 +879,18 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, 
       active = false
       clearTimeout(fallbackTimer)
     }
-  }, [product?.glb, hasHovered, isCap, isBag])
+  }, [product?.glb, hasHovered])
 
   const show3D = isHovered && hasHovered
 
   return (
     <>
-      {/* MOBILE PRODUCT CARD (md:hidden - Transparent BG for day/night mode) */}
+      {/* MOBILE PRODUCT CARD (md:hidden - White Card) */}
       <div
+        data-product-card="true"
         onClick={() => navigate(`/shop/${product.id}`)}
-        className={`md:hidden group rounded-2xl bg-transparent border ${isNightDive ? 'border-white/15 text-white' : 'border-slate-200/80 text-navy'} shadow-sm p-2.5 xs:p-3 flex flex-col justify-between cursor-pointer relative transition active:scale-[0.99]`}
+        style={{ backgroundColor: '#ffffff' }}
+        className="md:hidden group rounded-2xl bg-white border border-slate-200/90 text-navy shadow-sm p-2.5 xs:p-3 flex flex-col justify-between cursor-pointer relative transition active:scale-[0.99]"
       >
         {/* Wishlist Button (Top Right) */}
         <button
@@ -857,7 +899,7 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, 
             e.stopPropagation()
             onToggleWishlist(e)
           }}
-          className={`absolute top-2.5 right-2.5 z-10 w-7.5 h-7.5 xs:w-8 xs:h-8 rounded-full ${isNightDive ? 'bg-white/10 border-white/20 text-white' : 'bg-slate-50/90 border-slate-200/90 text-slate-700'} flex items-center justify-center shadow-sm transition active:scale-90 hover:text-red-500 cursor-pointer`}
+          className="product-wishlist-btn absolute top-2.5 right-2.5 z-10 w-7.5 h-7.5 xs:w-8 xs:h-8 rounded-full bg-slate-100/90 border border-slate-200/90 text-slate-700 flex items-center justify-center shadow-sm transition active:scale-90 hover:text-red-500 cursor-pointer"
           aria-label="Wishlist"
           title={isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}
         >
@@ -875,7 +917,7 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, 
         </button>
 
         {/* Product Image */}
-        <div className="w-full aspect-[4/5] flex items-center justify-center p-2 mb-1 bg-transparent">
+        <div data-product-media="true" style={{ backgroundColor: '#ffffff' }} className="w-full aspect-[4/5] flex items-center justify-center p-2 mb-1 bg-white">
           <img
             src={product.image}
             alt={product.title || product.name}
@@ -887,10 +929,10 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, 
         {/* Info */}
         <div className="flex flex-col flex-1 justify-between mb-2.5">
           <div>
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 block mb-0.5">
+            <span className="product-card-category text-[10px] font-semibold uppercase tracking-wider text-[#00AEC7] block mb-0.5">
               {product.category || 'MERCH'}
             </span>
-            <h3 className={`font-bold ${isNightDive ? 'text-white' : 'text-slate-900'} text-xs xs:text-[13px] leading-snug line-clamp-2 min-h-[32px]`}>
+            <h3 className="product-card-title font-bold text-navy text-xs xs:text-[13px] leading-snug line-clamp-2 min-h-[32px]">
               {product.title || product.name}
             </h3>
           </div>
@@ -900,7 +942,7 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, 
         <button
           type="button"
           onClick={(e) => onQuickAdd(product, e)}
-          className="w-full bg-[#FFCD00] hover:bg-[#FFD700] text-black font-bold py-2 xs:py-2.5 rounded-xl flex items-center justify-center gap-1.5 text-xs xs:text-sm active:scale-95 transition shadow-sm cursor-pointer"
+          className="product-add-btn-mobile w-full bg-[#FFCD00] hover:bg-[#FFD700] text-black font-bold py-2 xs:py-2.5 rounded-xl flex items-center justify-center gap-1.5 text-xs xs:text-sm active:scale-95 transition shadow-sm cursor-pointer"
         >
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
@@ -911,19 +953,21 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, 
         </button>
       </div>
 
-      {/* DESKTOP PRODUCT CARD (hidden md:flex - Transparent BG for day/night mode) */}
+      {/* DESKTOP PRODUCT CARD (hidden md:flex - White Card) */}
       <div
+        data-product-card="true"
         onClick={() => navigate(`/shop/${product.id}`)}
         onMouseEnter={() => {
           setIsHovered(true)
           setHasHovered(true)
         }}
         onMouseLeave={() => setIsHovered(false)}
-        className={`hidden md:flex group rounded-2xl sm:rounded-[32px] bg-transparent border ${isNightDive ? 'border-white/15 text-white' : 'border-navy/10 text-navy'} p-3 sm:p-6 shadow-card hover:shadow-float transition duration-300 flex-col justify-between cursor-pointer relative`}
+        style={{ backgroundColor: '#ffffff' }}
+        className="hidden md:flex group rounded-2xl sm:rounded-[32px] bg-white border border-navy/10 text-navy p-3 sm:p-6 shadow-card hover:shadow-float transition duration-300 flex-col justify-between cursor-pointer relative"
       >
         <div>
           <div className="relative mb-3 sm:mb-5">
-            <div className="aspect-[4/5] w-full rounded-xl sm:rounded-2xl overflow-hidden bg-transparent flex items-center justify-center p-2.5 sm:p-4 relative">
+            <div data-product-media="true" style={{ backgroundColor: '#ffffff' }} className="aspect-[4/5] w-full rounded-xl sm:rounded-2xl overflow-hidden bg-white flex items-center justify-center p-2.5 sm:p-4 relative">
               {/* Low-contrast Skeleton Shimmer Placeholder */}
               {!imgLoaded && (
                 <div className="absolute inset-0 skeleton-shimmer bg-navy/5 z-0" aria-hidden="true" />
@@ -936,7 +980,8 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, 
               />
               {product.glb && hasHovered && (
                 <div
-                  className={`absolute inset-0 w-full h-full z-10 bg-transparent flex items-center justify-center transition-opacity duration-300 cursor-grab active:cursor-grabbing ${show3D ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+                  style={{ backgroundColor: '#ffffff' }}
+                  className={`absolute inset-0 w-full h-full z-10 bg-white flex items-center justify-center transition-opacity duration-300 cursor-grab active:cursor-grabbing ${show3D ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
                 >
                   <model-viewer
                     ref={viewerRef}
@@ -955,14 +1000,14 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, 
                     max-camera-orbit="auto 75deg auto"
                     interaction-prompt="none"
                     environment-image="neutral"
-                    exposure={isSweetheart ? '1.25' : product.id === 'product-dive-cap' || (typeof product.glb === 'string' && product.glb.toLowerCase().includes('cap')) ? '2.5' : '1.35'}
-                    shadow-intensity={isSweetheart ? '0.15' : product.id === 'product-dive-cap' || (typeof product.glb === 'string' && product.glb.toLowerCase().includes('cap')) ? '0.08' : '0.4'}
+                    exposure="1.85"
+                    shadow-intensity="0.10"
                     shadow-softness="1.0"
-                    tone-mapping={isSweetheart ? "neutral" : "commerce"}
+                    tone-mapping="neutral"
                     bounds="tight"
-                    style={{ width: '100%', height: '100%' }}
+                    style={{ width: '100%', height: '100%', backgroundColor: '#ffffff' }}
                   >
-                    <div slot="poster" className="w-full h-full flex items-center justify-center p-4 bg-transparent">
+                    <div slot="poster" style={{ backgroundColor: '#ffffff' }} className="w-full h-full flex items-center justify-center p-4 bg-white">
                       <img src={product.image} alt={product.title} className="max-h-full max-w-full object-contain" />
                     </div>
                   </model-viewer>
@@ -972,19 +1017,19 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, 
           </div>
 
           <div className="mb-2 sm:mb-4">
-            <span className="text-[9px] sm:text-[11px] font-bold uppercase tracking-wider text-accent block mb-0.5 sm:mb-1">{product.category}</span>
-            <h3 className={`font-heading text-xs xs:text-sm sm:text-xl font-bold ${isNightDive ? 'text-white' : 'text-navy'} leading-tight sm:leading-snug group-hover:text-accent transition line-clamp-2 sm:line-clamp-none`}>{product.title}</h3>
-            <p className={`text-[10px] sm:text-xs ${isNightDive ? 'text-white/70' : 'text-navy/70'} line-clamp-1 sm:line-clamp-2 mt-1 sm:mt-2 leading-relaxed hidden xs:block`}>{product.description}</p>
+            <span className="product-card-category text-[9px] sm:text-[11px] font-bold uppercase tracking-wider text-[#00AEC7] block mb-0.5 sm:mb-1">{product.category}</span>
+            <h3 className="product-card-title font-heading text-xs xs:text-sm sm:text-xl font-bold text-navy leading-tight sm:leading-snug transition line-clamp-2 sm:line-clamp-none">{product.title}</h3>
+            <p className="product-card-desc text-[10px] sm:text-xs text-navy/70 line-clamp-1 sm:line-clamp-2 mt-1 sm:mt-2 leading-relaxed hidden xs:block">{product.description}</p>
           </div>
         </div>
 
-        <div className={`pt-2 sm:pt-4 border-t ${isNightDive ? 'border-white/15' : 'border-navy/10'} flex items-center justify-between gap-1.5 sm:gap-3`}>
-          <span className="text-[9px] sm:text-[10px] text-emerald-600 font-bold hidden sm:inline">Inquire within</span>
+        <div className="pt-2 sm:pt-4 border-t border-navy/10 flex items-center justify-between gap-1.5 sm:gap-3">
+          <span className="product-card-inquire text-[9px] sm:text-[10px] text-emerald-600 font-bold hidden sm:inline">Inquire within</span>
           <div className="flex items-center gap-1.5 sm:gap-2 ml-auto sm:ml-0">
             <button
               type="button"
               onClick={onToggleWishlist}
-              className={`w-7 h-7 sm:w-9 sm:h-9 rounded-full ${isNightDive ? 'bg-white/10 hover:bg-white/20 border-white/20 text-white' : 'bg-navy/10 hover:bg-navy border-navy/20 text-navy'} hover:text-white flex items-center justify-center shadow-sm transition duration-200 hover:scale-110 active:scale-95 cursor-pointer shrink-0`}
+              className="product-wishlist-btn w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-navy/5 hover:bg-navy border border-navy/15 text-navy hover:text-white flex items-center justify-center shadow-sm transition duration-200 hover:scale-110 active:scale-95 cursor-pointer shrink-0"
               aria-label="Wishlist"
               title={isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}
             >
@@ -1000,7 +1045,7 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, 
                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
               </svg>
             </button>
-            <button onClick={(e) => onQuickAdd(product, e)} className="rounded-full bg-navy text-white px-3 py-1.5 sm:px-5 sm:py-2.5 text-[10px] sm:text-xs font-bold hover:bg-accent hover:text-navy active:scale-95 transition shadow-sm flex items-center gap-1 cursor-pointer whitespace-nowrap">
+            <button onClick={(e) => onQuickAdd(product, e)} className="product-add-btn rounded-full bg-navy text-white px-3 py-1.5 sm:px-5 sm:py-2.5 text-[10px] sm:text-xs font-bold hover:bg-[#00AEC7] hover:text-navy active:scale-95 transition shadow-sm flex items-center gap-1 cursor-pointer whitespace-nowrap">
               <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" /><line x1="3" y1="6" x2="21" y2="6" /><path d="M16 10a4 4 0 0 1-8 0" /></svg>
               Add
             </button>

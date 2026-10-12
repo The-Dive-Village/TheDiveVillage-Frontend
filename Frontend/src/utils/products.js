@@ -15,7 +15,7 @@ const glbWetSuitFullLengthMale = 'https://res.cloudinary.com/qvbunv8y/raw/upload
 const glbWetSuitShortieFemale = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791458436/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Wet_Suit_Shortie_Female.glb';
 const glbWetSuitShortieMale = glbWetSuitShortieFemale;
 const glbWomensShoulderStrap = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791718918/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Womens_shoulder_strap_shortie_with_all_round_compression.glb';
-const glbWomensSweetheart = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791609981/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Womens_Sweetheart_neck_top.glb';
+const glbWomensSweetheart = '/models/Womens_Sweetheart_neck_top_matte.glb';
 
 // Backpack Assets
 const imgBagFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458222/TDV-Media/Products/Backpack/bag_front.webp';

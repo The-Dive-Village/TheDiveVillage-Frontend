@@ -41,28 +41,17 @@ export function WishlistProvider({ children }) {
     prevUidRef.current = curUid
 
     if (!curUid) {
-      // Switched to guest mode (logged out)
-      if (prevUid) {
-        // Carry forward current items to guest so nothing disappears upon logout
-        setItems((current) => {
-          localStorage.setItem('tdv_wishlist_guest', JSON.stringify(current))
-          return current
-        })
-      } else {
-        setItems(loadWishlist('tdv_wishlist_guest'))
-      }
+      // Switched to guest mode (logged out) - do not leak previous user's wishlist
+      setItems([])
+      localStorage.removeItem('tdv_wishlist_guest')
       return
     }
 
-    // Switched to logged-in user mode
+    // Switched to logged-in user mode:
+    // A brand new account starts completely empty ([]).
+    // An existing account restores its saved wishlist items indefinitely until removed.
     const userWishlist = loadWishlist(`tdv_wishlist_user_${curUid}`)
-    const guestWishlist = loadWishlist('tdv_wishlist_guest')
-    if ((!userWishlist || userWishlist.length === 0) && guestWishlist && guestWishlist.length > 0) {
-      setItems(guestWishlist)
-      localStorage.setItem(`tdv_wishlist_user_${curUid}`, JSON.stringify(guestWishlist))
-    } else {
-      setItems(userWishlist || [])
-    }
+    setItems(Array.isArray(userWishlist) && userWishlist.length > 0 ? userWishlist : [])
   }, [user?.uid])
 
   // Persist items to active storage key

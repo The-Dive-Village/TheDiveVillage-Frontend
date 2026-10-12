@@ -799,26 +799,28 @@ export default function ProductDetail() {
                 <Link
                   key={p.id}
                   to={`/shop/${p.id}`}
+                  data-product-card="true"
+                  style={{ backgroundColor: '#ffffff' }}
                   className="group w-[220px] xs:w-[250px] sm:w-[270px] lg:w-[285px] shrink-0 rounded-2xl sm:rounded-3xl bg-white border border-navy/5 p-3 sm:p-5 shadow-card hover:shadow-float transition duration-300 flex flex-col justify-between"
                 >
                   <div>
-                    <div className="aspect-[4/5] w-full overflow-hidden rounded-xl sm:rounded-2xl bg-white mb-2.5 sm:mb-4 flex items-center justify-center p-2 sm:p-3 relative border border-navy/5">
+                    <div data-product-media="true" style={{ backgroundColor: '#ffffff' }} className="aspect-[4/5] w-full overflow-hidden rounded-xl sm:rounded-2xl bg-white mb-2.5 sm:mb-4 flex items-center justify-center p-2 sm:p-3 relative border border-navy/5">
                       <img
                         src={p.image}
                         alt={p.title}
                         className="max-h-full max-w-full object-contain transition duration-500 group-hover:scale-105"
                       />
                     </div>
-                    <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-accent block mb-0.5 sm:mb-1">
+                    <span className="product-card-category text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-[#00AEC7] block mb-0.5 sm:mb-1">
                       {p.category}
                     </span>
-                    <h3 className="font-heading font-bold text-xs sm:text-sm text-navy group-hover:text-accent transition line-clamp-2 leading-snug">
+                    <h3 className="product-card-title font-heading font-bold text-xs sm:text-sm text-navy transition line-clamp-2 leading-snug">
                       {p.title}
                     </h3>
                   </div>
 
                   <div className="mt-3 sm:mt-4 pt-2 sm:pt-3 border-t border-navy/5 flex justify-end items-center">
-                    <span className="text-[10px] sm:text-xs font-bold text-accent group-hover:underline">
+                    <span className="text-[10px] sm:text-xs font-bold text-[#00AEC7] group-hover:underline">
                       View Gear →
                     </span>
                   </div>

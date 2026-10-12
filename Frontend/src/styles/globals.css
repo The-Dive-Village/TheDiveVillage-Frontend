@@ -29,6 +29,8 @@
     -webkit-tap-highlight-color: transparent !important;
     -webkit-text-size-adjust: 100%;
     overflow-x: hidden;
+    overflow-y: scroll;
+    scrollbar-gutter: stable;
   }
   
   *, *::before, *::after {
@@ -510,6 +512,23 @@
   color: #f8fafc !important;
 }
 
+/* Night Dive Mode Footer: headings in yellow, rest in white only */
+.night-dive footer h3 {
+  color: #FFCD00 !important;
+}
+
+.night-dive footer a,
+.night-dive footer span,
+.night-dive footer p,
+.night-dive footer li {
+  color: #ffffff !important;
+}
+
+.night-dive footer a:hover,
+.night-dive footer a:hover span {
+  color: #ffffff !important;
+}
+
 /* Deep ocean dark backgrounds for page shells and containers */
 .night-dive [class*="bg-[#FAFAFA]"],
 .night-dive [class*="bg-[#F8FAFC]"],
@@ -519,8 +538,8 @@
   color: #f8fafc !important;
 }
 
-/* Primary surface cards, panels & modals */
-.night-dive [class*="bg-white"],
+/* Primary surface cards, panels & modals (excluding product cards) */
+.night-dive [class*="bg-white"]:not([data-product-card]):not([data-product-media]),
 .night-dive aside nav {
   background-color: #081424 !important;
   color: #f8fafc !important;
@@ -1051,4 +1070,80 @@ button, a, input, select, textarea {
 /* Ensure all anchor targets and tab jump targets clear fixed desktop navbar */
 [id] {
   scroll-margin-top: 7rem;
+}
+
+/* ==========================================================================
+   PRODUCT CARDS IN NIGHT DIVE MODE - ALWAYS SOLID WHITE PANELS
+   ========================================================================== */
+html body.night-dive [data-product-card],
+html body.night-dive [data-product-card] div:not(.product-wishlist-btn):not(.product-add-btn):not(.product-add-btn-mobile),
+html body.night-dive [data-product-card] [data-product-media],
+html body.night-dive [data-product-card] [slot="poster"],
+html body.night-dive [data-product-card] model-viewer {
+  background-color: #ffffff !important;
+  background: #ffffff !important;
+}
+
+html body.night-dive [data-product-card] {
+  border-color: rgba(0, 30, 61, 0.12) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35) !important;
+  color: #001e3d !important;
+}
+
+/* Headings and titles inside product cards */
+html body.night-dive [data-product-card] h3,
+html body.night-dive [data-product-card] .product-card-title {
+  color: #001e3d !important;
+}
+
+html body.night-dive [data-product-card]:hover .product-card-title {
+  color: #00AEC7 !important;
+}
+
+/* Descriptions inside product cards */
+html body.night-dive [data-product-card] p,
+html body.night-dive [data-product-card] .product-card-desc {
+  color: rgba(0, 30, 61, 0.72) !important;
+}
+
+/* Category tags */
+html body.night-dive [data-product-card] span.product-card-category,
+html body.night-dive [data-product-card] .product-card-category {
+  color: #00AEC7 !important;
+}
+
+/* Inquire within text */
+html body.night-dive [data-product-card] .product-card-inquire {
+  color: #059669 !important;
+}
+
+/* Wishlist button */
+html body.night-dive [data-product-card] .product-wishlist-btn {
+  background-color: rgba(0, 30, 61, 0.06) !important;
+  border-color: rgba(0, 30, 61, 0.15) !important;
+  color: #001e3d !important;
+}
+html body.night-dive [data-product-card] .product-wishlist-btn:hover {
+  background-color: #001e3d !important;
+  color: #ffffff !important;
+}
+
+/* Desktop Add to Cart button */
+html body.night-dive [data-product-card] .product-add-btn {
+  background-color: #001e3d !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+html body.night-dive [data-product-card] .product-add-btn:hover {
+  background-color: #00AEC7 !important;
+  color: #001e3d !important;
+}
+
+/* Mobile Add to Cart button */
+html body.night-dive [data-product-card] .product-add-btn-mobile {
+  background-color: #FFCD00 !important;
+  color: #000000 !important;
+}
+html body.night-dive [data-product-card] .product-add-btn-mobile span {
+  color: #000000 !important;
 }
