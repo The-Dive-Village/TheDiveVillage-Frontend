@@ -73,7 +73,9 @@ export default function AdminContent() {
     setFaqLoading(true)
     try {
       const res = await contentService.getFaqs({ includeInactive: true })
-      setFaqs(res.data?.data || [])
+      const data = res.data?.data
+      const list = Array.isArray(data) ? data : (Array.isArray(data?.faqs) ? data.faqs : [])
+      setFaqs(list)
     } catch (err) {
       console.error('Failed to fetch FAQs:', err)
       showToast('error', 'Failed to load FAQs')
@@ -89,7 +91,9 @@ export default function AdminContent() {
     setGalleryLoading(true)
     try {
       const res = await contentService.getGallery({ includeInactive: true })
-      setGallery(res.data?.data || [])
+      const data = res.data?.data
+      const list = Array.isArray(data) ? data : (Array.isArray(data?.items) ? data.items : [])
+      setGallery(list)
     } catch (err) {
       console.error('Failed to fetch Gallery:', err)
       showToast('error', 'Failed to load Gallery items')
@@ -112,7 +116,7 @@ export default function AdminContent() {
         question: faq.question || '',
         answer: faq.answer || '',
         category: faq.category || 'General',
-        displayOrder: faq.displayOrder || 0,
+        displayOrder: faq.sortOrder !== undefined ? faq.sortOrder : (faq.displayOrder || 0),
         isActive: faq.isActive ?? true,
       })
     } else {
@@ -132,22 +136,28 @@ export default function AdminContent() {
   const handleSaveFaq = async (e) => {
     e.preventDefault()
     try {
-      await contentService.upsertFaq(faqFormData)
+      const payload = {
+        ...faqFormData,
+        sortOrder: faqFormData.displayOrder,
+      }
+      await contentService.upsertFaq(payload)
       showToast('success', editingFaq ? 'FAQ updated successfully!' : 'FAQ created successfully!')
       setFaqModalOpen(false)
       fetchFaqs()
     } catch (err) {
       console.error('Save FAQ Error:', err)
-      showToast('error', err.response?.data?.message || 'Failed to save FAQ')
+      showToast('error', err.response?.data?.message || err.response?.data?.error || 'Failed to save FAQ')
     }
   }
 
   const handleToggleFaqActive = async (faq) => {
     try {
-      await contentService.upsertFaq({
+      const payload = {
         ...faq,
+        sortOrder: faq.sortOrder !== undefined ? faq.sortOrder : faq.displayOrder,
         isActive: !faq.isActive,
-      })
+      }
+      await contentService.upsertFaq(payload)
       showToast('success', `FAQ ${!faq.isActive ? 'activated' : 'deactivated'}`)
       fetchFaqs()
     } catch (err) {
@@ -177,10 +187,10 @@ export default function AdminContent() {
         title: item.title || '',
         src: item.src || '',
         thumbnail: item.thumbnail || '',
-        mediaType: item.mediaType || 'IMAGE',
+        mediaType: (item.type || item.mediaType || 'IMAGE').toUpperCase(),
         category: item.category || 'Underwater',
         location: item.location || '',
-        displayOrder: item.displayOrder || 0,
+        displayOrder: item.sortOrder !== undefined ? item.sortOrder : (item.displayOrder || 0),
         isActive: item.isActive ?? true,
       })
     } else {
@@ -208,22 +218,30 @@ export default function AdminContent() {
     }
 
     try {
-      await contentService.upsertGalleryItem(galleryFormData)
+      const payload = {
+        ...galleryFormData,
+        type: (galleryFormData.mediaType || 'IMAGE').toLowerCase(),
+        sortOrder: galleryFormData.displayOrder,
+      }
+      await contentService.upsertGalleryItem(payload)
       showToast('success', editingGallery ? 'Gallery item updated!' : 'Gallery item added!')
       setGalleryModalOpen(false)
       fetchGallery()
     } catch (err) {
       console.error('Save Gallery Error:', err)
-      showToast('error', err.response?.data?.message || 'Failed to save Gallery item')
+      showToast('error', err.response?.data?.message || err.response?.data?.error || 'Failed to save Gallery item')
     }
   }
 
   const handleToggleGalleryActive = async (item) => {
     try {
-      await contentService.upsertGalleryItem({
+      const payload = {
         ...item,
+        type: (item.type || item.mediaType || 'image').toLowerCase(),
+        sortOrder: item.sortOrder !== undefined ? item.sortOrder : item.displayOrder,
         isActive: !item.isActive,
-      })
+      }
+      await contentService.upsertGalleryItem(payload)
       showToast('success', `Media ${!item.isActive ? 'published' : 'hidden'}`)
       fetchGallery()
     } catch (err) {
@@ -231,6 +249,7 @@ export default function AdminContent() {
       showToast('error', 'Failed to update media status')
     }
   }
+
 
   const handleDeleteGallery = async (id) => {
     if (!window.confirm('Are you sure you want to delete this media item?')) return
@@ -259,7 +278,8 @@ export default function AdminContent() {
     const matchesSearch =
       (item.title || '').toLowerCase().includes(gallerySearch.toLowerCase()) ||
       (item.location || '').toLowerCase().includes(gallerySearch.toLowerCase())
-    const matchesType = galleryTypeFilter === 'ALL' || item.mediaType === galleryTypeFilter
+    const itemType = (item.type || item.mediaType || 'IMAGE').toUpperCase()
+    const matchesType = galleryTypeFilter === 'ALL' || itemType === galleryTypeFilter
     return matchesSearch && matchesType
   })
 
@@ -472,7 +492,7 @@ export default function AdminContent() {
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
-                  Images ({gallery.filter((g) => g.mediaType === 'IMAGE').length})
+                  Images ({gallery.filter((g) => (g.type || g.mediaType || 'IMAGE').toUpperCase() === 'IMAGE').length})
                 </button>
                 <button
                   onClick={() => setGalleryTypeFilter('VIDEO')}
@@ -482,7 +502,7 @@ export default function AdminContent() {
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
-                  Videos ({gallery.filter((g) => g.mediaType === 'VIDEO').length})
+                  Videos ({gallery.filter((g) => (g.type || g.mediaType || '').toUpperCase() === 'VIDEO').length})
                 </button>
               </div>
             </div>
@@ -514,7 +534,7 @@ export default function AdminContent() {
                 >
                   {/* Media Preview Thumbnail */}
                   <div className="relative aspect-video bg-slate-100 overflow-hidden">
-                    {item.mediaType === 'VIDEO' ? (
+                    {(item.type || item.mediaType || '').toLowerCase() === 'video' ? (
                       <LazyVideo
                         src={item.src}
                         poster={item.thumbnail || undefined}
@@ -534,7 +554,7 @@ export default function AdminContent() {
 
                     {/* Media Type Badge */}
                     <div className="absolute top-2 left-2 flex items-center gap-1 px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-xs text-[10px] font-semibold text-white">
-                      {item.mediaType === 'VIDEO' ? (
+                      {(item.type || item.mediaType || '').toLowerCase() === 'video' ? (
                         <>
                           <Film className="w-3 h-3 text-amber-300" /> Video
                         </>

@@ -11,8 +11,12 @@ export const contentService = {
   upsertGalleryItem: (payload) => api.post('/api/v1/content/gallery', payload),
   deleteGalleryItem: (id) => api.delete(`/api/v1/content/gallery/${id}`),
 
+  // Contact Messages (Admin)
+  getContactMessages: () => api.get('/api/v1/content/contact'),
+  markContactRead: (id) => api.patch(`/api/v1/content/contact/${id}/read`),
+
   // Audit Logs
-  getAuditLogs: () => api.get('/api/admin/audit-logs'),
+  getAuditLogs: (params) => api.get('/api/admin/audit-logs', { params }),
 }
 
 
