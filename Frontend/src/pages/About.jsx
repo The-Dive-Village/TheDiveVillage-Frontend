@@ -129,8 +129,8 @@ export default function About() {
         />
         <div className={`absolute inset-0 transition-colors duration-700 ${
           isNightDive
-            ? 'bg-gradient-to-b from-[#030a12]/30 via-transparent to-[#030a12]/45'
-            : 'bg-gradient-to-b from-[#00223D]/35 via-transparent to-[#00223D]/50'
+            ? 'bg-[#030a12]/30'
+            : 'bg-[#00223D]/25'
         }`} />
       </div>
 
@@ -325,7 +325,7 @@ export default function About() {
           
           <div className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none gap-4 md:gap-8 md:grid md:grid-cols-3 items-stretch pb-4 md:pb-0 px-2 sm:px-4">
             {reviewsToDisplay.map((t, i) => (
-              <div key={t.id || i} className="w-[85vw] max-w-[340px] xs:max-w-[360px] sm:w-[360px] shrink-0 snap-center md:w-auto bg-white/10 backdrop-blur-2xl rounded-2xl sm:rounded-3xl p-5 sm:p-8 border border-white/20 shadow-2xl hover:bg-white/15 hover:border-white/30 hover:-translate-y-2 transition duration-500 flex flex-col justify-between h-full">
+              <div key={t.id || i} className="w-[85vw] max-w-[340px] xs:max-w-[360px] sm:w-[360px] shrink-0 snap-center md:w-auto bg-white/10 backdrop-blur-2xl rounded-2xl sm:rounded-3xl p-5 sm:p-8 border border-white/20 shadow-none hover:bg-white/15 hover:border-white/30 hover:-translate-y-2 transition duration-500 flex flex-col justify-between h-full">
                 <div>
                   <div className="flex gap-1 mb-3 sm:mb-6">
                     {[...Array(t.rating || 5)].map((_, j) => (

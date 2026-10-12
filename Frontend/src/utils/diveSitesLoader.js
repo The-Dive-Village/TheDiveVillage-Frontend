@@ -99,6 +99,33 @@ export async function loadDiveSites(csvUrl = '/data/dive-sites.csv') {
         '14': { latitude: 50.4008, longitude: -3.5032 },
         // Punta Osejava - Croatia (ID: 24743)
         '24743': { latitude: 43.28666666666666, longitude: 17.019444444444442 },
+
+        // English name canonical overrides (eliminating Taiwanese, Chinese, Korean, Greek/Cyrillic non-Latin characters)
+        '9926': { siteName: 'Sharp Island South' },
+        '10320': { siteName: 'Daqingzhen Pinnacle' },
+        '10376': { siteName: 'Sangzhou Island' },
+        '10617': { siteName: 'Baifu Bay' },
+        '22898': { siteName: 'Twin Sail Rock' },
+        '2429': { siteName: 'Stiladari / Poseidon Beach' },
+        '25319': { siteName: 'Shikanoshima Island' },
+        '10634': { siteName: 'The Grotto' },
+        '11708': { siteName: 'Times Square' },
+        '6182': { siteName: 'Little Hangaechang (Seopseom)' },
+        '6887': { siteName: 'Supseom Island' },
+        '8134': { siteName: 'Guryongpo Reef Resort' },
+        '8135': { siteName: 'Geumgangsan Pinnacle' },
+        '8651': { siteName: 'Namae House Reef' },
+        '8725': { siteName: 'Octagonal Artificial Reef' },
+        '8726': { siteName: 'Namae Beach' },
+        '9249': { siteName: 'Taejongdae Gamji Beach' },
+        '9843': { siteName: 'Seopseom Island' },
+        '10887': { siteName: 'Taejongdae Gamji Beach' },
+        '10888': { siteName: 'Pohang Cheongjin Artificial Reef Point' },
+        '5024': { siteName: 'Confucius Rock' },
+        '10234': { siteName: 'Shilang Reef' },
+        '10245': { siteName: 'Longdong Bay Site 4 (Hemei)' },
+        '10393': { siteName: 'Chushukou (Outlet Reef)' },
+        '10756': { siteName: 'Soft Coral Garden' },
       }
 
       rows.forEach((row, index) => {
@@ -121,8 +148,18 @@ export async function loadDiveSites(csvUrl = '/data/dive-sites.csv') {
             return
           }
           if (override.country) country = override.country
+          if (override.siteName) siteName = override.siteName
           if (override.latitude != null) latStr = override.latitude
           if (override.longitude != null) lngStr = override.longitude
+        }
+
+        // Strict English guarantee: strip any remaining non-Latin script characters (CJK, Hangul, Cyrillic)
+        const nonLatinRegex = /[\u0400-\u04FF\u0590-\u05FF\u0600-\u06FF\u0E00-\u0E7F\u3000-\u303F\u3040-\u309F\u30A0-\u30FF\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF\uAC00-\uD7AF]/g
+        if (nonLatinRegex.test(siteName)) {
+          siteName = siteName.replace(nonLatinRegex, '').replace(/\s{2,}/g, ' ').trim()
+          if (!siteName) {
+            siteName = `${country} Dive Site ${id}`
+          }
         }
 
         // 1. Validate site name

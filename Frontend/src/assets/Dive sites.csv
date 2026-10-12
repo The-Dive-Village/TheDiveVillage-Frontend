@@ -348,12 +348,12 @@ ID,Country,Site_Name,Latitude,Longitude,Natural_Types,PADI_URL,PADI_Latitude,PAD
 24343,Chile,El Salto,-32.24079,-71.52585,Pinnacle; Wall; Cavern; Ocean,https://www.padi.com/dive-site/chile/el-salto-7/,-32.24079142978091,-71.52584552764894,0.0,PADI_coordinate_water
 4775,China,"Dalian, Liaoning: Old Pian Island",38.95263,121.52775,Drift,https://www.padi.com/dive-site/china/dalian-liaoning-old-pian-island/,38.95223,121.5255,200,minimum_nearest_shoreline_crossing
 4789,China,"Guangdong: Wanshan Island, Zhuhai",21.99573,113.75648,Ocean,https://www.padi.com/dive-site/china/guangdong-wanshan-island-zhuhai/,21.995735,113.756479,0.0,PADI_coordinate_water
-9926,China,Sharp Island 橋咀南,22.36333,114.29085,Beach; Reef; Sandy bottom,https://www.padi.com/dive-site/china/sharp-island/,22.364810476229756,114.2897415161133,200,minimum_nearest_shoreline_crossing
-10320,China,大青针,22.31797,115.11861,Drift; Ocean,https://www.padi.com/dive-site/china/-49/,22.317966666666667,115.11861111111112,0.0,PADI_coordinate_water
-10376,China,桑州,22.58570,114.71806,Sandy bottom,https://www.padi.com/dive-site/china/-61/,22.5857,114.71805555555557,0.0,PADI_coordinate_water
-10617,China,百福湾,18.25646,109.56500,Beach,https://www.padi.com/dive-site/china/-78/,18.286408078254293,109.59797859191896,4823,minimum_nearest_shoreline_crossing
+9926,China,Sharp Island South,22.36333,114.29085,Beach; Reef; Sandy bottom,https://www.padi.com/dive-site/china/sharp-island/,22.364810476229756,114.2897415161133,200,minimum_nearest_shoreline_crossing
+10320,China,Daqingzhen Pinnacle,22.31797,115.11861,Drift; Ocean,https://www.padi.com/dive-site/china/-49/,22.317966666666667,115.11861111111112,0.0,PADI_coordinate_water
+10376,China,Sangzhou Island,22.58570,114.71806,Sandy bottom,https://www.padi.com/dive-site/china/-61/,22.5857,114.71805555555557,0.0,PADI_coordinate_water
+10617,China,Baifu Bay,18.25646,109.56500,Beach,https://www.padi.com/dive-site/china/-78/,18.286408078254293,109.59797859191896,4823,minimum_nearest_shoreline_crossing
 12010,China,Dongpai Island,18.21464,109.64124,Cave; Pinnacle,https://www.padi.com/dive-site/china/east-rock-island/,18.21463581263836,109.64123725891116,0.0,PADI_coordinate_water
-22898,China,陵水双帆石,18.43500,110.14000,Ocean,https://www.padi.com/dive-site/china/test/,18.435,110.14,0.0,PADI_coordinate_water
+22898,China,Twin Sail Rock,18.43500,110.14000,Ocean,https://www.padi.com/dive-site/china/test/,18.435,110.14,0.0,PADI_coordinate_water
 1286,Colombia,Morro de Gaira,11.20848,-74.23950,Reef,https://www.padi.com/dive-site/colombia/morro-de-gaira/,11.208481595994511,-74.2395007610321,0.0,PADI_coordinate_water
 1289,Colombia,Inca Inca,11.21607,-74.23492,Reef,https://www.padi.com/dive-site/colombia/inca-inca/,11.216069443485214,-74.23491954803467,0.0,PADI_coordinate_water
 2046,Colombia,Alex Places,10.17129,-75.76202,Reef; Wall,https://www.padi.com/dive-site/colombia/alex-places/,10.17129045699318,-75.76201915740965,0.0,PADI_coordinate_water
@@ -840,7 +840,7 @@ ID,Country,Site_Name,Latitude,Longitude,Natural_Types,PADI_URL,PADI_Latitude,PAD
 2112,Greece,Praso Island,37.88231,24.02332,Wall,https://www.padi.com/dive-site/greece/praso-island/,37.88230560059138,24.023323059082028,0.0,PADI_coordinate_water
 2400,Greece,Anthony Quinn Seal Cave,36.32284,28.21315,Cave,https://www.padi.com/dive-site/greece/anthony-quinn-seal-cave/,36.32284474609915,28.21314811706543,0.0,PADI_coordinate_water
 2401,Greece,Psaropoula,36.45283,28.21961,Beach,https://www.padi.com/dive-site/greece/psaropoula/,36.453650224627545,28.217622041702267,200,minimum_nearest_shoreline_crossing
-2429,Greece,Stiladari/Poseidon Beach/БДЖ,40.02198,23.83544,Beach; Reef; Wall,https://www.padi.com/dive-site/greece/stiladariposeidon-beach/,40.021043,23.833436,200,minimum_nearest_shoreline_crossing
+2429,Greece,Stiladari / Poseidon Beach,40.02198,23.83544,Beach; Reef; Wall,https://www.padi.com/dive-site/greece/stiladariposeidon-beach/,40.021043,23.833436,200,minimum_nearest_shoreline_crossing
 2441,Greece,Pentanissos Islet,36.07443,28.09413,Cave; Drift; Wall,https://www.padi.com/dive-site/greece/pentanissos-islet/,36.07443281327515,28.094133138656613,0.0,PADI_coordinate_water
 2442,Greece,St. Paul's reef and caverns,36.08659,28.09146,Cave; Beach; Reef; Channel,https://www.padi.com/dive-site/greece/st-pauls-reef-and-caverns/,36.08749984518717,28.08955192565918,200,minimum_nearest_shoreline_crossing
 2443,Greece,"Great cave of Lindos \Cleobulus Tomb\""""",36.09915,28.09768,Cave; Wall,https://www.padi.com/dive-site/greece/great-cave-of-lindos-cleobulus-tomb/,36.10006191745426,28.09576392173767,200,minimum_nearest_shoreline_crossing
@@ -1463,7 +1463,7 @@ ID,Country,Site_Name,Latitude,Longitude,Natural_Types,PADI_URL,PADI_Latitude,PAD
 22685,Japan,Manza Coral,26.50745,127.85288,Reef; Wall; Ocean,https://www.padi.com/dive-site/japan/manza-coral/,26.50744673286609,127.85287774193772,0.0,PADI_coordinate_water
 22703,Japan,Gyosho,34.96145,139.75511,Ocean,https://www.padi.com/dive-site/japan/gyosho/,34.961451,139.755106,0.0,PADI_coordinate_water
 25176,Japan,Shakotan Bikuni,43.30679,140.60339,Beach; Reef; Sandy bottom; Wall,https://www.padi.com/dive-site/japan/shakotan-bikuni/,43.30503764769848,140.60281276702884,200,minimum_nearest_shoreline_crossing
-25319,Japan,志賀島 (Shikanoshima),33.68116,130.30583,Beach,https://www.padi.com/dive-site/japan/shikanoshima/,33.68179588346648,130.3078507711521,200,minimum_nearest_shoreline_crossing
+25319,Japan,Shikanoshima Island,33.68116,130.30583,Beach,https://www.padi.com/dive-site/japan/shikanoshima/,33.68179588346648,130.3078507711521,200,minimum_nearest_shoreline_crossing
 5795,Jordan,Cave,29.41584,34.97246,Cave; Beach,https://www.padi.com/dive-site/jordan/snuba/,29.417152,34.973881,200,minimum_nearest_shoreline_crossing
 5813,Jordan,Power Station,29.48103,34.98084,Reef; Wall,https://www.padi.com/dive-site/jordan/power-station-2/,29.482307,34.982293,200,minimum_nearest_shoreline_crossing
 5814,Jordan,FIRST BAY NORTH,29.44868,34.96816,Pinnacle; Reef; Sandy bottom,https://www.padi.com/dive-site/jordan/first-bay-north/,29.449968,34.9696,200,minimum_nearest_shoreline_crossing
@@ -2034,7 +2034,7 @@ ID,Country,Site_Name,Latitude,Longitude,Natural_Types,PADI_URL,PADI_Latitude,PAD
 3888,Northern Mariana Islands,Lau Lau Dive Site,15.16196,145.76184,Beach; Reef; Cavern; Ocean,https://www.padi.com/dive-site/northern-mariana-islands/lau-lau-dive-site/,15.163705,145.762246,200,minimum_nearest_shoreline_crossing
 5428,Northern Mariana Islands,Obyan,15.10396,145.73866,Beach; Reef; Ocean,https://www.padi.com/dive-site/northern-mariana-islands/obyan/,15.105676,145.7392,200,minimum_nearest_shoreline_crossing
 5429,Northern Mariana Islands,East Bay,15.15480,145.76993,Reef; Wall; Ocean,https://www.padi.com/dive-site/northern-mariana-islands/east-bay/,15.156591,145.770078,200,minimum_nearest_shoreline_crossing
-10634,Northern Mariana Islands,그로토,15.26147,145.82535,Cave; Beach,https://www.padi.com/dive-site/northern-mariana-islands/-79/,15.260297432470512,145.82393646240237,200,minimum_nearest_shoreline_crossing
+10634,Northern Mariana Islands,The Grotto,15.26147,145.82535,Cave; Beach,https://www.padi.com/dive-site/northern-mariana-islands/-79/,15.260297432470512,145.82393646240237,200,minimum_nearest_shoreline_crossing
 10635,Northern Mariana Islands,Grotto,15.26001,145.82411,Cave,https://www.padi.com/dive-site/northern-mariana-islands/grotto-2/,15.260007617215573,145.82410812377933,0.0,PADI_coordinate_water
 3844,Oman,Al Fahal Island,23.68061,58.50093,Pinnacle; Reef; Sandy bottom; Wall,https://www.padi.com/dive-site/oman/al-fahal-island/,23.680608,58.500931,0.0,PADI_coordinate_water
 7733,Oman,Falcon Rock,26.30157,56.32484,Drift; Reef; Sandy bottom; Fjord; Ocean,https://www.padi.com/dive-site/oman/falcon-rock/,26.301571,56.324844,0.0,PADI_coordinate_water
@@ -2214,7 +2214,7 @@ ID,Country,Site_Name,Latitude,Longitude,Natural_Types,PADI_URL,PADI_Latitude,PAD
 11463,Philippines,Angol Point,11.94658,121.93065,Beach; Reef; Sandy bottom; Ocean,https://www.padi.com/dive-site/philippines/angol-2/,11.9483531003553,121.9303464891114,200,minimum_nearest_shoreline_crossing
 11464,Philippines,Balinghai,11.96506,121.91902,Reef; Wall; Ocean,https://www.padi.com/dive-site/philippines/balingai/,11.965059689706385,121.91901679489408,0.0,PADI_coordinate_water
 11465,Philippines,Chanel Drift,11.94277,121.94786,Drift; Reef; Channel,https://www.padi.com/dive-site/philippines/chanel-drfit/,11.942770850872073,121.94785601290134,0.0,PADI_coordinate_water
-11708,Philippines,時代廣場,13.51601,120.98649,Drift; Sandy bottom; Wall; Fjord; Ocean,https://www.padi.com/dive-site/philippines/-95/,13.5160121348871,120.986487865448,0.0,PADI_coordinate_water
+11708,Philippines,Times Square,13.51601,120.98649,Drift; Sandy bottom; Wall; Fjord; Ocean,https://www.padi.com/dive-site/philippines/-95/,13.5160121348871,120.986487865448,0.0,PADI_coordinate_water
 12020,Philippines,Wild Scuba Housereef,9.13795,123.22975,Beach; Drift; Reef; Sandy bottom; Channel,https://www.padi.com/dive-site/philippines/wild-scuba-housereef/,9.139628382891807,123.2290989160538,200,minimum_nearest_shoreline_crossing
 12027,Philippines,Pogaling,9.75051,124.49827,Reef; Ocean,https://www.padi.com/dive-site/philippines/pogaling/,9.750509146197093,124.49827194213869,0.0,PADI_coordinate_water
 12238,Philippines,Pescador Island,9.92321,123.34385,Reef; Wall; Ocean,https://www.padi.com/dive-site/philippines/pescador-island/,9.923214024031664,123.3438489228138,0.0,PADI_coordinate_water
@@ -2514,18 +2514,18 @@ ID,Country,Site_Name,Latitude,Longitude,Natural_Types,PADI_URL,PADI_Latitude,PAD
 22496,South Africa,Atlantis Reef,-34.24622,18.48930,Pinnacle; Reef; Ocean,https://www.padi.com/dive-site/south-africa/atlantis-reef/,-34.24621991893907,18.489303827071847,0.0,PADI_coordinate_water
 24524,South Africa,Sardine Run - Wild Coast South Africa,-31.69984,29.48354,Ocean,https://www.padi.com/dive-site/south-africa/sardine-run-wild-coast-south-africa/,-31.69983745112085,29.4835377449705,0.0,PADI_coordinate_water
 6164,South Korea,Tiger Island,33.21866,126.51662,Cave; Reef; Wall,https://www.padi.com/dive-site/south-korea/tiger-island/,33.21865629601743,126.51662349700928,0.0,PADI_coordinate_water
-6182,South Korea,섶섬 작은한개창,33.23205,126.59859,Wall,https://www.padi.com/dive-site/south-korea/-20/,33.23204685703203,126.5985918045044,0.0,PADI_coordinate_water
-6887,South Korea,숲섬,33.22820,126.59837,Beach; Drift; Reef; Sandy bottom; Wall,https://www.padi.com/dive-site/south-korea/-19/,33.229893017740245,126.59910678863528,200,minimum_nearest_shoreline_crossing
-8134,South Korea,구룡포 리조트,36.00229,129.57351,Beach; Drift; Reef; Sandy bottom,https://www.padi.com/dive-site/south-korea/-30/,36.00217380974967,129.57129478454593,200,minimum_nearest_shoreline_crossing
-8135,South Korea,금강산,38.30302,128.57156,Wall,https://www.padi.com/dive-site/south-korea/-29/,38.30302150426262,128.57156038284305,0.0,PADI_coordinate_water
-8651,South Korea,남애 하우스 리프,37.94528,128.79251,Sandy bottom; Ocean,https://www.padi.com/dive-site/south-korea/-35/,37.94528048379506,128.79251003265384,0.0,PADI_coordinate_water
-8725,South Korea,팔각어초,37.94755,128.80217,Sandy bottom,https://www.padi.com/dive-site/south-korea/-37/,37.94754792784192,128.80216598510745,0.0,PADI_coordinate_water
-8726,South Korea,남애비치,37.94110,128.78962,Beach; Sandy bottom,https://www.padi.com/dive-site/south-korea/-36/,37.93942541662378,128.7887763977051,200,minimum_nearest_shoreline_crossing
-9249,South Korea,태종대 감지해변,35.05973,129.07842,Beach; Reef; Sandy bottom,https://www.padi.com/dive-site/south-korea/-42/,35.06084460636465,129.07669544219974,200,minimum_nearest_shoreline_crossing
-9843,South Korea,섶섬,33.23194,126.59988,Drift; Wall,https://www.padi.com/dive-site/south-korea/-44/,33.23193916632726,126.59987926483156,0.0,PADI_coordinate_water
+6182,South Korea,Little Hangaechang (Seopseom),33.23205,126.59859,Wall,https://www.padi.com/dive-site/south-korea/-20/,33.23204685703203,126.5985918045044,0.0,PADI_coordinate_water
+6887,South Korea,Supseom Island,33.22820,126.59837,Beach; Drift; Reef; Sandy bottom; Wall,https://www.padi.com/dive-site/south-korea/-19/,33.229893017740245,126.59910678863528,200,minimum_nearest_shoreline_crossing
+8134,South Korea,Guryongpo Reef Resort,36.00229,129.57351,Beach; Drift; Reef; Sandy bottom,https://www.padi.com/dive-site/south-korea/-30/,36.00217380974967,129.57129478454593,200,minimum_nearest_shoreline_crossing
+8135,South Korea,Geumgangsan Pinnacle,38.30302,128.57156,Wall,https://www.padi.com/dive-site/south-korea/-29/,38.30302150426262,128.57156038284305,0.0,PADI_coordinate_water
+8651,South Korea,Namae House Reef,37.94528,128.79251,Sandy bottom; Ocean,https://www.padi.com/dive-site/south-korea/-35/,37.94528048379506,128.79251003265384,0.0,PADI_coordinate_water
+8725,South Korea,Octagonal Artificial Reef,37.94755,128.80217,Sandy bottom,https://www.padi.com/dive-site/south-korea/-37/,37.94754792784192,128.80216598510745,0.0,PADI_coordinate_water
+8726,South Korea,Namae Beach,37.94110,128.78962,Beach; Sandy bottom,https://www.padi.com/dive-site/south-korea/-36/,37.93942541662378,128.7887763977051,200,minimum_nearest_shoreline_crossing
+9249,South Korea,Taejongdae Gamji Beach,35.05973,129.07842,Beach; Reef; Sandy bottom,https://www.padi.com/dive-site/south-korea/-42/,35.06084460636465,129.07669544219974,200,minimum_nearest_shoreline_crossing
+9843,South Korea,Seopseom Island,33.23194,126.59988,Drift; Wall,https://www.padi.com/dive-site/south-korea/-44/,33.23193916632726,126.59987926483156,0.0,PADI_coordinate_water
 10865,South Korea,lobster crack,33.45497,126.94372,Cavern,https://www.padi.com/dive-site/south-korea/lobster-crack/,33.45496847839538,126.94371700286868,0.0,PADI_coordinate_water
-10887,South Korea,태종대 감지해변,35.05728,129.09727,Beach; Sandy bottom,https://www.padi.com/dive-site/south-korea/-86/,35.05838718706808,129.09553527832034,200,minimum_nearest_shoreline_crossing
-10888,South Korea,포항 청진 인공어초 포인트(십자어초/사각어초),36.17260,129.40151,Beach; Drift; Pinnacle; Sandy bottom; Ocean,https://www.padi.com/dive-site/south-korea/-87/,36.17224835899679,129.39933300018313,200,minimum_nearest_shoreline_crossing
+10887,South Korea,Taejongdae Gamji Beach,35.05728,129.09727,Beach; Sandy bottom,https://www.padi.com/dive-site/south-korea/-86/,35.05838718706808,129.09553527832034,200,minimum_nearest_shoreline_crossing
+10888,South Korea,Pohang Cheongjin Artificial Reef Point,36.17260,129.40151,Beach; Drift; Pinnacle; Sandy bottom; Ocean,https://www.padi.com/dive-site/south-korea/-87/,36.17224835899679,129.39933300018313,200,minimum_nearest_shoreline_crossing
 11285,South Korea,Oedolgae,33.23510,126.54688,Pinnacle; Reef,https://www.padi.com/dive-site/south-korea/oedolgae/,33.23509803855682,126.54687881469728,0.0,PADI_coordinate_water
 79,Spain,Balky Point,37.62896,-0.69976,Beach; Reef,https://www.padi.com/dive-site/spain/balky-point/,37.63032624785593,-0.701225996017456,200,minimum_nearest_shoreline_crossing
 87,Spain,Mar Menuda,41.71774,2.94398,Beach,https://www.padi.com/dive-site/spain/mar-menuda/,41.72213859292662,2.939497232437134,615,minimum_nearest_shoreline_crossing
@@ -2997,11 +2997,11 @@ ID,Country,Site_Name,Latitude,Longitude,Natural_Types,PADI_URL,PADI_Latitude,PAD
 6368,Sweden,"Arild, Kullaberg",56.27637,12.56886,Beach,https://www.padi.com/dive-site/sweden/arild-kullaberg/,56.27772132656148,12.570987939834597,200,minimum_nearest_shoreline_crossing
 6380,Sweden,"Ransvik, Kullaberg",56.30026,12.47839,Beach,https://www.padi.com/dive-site/sweden/ransvik-kullaberg/,56.29134692478438,12.476434707641603,1000,minimum_nearest_shoreline_crossing
 13472,Sweden,Långrevsudden,61.65927,17.38534,Beach; Muck; Sandy bottom,https://www.padi.com/dive-site/sweden/langrevsudden/,61.6575968831283,17.38672256469727,200,minimum_nearest_shoreline_crossing
-5024,Taiwan,Confucius Rock孔子岩,22.65057,121.50404,Cave; Reef; Sandy bottom; Cavern,https://www.padi.com/dive-site/taiwan/confucius-rock/,22.650571,121.504036,0.0,PADI_coordinate_water
-10234,Taiwan,石朗,22.65520,121.47433,Reef; Sandy bottom; Ocean,https://www.padi.com/dive-site/taiwan/-46/,22.655200287773564,121.47432816965912,0.0,PADI_coordinate_water
-10245,Taiwan,龍洞灣4號潛點-和美國小,25.11308,121.91902,Reef; Sandy bottom; Wall; Fjord; Ocean,https://www.padi.com/dive-site/taiwan/4/,25.113075042920453,121.91901683807374,0.0,PADI_coordinate_water
-10393,Taiwan,出水口,21.93278,120.74464,Reef; Ocean,https://www.padi.com/dive-site/taiwan/-63/,21.93277511785911,120.74463844299318,0.0,PADI_coordinate_water
-10756,Taiwan,Soft Coral 軟珊瑚區,21.93524,120.74566,Beach; Ocean,https://www.padi.com/dive-site/taiwan/soft-coral-2/,21.937034643767344,120.74588298797607,200,minimum_nearest_shoreline_crossing
+5024,Taiwan,Confucius Rock,22.65057,121.50404,Cave; Reef; Sandy bottom; Cavern,https://www.padi.com/dive-site/taiwan/confucius-rock/,22.650571,121.504036,0.0,PADI_coordinate_water
+10234,Taiwan,Shilang Reef,22.65520,121.47433,Reef; Sandy bottom; Ocean,https://www.padi.com/dive-site/taiwan/-46/,22.655200287773564,121.47432816965912,0.0,PADI_coordinate_water
+10245,Taiwan,Longdong Bay Site 4 (Hemei),25.11308,121.91902,Reef; Sandy bottom; Wall; Fjord; Ocean,https://www.padi.com/dive-site/taiwan/4/,25.113075042920453,121.91901683807374,0.0,PADI_coordinate_water
+10393,Taiwan,Chushukou (Outlet Reef),21.93278,120.74464,Reef; Ocean,https://www.padi.com/dive-site/taiwan/-63/,21.93277511785911,120.74463844299318,0.0,PADI_coordinate_water
+10756,Taiwan,Soft Coral Garden,21.93524,120.74566,Beach; Ocean,https://www.padi.com/dive-site/taiwan/soft-coral-2/,21.937034643767344,120.74588298797607,200,minimum_nearest_shoreline_crossing
 12163,Taiwan,LongDong NO.4,25.11296,121.91915,Reef; Sandy bottom; Ocean,https://www.padi.com/dive-site/taiwan/longdong-no4/,25.112958775384048,121.91914594465544,0.0,PADI_coordinate_water
 6378,Tanzania,Milimani South,-7.93599,39.78939,Drift; Reef; Ocean,https://www.padi.com/dive-site/tanzania/milimani-south/,-7.935985613111548,39.78939056396485,0.0,PADI_coordinate_water
 6438,Tanzania,Mwana  Wa Mwana,-5.75693,39.21866,Reef,https://www.padi.com/dive-site/tanzania/mwana-wa-mwana/,-5.756927,39.218664,0.0,PADI_coordinate_water
@@ -3505,3 +3505,11 @@ ID,Country,Site_Name,Latitude,Longitude,Natural_Types,PADI_URL,PADI_Latitude,PAD
 7702,Western Sahara,Quinta do Lorde,32.74172,-16.70812,Sandy bottom; Ocean,https://www.padi.com/dive-site/western-sahara/quinta-do-lorde/,32.740685,-16.709862,200,minimum_nearest_shoreline_crossing
 21413,Western Sahara,Parede do Sardinha,32.73813,-16.68113,Sandy bottom; Wall,https://www.padi.com/dive-site/western-sahara/parede-do-sardinha/,32.7374,-16.683083,200,minimum_nearest_shoreline_crossing
 24411,Finland,Porkkala / Vetokannas,59.98840,24.41642,Beach; Sandy bottom; Ocean,https://www.padi.com/dive-site/finland/porkkala-vetokannas/,59.9901011791611,24.41758632659912,200,minimum_nearest_shoreline_crossing
+27001,Philippines,Apo Island (Chapel Point),9.08350,123.26620,Reef; Wall; Ocean,https://www.padi.com/dive-site/philippines/apo-island-chapel/,9.08350,123.26620,0.0,PADI_coordinate_water
+27002,Philippines,Apo Island (Coconut Point),9.09150,123.27450,Drift; Reef; Ocean,https://www.padi.com/dive-site/philippines/apo-island-coconut-point/,9.09150,123.27450,0.0,PADI_coordinate_water
+27003,Philippines,Apo Island (Largahan),9.08800,123.26800,Reef; Geothermal; Ocean,https://www.padi.com/dive-site/philippines/apo-island-largahan/,9.08800,123.26800,0.0,PADI_coordinate_water
+27004,Philippines,Apo Island (Mamsa Point),9.09350,123.27650,Drift; Schooling Fish; Ocean,https://www.padi.com/dive-site/philippines/apo-island-mamsa-point/,9.09350,123.27650,0.0,PADI_coordinate_water
+27005,Philippines,Apo Island (Marine Sanctuary),9.07680,123.27180,Reef; Coral Garden; Ocean,https://www.padi.com/dive-site/philippines/apo-island-sanctuary/,9.07680,123.27180,0.0,PADI_coordinate_water
+27006,Philippines,Apo Island (Rock Point East),9.07300,123.27200,Wall; Coral; Ocean,https://www.padi.com/dive-site/philippines/apo-island-rock-point-east/,9.07300,123.27200,0.0,PADI_coordinate_water
+27007,Philippines,Apo Island (Rock Point West),9.07320,123.26750,Wall; Turtles; Ocean,https://www.padi.com/dive-site/philippines/apo-island-rock-point-west/,9.07320,123.26750,0.0,PADI_coordinate_water
+27008,Philippines,Apo Island (Cogon Reef),9.08850,123.27700,Drift; Pelagics; Ocean,https://www.padi.com/dive-site/philippines/apo-island-cogon/,9.08850,123.27700,0.0,PADI_coordinate_water

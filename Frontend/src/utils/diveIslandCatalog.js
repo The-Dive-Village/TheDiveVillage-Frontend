@@ -12,7 +12,10 @@ export const POPULAR_ISLAND_REGIONS = {
     { name: 'Coron & Busuanga', lat: 12.0, lng: 120.0 },
     { name: 'El Nido & Bacuit Bay', lat: 11.2, lng: 119.4 },
     { name: 'Puerto Galera & Mindoro', lat: 13.5, lng: 120.95 },
-    { name: 'Dauin & Apo Island (Negros)', lat: 9.2, lng: 123.25 },
+    { name: 'Dauin Islands', lat: 9.18, lng: 123.26 },
+    { name: 'Apo Island', lat: 9.08, lng: 123.27 },
+    { name: 'Siquijor Island', lat: 9.18, lng: 123.58 },
+    { name: 'Sumilon Island & South Cebu', lat: 9.43, lng: 123.38 },
     { name: 'Boracay Island', lat: 11.97, lng: 121.92 },
     { name: 'Anilao & Batangas', lat: 13.75, lng: 120.9 },
     { name: 'Tubbataha Reefs', lat: 8.9, lng: 119.9 },
@@ -176,7 +179,40 @@ export const POPULAR_ISLAND_REGIONS = {
     { name: 'Malpelo Island', lat: 4.0, lng: -81.6 },
     { name: 'Taganga & Tayrona', lat: 11.27, lng: -74.19 },
     { name: 'Gorgona Island', lat: 2.96, lng: -78.18 },
-  ]
+  ],
+  'Taiwan': [
+    { name: 'Green Island (Ludao)', lat: 22.66, lng: 121.49 },
+    { name: 'Northeast Coast (Longdong Bay)', lat: 25.11, lng: 121.92 },
+    { name: 'Kenting & South Coast', lat: 21.93, lng: 120.74 },
+    { name: 'Penghu Islands', lat: 23.57, lng: 119.58 },
+    { name: 'Xiaoliuqiu (Lambai Island)', lat: 22.34, lng: 120.37 },
+    { name: 'Orchid Island (Lanyu)', lat: 22.05, lng: 121.55 },
+  ],
+  'China': [
+    { name: 'Sanya & Hainan Island', lat: 18.25, lng: 109.6 },
+    { name: 'Hong Kong & Sai Kung', lat: 22.36, lng: 114.29 },
+    { name: 'Huizhou & Daya Bay', lat: 22.45, lng: 114.9 },
+    { name: 'Zhuhai & Wanshan Archipelago', lat: 22.0, lng: 113.75 },
+    { name: 'Dalian & Liaoning Coast', lat: 38.95, lng: 121.52 },
+  ],
+  'Japan': [
+    { name: 'Okinawa Main Island', lat: 26.4, lng: 127.8 },
+    { name: 'Kerama Islands (Zamami)', lat: 26.23, lng: 127.33 },
+    { name: 'Izu Peninsula & Shizuoka', lat: 34.8, lng: 138.9 },
+    { name: 'Tokyo Bay & Chiba Coast', lat: 34.95, lng: 139.77 },
+    { name: 'Fukuoka & Kyushu Coast', lat: 33.68, lng: 130.3 },
+    { name: 'Wakayama & Kansai Coast', lat: 33.74, lng: 135.3 },
+    { name: 'Hokkaido & Shakotan', lat: 43.3, lng: 140.6 },
+  ],
+  'South Korea': [
+    { name: 'Jeju Island (Seogwipo)', lat: 33.23, lng: 126.55 },
+    { name: 'Busan & South Coast', lat: 35.06, lng: 129.08 },
+    { name: 'Pohang & East Sea Coast', lat: 36.1, lng: 129.5 },
+    { name: 'Gangwon Coast (Namae & Goseong)', lat: 38.0, lng: 128.7 },
+  ],
+  'Northern Mariana Islands': [
+    { name: 'Saipan (The Grotto)', lat: 15.2, lng: 145.75 },
+  ],
 }
 
 /**
@@ -187,14 +223,34 @@ export function getIslandForSite(site) {
   const country = site.country || ''
   const lat = parseFloat(site.latitude)
   const lng = parseFloat(site.longitude)
-  const siteName = (site.siteName || '').toLowerCase()
+  const siteName = (site.siteName || '').trim()
+
+  const nonLatinRegex = /[\u0400-\u04FF\u0590-\u05FF\u0600-\u06FF\u0E00-\u0E7F\u3000-\u303F\u3040-\u309F\u30A0-\u30FF\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF\uAC00-\uD7AF]/
+
+  // Direct island resolution for specific high-profile islands
+  if (country && country.toLowerCase() === 'philippines') {
+    const lowerName = siteName.toLowerCase()
+    const numId = Number(site.id)
+    if (lowerName.includes('apo island') || lowerName.includes('apo reef') || numId === 19886 || (numId >= 27001 && numId <= 27008)) {
+      return 'Apo Island'
+    }
+    if (lowerName.includes('dauin')) {
+      return 'Dauin Islands'
+    }
+    if (lowerName.includes('siquijor') || lowerName.includes('paliton')) {
+      return 'Siquijor Island'
+    }
+    if (lowerName.includes('sumilon')) {
+      return 'Sumilon Island & South Cebu'
+    }
+  }
 
   // 1. Direct site name token detection for island name (e.g. "Ponta Canjana - São Vicente")
   if (siteName.includes(' - ')) {
-    const afterHyphen = site.siteName.split(' - ')[1]
+    const afterHyphen = siteName.split(' - ')[1]
     if (afterHyphen) {
       const cleanIsland = afterHyphen.split(',')[0].trim()
-      if (cleanIsland.length > 2 && cleanIsland.length < 30) {
+      if (cleanIsland.length > 2 && cleanIsland.length < 30 && !nonLatinRegex.test(cleanIsland)) {
         return cleanIsland
       }
     }
