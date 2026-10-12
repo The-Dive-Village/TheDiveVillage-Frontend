@@ -16,6 +16,8 @@ class AudioManager {
     this.wasAudibleBeforeLeave = false
     this.unlockListenersAttached = false
     this.unlockFn = null
+    this.resumeListenersAttached = false
+    this.savedTime = 0
 
     if (typeof window !== 'undefined') {
       if (document.readyState === 'loading') {
@@ -69,6 +71,7 @@ class AudioManager {
       // If audio is currently unmuted and playing, mark unlocked
       if (!audio.muted && !audio.paused) {
         this.hasUnlocked = true
+        this.showMediaNotification()
       }
     }
 
@@ -135,6 +138,7 @@ class AudioManager {
           p.then(() => {
             this.hasUnlocked = true
             this.wasAudibleBeforeLeave = true
+            this.showMediaNotification()
             this.notify()
             removeUnlockListeners()
           }).catch(() => {
@@ -144,6 +148,7 @@ class AudioManager {
         } else {
           this.hasUnlocked = true
           this.wasAudibleBeforeLeave = true
+          this.showMediaNotification()
           this.notify()
           removeUnlockListeners()
         }
@@ -161,22 +166,29 @@ class AudioManager {
     window.addEventListener('tdv-unlock-audio', attemptUnmute)
 
     // ─────────────────────────────────────────────────────────────
-    // Seamless Resume & Pause Matrix (Zero-Click Resumption)
+    // Seamless Resume & Pause Matrix with Media Notification Lifecycle
     //
-    // KEY ARCHITECTURAL INSIGHT:
-    // To allow instant automatic resume on tab switch / window focus
-    // WITHOUT requiring user interaction, NEVER call audio.pause().
-    // Instead, mute the audio (audio.muted = true, volume = 0) when leaving.
-    // When returning, unmute (audio.muted = false, volume = 0.5).
-    // Browsers allow changing muted and volume freely without user gesture!
+    // Handles tab switches ("tables are switched"), window minimize,
+    // and mobile app switches/screen locks on both Desktop and Mobile:
+    // 1. When leaving/minimizing: Audio pauses & media notification popup is REMOVED
+    // 2. When returning: Audio resumes & media notification popup COMES BACK
     // ─────────────────────────────────────────────────────────────
     const handleLeaveSite = () => {
       if (this.isMuted || !this.audio) return
-      if (!this.audio.muted) {
+      if (!this.audio.muted || !this.audio.paused || this.audio.getAttribute('src')) {
         this.wasAudibleBeforeLeave = true
-        // Instantly silence audio without terminating playback session
+        if (this.audio.currentTime > 0) {
+          this.savedTime = this.audio.currentTime
+        }
+        // Instantly silence and pause audio so browser drops active playback
         this.audio.muted = true
         this.audio.volume = 0
+        this.audio.pause()
+        // Immediately dismiss the media notification popup on desktop & mobile
+        this.removeMediaNotification()
+        // Crucial: remove src and load() so Chromium Global Media Controls and Android notification completely destroy the media card
+        this.audio.removeAttribute('src')
+        this.audio.load()
         this.notify()
       }
     }
@@ -186,13 +198,39 @@ class AudioManager {
       if (typeof document !== 'undefined' && document.hidden) return
 
       if (this.wasAudibleBeforeLeave && this.audio) {
-        // Instantly restore sound automatically — zero click required!
+        // Re-attach audio source if detached
+        if (!this.audio.getAttribute('src')) {
+          this.audio.src = AUDIO_SOURCES[this.currentSourceIndex]
+          if (this.savedTime && Number.isFinite(this.savedTime)) {
+            const seekTarget = this.savedTime
+            this.audio.addEventListener(
+              'loadedmetadata',
+              () => {
+                try {
+                  this.audio.currentTime = seekTarget
+                } catch (_) {}
+              },
+              { once: true }
+            )
+          }
+        }
+        // Instantly restore sound and media notification popup
         this.audio.muted = false
         this.audio.volume = 0.5
-        if (this.audio.paused) {
-          this.audio.play().catch(() => {})
+        const p = this.audio.play()
+        if (p !== undefined) {
+          p.then(() => {
+            this.showMediaNotification()
+            this.notify()
+          }).catch((err) => {
+            console.warn('[AudioManager] Resumption blocked by browser policy:', err)
+            // Re-arm gesture listeners so next tap/scroll/cursor instantly restores
+            this.attachResumeOnGesture()
+          })
+        } else {
+          this.showMediaNotification()
+          this.notify()
         }
-        this.notify()
       }
     }
 
@@ -235,6 +273,7 @@ class AudioManager {
         p.then(() => {
           this.hasUnlocked = true
           this.wasAudibleBeforeLeave = true
+          this.showMediaNotification()
           this.notify()
           removeUnlockListeners()
         }).catch(() => {
@@ -293,8 +332,15 @@ class AudioManager {
     this.wasAudibleBeforeLeave = false
     localStorage.setItem('tdv_audio_muted', 'true')
     if (this.audio) {
+      if (this.audio.currentTime > 0) {
+        this.savedTime = this.audio.currentTime
+      }
       this.audio.muted = true
       this.audio.volume = 0
+      this.audio.pause()
+      this.removeMediaNotification()
+      this.audio.removeAttribute('src')
+      this.audio.load()
     }
     this.notify()
   }
@@ -304,19 +350,154 @@ class AudioManager {
     this.wasAudibleBeforeLeave = true
     localStorage.setItem('tdv_audio_muted', 'false')
     if (this.audio && typeof document !== 'undefined' && !document.hidden) {
+      if (!this.audio.getAttribute('src')) {
+        this.audio.src = AUDIO_SOURCES[this.currentSourceIndex]
+        if (this.savedTime && Number.isFinite(this.savedTime)) {
+          const seekTarget = this.savedTime
+          this.audio.addEventListener(
+            'loadedmetadata',
+            () => {
+              try {
+                this.audio.currentTime = seekTarget
+              } catch (_) {}
+            },
+            { once: true }
+          )
+        }
+      }
       this.audio.muted = false
       this.audio.volume = 0.5
       const p = this.audio.play()
       if (p !== undefined) {
         p.then(() => {
           this.hasUnlocked = true
+          this.showMediaNotification()
           this.notify()
         }).catch((e) => {
           console.warn('[AudioManager] Unmute play blocked:', e)
         })
+      } else {
+        this.showMediaNotification()
       }
     }
     this.notify()
+  }
+
+  showMediaNotification() {
+    if (typeof navigator === 'undefined' || !('mediaSession' in navigator)) return
+    try {
+      navigator.mediaSession.playbackState = 'playing'
+      if (typeof MediaMetadata !== 'undefined') {
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: 'Underwater Ambiance',
+          artist: 'The Dive Village',
+          album: "It's a Community",
+          artwork: [
+            {
+              src: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791691225/TDV-Media/UI/Logo.png',
+              sizes: '512x512',
+              type: 'image/png'
+            }
+          ]
+        })
+      }
+      navigator.mediaSession.setActionHandler('play', () => {
+        this.unmute()
+      })
+      navigator.mediaSession.setActionHandler('pause', () => {
+        this.mute()
+      })
+      navigator.mediaSession.setActionHandler('stop', () => {
+        this.mute()
+      })
+    } catch (_) {}
+  }
+
+  removeMediaNotification() {
+    if (typeof navigator === 'undefined' || !('mediaSession' in navigator)) return
+    try {
+      navigator.mediaSession.playbackState = 'none'
+    } catch (_) {}
+    try {
+      navigator.mediaSession.metadata = null
+    } catch (_) {}
+    const actions = ['play', 'pause', 'stop', 'seekbackward', 'seekforward', 'previoustrack', 'nexttrack']
+    actions.forEach((act) => {
+      try {
+        navigator.mediaSession.setActionHandler(act, null)
+      } catch (_) {}
+    })
+  }
+
+  attachResumeOnGesture() {
+    if (this.resumeListenersAttached) return
+    this.resumeListenersAttached = true
+
+    const microEvents = [
+      'mousemove',
+      'pointermove',
+      'wheel',
+      'scroll',
+      'pointerdown',
+      'touchstart',
+      'mousedown',
+      'click',
+      'keydown',
+      'focus'
+    ]
+
+    const onResumeGesture = () => {
+      if (this.isMuted) {
+        cleanup()
+        return
+      }
+      if (typeof document !== 'undefined' && document.hidden) return
+
+      if (this.audio) {
+        if (!this.audio.getAttribute('src')) {
+          this.audio.src = AUDIO_SOURCES[this.currentSourceIndex]
+          if (this.savedTime && Number.isFinite(this.savedTime)) {
+            const seekTarget = this.savedTime
+            this.audio.addEventListener(
+              'loadedmetadata',
+              () => {
+                try {
+                  this.audio.currentTime = seekTarget
+                } catch (_) {}
+              },
+              { once: true }
+            )
+          }
+        }
+        this.audio.muted = false
+        this.audio.volume = 0.5
+        const p = this.audio.play()
+        if (p !== undefined) {
+          p.then(() => {
+            this.showMediaNotification()
+            this.notify()
+            cleanup()
+          }).catch(() => {})
+        } else {
+          this.showMediaNotification()
+          this.notify()
+          cleanup()
+        }
+      }
+    }
+
+    const cleanup = () => {
+      this.resumeListenersAttached = false
+      microEvents.forEach((evt) => {
+        window.removeEventListener(evt, onResumeGesture, true)
+        document.removeEventListener(evt, onResumeGesture, true)
+      })
+    }
+
+    microEvents.forEach((evt) => {
+      window.addEventListener(evt, onResumeGesture, { capture: true, passive: true })
+      document.addEventListener(evt, onResumeGesture, { capture: true, passive: true })
+    })
   }
 }
 

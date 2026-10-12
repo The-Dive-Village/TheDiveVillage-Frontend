@@ -31,13 +31,34 @@ export default function AdminDashboard() {
           contentService.getFaqs({ includeInactive: 'true' }),
         ])
 
-        const bookings = bookingsRes.status === 'fulfilled' ? bookingsRes.value?.data?.data || [] : []
-        const products = productsRes.status === 'fulfilled' ? productsRes.value?.data?.data || [] : []
-        const gallery = galleryRes.status === 'fulfilled' ? galleryRes.value?.data?.data || [] : []
-        const faqs = faqsRes.status === 'fulfilled' ? faqsRes.value?.data?.data || [] : []
+        const bookingsData = bookingsRes.status === 'fulfilled' ? bookingsRes.value?.data?.data : null
+        const bookings = Array.isArray(bookingsData)
+          ? bookingsData
+          : (Array.isArray(bookingsData?.bookings) ? bookingsData.bookings : [])
+
+        const productsData = productsRes.status === 'fulfilled' ? productsRes.value?.data?.data : null
+        const products = Array.isArray(productsData)
+          ? productsData
+          : (Array.isArray(productsData?.products) ? productsData.products : [])
+
+        const galleryData = galleryRes.status === 'fulfilled' ? galleryRes.value?.data?.data : null
+        const gallery = Array.isArray(galleryData)
+          ? galleryData
+          : (Array.isArray(galleryData?.items) ? galleryData.items : [])
+
+        const faqsData = faqsRes.status === 'fulfilled' ? faqsRes.value?.data?.data : null
+        const faqs = Array.isArray(faqsData)
+          ? faqsData
+          : (Array.isArray(faqsData?.faqs) ? faqsData.faqs : [])
+
+        // Booking status in schema is NEW, CONTACTED, CONFIRMED, CANCELLED
+        const pendingCount = bookings.filter((b) => {
+          const s = (b.status || '').toUpperCase()
+          return s === 'NEW' || s === 'PENDING'
+        }).length
 
         setStats({
-          pendingBookings: bookings.filter((b) => b.status === 'PENDING').length,
+          pendingBookings: pendingCount,
           totalBookings: bookings.length,
           totalProducts: products.length,
           totalGallery: gallery.length,

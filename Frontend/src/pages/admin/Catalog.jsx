@@ -28,15 +28,32 @@ export default function AdminCatalog() {
   const [uploading, setUploading] = useState(false)
   const [formError, setFormError] = useState('')
 
+  const [toast, setToast] = useState(null)
+  const [categoriesList, setCategoriesList] = useState(['Tops', 'Bottoms', 'Skin Wear', 'Accessories'])
+
+  const showToast = (type, message) => {
+    setToast({ type, message })
+    setTimeout(() => setToast(null), 3500)
+  }
+
   const fetchProducts = async () => {
     setLoading(true)
     setError('')
     try {
-      const res = await productService.list({ includeInactive: true, limit: 100 })
-      const fetched = res.data?.data?.products || []
+      const [res, catsRes] = await Promise.allSettled([
+        productService.list({ includeInactive: true, limit: 100 }),
+        productService.getCategories(),
+      ])
+      const fetched = res.status === 'fulfilled' ? res.value?.data?.data?.products || [] : []
+      if (catsRes.status === 'fulfilled') {
+        const remoteCats = catsRes.value?.data?.data?.categories || []
+        if (remoteCats.length > 0) {
+          const names = Array.from(new Set([...remoteCats.map((c) => c.name), 'Tops', 'Bottoms', 'Skin Wear', 'Accessories']))
+          setCategoriesList(names)
+        }
+      }
       setProducts(fetched.length > 0 ? fetched : SHOP_PRODUCTS)
     } catch {
-      // Fallback to static list if API error
       setProducts(SHOP_PRODUCTS)
     } finally {
       setLoading(false)
@@ -53,7 +70,7 @@ export default function AdminCatalog() {
       title: '',
       sku: `SKU-${Date.now()}`,
       basePrice: '',
-      category: 'Tops',
+      category: categoriesList[0] || 'Tops',
       description: '',
       imageUrl: '',
       isActive: true,
@@ -91,6 +108,7 @@ export default function AdminCatalog() {
       const url = res.data?.data?.url || res.data?.data?.secure_url
       if (url) {
         setFormData((prev) => ({ ...prev, imageUrl: url }))
+        showToast('success', 'Image uploaded successfully!')
       }
     } catch {
       setFormError('Image upload failed. Please try again.')
@@ -109,9 +127,10 @@ export default function AdminCatalog() {
     setFormError('')
     try {
       const payload = {
-        title: formData.title,
-        sku: formData.sku,
+        title: formData.title.trim(),
+        sku: formData.sku.trim(),
         basePrice: parseFloat(formData.basePrice),
+        category: formData.category,
         description: formData.description,
         mediaUrls: formData.imageUrl ? [formData.imageUrl] : [],
         isActive: formData.isActive,
@@ -119,13 +138,15 @@ export default function AdminCatalog() {
 
       if (editingProduct?.id && !String(editingProduct.id).startsWith('product-')) {
         await productService.update(editingProduct.id, payload)
+        showToast('success', 'Product updated successfully!')
       } else {
         await productService.create(payload)
+        showToast('success', 'Product created successfully!')
       }
       setIsModalOpen(false)
       fetchProducts()
     } catch (err) {
-      setFormError(err.response?.data?.error || 'Failed to save product.')
+      setFormError(err.response?.data?.error || err.response?.data?.message || 'Failed to save product.')
     } finally {
       setSaving(false)
     }
@@ -137,12 +158,30 @@ export default function AdminCatalog() {
         setProducts((prev) =>
           prev.map((item) => (item.id === p.id ? { ...item, isActive: !item.isActive } : item))
         )
+        showToast('success', `Product status toggled.`)
         return
       }
       await productService.update(p.id, { isActive: !p.isActive })
+      showToast('success', `Product ${!p.isActive ? 'activated' : 'deactivated'}.`)
       fetchProducts()
     } catch {
-      alert('Failed to update product status.')
+      showToast('error', 'Failed to update product status.')
+    }
+  }
+
+  const handleDeleteProduct = async (p) => {
+    if (!window.confirm(`Are you sure you want to delete "${p.title || p.name}"?`)) return
+    try {
+      if (String(p.id).startsWith('product-')) {
+        setProducts((prev) => prev.filter((item) => item.id !== p.id))
+        showToast('success', 'Product removed.')
+        return
+      }
+      await productService.remove(p.id)
+      showToast('success', 'Product removed successfully.')
+      fetchProducts()
+    } catch {
+      showToast('error', 'Failed to delete product.')
     }
   }
 
@@ -156,8 +195,21 @@ export default function AdminCatalog() {
 
   return (
     <SectionReveal>
-      <div className="space-y-6">
-        
+      <div className="space-y-6 relative">
+
+        {/* Toast Notification */}
+        {toast && (
+          <div
+            className={`fixed top-5 right-5 z-50 flex items-center gap-2.5 px-4 py-2.5 rounded-lg border shadow-lg transition-all ${
+              toast.type === 'success'
+                ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
+                : 'bg-rose-50 border-rose-200 text-rose-800'
+            }`}
+          >
+            <span className="text-xs font-semibold">{toast.message}</span>
+          </div>
+        )}
+
         {/* Header & Controls */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white border border-gray-200/90 p-6 rounded-2xl shadow-xs">
           <div>
@@ -187,10 +239,11 @@ export default function AdminCatalog() {
             className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-xs sm:text-sm font-semibold text-slate-800 outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900 transition cursor-pointer shadow-2xs"
           >
             <option value="all">All Categories</option>
-            <option value="Tops">Tops</option>
-            <option value="Bottoms">Bottoms</option>
-            <option value="Skin Wear">Skin Wear</option>
-            <option value="Accessories">Accessories</option>
+            {categoriesList.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
+            ))}
           </select>
         </div>
 
@@ -268,6 +321,13 @@ export default function AdminCatalog() {
                         >
                           Edit
                         </button>
+                        <button
+                          onClick={() => handleDeleteProduct(p)}
+                          className="px-2.5 py-1 rounded-lg border border-rose-200 bg-rose-50 text-rose-700 font-semibold text-xs hover:bg-rose-100 transition cursor-pointer shadow-2xs"
+                          title="Delete / Deactivate Product"
+                        >
+                          Delete
+                        </button>
                       </td>
                     </tr>
                   )
@@ -324,10 +384,11 @@ export default function AdminCatalog() {
                         onChange={(e) => setFormData((prev) => ({ ...prev, category: e.target.value }))}
                         className="w-full bg-white border border-gray-300 rounded-lg p-2.5 text-slate-800 outline-none focus:border-slate-900 text-xs cursor-pointer"
                       >
-                        <option value="Tops">Tops</option>
-                        <option value="Bottoms">Bottoms</option>
-                        <option value="Skin Wear">Skin Wear</option>
-                        <option value="Accessories">Accessories</option>
+                        {categoriesList.map((cat) => (
+                          <option key={cat} value={cat}>
+                            {cat}
+                          </option>
+                        ))}
                       </select>
                     </div>
                   </div>

@@ -22,11 +22,12 @@ export function useMyOrders() {
   return useFetch(fetcher, [fetcher])
 }
 
-export function useAdminOrders() {
+export function useAdminOrders(params) {
   const fetcher = useCallback(async () => {
-    const { data } = await orderService.adminList()
-    return data?.orders || data || []
-  }, [])
+    const { data } = await orderService.adminList(params)
+    const orders = data?.data?.orders || data?.orders || (Array.isArray(data) ? data : [])
+    return Array.isArray(orders) ? orders : []
+  }, [params])
 
   return useFetch(fetcher, [fetcher])
 }
