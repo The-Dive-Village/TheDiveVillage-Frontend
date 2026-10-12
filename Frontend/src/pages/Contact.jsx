@@ -150,31 +150,71 @@ export default function Contact() {
     setSuccess(false)
 
     try {
-      // Build dynamic summary or attachments details
-      const payload = {
-        fullName: formData.name,
-        email: formData.email,
-        phone: formData.phone || null,
-        subject: formData.subject,
-        message: formData.message,
-        details: {}
+      if (!formData.name?.trim()) {
+        setError('Please enter your name.')
+        setLoading(false)
+        return
+      }
+      if (!formData.email?.trim()) {
+        setError('Please enter your email address.')
+        setLoading(false)
+        return
+      }
+      if (!formData.message?.trim()) {
+        setError('Please enter your message.')
+        setLoading(false)
+        return
       }
 
+      // Build dynamic summary or attachments details
+      const details = {}
       if (formData.subject === 'Partnership') {
-        payload.details = {
-          location: formData.location,
-          diveCenterName: formData.diveCenterName,
-          certificationsHeld: formData.certificationsHeld,
-          attachedFilesCount: formData.partnershipFiles.length,
-          attachedFileNames: formData.partnershipFiles.map(f => f.name)
+        details.location = formData.location
+        details.diveCenterName = formData.diveCenterName
+        details.certificationsHeld = formData.certificationsHeld
+        details.attachedFilesCount = formData.partnershipFiles.length
+        details.attachedFileNames = formData.partnershipFiles.map((f) => f.name)
+      } else if (formData.subject === 'Careers') {
+        details.positionApplied = formData.positionApplied
+        details.yearsExperience = formData.yearsExperience
+        details.portfolioOrLinkedin = formData.portfolioOrLinkedin
+        details.resumeFileName = formData.resumeFile?.name || null
+      }
+
+      // Consolidate additional details into message for comprehensive logging/archival
+      let combinedMessage = (formData.message || '').trim()
+      const extraLines = []
+      if (formData.phone) {
+        extraLines.push(`Phone: ${formData.phone}`)
+      }
+      if (formData.subject === 'Partnership') {
+        if (formData.location) extraLines.push(`Location: ${formData.location}`)
+        if (formData.diveCenterName) extraLines.push(`Dive Center: ${formData.diveCenterName}`)
+        if (formData.certificationsHeld) extraLines.push(`Certifications: ${formData.certificationsHeld}`)
+        if (formData.partnershipFiles?.length) {
+          extraLines.push(`Attached Files: ${formData.partnershipFiles.map((f) => f.name).join(', ')}`)
         }
       } else if (formData.subject === 'Careers') {
-        payload.details = {
-          positionApplied: formData.positionApplied,
-          yearsExperience: formData.yearsExperience,
-          portfolioOrLinkedin: formData.portfolioOrLinkedin,
-          resumeFileName: formData.resumeFile?.name || null
-        }
+        if (formData.positionApplied) extraLines.push(`Position: ${formData.positionApplied}`)
+        if (formData.yearsExperience) extraLines.push(`Experience: ${formData.yearsExperience}`)
+        if (formData.portfolioOrLinkedin) extraLines.push(`Portfolio/LinkedIn: ${formData.portfolioOrLinkedin}`)
+        if (formData.resumeFile?.name) extraLines.push(`Resume: ${formData.resumeFile.name}`)
+      }
+
+      if (extraLines.length > 0) {
+        combinedMessage = combinedMessage
+          ? `${combinedMessage}\n\n--- Additional Details ---\n${extraLines.join('\n')}`
+          : extraLines.join('\n')
+      }
+
+      const payload = {
+        name: formData.name.trim(),
+        fullName: formData.name.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone || null,
+        subject: formData.subject,
+        message: combinedMessage,
+        details,
       }
 
       await api.post('/api/content/contact', payload)

@@ -280,7 +280,6 @@ export default function Home() {
                 <div
                   onClick={() => {
                     navigate('/book-us')
-                    window.scrollTo({ top: 0, behavior: 'smooth' })
                   }}
                   className="h-full group cursor-pointer relative mt-6 sm:mt-10 flex flex-col pointer-events-auto"
                 >
@@ -899,7 +898,6 @@ function InteractiveHighlights() {
     }
     const destination = targetLink || '/services'
     navigate(destination)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   return (

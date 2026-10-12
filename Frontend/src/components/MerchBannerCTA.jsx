@@ -10,7 +10,6 @@ export default function MerchBannerCTA({ className = '' }) {
 
   const handleClick = () => {
     navigate('/shop')
-    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   return (

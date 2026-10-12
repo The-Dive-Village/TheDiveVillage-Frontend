@@ -18,4 +18,5 @@ export const defaultLenisOptions = {
   touchMultiplier: 1.5,
   infinite: false,
   allowNestedScroll: true,
+  stopInertiaOnNavigate: true,
 }
