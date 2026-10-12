@@ -185,9 +185,9 @@ export default function Shop() {
         )}
       </AnimatePresence>
 
-      {/* 1. HERO BANNER (Desktop Only) */}
-      <section className="hidden md:block mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-10 sm:mb-12">
-        <div className="relative rounded-[24px] sm:rounded-[36px] lg:rounded-[40px] overflow-hidden bg-[#001428] shadow-lift border border-white/10 w-full h-[190px] xs:h-[230px] sm:h-[280px] lg:h-[450px] flex items-center justify-end">
+      {/* 1. HERO BANNER */}
+      <section className="mx-auto max-w-7xl px-3.5 sm:px-6 lg:px-8 mb-4 sm:mb-10">
+        <div className="relative rounded-[20px] sm:rounded-[36px] lg:rounded-[40px] overflow-hidden bg-[#001428] shadow-lift border border-white/10 w-full h-[160px] xs:h-[200px] sm:h-[280px] lg:h-[450px] flex items-center justify-end">
           <img
             src={bannerImg}
             alt="Merchandise Banner"
@@ -196,23 +196,23 @@ export default function Shop() {
 
           {/* Left Side Blue Gradient Overlay */}
           <div
-            className="absolute inset-y-0 left-0 w-[45%] sm:w-[38%] lg:w-[32%] pointer-events-none z-10"
+            className="absolute inset-y-0 left-0 w-[58%] xs:w-[50%] sm:w-[38%] lg:w-[32%] pointer-events-none z-10"
             style={{
               background:
-                'linear-gradient(to right, #003865 0%, rgba(0, 56, 101, 0.96) 20%, rgba(0, 56, 101, 0.82) 42%, rgba(0, 56, 101, 0.58) 64%, rgba(0, 56, 101, 0.28) 82%, rgba(0, 56, 101, 0.08) 93%, transparent 100%)',
+                'linear-gradient(to right, #003865 0%, rgba(0, 56, 101, 0.96) 25%, rgba(0, 56, 101, 0.85) 45%, rgba(0, 56, 101, 0.58) 68%, rgba(0, 56, 101, 0.28) 85%, rgba(0, 56, 101, 0.08) 95%, transparent 100%)',
             }}
           />
 
           {/* Left Side Typography: MADE FOR ALL BODY TYPES */}
-          <div className="absolute left-4 xs:left-7 sm:left-10 lg:left-14 top-0 bottom-0 flex flex-col justify-center z-20 pointer-events-none w-[60%] xs:w-[55%] sm:max-w-md pr-2">
-            <h2 className="font-heading text-base xs:text-lg sm:text-3xl lg:text-5xl font-black text-white uppercase tracking-tight leading-[1.05] drop-shadow-[0_4px_16px_rgba(0,0,0,0.8)] text-left sm:text-justify sm:[text-align-last:justify] mb-2 sm:mb-6">
+          <div className="absolute left-3.5 xs:left-6 sm:left-10 lg:left-14 top-0 bottom-0 flex flex-col justify-center z-20 pointer-events-none w-[60%] xs:w-[55%] sm:max-w-md pr-2">
+            <h2 className="font-heading text-sm xs:text-base sm:text-3xl lg:text-5xl font-black text-white uppercase tracking-tight leading-[1.08] drop-shadow-[0_4px_16px_rgba(0,0,0,0.8)] text-left sm:text-justify sm:[text-align-last:justify] mb-1 sm:mb-6">
               MADE TO FIT<br />
               <span className="text-[#FFCD00] block mt-0.5 sm:mt-0">ALL BODY TYPES</span>
             </h2>
           </div>
 
           {/* Right Column: 3D Flipping Product Tag */}
-          <div className="absolute right-3 sm:right-8 lg:right-12 top-0 bottom-0 z-10 shrink-0 h-full flex items-center">
+          <div className="absolute right-2.5 xs:right-4 sm:right-8 lg:right-12 top-0 bottom-0 z-10 shrink-0 h-full flex items-center">
             <FlippingProductTag />
           </div>
         </div>
