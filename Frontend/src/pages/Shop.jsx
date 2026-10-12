@@ -196,16 +196,16 @@ export default function Shop() {
 
           {/* Left Side Blue Gradient Overlay */}
           <div
-            className="absolute inset-y-0 left-0 w-[58%] xs:w-[50%] sm:w-[38%] lg:w-[32%] pointer-events-none z-10"
+            className="absolute inset-y-0 left-0 w-[34%] xs:w-[32%] sm:w-[36%] lg:w-[32%] pointer-events-none z-10"
             style={{
               background:
-                'linear-gradient(to right, #003865 0%, rgba(0, 56, 101, 0.96) 25%, rgba(0, 56, 101, 0.85) 45%, rgba(0, 56, 101, 0.58) 68%, rgba(0, 56, 101, 0.28) 85%, rgba(0, 56, 101, 0.08) 95%, transparent 100%)',
+                'linear-gradient(to right, #003865 0%, rgba(0, 56, 101, 0.92) 30%, rgba(0, 56, 101, 0.70) 60%, rgba(0, 56, 101, 0.30) 85%, transparent 100%)',
             }}
           />
 
           {/* Left Side Typography: MADE FOR ALL BODY TYPES */}
-          <div className="absolute left-3.5 xs:left-6 sm:left-10 lg:left-14 top-0 bottom-0 flex flex-col justify-center z-20 pointer-events-none w-[60%] xs:w-[55%] sm:max-w-md pr-2">
-            <h2 className="font-heading text-sm xs:text-base sm:text-3xl lg:text-5xl font-black text-white uppercase tracking-tight leading-[1.08] drop-shadow-[0_4px_16px_rgba(0,0,0,0.8)] text-left sm:text-justify sm:[text-align-last:justify] mb-1 sm:mb-6">
+          <div className="absolute left-3 xs:left-5 sm:left-10 lg:left-14 top-0 bottom-0 flex flex-col justify-center z-20 pointer-events-none w-[36%] xs:w-[34%] sm:max-w-md pr-1 sm:pr-2">
+            <h2 className="font-heading text-[12px] xs:text-[14px] sm:text-3xl lg:text-5xl font-black text-white uppercase tracking-tight leading-[1.08] drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] text-left sm:text-justify sm:[text-align-last:justify] mb-0.5 sm:mb-6">
               MADE TO FIT<br />
               <span className="text-[#FFCD00] block mt-0.5 sm:mt-0">ALL BODY TYPES</span>
             </h2>

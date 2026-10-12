@@ -12,6 +12,12 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
     productId === 'product-ocean-bag'
   )
 
+  const isSweetheart = Boolean(
+    (src && src.toLowerCase().includes('sweetheart')) ||
+    (alt && alt.toLowerCase().includes('sweetheart')) ||
+    productId === 'product-womens-shirt'
+  )
+
   useEffect(() => {
     const el = containerRef.current
     if (!el || typeof IntersectionObserver === 'undefined') return
@@ -245,11 +251,13 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
           if (!threeMat || !threeMat.isMaterial) return
 
           // Soft matte finish - zero shine/gloss, gentle fabric texture
-          threeMat.roughness = 0.9
+          threeMat.roughness = 1.0
           threeMat.metalness = 0.0
+          threeMat.roughnessMap = null
+          threeMat.metalnessMap = null
 
-          // Rich ambient diffuse lighting so garments are brightly lit and fully visible
-          threeMat.envMapIntensity = 0.95
+          // Ambient diffuse lighting: low envMap on sweetheart top to eliminate grey wash & shiny glare
+          threeMat.envMapIntensity = isSweetheart ? 0.35 : 0.75
 
           if ('clearcoat' in threeMat) threeMat.clearcoat = 0.0
           if ('clearcoatRoughness' in threeMat) threeMat.clearcoatRoughness = 1.0
@@ -267,14 +275,18 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
 
           // Natural fabric drape and fold definition
           if (threeMat.normalScale && typeof threeMat.normalScale.set === 'function') {
-            threeMat.normalScale.set(0.75, 0.75)
+            threeMat.normalScale.set(0.65, 0.65)
           }
 
-          // Lift dark tones so black models have rich graphite visibility instead of pitch-dark silhouettes
+          // Tone management: Keep sweetheart deeply black and rich, lift other models only if needed
           if (threeMat.color) {
-            threeMat.color.r = Math.max(threeMat.color.r, 0.22)
-            threeMat.color.g = Math.max(threeMat.color.g, 0.22)
-            threeMat.color.b = Math.max(threeMat.color.b, 0.22)
+            if (isSweetheart) {
+              threeMat.color.setRGB(0.85, 0.85, 0.85)
+            } else {
+              threeMat.color.r = Math.max(threeMat.color.r, 0.22)
+              threeMat.color.g = Math.max(threeMat.color.g, 0.22)
+              threeMat.color.b = Math.max(threeMat.color.b, 0.22)
+            }
           }
 
           threeMat.needsUpdate = true
@@ -329,7 +341,7 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
         min-camera-orbit="auto 75deg auto"
         max-camera-orbit="auto 75deg auto"
         environment-image="neutral"
-        exposure="1.85"
+        exposure={isSweetheart ? "1.20" : "1.85"}
         shadow-intensity="0.10"
         shadow-softness="1.0"
         tone-mapping="neutral"
