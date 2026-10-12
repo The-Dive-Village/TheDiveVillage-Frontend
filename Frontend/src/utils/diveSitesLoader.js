@@ -100,6 +100,42 @@ export async function loadDiveSites(csvUrl = '/data/dive-sites.csv') {
         // Punta Osejava - Croatia (ID: 24743)
         '24743': { latitude: 43.28666666666666, longitude: 17.019444444444442 },
 
+        // Exclusions: duplicates, controversial names, and gibberish clubs
+        '12386': { exclude: true }, // AREA 51
+        '12041': { exclude: true }, // FORREST 05 GUMP
+        '846': { exclude: true },   // Free Diver gibberish
+        '855': { exclude: true },   // SubShark gibberish
+        '12671': { exclude: true }, // Simon's Cave duplicate
+        '12668': { exclude: true }, // Coral Gardens duplicate
+        '342': { exclude: true },   // Kuwait Qarouh duplicate
+        '20420': { exclude: true }, // Kuwait Qarouh Island duplicate
+        '13479': { exclude: true }, // Doodles duplicate
+        '22854': { exclude: true }, // Steps duplicate
+
+        // Canonical site names & coastal coordinates
+        '2814': { siteName: 'Hon Dai, Long Island' },
+        '759': { siteName: 'Coral Gardens West Coast' },
+        '7395': { siteName: 'Coral Gardens East Coast' },
+        '7394': { siteName: "Simon's Cave" },
+        '2083': { siteName: 'Kubbar Island' },
+        '6541': { siteName: 'Qarooh Island' },
+        '12040': { siteName: 'Atlantis', latitude: -21.82500, longitude: 35.50500 },
+        '12052': { siteName: 'Turtle Coves', latitude: -21.83100, longitude: 35.50800 },
+        '12054': { siteName: 'The Roller Coaster', latitude: -21.83800, longitude: 35.51000 },
+        '12367': { siteName: 'Marlin Pinnacles', latitude: -21.84200, longitude: 35.51200 },
+        '17848': { siteName: 'Shark Vaal', latitude: -21.84600, longitude: 35.51400 },
+        '17849': { siteName: '9-Mile Shallow', latitude: -21.85100, longitude: 35.51500 },
+        '18137': { siteName: 'Amphitheatre', latitude: -21.82100, longitude: 35.50300 },
+        '18138': { siteName: 'Gap (2 Mile)', latitude: -21.81500, longitude: 35.50100 },
+        '18139': { siteName: 'Kingfish Alley', latitude: -21.82800, longitude: 35.50600 },
+        '6927': { siteName: 'Doodles', longitude: 32.90500 },
+        '7638': { siteName: 'Steps', longitude: 32.90400 },
+        '12580': { siteName: 'Bee Hive', longitude: 32.90600 },
+        '22851': { siteName: 'Blacks', longitude: 32.90550 },
+        '22853': { siteName: 'Checkers', longitude: 32.90450 },
+        '22855': { siteName: 'Chreche', longitude: 32.90500 },
+        '542': { siteName: 'Inhambane Outer Reef', latitude: -23.60930, longitude: 35.55000 },
+
         // English name canonical overrides (eliminating Taiwanese, Chinese, Korean, Greek/Cyrillic non-Latin characters)
         '9926': { siteName: 'Sharp Island South' },
         '10320': { siteName: 'Daqingzhen Pinnacle' },
@@ -297,6 +333,7 @@ export async function loadDiveSites(csvUrl = '/data/dive-sites.csv') {
         'Ecuador': [-78.1834, -1.8312],
         'Egypt': [30.8025, 26.8206],
         'Federated States of Micronesia': [158.1561, 6.8874],
+        'Federated States Of Micronesia': [158.1561, 6.8874],
         'Fiji': [178.0650, -17.7134],
         'Finland': [25.7482, 61.9241],
         'France': [2.2137, 46.2276],
@@ -337,11 +374,13 @@ export async function loadDiveSites(csvUrl = '/data/dive-sites.csv') {
         'Portugal': [-8.2245, 39.3999],
         'Puerto Rico': [-66.5901, 18.2208],
         'Republic of Mauritius': [57.5522, -20.3484],
+        'Republic Of Mauritius': [57.5522, -20.3484],
         'Romania': [24.9668, 45.9432],
         'Russia': [105.3188, 61.5240],
         'Réunion': [55.5364, -21.1151],
         'Saint Kitts & Nevis': [-62.7830, 17.3578],
         'Saint Vincent & the Grenadines': [-61.2872, 13.2528],
+        'Saint Vincent & The Grenadines': [-61.2872, 13.2528],
         'Saudi Arabia': [45.0792, 23.8859],
         'Senegal': [-14.4524, 14.4974],
         'Seychelles': [55.4920, -4.6796],
@@ -359,13 +398,16 @@ export async function loadDiveSites(csvUrl = '/data/dive-sites.csv') {
         'The Guadeloupe Islands': [-61.5510, 16.2650],
         'Timor Leste (East Timor)': [125.7275, -8.8742],
         'Trinidad and Tobago': [-61.2225, 10.6918],
+        'Trinidad And Tobago': [-61.2225, 10.6918],
         'Tunisia': [9.5375, 33.8869],
         'Turkey': [35.2433, 38.9637],
         'Turks and Caicos Islands': [-71.7979, 21.6940],
+        'Turks And Caicos Islands': [-71.7979, 21.6940],
         'U.S. Virgin Islands': [-64.8963, 18.3358],
         'United Arab Emirates': [53.8478, 23.4241],
         'United Kingdom': [-1.1743, 52.3555],
         'United States of America (USA)': [-98.5795, 39.8283],
+        'United States Of America (USA)': [-98.5795, 39.8283],
         'Venezuela': [-66.5897, 6.4238],
         'Vietnam': [108.2772, 14.0583],
         'Western Sahara': [-12.8858, 24.2155],
@@ -373,7 +415,8 @@ export async function loadDiveSites(csvUrl = '/data/dive-sites.csv') {
 
       const countryCentroids = Array.from(countryStatsMap.values())
         .map((entry) => {
-          const canonical = COUNTRY_COORDS[entry.country]
+          const canonical = COUNTRY_COORDS[entry.country] ||
+            COUNTRY_COORDS[Object.keys(COUNTRY_COORDS).find((k) => k.toLowerCase() === entry.country.toLowerCase())]
           const lng = canonical ? canonical[0] : (entry.sumLng / entry.count)
           const lat = canonical ? canonical[1] : (entry.sumLat / entry.count)
 

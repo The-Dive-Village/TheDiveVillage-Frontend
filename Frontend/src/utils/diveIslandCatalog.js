@@ -174,6 +174,12 @@ export const POPULAR_ISLAND_REGIONS = {
     { name: 'California (Channel Islands & Monterey)', lat: 34.5, lng: -119.8 },
     { name: 'North Carolina (Graveyard of Atlantic)', lat: 34.7, lng: -76.6 },
   ],
+  'United States Of America (USA)': [
+    { name: 'Florida Keys (Key Largo & Key West)', lat: 24.8, lng: -80.7 },
+    { name: 'Hawaii (Oahu, Maui, Kona)', lat: 20.5, lng: -157.0 },
+    { name: 'California (Channel Islands & Monterey)', lat: 34.5, lng: -119.8 },
+    { name: 'North Carolina (Graveyard of Atlantic)', lat: 34.7, lng: -76.6 },
+  ],
   'Colombia': [
     { name: 'San Andrés & Providencia', lat: 12.55, lng: -81.7 },
     { name: 'Malpelo Island', lat: 4.0, lng: -81.6 },
@@ -213,6 +219,24 @@ export const POPULAR_ISLAND_REGIONS = {
   'Northern Mariana Islands': [
     { name: 'Saipan (The Grotto)', lat: 15.2, lng: 145.75 },
   ],
+  'Kuwait': [
+    { name: 'Kubbar Island', lat: 29.07, lng: 48.49 },
+    { name: 'Qarooh Island', lat: 28.82, lng: 48.78 },
+  ],
+  'Mozambique': [
+    { name: 'Bazaruto Archipelago', lat: -21.82, lng: 35.50 },
+    { name: 'Tofo & Inhambane Coast', lat: -23.85, lng: 35.55 },
+    { name: 'Ponta do Ouro Coast', lat: -26.83, lng: 32.90 },
+    { name: 'Nacala & Pemba Coast', lat: -14.20, lng: 40.68 },
+  ],
+  'Vietnam': [
+    { name: 'Hon Mun & Nha Trang Bay', lat: 12.17, lng: 109.3 },
+    { name: 'Hon Dai, Long Island', lat: 15.95, lng: 108.48 },
+    { name: 'Con Dao Archipelago', lat: 8.68, lng: 106.6 },
+    { name: 'Phu Quoc Island', lat: 10.23, lng: 103.96 },
+    { name: 'Cham Islands (Hoi An)', lat: 15.95, lng: 108.5 },
+    { name: 'Whale Island (Van Phong)', lat: 12.65, lng: 109.4 },
+  ],
 }
 
 /**
@@ -245,6 +269,46 @@ export function getIslandForSite(site) {
     }
   }
 
+  if (country && country.toLowerCase() === 'kuwait') {
+    const lowerName = siteName.toLowerCase()
+    if (lowerName.includes('kubbar')) return 'Kubbar Island'
+    if (lowerName.includes('qarooh') || lowerName.includes('qarouh')) return 'Qarooh Island'
+    return 'Kubbar Island'
+  }
+
+  if (country && country.toLowerCase() === 'mozambique') {
+    const lowerName = siteName.toLowerCase()
+    if (lowerName.includes('bazaruto') || lowerName.includes('marlin') || lowerName.includes('roller coaster') || lowerName.includes('turtle coves') || lowerName.includes('atlantis') || lowerName.includes('amphitheatre') || lowerName.includes('gap') || lowerName.includes('shark vaal') || lowerName.includes('shallow') || lowerName.includes('two mile')) {
+      return 'Bazaruto Archipelago'
+    }
+    if (lowerName.includes('tofo') || lowerName.includes('inhambane') || lowerName.includes('praia') || lowerName.includes('lighthouse') || lowerName.includes('marble arch')) {
+      return 'Tofo & Inhambane Coast'
+    }
+    if (lowerName.includes('ponta') || lowerName.includes('doodles') || lowerName.includes('steps') || lowerName.includes('anchor') || lowerName.includes('bee hive') || lowerName.includes('blacks') || lowerName.includes('checkers') || lowerName.includes('chreche')) {
+      return 'Ponta do Ouro Coast'
+    }
+    if (lowerName.includes('guardians') || lowerName.includes('gorgonia') || lowerName.includes('fish alley')) {
+      return 'Nacala & Pemba Coast'
+    }
+  }
+
+  if (country && country.toLowerCase() === 'vietnam') {
+    const lowerName = siteName.toLowerCase()
+    if (lowerName.includes('hon dai') || lowerName.includes('long island')) {
+      return 'Hon Dai, Long Island'
+    }
+  }
+
+  if (country && country.toLowerCase() === 'south africa') {
+    const lowerName = siteName.toLowerCase()
+    if (lowerName.includes('coral gardens west coast')) {
+      return 'False Bay & Cape Town'
+    }
+    if (lowerName.includes('coral gardens east coast')) {
+      return 'Sodwana Bay'
+    }
+  }
+
   // 1. Direct site name token detection for island name (e.g. "Ponta Canjana - São Vicente")
   if (siteName.includes(' - ')) {
     const afterHyphen = siteName.split(' - ')[1]
@@ -257,7 +321,8 @@ export function getIslandForSite(site) {
   }
 
   // 2. Check predefined regional hubs for the country
-  const hubs = POPULAR_ISLAND_REGIONS[country]
+  const hubs = POPULAR_ISLAND_REGIONS[country] ||
+    POPULAR_ISLAND_REGIONS[Object.keys(POPULAR_ISLAND_REGIONS).find((k) => k.toLowerCase() === country.toLowerCase())]
   if (hubs && hubs.length > 0 && !isNaN(lat) && !isNaN(lng)) {
     let bestHub = hubs[0].name
     let minDistance = Infinity
