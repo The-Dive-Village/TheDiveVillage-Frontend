@@ -85,13 +85,14 @@ export function getOptimizedVideoPoster(url, { width = 800 } = {}) {
 }
 
 /**
- * Generates an optimized video streaming URL with adaptive bitrate/codec and capped dimensions.
+ * Generates an optimized video streaming URL with adaptive bitrate and optimal codec (vc_auto),
+ * preserving original aspect ratio (prevents vertical/portrait videos from being stretched into landscape).
  */
-export function getOptimizedVideoUrl(url, { width = 720 } = {}) {
+export function getOptimizedVideoUrl(url) {
   if (!url || typeof url !== 'string') return ''
   if (!url.includes('res.cloudinary.com') || !url.includes('/video/upload/')) return url
 
-  return transformCloudinaryUrl(url, `w_${width},q_auto,vc_auto`)
+  return transformCloudinaryUrl(url, 'q_auto,vc_auto')
 }
 
 /**

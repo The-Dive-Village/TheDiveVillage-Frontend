@@ -287,7 +287,7 @@ export const GALLERY_ITEMS = [
     "id": "gallery-item-38",
     "type": "image",
     "src": "https://res.cloudinary.com/qvbunv8y/image/upload/v1791458103/TDV-Media/Extras%20for%20Gallery/Greenfish_Sea_Cucumber.webp",
-    "title": "Greenfish Sea Cucumber",
+    "title": "Black Knobby Sea Cucumber",
     "category": "marine",
     "filename": "Greenfish Sea Cucumber.webp"
   },

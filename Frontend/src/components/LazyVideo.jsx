@@ -50,7 +50,7 @@ export default function LazyVideo({
 
   // Optimized video stream URL
   const optimizedVideoSrc = useMemo(() => {
-    return getOptimizedVideoUrl(src, { width: 720 })
+    return getOptimizedVideoUrl(src)
   }, [src])
 
   // Reset states when src changes

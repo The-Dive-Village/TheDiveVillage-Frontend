@@ -1,6 +1,6 @@
 import LazyVideo from '../components/LazyVideo'
 import { useParams, Link, useNavigate } from 'react-router'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { SHOP_PRODUCTS } from '../utils/products'
 import { useCart } from '../hooks/useCart'
@@ -113,20 +113,77 @@ export default function ProductDetail() {
     }
   }, [mediaItems, activeMedia])
 
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape') setFloatingImage(null)
-    }
-    if (floatingImage) {
-      window.addEventListener('keydown', handleKeyDown)
-      const origOverflow = document.body.style.overflow
-      document.body.style.overflow = 'hidden'
-      return () => {
-        window.removeEventListener('keydown', handleKeyDown)
-        document.body.style.overflow = origOverflow
+  const previewImages = useMemo(() => {
+    return mediaItems.filter((m) => m.type === 'image' || (!m.type && m.src))
+  }, [mediaItems])
+
+  const nextPreviewImage = () => {
+    if (!previewImages.length) return
+    triggerHaptic(8)
+    const currentIndex = previewImages.findIndex((m) => m.src === floatingImage)
+    const nextIdx = currentIndex === -1 ? 0 : (currentIndex + 1) % previewImages.length
+    const nextItem = previewImages[nextIdx]
+    setFloatingImage(nextItem.src)
+    setActiveMedia(nextItem)
+  }
+
+  const prevPreviewImage = () => {
+    if (!previewImages.length) return
+    triggerHaptic(8)
+    const currentIndex = previewImages.findIndex((m) => m.src === floatingImage)
+    const prevIdx = currentIndex === -1 ? 0 : (currentIndex - 1 + previewImages.length) % previewImages.length
+    const prevItem = previewImages[prevIdx]
+    setFloatingImage(prevItem.src)
+    setActiveMedia(prevItem)
+  }
+
+  const currentPreviewIndex = previewImages.findIndex((m) => m.src === floatingImage)
+  const currentPreviewItem = currentPreviewIndex !== -1 ? previewImages[currentPreviewIndex] : null
+
+  const previewTouchStartX = useRef(0)
+  const previewTouchStartY = useRef(0)
+
+  const handlePreviewTouchStart = (e) => {
+    previewTouchStartX.current = e.touches[0].clientX
+    previewTouchStartY.current = e.touches[0].clientY
+  }
+
+  const handlePreviewTouchEnd = (e) => {
+    const deltaX = e.changedTouches[0].clientX - previewTouchStartX.current
+    const deltaY = e.changedTouches[0].clientY - previewTouchStartY.current
+    if (Math.abs(deltaX) > 40 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5) {
+      if (deltaX < 0) {
+        nextPreviewImage()
+      } else {
+        prevPreviewImage()
       }
     }
-  }, [floatingImage])
+  }
+
+  useEffect(() => {
+    if (!floatingImage) return
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setFloatingImage(null)
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault()
+        nextPreviewImage()
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault()
+        prevPreviewImage()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    const origOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+      document.body.style.overflow = origOverflow
+    }
+  }, [floatingImage, previewImages])
 
   const swipeTouchStartX = useRef(0)
   const swipeTouchStartY = useRef(0)
@@ -936,7 +993,7 @@ export default function ProductDetail() {
         </button>
       </div>
 
-      {/* Product Image Lightbox Modal - Only Image & Close Button, Positioned Below Toolbar */}
+      {/* Product Image Lightbox Modal - Full uncropped image, arrow navigation & close button */}
       <AnimatePresence>
         {floatingImage && (
           <motion.div
@@ -949,42 +1006,116 @@ export default function ProductDetail() {
               touchAction: 'none',
             }}
             onClick={() => setFloatingImage(null)}
-            className="fixed inset-0 z-[9990] bg-black/85 backdrop-blur-xl flex items-center justify-center p-3 sm:p-6 md:p-8 pt-[calc(var(--toolbar-bottom,64px)+12px)] sm:pt-[calc(var(--toolbar-bottom,64px)+16px)] select-none overflow-hidden cursor-pointer"
+            className="fixed inset-0 z-[9990] bg-black/85 backdrop-blur-xl select-none overflow-hidden"
           >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              onClick={(e) => e.stopPropagation()}
-              data-product-media="true"
-              data-floating-image-card="true"
-              style={{ backgroundColor: '#ffffff' }}
-              className="relative max-w-4xl max-h-[calc(100vh-var(--toolbar-bottom,64px)-32px)] w-auto bg-white rounded-2xl sm:rounded-3xl shadow-2xl border border-navy/10 flex items-center justify-center p-3 sm:p-5 select-none overflow-hidden cursor-default"
+            {/* Modal Content Wrapper - Strictly positioned below toolbar */}
+            <div
+              className="absolute inset-x-0 bottom-0 top-[64px] lg:top-[68px] flex items-center justify-center p-3 sm:p-5 lg:p-7"
+              style={{
+                top: 'var(--toolbar-bottom, 68px)',
+              }}
+              onClick={() => setFloatingImage(null)}
             >
-              {/* Close Button Only */}
-              <button
-                type="button"
-                onClick={() => {
-                  triggerHaptic(8)
-                  setFloatingImage(null)
-                }}
-                className="absolute top-3 right-3 sm:top-4 sm:right-4 z-30 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-navy/85 hover:bg-[#FFCD00] text-white hover:text-[#001e3d] flex items-center justify-center transition shadow-lg active:scale-90 cursor-pointer font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md"
-                aria-label="Close product image"
-              >
-                ✕
-              </button>
+              {/* Previous Image Arrow Button */}
+              {previewImages.length > 1 && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    prevPreviewImage()
+                  }}
+                  className="absolute left-2 sm:left-4 lg:left-8 z-40 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-navy/85 hover:bg-[#FFCD00] text-white hover:text-[#001e3d] flex items-center justify-center transition shadow-2xl active:scale-90 cursor-pointer font-bold border border-white/20 backdrop-blur-md"
+                  aria-label="Previous image (Left Arrow)"
+                  title="Previous image (Left Arrow)"
+                >
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+              )}
 
-              {/* Only The Image */}
-              <img
-                src={floatingImage}
-                alt={product.title}
+              {/* Next Image Arrow Button */}
+              {previewImages.length > 1 && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    nextPreviewImage()
+                  }}
+                  className="absolute right-2 sm:right-4 lg:right-8 z-40 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-navy/85 hover:bg-[#FFCD00] text-white hover:text-[#001e3d] flex items-center justify-center transition shadow-2xl active:scale-90 cursor-pointer font-bold border border-white/20 backdrop-blur-md"
+                  aria-label="Next image (Right Arrow)"
+                  title="Next image (Right Arrow)"
+                >
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              )}
+
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+                onClick={(e) => e.stopPropagation()}
+                onTouchStart={handlePreviewTouchStart}
+                onTouchEnd={handlePreviewTouchEnd}
                 data-product-media="true"
-                style={{ backgroundColor: '#ffffff' }}
-                className="max-h-[calc(100vh-var(--toolbar-bottom,64px)-56px)] max-w-[85vw] sm:max-w-[80vw] w-auto h-auto object-contain select-none drop-shadow-md rounded-xl bg-white"
-                draggable={false}
-              />
-            </motion.div>
+                data-floating-image-card="true"
+                style={{
+                  backgroundColor: '#ffffff',
+                  maxHeight: 'calc(100vh - var(--toolbar-bottom, 68px) - 36px)',
+                  maxWidth: 'calc(100vw - 32px)',
+                }}
+                className="relative bg-white rounded-2xl sm:rounded-3xl shadow-2xl border border-navy/10 flex flex-col items-center justify-center p-2.5 sm:p-4 select-none cursor-default"
+              >
+                {/* Close Button */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic(8)
+                    setFloatingImage(null)
+                  }}
+                  className="absolute top-3 right-3 sm:top-4 sm:right-4 z-40 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-navy/85 hover:bg-[#FFCD00] text-white hover:text-[#001e3d] flex items-center justify-center transition shadow-lg active:scale-90 cursor-pointer font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md"
+                  aria-label="Close product image"
+                >
+                  ✕
+                </button>
+
+                {/* Only The Image - Full image visible irrespective of horizontal or vertical orientation */}
+                <img
+                  key={floatingImage}
+                  src={floatingImage}
+                  alt={product.title}
+                  data-product-media="true"
+                  style={{
+                    backgroundColor: '#ffffff',
+                    objectFit: 'contain',
+                    maxHeight: 'calc(100vh - var(--toolbar-bottom, 68px) - 72px)',
+                    maxWidth: 'min(calc(100vw - 64px), 1100px)',
+                    width: 'auto',
+                    height: 'auto',
+                  }}
+                  className="rounded-xl bg-white select-none block drop-shadow-md"
+                  draggable={false}
+                />
+
+                {/* Bottom Image Counter & Label */}
+                {previewImages.length > 1 && (
+                  <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-30 px-3 py-1 rounded-full bg-navy/85 backdrop-blur-md text-white text-[11px] sm:text-xs font-semibold shadow-md border border-white/15 pointer-events-none flex items-center gap-2">
+                    <span className="text-[#FFCD00]">
+                      {currentPreviewIndex !== -1 ? currentPreviewIndex + 1 : 1} / {previewImages.length}
+                    </span>
+                    {currentPreviewItem?.label && (
+                      <>
+                        <span className="w-1 h-1 rounded-full bg-white/40" />
+                        <span className="text-white/90">{currentPreviewItem.label}</span>
+                      </>
+                    )}
+                  </div>
+                )}
+              </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

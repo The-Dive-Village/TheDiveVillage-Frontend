@@ -291,9 +291,8 @@ export default function Gallery() {
         {selectedMediaIndex !== null && currentItem && (
           <div 
             data-lenis-prevent="true"
-            className="fixed left-0 right-0 bottom-0 top-[64px] lg:top-[68px] z-[9990] flex flex-col items-center justify-center p-2 sm:p-4 bg-black/90 backdrop-blur-sm overflow-hidden select-none"
+            className="fixed inset-0 z-[9990] bg-black/90 backdrop-blur-sm select-none overflow-hidden"
             style={{
-              top: 'var(--toolbar-bottom, 64px)',
               overscrollBehavior: 'contain',
               touchAction: 'none',
             }}
@@ -301,15 +300,23 @@ export default function Gallery() {
             onTouchStart={handleLightboxTouchStart}
             onTouchEnd={handleLightboxTouchEnd}
           >
-            {/* Dark Blue, Preview Panel strictly below toolbar */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.97, y: 10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.97, y: 10 }}
-              transition={{ duration: 0.2 }}
-              className="relative bg-navy rounded-2xl sm:rounded-3xl shadow-2xl p-2 sm:p-3.5 max-w-4xl sm:max-w-5xl lg:max-w-6xl w-full h-full max-h-[calc(100vh-var(--toolbar-bottom,64px)-16px)] flex flex-col gap-2 select-none border border-white/15 overflow-hidden"
-              onClick={(e) => e.stopPropagation()}
+            {/* Modal Content Wrapper - Strictly positioned in space below toolbar */}
+            <div
+              className="absolute inset-x-0 bottom-0 top-[64px] lg:top-[68px] flex flex-col items-center justify-center p-2 sm:p-4 lg:p-6"
+              style={{
+                top: 'var(--toolbar-bottom, 68px)',
+              }}
+              onClick={() => setSelectedMediaIndex(null)}
             >
+              {/* Dark Blue, Preview Panel strictly below toolbar */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.97, y: 10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.97, y: 10 }}
+                transition={{ duration: 0.2 }}
+                className="relative bg-navy rounded-2xl sm:rounded-3xl shadow-2xl p-2 sm:p-3.5 max-w-4xl sm:max-w-5xl lg:max-w-6xl w-full h-full max-h-[calc(100vh-var(--toolbar-bottom,68px)-36px)] flex flex-col gap-2 select-none border border-white/15 overflow-hidden"
+                onClick={(e) => e.stopPropagation()}
+              >
               {/* Floating Top-Right Close Button */}
               <button
                 id="gallery-preview-close"
@@ -359,16 +366,18 @@ export default function Gallery() {
                     muted={true}
                     defaultMuted={true}
                     playbackRate={currentItem.playbackRate || (currentItem.title?.toLowerCase().includes('clownfish and sea anemone') || currentItem.src?.includes('Clownfish_and_Sea_Anemone') ? 0.7 : 1)}
+                    style={{ objectFit: 'contain', maxHeight: '100%', maxWidth: '100%' }}
                     className="w-full h-full max-w-full max-h-full object-contain flex items-center justify-center"
                   />
                 ) : (
-                  <SafeImage
+                  <img
                     src={currentItem.src}
                     alt={currentItem.title || 'Gallery visual'}
-                    targetWidth={1600}
-                    disableParallax={true}
-                    className="w-full h-full max-w-full max-h-full flex items-center justify-center"
-                    imgClassName="w-full h-full max-w-full max-h-full object-contain select-none m-auto"
+                    loading="eager"
+                    decoding="async"
+                    style={{ objectFit: 'contain', maxHeight: '100%', maxWidth: '100%' }}
+                    className="w-full h-full max-w-full max-h-full object-contain select-none m-auto block pointer-events-auto"
+                    draggable={false}
                   />
                 )}
               </div>
@@ -472,7 +481,8 @@ export default function Gallery() {
               )}
             </motion.div>
           </div>
-        )}
+        </div>
+      )}
       </AnimatePresence>
     </div>
   )

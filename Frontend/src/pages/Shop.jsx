@@ -597,12 +597,44 @@ export default function Shop() {
 }
 
 function GroupGallerySection() {
-  const [selectedPhoto, setSelectedPhoto] = useState(null)
+  const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(null)
   const lenis = useLenis()
 
-  // Lock background scroll when photo preview is open
+  const selectedPhoto = selectedPhotoIndex !== null ? GROUP_PHOTOS[selectedPhotoIndex] : null
+
+  const nextPhoto = () => {
+    triggerHaptic(8)
+    setSelectedPhotoIndex((prev) => (prev === null ? 0 : (prev + 1) % GROUP_PHOTOS.length))
+  }
+
+  const prevPhoto = () => {
+    triggerHaptic(8)
+    setSelectedPhotoIndex((prev) => (prev === null ? 0 : (prev - 1 + GROUP_PHOTOS.length) % GROUP_PHOTOS.length))
+  }
+
+  const touchStartX = useRef(0)
+  const touchStartY = useRef(0)
+
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX
+    touchStartY.current = e.touches[0].clientY
+  }
+
+  const handleTouchEnd = (e) => {
+    const deltaX = e.changedTouches[0].clientX - touchStartX.current
+    const deltaY = e.changedTouches[0].clientY - touchStartY.current
+    if (Math.abs(deltaX) > 40 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5) {
+      if (deltaX < 0) {
+        nextPhoto()
+      } else {
+        prevPhoto()
+      }
+    }
+  }
+
+  // Lock background scroll and handle arrow keys when photo preview is open
   useEffect(() => {
-    if (!selectedPhoto) return
+    if (selectedPhotoIndex === null) return
 
     if (lenis) lenis.stop()
     const origBodyOverflow = document.body.style.overflow
@@ -610,12 +642,26 @@ function GroupGallerySection() {
     document.body.style.overflow = 'hidden'
     document.documentElement.style.overflow = 'hidden'
 
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setSelectedPhotoIndex(null)
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault()
+        nextPhoto()
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault()
+        prevPhoto()
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+
     return () => {
       if (lenis) lenis.start()
       document.body.style.overflow = origBodyOverflow
       document.documentElement.style.overflow = origHtmlOverflow
+      window.removeEventListener('keydown', handleKeyDown)
     }
-  }, [selectedPhoto, lenis])
+  }, [selectedPhotoIndex, lenis])
 
   return (
     <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 border-t border-navy/10 mt-8">
@@ -638,7 +684,7 @@ function GroupGallerySection() {
             key={photo.id || idx}
             onClick={() => {
               triggerHaptic(8)
-              setSelectedPhoto(photo)
+              setSelectedPhotoIndex(idx)
             }}
             className="group relative aspect-[4/3] rounded-2xl overflow-hidden bg-white cursor-pointer shadow-sm hover:shadow-float transition duration-300 border border-navy/5"
           >
@@ -653,7 +699,7 @@ function GroupGallerySection() {
         ))}
       </div>
 
-      {/* Lightbox Modal - Clean with No Title */}
+      {/* Lightbox Modal - Full uncropped photo & Arrow Navigation */}
       <AnimatePresence>
         {selectedPhoto && (
           <motion.div
@@ -662,34 +708,108 @@ function GroupGallerySection() {
             exit={{ opacity: 0 }}
             data-lenis-prevent="true"
             style={{
-              top: 'var(--toolbar-bottom, 64px)',
               overscrollBehavior: 'contain',
               touchAction: 'none',
             }}
-            onClick={() => setSelectedPhoto(null)}
-            className="fixed left-0 right-0 bottom-0 top-[64px] lg:top-[68px] z-[9990] bg-black/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 cursor-pointer overflow-hidden"
+            onClick={() => setSelectedPhotoIndex(null)}
+            className="fixed inset-0 z-[9990] bg-black/90 backdrop-blur-md select-none overflow-hidden"
           >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              onClick={(e) => e.stopPropagation()}
-              className="relative max-w-5xl max-h-[calc(100vh-var(--toolbar-bottom,64px)-24px)] rounded-3xl overflow-hidden bg-navy/95 border border-white/15 shadow-2xl flex flex-col items-center justify-center p-2.5 sm:p-4 cursor-default"
+            {/* Modal Content Wrapper - Strictly positioned below toolbar */}
+            <div
+              className="absolute inset-x-0 bottom-0 top-[64px] lg:top-[68px] flex items-center justify-center p-3 sm:p-5 lg:p-7"
+              style={{
+                top: 'var(--toolbar-bottom, 68px)',
+              }}
+              onClick={() => setSelectedPhotoIndex(null)}
             >
-              <button
-                type="button"
-                onClick={() => setSelectedPhoto(null)}
-                className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-black/60 text-white hover:bg-accent hover:text-navy flex items-center justify-center transition cursor-pointer font-bold shadow-lg"
-                aria-label="Close photo"
+              {/* Previous Photo Arrow */}
+              {GROUP_PHOTOS.length > 1 && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    prevPhoto()
+                  }}
+                  className="absolute left-2 sm:left-4 lg:left-8 z-40 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-navy/85 hover:bg-[#FFCD00] text-white hover:text-[#001e3d] flex items-center justify-center transition shadow-2xl active:scale-90 cursor-pointer font-bold border border-white/20 backdrop-blur-md"
+                  aria-label="Previous photo (Left Arrow)"
+                  title="Previous photo (Left Arrow)"
+                >
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+              )}
+
+              {/* Next Photo Arrow */}
+              {GROUP_PHOTOS.length > 1 && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    nextPhoto()
+                  }}
+                  className="absolute right-2 sm:right-4 lg:right-8 z-40 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-navy/85 hover:bg-[#FFCD00] text-white hover:text-[#001e3d] flex items-center justify-center transition shadow-2xl active:scale-90 cursor-pointer font-bold border border-white/20 backdrop-blur-md"
+                  aria-label="Next photo (Right Arrow)"
+                  title="Next photo (Right Arrow)"
+                >
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              )}
+
+              <motion.div
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.95, opacity: 0 }}
+                onClick={(e) => e.stopPropagation()}
+                onTouchStart={handleTouchStart}
+                onTouchEnd={handleTouchEnd}
+                style={{
+                  maxHeight: 'calc(100vh - var(--toolbar-bottom, 68px) - 36px)',
+                  maxWidth: 'calc(100vw - 32px)',
+                }}
+                className="relative rounded-2xl sm:rounded-3xl bg-navy/95 border border-white/15 shadow-2xl flex flex-col items-center justify-center p-2.5 sm:p-4 cursor-default select-none"
               >
-                ✕
-              </button>
-              <img
-                src={selectedPhoto.src}
-                alt="Community Photo"
-                className="max-h-[calc(100vh-var(--toolbar-bottom,64px)-48px)] w-auto max-w-full object-contain rounded-2xl shadow-inner"
-              />
-            </motion.div>
+                <button
+                  type="button"
+                  onClick={() => setSelectedPhotoIndex(null)}
+                  className="absolute top-3 right-3 sm:top-4 sm:right-4 z-40 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-black/60 text-white hover:bg-accent hover:text-navy flex items-center justify-center transition cursor-pointer font-bold shadow-lg border border-white/10 backdrop-blur-md"
+                  aria-label="Close photo"
+                >
+                  ✕
+                </button>
+                <img
+                  key={selectedPhoto.src}
+                  src={selectedPhoto.src}
+                  alt={selectedPhoto.title || "Community Photo"}
+                  style={{
+                    objectFit: 'contain',
+                    maxHeight: 'calc(100vh - var(--toolbar-bottom, 68px) - 72px)',
+                    maxWidth: 'min(calc(100vw - 64px), 1100px)',
+                    width: 'auto',
+                    height: 'auto',
+                  }}
+                  className="rounded-xl sm:rounded-2xl shadow-inner select-none block"
+                  draggable={false}
+                />
+
+                {/* Bottom Image Counter & Title Badge */}
+                {GROUP_PHOTOS.length > 1 && (
+                  <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-30 px-3 py-1 rounded-full bg-black/75 backdrop-blur-md text-white text-[11px] sm:text-xs font-semibold shadow-md border border-white/15 pointer-events-none flex items-center gap-2">
+                    <span className="text-[#FFCD00]">
+                      {selectedPhotoIndex + 1} / {GROUP_PHOTOS.length}
+                    </span>
+                    {selectedPhoto.title && (
+                      <>
+                        <span className="w-1 h-1 rounded-full bg-white/40" />
+                        <span className="text-white/90">{selectedPhoto.title}</span>
+                      </>
+                    )}
+                  </div>
+                )}
+              </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
