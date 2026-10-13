@@ -120,7 +120,7 @@ async function verifyAll() {
   };
 
   const cesiumOk = checkFeature('Cesium 3D Globe & Ion integration present', t => t.includes('Cesium') || t.includes('createWorldTerrain') || t.includes('Viewer'));
-  const padiOk = checkFeature('PADI dive sites dataset (4,869 sites / 123 countries)', t => t.includes('latitude') && (t.includes('diveSites') || t.includes('dive_sites') || t.includes('diveLocations')));
+  const sitesOk = checkFeature('Global dive sites dataset (4,869 sites / 123 countries)', t => t.includes('latitude') && (t.includes('diveSites') || t.includes('dive_sites') || t.includes('diveLocations')));
   const phoneOk = checkFeature('Phone Call click destination: tel:+918971001010', t => t.includes('tel:+918971001010'));
   const emailOk = checkFeature('Email click destination: mailto:sanjeev.bajaj@thedivevillage.com', t => t.includes('mailto:sanjeev.bajaj@thedivevillage.com'));
   const waOk = checkFeature('WhatsApp destination: wa.me/918971001010', t => t.includes('wa.me/918971001010'));
@@ -132,8 +132,8 @@ async function verifyAll() {
   console.log('========================================================================');
   console.log(`Routes Tested: ${ROUTES.length} (Passed: ${ROUTES.length - routeFailures.length}, Failed: ${routeFailures.length})`);
   console.log(`Videos Tested: ${videoFiles.length} (Passed: ${videoSuccessCount}, Failed: ${videoErrors.length})`);
-  console.log(`Features Verified: Cesium(${cesiumOk}), PADI(${padiOk}), Phone(${phoneOk}), Email(${emailOk}), WhatsApp(${waOk}), Cursor(${cursorOk})`);
-  console.log(`Overall Parity Status: ${routeFailures.length === 0 && videoErrors.length === 0 && cesiumOk && padiOk && phoneOk && emailOk && waOk ? 'ALL PASS' : 'FAILURES DETECTED'}`);
+  console.log(`Features Verified: Cesium(${cesiumOk}), DiveSites(${sitesOk}), Phone(${phoneOk}), Email(${emailOk}), WhatsApp(${waOk}), Cursor(${cursorOk})`);
+  console.log(`Overall Parity Status: ${routeFailures.length === 0 && videoErrors.length === 0 && cesiumOk && sitesOk && phoneOk && emailOk && waOk ? 'ALL PASS' : 'FAILURES DETECTED'}`);
 }
 
 verifyAll();

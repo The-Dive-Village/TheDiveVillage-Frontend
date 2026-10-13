@@ -99,14 +99,14 @@ async function runParityAudit() {
       const hasEmail = bundleText.includes('mailto:sanjeev.bajaj@thedivevillage.com');
       const hasWhatsApp = bundleText.includes('wa.me/918971001010');
       const hasCesium = bundleText.includes('Cesium') || bundleText.includes('ion');
-      const hasPadiSites = bundleText.includes('diveSites') || bundleText.includes('dive_sites') || bundleText.includes('PADI') || bundleText.includes('latitude');
+      const hasSitesData = bundleText.includes('diveSites') || bundleText.includes('dive_sites') || bundleText.includes('latitude');
 
       console.log(`  - Custom Cursor code present: ${hasDiverCursor}`);
       console.log(`  - Phone action ('tel:+918971001010') present: ${hasPhone}`);
       console.log(`  - Email action ('mailto:sanjeev.bajaj@thedivevillage.com') present: ${hasEmail}`);
       console.log(`  - WhatsApp action ('wa.me/918971001010') present: ${hasWhatsApp}`);
       console.log(`  - Cesium globe code present: ${hasCesium}`);
-      console.log(`  - PADI dive sites data present: ${hasPadiSites}`);
+      console.log(`  - Dive sites data present: ${hasSitesData}`);
     } catch (err) {
       console.error(`Bundle Fetch Error: ${err.message}`);
     }

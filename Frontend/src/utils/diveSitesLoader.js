@@ -258,7 +258,7 @@ export async function loadDiveSites(csvUrl = '/data/dive-sites.csv') {
         let latStr = row.Latitude ?? row.latitude
         let lngStr = row.Longitude ?? row.longitude
         const naturalTypes = (row.Natural_Types || row.natural_types || '').trim()
-        const padiUrl = (row.PADI_URL || row.padi_url || '').trim()
+        const sourceUrl = (row.Source_URL || row.source_url || row.URL || row.url || '').trim()
         const coordShift = row.Coordinate_Shift_m ?? ''
         const waterCorrection = row.Water_Correction ?? ''
 
@@ -332,7 +332,7 @@ export async function loadDiveSites(csvUrl = '/data/dive-sites.csv') {
           latitude: lat,
           longitude: lng,
           naturalTypes,
-          padiUrl,
+          sourceUrl,
           coordinateShift: coordShift,
           waterCorrection,
         })
@@ -361,7 +361,7 @@ export async function loadDiveSites(csvUrl = '/data/dive-sites.csv') {
             latitude: site.latitude,
             longitude: site.longitude,
             naturalTypes: site.naturalTypes,
-            padiUrl: site.padiUrl,
+            sourceUrl: site.sourceUrl,
             coordinateShift: site.coordinateShift,
             waterCorrection: site.waterCorrection,
           },

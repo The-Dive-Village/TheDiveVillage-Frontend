@@ -17,10 +17,10 @@ for (let i = 0; i < 10; i++) {
     country: r.Country,
     lat: r.Latitude,
     lng: r.Longitude,
-    padi_lat: r.PADI_Latitude,
-    padi_lng: r.PADI_Longitude,
+    ref_lat: r.Ref_Latitude,
+    ref_lng: r.Ref_Longitude,
     shift_m: r.Coordinate_Shift_m,
-    diff_lat: (parseFloat(r.Latitude) - parseFloat(r.PADI_Latitude)).toFixed(5),
-    diff_lng: (parseFloat(r.Longitude) - parseFloat(r.PADI_Longitude)).toFixed(5),
+    diff_lat: (parseFloat(r.Latitude) - parseFloat(r.Ref_Latitude)).toFixed(5),
+    diff_lng: (parseFloat(r.Longitude) - parseFloat(r.Ref_Longitude)).toFixed(5),
   });
 }

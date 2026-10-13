@@ -44,9 +44,9 @@ if (typeof window !== 'undefined') {
  * Generates a crisp #FFD500 yellow dive goggles pin icon from assets/pin.png for MapLibre WebGL.
  * Features a subtle dark drop shadow so it pops cleanly over both deep blue ocean and light coastlines.
  */
-function createDiveGogglesPinIcon(img, width = 32, height = 18) {
+function createDiveGogglesPinIcon(img, width = 28, height = 16) {
   const dpr = 2
-  const pad = 4
+  const pad = 3
   const canvas = document.createElement('canvas')
   canvas.width = (width + pad * 2) * dpr
   canvas.height = (height + pad * 2) * dpr
@@ -59,6 +59,73 @@ function createDiveGogglesPinIcon(img, width = 32, height = 18) {
   ctx.shadowOffsetY = 1.5
 
   ctx.drawImage(img, pad, pad, width, height)
+
+  return ctx.getImageData(0, 0, canvas.width, canvas.height)
+}
+
+/**
+ * Generates a classic red drop pin (teardrop map marker with white center dot and shadow)
+ * for MapLibre WebGL canvas.
+ */
+function createRedDropPinIcon(width = 15, height = 21) {
+  const dpr = 2
+  const padX = 3
+  const padTop = 2.5
+  const padBottom = 1
+  const canvas = document.createElement('canvas')
+  canvas.width = (width + padX * 2) * dpr
+  canvas.height = (height + padTop + padBottom) * dpr
+  const ctx = canvas.getContext('2d')
+  ctx.scale(dpr, dpr)
+
+  const cx = padX + width / 2
+  const r = width / 2 - 1.2
+  const cy = padTop + r
+  const tipY = padTop + height - 0.5
+
+  // 1. Soft drop shadow
+  ctx.save()
+  ctx.shadowColor = 'rgba(0, 15, 30, 0.6)'
+  ctx.shadowBlur = 3
+  ctx.shadowOffsetY = 1.5
+
+  // 2. Drop pin teardrop path with mathematically smooth tangents
+  const d = Math.max(r + 1, tipY - cy)
+  const cosAlpha = Math.min(0.95, r / d)
+  const alpha = Math.acos(cosAlpha)
+
+  ctx.beginPath()
+  // Start from right tangent, draw arc over top to left tangent (counter-clockwise)
+  ctx.arc(cx, cy, r, Math.PI / 2 - alpha, Math.PI / 2 + alpha, true)
+  // Straight line down to pointed tip
+  ctx.lineTo(cx, tipY)
+  ctx.closePath()
+
+  // 3. Rich red gradient fill (classic map drop pin lighting)
+  const grad = ctx.createLinearGradient(cx - r, padTop, cx + r, tipY)
+  grad.addColorStop(0, '#FF4D4D')
+  grad.addColorStop(0.5, '#EA3838')
+  grad.addColorStop(1, '#C62828')
+  ctx.fillStyle = grad
+  ctx.fill()
+  ctx.restore()
+
+  // 4. Clean white border for contrast against ocean blue and terrain
+  ctx.strokeStyle = '#FFFFFF'
+  ctx.lineWidth = 1.2
+  ctx.stroke()
+
+  // 5. Classic white center dot
+  ctx.beginPath()
+  ctx.arc(cx, cy, r * 0.42, 0, Math.PI * 2)
+  ctx.fillStyle = '#FFFFFF'
+  ctx.fill()
+
+  // 6. Subtle inner core dot
+  ctx.beginPath()
+  ctx.arc(cx, cy, r * 0.18, 0, Math.PI * 2)
+  ctx.fillStyle = '#991B1B'
+  ctx.fill()
 
   return ctx.getImageData(0, 0, canvas.width, canvas.height)
 }
@@ -96,6 +163,39 @@ export default function DiveExplorerMap({
   const [activeSite, setActiveSite] = useState(null)
   const [tooltipInfo, setTooltipInfo] = useState(null)
 
+  // Pin marker style state: 'custom' (yellow dive goggles) | 'red' (normal red drop pin)
+  const [pinStyle, setPinStyle] = useState(() => {
+    try {
+      return localStorage.getItem('tdv_dive_map_pin_style') || 'custom'
+    } catch {
+      return 'custom'
+    }
+  })
+  const pinStyleRef = useRef(pinStyle)
+
+  const handleTogglePinStyle = useCallback((newStyle) => {
+    setPinStyle(newStyle)
+    pinStyleRef.current = newStyle
+    try {
+      localStorage.setItem('tdv_dive_map_pin_style', newStyle)
+    } catch {}
+
+    const map = mapRef.current
+    if (!map || !map.isStyleLoaded()) return
+    const countryIcon = newStyle === 'red' ? 'country-pin-red' : 'country-pin-custom'
+    const siteIcon = newStyle === 'red' ? 'site-pin-red' : 'site-pin-custom'
+    try {
+      if (map.getLayer('country-pin')) {
+        map.setLayoutProperty('country-pin', 'icon-image', countryIcon)
+      }
+      if (map.getLayer('site-pin')) {
+        map.setLayoutProperty('site-pin', 'icon-image', siteIcon)
+      }
+    } catch (e) {
+      console.warn('[DiveExplorer] Pin style toggle error:', e)
+    }
+  }, [])
+
   // Keep latest state in refs so asynchronous MapLibre callbacks always access fresh data
   const geojsonCountriesRef = useRef(geojsonCountries)
   const countryCentroidsRef = useRef(countryCentroids)
@@ -103,21 +203,28 @@ export default function DiveExplorerMap({
   const selectedCountryRef = useRef(selectedCountry)
   const searchQueryRef = useRef(searchQuery)
 
-  useEffect(() => {
-    geojsonCountriesRef.current = geojsonCountries
-  }, [geojsonCountries])
+  geojsonCountriesRef.current = geojsonCountries
+  countryCentroidsRef.current = countryCentroids
+  selectedCountryRef.current = selectedCountry
+  searchQueryRef.current = searchQuery
 
   useEffect(() => {
-    countryCentroidsRef.current = countryCentroids
-  }, [countryCentroids])
-
-  useEffect(() => {
-    selectedCountryRef.current = selectedCountry
-  }, [selectedCountry])
-
-  useEffect(() => {
-    searchQueryRef.current = searchQuery
-  }, [searchQuery])
+    pinStyleRef.current = pinStyle
+    const map = mapRef.current
+    if (!map || !map.isStyleLoaded()) return
+    const countryIcon = pinStyle === 'red' ? 'country-pin-red' : 'country-pin-custom'
+    const siteIcon = pinStyle === 'red' ? 'site-pin-red' : 'site-pin-custom'
+    try {
+      if (map.getLayer('country-pin')) {
+        map.setLayoutProperty('country-pin', 'icon-image', countryIcon)
+      }
+      if (map.getLayer('site-pin')) {
+        map.setLayoutProperty('site-pin', 'icon-image', siteIcon)
+      }
+    } catch (e) {
+      console.warn('[DiveExplorer] Pin style sync error:', e)
+    }
+  }, [pinStyle])
 
   // 1. Load CSV data on mount
   useEffect(() => {
@@ -189,11 +296,13 @@ export default function DiveExplorerMap({
           latitude: site.latitude,
           longitude: site.longitude,
           naturalTypes: site.naturalTypes,
-          padiUrl: site.padiUrl,
+          sourceUrl: site.sourceUrl,
         },
       })),
     }
   }, [allSites, selectedCountry, searchQuery])
+
+  countrySitesGeoJSONRef.current = countrySitesGeoJSON
 
   useEffect(() => {
     countrySitesGeoJSONRef.current = countrySitesGeoJSON
@@ -207,15 +316,15 @@ export default function DiveExplorerMap({
     try {
       const cs = map.getSource('country-centroids-source')
       if (cs) {
-        cs.setData(geojsonCountriesRef.current)
+        cs.setData(geojsonCountries)
       }
 
       const ds = map.getSource('dive-sites-source')
       if (ds) {
-        ds.setData(countrySitesGeoJSONRef.current)
+        ds.setData(countrySitesGeoJSON)
       }
 
-      const isCountryView = Boolean(selectedCountryRef.current || searchQueryRef.current)
+      const isCountryView = Boolean(selectedCountry || searchQuery)
       const countryVis = isCountryView ? 'none' : 'visible'
       const siteVis = isCountryView ? 'visible' : 'none'
 
@@ -228,7 +337,7 @@ export default function DiveExplorerMap({
     } catch (e) {
       console.warn('[DiveExplorer] syncMapData warning:', e)
     }
-  }, [])
+  }, [geojsonCountries, countrySitesGeoJSON, selectedCountry, searchQuery])
 
   // 3. Initialize MapLibre GL Map with OpenFreeMap Liberty Style
   useEffect(() => {
@@ -263,12 +372,24 @@ export default function DiveExplorerMap({
       // Handle missing image dynamically as safety guard
       map.on('styleimagemissing', async (e) => {
         const id = e.id
-        if (id === 'country-pin-icon' || id === 'site-pin-icon') {
+        if (id === 'country-pin-custom' || id === 'country-pin-icon') {
           const pinImg = await preloadPinImage()
           if (pinImg && !map.hasImage(id)) {
-            const w = id === 'country-pin-icon' ? 34 : 28
-            const h = id === 'country-pin-icon' ? 19 : 16
-            map.addImage(id, createDiveGogglesPinIcon(pinImg, w, h), { pixelRatio: 2 })
+            map.addImage(id, createDiveGogglesPinIcon(pinImg, 28, 16), { pixelRatio: 2 })
+          }
+        } else if (id === 'site-pin-custom' || id === 'site-pin-icon') {
+          const pinImg = await preloadPinImage()
+          if (pinImg && !map.hasImage(id)) {
+            // Smaller dive site custom goggles icon
+            map.addImage(id, createDiveGogglesPinIcon(pinImg, 18, 10), { pixelRatio: 2 })
+          }
+        } else if (id === 'country-pin-red') {
+          if (!map.hasImage(id)) {
+            map.addImage(id, createRedDropPinIcon(20, 28), { pixelRatio: 2 })
+          }
+        } else if (id === 'site-pin-red') {
+          if (!map.hasImage(id)) {
+            map.addImage(id, createRedDropPinIcon(15, 21), { pixelRatio: 2 })
           }
         }
       })
@@ -327,26 +448,47 @@ export default function DiveExplorerMap({
           console.warn('[DiveExplorer] Water styling notice:', e)
         }
 
-        // 3. Register #FFD500 yellow dive goggles pin icons from assets/pin.png
+        // 3. Register pin icons: both custom #FFD500 yellow dive goggles and classic red drop pins
         try {
           const pinImg = await preloadPinImage()
           if (pinImg) {
+            if (!map.hasImage('country-pin-custom')) {
+              map.addImage('country-pin-custom', createDiveGogglesPinIcon(pinImg, 28, 16), { pixelRatio: 2 })
+            }
+            if (!map.hasImage('site-pin-custom')) {
+              // Made dive sites pin smaller as requested: 18x10 instead of 28x16
+              map.addImage('site-pin-custom', createDiveGogglesPinIcon(pinImg, 18, 10), { pixelRatio: 2 })
+            }
+            // Backwards-compatible aliases
             if (!map.hasImage('country-pin-icon')) {
-              map.addImage('country-pin-icon', createDiveGogglesPinIcon(pinImg, 34, 19), { pixelRatio: 2 })
+              map.addImage('country-pin-icon', createDiveGogglesPinIcon(pinImg, 28, 16), { pixelRatio: 2 })
             }
             if (!map.hasImage('site-pin-icon')) {
-              map.addImage('site-pin-icon', createDiveGogglesPinIcon(pinImg, 28, 16), { pixelRatio: 2 })
+              map.addImage('site-pin-icon', createDiveGogglesPinIcon(pinImg, 18, 10), { pixelRatio: 2 })
             }
           } else {
             const res = await map.loadImage(pinIconUrl)
             if (res && res.data) {
+              if (!map.hasImage('country-pin-custom')) map.addImage('country-pin-custom', res.data, { pixelRatio: 4.4 })
+              if (!map.hasImage('site-pin-custom')) map.addImage('site-pin-custom', res.data, { pixelRatio: 6.5 })
               if (!map.hasImage('country-pin-icon')) map.addImage('country-pin-icon', res.data, { pixelRatio: 4.4 })
-              if (!map.hasImage('site-pin-icon')) map.addImage('site-pin-icon', res.data, { pixelRatio: 5.3 })
+              if (!map.hasImage('site-pin-icon')) map.addImage('site-pin-icon', res.data, { pixelRatio: 6.5 })
             }
+          }
+
+          // Register classic red drop pins
+          if (!map.hasImage('country-pin-red')) {
+            map.addImage('country-pin-red', createRedDropPinIcon(20, 28), { pixelRatio: 2 })
+          }
+          if (!map.hasImage('site-pin-red')) {
+            map.addImage('site-pin-red', createRedDropPinIcon(15, 21), { pixelRatio: 2 })
           }
         } catch (e) {
           console.warn('[DiveExplorer] Icon registration notice:', e)
         }
+
+        const initialCountryIcon = pinStyleRef.current === 'red' ? 'country-pin-red' : 'country-pin-custom'
+        const initialSiteIcon = pinStyleRef.current === 'red' ? 'site-pin-red' : 'site-pin-custom'
 
         // ----------------------------------------------------
         // SOURCE 1: Country Centroid Points (World Overview)
@@ -356,13 +498,13 @@ export default function DiveExplorerMap({
           data: geojsonCountriesRef.current,
         })
 
-        // 1. Main Country Pin (Yellow #FFD500 Dive Goggles with White Border Halo Text)
+        // 1. Main Country Pin (Custom Goggles or Red Drop Pin with White Border Halo Text)
         map.addLayer({
           id: 'country-pin',
           type: 'symbol',
           source: 'country-centroids-source',
           layout: {
-            'icon-image': 'country-pin-icon',
+            'icon-image': initialCountryIcon,
             'icon-size': 1,
             'icon-anchor': 'bottom',
             'icon-allow-overlap': true,
@@ -370,7 +512,7 @@ export default function DiveExplorerMap({
             'text-field': ['get', 'country'],
             'text-font': ['Noto Sans Bold'],
             'text-size': 10,
-            'text-offset': [0, 0.4],
+            'text-offset': [0, 0.35],
             'text-anchor': 'top',
             'text-optional': true,
           },
@@ -389,20 +531,20 @@ export default function DiveExplorerMap({
           data: countrySitesGeoJSONRef.current,
         })
 
-        // 2. Individual Dive Site Location Pin (Yellow #FFD500 Dive Goggles)
+        // 2. Individual Dive Site Location Pin (Smaller Custom Goggles or Red Drop Pin)
         map.addLayer({
           id: 'site-pin',
           type: 'symbol',
           source: 'dive-sites-source',
           layout: {
-            'icon-image': 'site-pin-icon',
+            'icon-image': initialSiteIcon,
             'icon-size': 1,
             'icon-anchor': 'bottom',
             'icon-allow-overlap': true,
             'text-field': ['get', 'siteName'],
             'text-font': ['Noto Sans Bold'],
             'text-size': 9.5,
-            'text-offset': [0, 0.4],
+            'text-offset': [0, 0.35],
             'text-anchor': 'top',
             'text-optional': true,
           },
@@ -473,7 +615,7 @@ export default function DiveExplorerMap({
             latitude: parseFloat(p.latitude) || coords[1],
             longitude: parseFloat(p.longitude) || coords[0],
             naturalTypes: p.naturalTypes || '',
-            padiUrl: p.padiUrl || '',
+            sourceUrl: p.sourceUrl || '',
           }
           setActiveSite(site)
           if (onSelectSite) onSelectSite(site)
@@ -850,8 +992,8 @@ export default function DiveExplorerMap({
       data-normal-cursor
       data-dive-map="true"
     >
-      {/* Mobile Standalone Search Bar Pill (Matching user mockup) */}
-      <div className="sm:hidden mb-3.5">
+      {/* Mobile Standalone Search Bar Pill & Controls */}
+      <div className="sm:hidden mb-3.5 flex flex-col gap-2">
         <div className="relative w-full">
           <span className="absolute inset-y-0 left-3.5 flex items-center pointer-events-none text-slate-400">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -864,18 +1006,83 @@ export default function DiveExplorerMap({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search dive site by name..."
-            className="w-full pl-10 pr-9 py-3 rounded-full bg-white border border-slate-200/90 text-xs font-semibold text-slate-800 placeholder:text-slate-400 outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition shadow-xs"
+            className="w-full pl-10 pr-9 py-2.5 rounded-full bg-white border border-slate-200/90 text-xs font-semibold text-slate-800 placeholder:text-slate-400 outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition shadow-xs"
           />
           {searchQuery && (
             <button
               type="button"
               onClick={() => setSearchQuery('')}
-              className="absolute inset-y-0 right-3.5 flex items-center text-slate-400 hover:text-navy text-xs font-bold"
+              className="absolute inset-y-0 right-3.5 flex items-center text-slate-400 hover:text-navy text-xs font-bold cursor-pointer"
               aria-label="Clear search"
             >
               ✕
             </button>
           )}
+        </div>
+
+        {/* Mobile Country selector + Pin Toggle Row */}
+        <div className="flex items-center justify-between gap-2">
+          <div className="relative flex-1 min-w-0">
+            <select
+              value={selectedCountry || 'all'}
+              onChange={(e) => handleDropdownCountryChange(e.target.value)}
+              className="w-full appearance-none pl-3 pr-7 py-2 rounded-2xl bg-white border border-navy/15 text-xs font-bold text-navy outline-none focus:border-accent shadow-xs truncate"
+              aria-label="Select country"
+            >
+              <option value="all">All Countries ({countriesList.length})</option>
+              {countriesList.map((c) => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
+            <div className="pointer-events-none absolute inset-y-0 right-2.5 flex items-center text-navy/50">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="m6 9 6 6 6-6" />
+              </svg>
+            </div>
+          </div>
+
+          <div
+            className="flex items-center bg-white p-0.5 rounded-2xl border border-navy/15 shadow-xs shrink-0 select-none"
+            role="group"
+            aria-label="Toggle pin style"
+          >
+            <button
+              type="button"
+              onClick={() => handleTogglePinStyle('custom')}
+              className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[11px] font-bold transition cursor-pointer ${
+                pinStyle === 'custom'
+                  ? 'bg-navy text-[#FFD500] shadow-xs'
+                  : 'text-navy/60 hover:text-navy'
+              }`}
+              title="Custom Pin"
+              aria-pressed={pinStyle === 'custom'}
+            >
+              <img src={pinIconUrl} alt="" className="w-3.5 h-2 object-contain" />
+              <span>Custom</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => handleTogglePinStyle('red')}
+              className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[11px] font-bold transition cursor-pointer ${
+                pinStyle === 'red'
+                  ? 'bg-navy text-rose-400 shadow-xs'
+                  : 'text-navy/60 hover:text-navy'
+              }`}
+              title="Red Pin"
+              aria-pressed={pinStyle === 'red'}
+            >
+              <svg width="10" height="12" viewBox="0 0 24 24" fill="none" className="shrink-0">
+                <path
+                  d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2Z"
+                  fill="#EF4444"
+                  stroke="#FFFFFF"
+                  strokeWidth="1.2"
+                />
+                <circle cx="12" cy="9" r="2.8" fill="#FFFFFF" />
+              </svg>
+              <span>Red</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -973,13 +1180,60 @@ export default function DiveExplorerMap({
               </button>
             )}
 
-            {/* Result Count Badge */}
-            <div className="ml-auto md:ml-0 text-[11px] font-bold text-navy/70 bg-white px-3 py-2 rounded-2xl border border-navy/10 shadow-xs whitespace-nowrap">
-              {selectedCountry ? (
-                <span><strong className="text-navy">{countrySitesGeoJSON.features.length}</strong> sites in {selectedCountry}</span>
-              ) : (
-                <span><strong className="text-navy">{countryCentroids.length}</strong> countries • <strong className="text-navy">{allSites.length.toLocaleString()}</strong> sites</span>
-              )}
+            {/* Pin Style Toggle Switch (Replaces 101 countries / 3,451 dive sites badge) */}
+            <div
+              className="ml-auto md:ml-0 flex items-center bg-white p-1 rounded-2xl border border-navy/15 shadow-xs shrink-0 select-none"
+              role="group"
+              aria-label="Toggle pin style"
+            >
+              <button
+                type="button"
+                onClick={() => handleTogglePinStyle('custom')}
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  pinStyle === 'custom'
+                    ? 'bg-navy text-[#FFD500] shadow-xs'
+                    : 'text-navy/60 hover:text-navy hover:bg-slate-100'
+                }`}
+                title="Custom Dive Goggles Pin"
+                aria-pressed={pinStyle === 'custom'}
+              >
+                <img
+                  src={pinIconUrl}
+                  alt=""
+                  className="w-3.5 h-2 object-contain"
+                  aria-hidden="true"
+                />
+                <span>Custom Pin</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleTogglePinStyle('red')}
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  pinStyle === 'red'
+                    ? 'bg-navy text-rose-400 shadow-xs'
+                    : 'text-navy/60 hover:text-navy hover:bg-slate-100'
+                }`}
+                title="Normal Red Drop Pin"
+                aria-pressed={pinStyle === 'red'}
+              >
+                <svg
+                  width="11"
+                  height="13"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  className="shrink-0"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2Z"
+                    fill="#EF4444"
+                    stroke="#FFFFFF"
+                    strokeWidth="1.2"
+                  />
+                  <circle cx="12" cy="9" r="2.8" fill="#FFFFFF" />
+                </svg>
+                <span>Red Pin</span>
+              </button>
             </div>
           </div>
         </div>

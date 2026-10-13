@@ -348,9 +348,20 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
         shadow-softness="1.0"
         tone-mapping="neutral"
         bounds="tight"
-        style={{ width: '100%', height: '100%', minHeight: '260px', backgroundColor: '#ffffff' }}
+        style={{
+          width: '100%',
+          height: '100%',
+          minHeight: '260px',
+          backgroundColor: '#ffffff',
+          background: '#ffffff',
+          '--poster-color': '#ffffff',
+          '--progress-bar-color': 'transparent',
+          '--progress-bar-height': '0px',
+          '--progress-mask': 'transparent',
+        }}
       >
-        <div slot="poster" data-product-media="true" style={{ backgroundColor: '#ffffff' }} className="w-full h-full flex flex-col items-center justify-center bg-white p-4">
+        <div slot="progress-bar" style={{ display: 'none' }} />
+        <div slot="poster" data-product-media="true" style={{ backgroundColor: '#ffffff', background: '#ffffff' }} className="w-full h-full flex flex-col items-center justify-center bg-white p-4">
           {poster ? (
             <img src={poster} alt={alt} data-product-media="true" style={{ backgroundColor: '#ffffff' }} className="max-h-full max-w-full object-contain bg-white" />
           ) : (

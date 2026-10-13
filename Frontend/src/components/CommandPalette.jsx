@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router'
 import { motion, AnimatePresence } from 'framer-motion'
 import { COURSE_CATALOG } from '../utils/courseEligibility'
 import { SHOP_PRODUCTS } from '../utils/products'
-import padiCountries from '../data/padiCountries.json'
+import diveCountries from '../data/diveCountries.json'
 import { GALLERY_ITEMS } from '../utils/galleryData'
 import { triggerHaptic } from '../utils/haptics'
 
@@ -68,7 +68,7 @@ export default function CommandPalette({ isOpen, onClose }) {
     })
 
     // 4. Dive Sites / Destinations
-    ;(padiCountries || []).slice(0, 25).forEach((countryName) => {
+    ;(diveCountries || []).slice(0, 25).forEach((countryName) => {
       list.push({
         id: `site-${countryName}`,
         type: 'location',

@@ -12,4 +12,4 @@ canaries = [
 shifted = [s for s in canaries if s.get('Coordinate_Shift_m') and float(s.get('Coordinate_Shift_m')) > 0]
 print(f"Shifted in Canary Islands ({len(shifted)}):")
 for s in shifted[:15]:
-    print(f"{s['ID']}: {s['Site_Name']} | Lat: {s['Latitude']}, Lng: {s['Longitude']} | PADI: {s['PADI_Latitude']}, {s['PADI_Longitude']}")
+    print(f"{s['ID']}: {s['Site_Name']} | Lat: {s['Latitude']}, Lng: {s['Longitude']} | Ref: {s['Ref_Latitude']}, {s['Ref_Longitude']}")

@@ -70,7 +70,7 @@ async function audit() {
     '/profile',
     '/dashboard',
     '/admin',
-    '/service/padi-open-water',
+    '/services/course-3',
     '/product/1'
   ];
 

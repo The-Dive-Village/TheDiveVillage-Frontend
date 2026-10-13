@@ -1,11 +1,13 @@
 import { useNavigate } from 'react-router'
 import { motion } from 'framer-motion'
+import useNightDive from '../hooks/useNightDive'
 const bannerImg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791686007/TDV-Media/Merch/banner.jpg';
 
 const pop1 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458274/TDV-Media/Products/pop1.webp';
 const pop2 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458275/TDV-Media/Products/pop2.webp';
 
 export default function MerchBannerCTA({ className = '' }) {
+  const isNightDive = useNightDive()
   const navigate = useNavigate()
 
   const handleClick = () => {
@@ -16,7 +18,8 @@ export default function MerchBannerCTA({ className = '' }) {
     <div className={`w-full ${className}`}>
       <div
         onClick={handleClick}
-        className="group relative rounded-[24px] sm:rounded-[36px] lg:rounded-[40px] overflow-hidden bg-[#001428] shadow-lift border border-white/10 w-full h-[190px] xs:h-[230px] sm:h-[280px] lg:h-[450px] flex items-center justify-end cursor-pointer transition-all duration-300 hover:scale-[1.008] hover:border-white/30"
+        data-shop-banner="true"
+        className={`shop-hero-banner group relative rounded-[24px] sm:rounded-[36px] lg:rounded-[40px] overflow-hidden bg-[#001428] shadow-lift ${isNightDive ? 'border border-[#001C39]' : 'border border-white/10 hover:border-white/30'} w-full h-[190px] xs:h-[230px] sm:h-[280px] lg:h-[450px] flex items-center justify-end cursor-pointer transition-all duration-300 hover:scale-[1.008]`}
       >
         <img
           src={bannerImg}

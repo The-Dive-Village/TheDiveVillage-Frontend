@@ -504,7 +504,7 @@ export default function Contact() {
                         <input
                           type="text"
                           name="certificationsHeld"
-                          placeholder="e.g. PADI 5-Star IDC, SSI Diamond, CMAS, ISO certified"
+                          placeholder="e.g. 5-Star IDC, SSI Diamond, CMAS, ISO certified"
                           value={formData.certificationsHeld}
                           onChange={handleChange}
                           required={formData.subject === 'Partnership'}

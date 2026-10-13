@@ -14,5 +14,5 @@ const calviaSites = parsed.data.filter(r => {
 
 console.log('Calvià / Palma Bay region sites:', calviaSites.length);
 for (const s of calviaSites) {
-  console.log(`${s.ID}: "${s.Site_Name}" -> lat: ${s.Latitude}, lng: ${s.Longitude} (PADI: ${s.PADI_Latitude}, ${s.PADI_Longitude}, shift: ${s.Coordinate_Shift_m})`);
+  console.log(`${s.ID}: "${s.Site_Name}" -> lat: ${s.Latitude}, lng: ${s.Longitude} (Ref: ${s.Ref_Latitude}, ${s.Ref_Longitude}, shift: ${s.Coordinate_Shift_m})`);
 }

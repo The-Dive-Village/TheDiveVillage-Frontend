@@ -12,4 +12,4 @@ ibiza = [
 shifted = [s for s in ibiza if s.get('Coordinate_Shift_m') and float(s.get('Coordinate_Shift_m')) > 0]
 print(f"Shifted in Ibiza & Formentera ({len(shifted)}):")
 for s in shifted:
-    print(f"{s['ID']}: {s['Site_Name']} | Lat: {s['Latitude']}, Lng: {s['Longitude']} | PADI: {s['PADI_Latitude']}, {s['PADI_Longitude']}")
+    print(f"{s['ID']}: {s['Site_Name']} | Lat: {s['Latitude']}, Lng: {s['Longitude']} | Ref: {s['Ref_Latitude']}, {s['Ref_Longitude']}")

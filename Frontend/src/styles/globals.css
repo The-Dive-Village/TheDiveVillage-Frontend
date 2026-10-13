@@ -667,7 +667,7 @@ body.night-dive #root,
 }
 
 /* Primary surface cards, panels & modals in Night Dive Mode */
-.night-dive [class*="bg-white"]:not([data-product-card]):not([data-product-media]):not([data-product-showcase]):not(.product-media-panel):not(.product-3d-wrapper):not([data-floating-image-card]):not(.hero-btn):not(input):not(select):not(textarea),
+.night-dive [class*="bg-white"]:not([data-product-card]):not([data-product-card] *):not([data-product-media]):not([data-product-media] *):not([data-product-showcase]):not([data-product-showcase] *):not(.product-media-panel):not(.product-media-panel *):not(.product-3d-wrapper):not(.product-3d-wrapper *):not([data-floating-image-card]):not([data-floating-image-card] *):not(model-viewer):not(model-viewer *):not(.hero-btn):not(input):not(select):not(textarea),
 .night-dive aside nav {
   background-color: #001e3d !important;
   color: #ffffff !important;
@@ -852,6 +852,14 @@ html body.night-dive a.hero-btn:hover * {
 .night-dive footer [class*="bg-[#071d37]"] {
   background-color: #001C39 !important;
   box-shadow: none !important;
+}
+
+/* Shop Hero Banner & Merch CTA in Night Dive Mode - Thin Border #001C39 */
+body.night-dive .shop-hero-banner,
+.night-dive .shop-hero-banner,
+body.night-dive [data-shop-banner],
+.night-dive [data-shop-banner] {
+  border: 1px solid #001C39 !important;
 }
 
 /* Status Badges */
@@ -1349,20 +1357,44 @@ button, a, input, select, textarea {
 html body.night-dive [data-product-card],
 html body.night-dive [data-product-card] div:not(.product-wishlist-btn):not(.product-add-btn):not(.product-add-btn-mobile),
 html body.night-dive [data-product-card] [data-product-media],
+html body.night-dive [data-product-card] [data-product-media] *,
 html body.night-dive [data-product-card] [slot="poster"],
+html body.night-dive [data-product-card] [slot="poster"] *,
 html body.night-dive [data-product-card] model-viewer,
+html body.night-dive [data-product-card] model-viewer *,
 html body.night-dive [data-product-media],
+html body.night-dive [data-product-media] *,
 html body.night-dive [data-product-showcase],
+html body.night-dive [data-product-showcase] *,
 html body.night-dive .product-media-panel,
+html body.night-dive .product-media-panel *,
 html body.night-dive .product-3d-wrapper,
+html body.night-dive .product-3d-wrapper *,
 html body.night-dive model-viewer,
+html body.night-dive model-viewer *,
 html body.night-dive model-viewer [slot="poster"],
+html body.night-dive model-viewer [slot="poster"] *,
 html body.night-dive [data-floating-image-card],
+html body.night-dive [data-floating-image-card] *,
 html body.night-dive button[data-thumb-btn][style*="#ffffff"],
 html body.night-dive button[data-thumb-btn]:not([style*="001E36"]):not([style*="black"]) {
   background-color: #ffffff !important;
   background: #ffffff !important;
   --poster-color: #ffffff !important;
+  --progress-bar-color: transparent !important;
+  --progress-bar-height: 0px !important;
+  --progress-mask: transparent !important;
+}
+
+html body.night-dive model-viewer,
+html body model-viewer,
+model-viewer {
+  --poster-color: #ffffff !important;
+  --progress-bar-color: transparent !important;
+  --progress-bar-height: 0px !important;
+  --progress-mask: transparent !important;
+  background-color: #ffffff !important;
+  background: #ffffff !important;
 }
 
 html body.night-dive .product-media-panel > div,

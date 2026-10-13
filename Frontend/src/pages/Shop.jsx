@@ -187,7 +187,7 @@ export default function Shop() {
 
       {/* 1. HERO BANNER */}
       <section className="mx-auto max-w-7xl px-3.5 sm:px-6 lg:px-8 mb-4 sm:mb-10">
-        <div className="relative rounded-[20px] sm:rounded-[36px] lg:rounded-[40px] overflow-hidden bg-[#001428] shadow-lift border border-white/10 w-full h-[180px] xs:h-[220px] sm:h-[300px] md:h-[340px] lg:h-[410px] xl:h-[440px] 2xl:h-[460px] flex items-center justify-end">
+        <div data-shop-banner="true" className={`shop-hero-banner relative rounded-[20px] sm:rounded-[36px] lg:rounded-[40px] overflow-hidden bg-[#001428] shadow-lift ${isNightDive ? 'border border-[#001C39]' : 'border border-white/10'} w-full h-[180px] xs:h-[220px] sm:h-[300px] md:h-[340px] lg:h-[410px] xl:h-[440px] 2xl:h-[460px] flex items-center justify-end`}>
           <img
             src={bannerImg}
             alt="Merchandise Banner"
@@ -969,12 +969,12 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, 
           setHasHovered(true)
         }}
         onMouseLeave={() => setIsHovered(false)}
-        style={{ backgroundColor: '#ffffff' }}
+        style={{ backgroundColor: '#ffffff', background: '#ffffff' }}
         className="hidden md:flex group rounded-2xl sm:rounded-[32px] bg-white border border-navy/10 text-navy p-3 sm:p-6 shadow-card hover:shadow-float transition duration-300 flex-col justify-between cursor-pointer relative"
       >
-        <div>
-          <div className="relative mb-3 sm:mb-5">
-            <div data-product-media="true" style={{ backgroundColor: '#ffffff' }} className="aspect-[4/5] w-full rounded-xl sm:rounded-2xl overflow-hidden bg-white flex items-center justify-center p-2.5 sm:p-4 relative">
+        <div style={{ backgroundColor: '#ffffff', background: '#ffffff' }}>
+          <div data-product-media="true" style={{ backgroundColor: '#ffffff', background: '#ffffff' }} className="relative mb-3 sm:mb-5">
+            <div data-product-media="true" style={{ backgroundColor: '#ffffff', background: '#ffffff' }} className="aspect-[4/5] w-full rounded-xl sm:rounded-2xl overflow-hidden bg-white flex items-center justify-center p-2.5 sm:p-4 relative">
               {/* Low-contrast Skeleton Shimmer Placeholder */}
               {!imgLoaded && (
                 <div className="absolute inset-0 skeleton-shimmer bg-navy/5 z-0" aria-hidden="true" />
@@ -983,15 +983,19 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, 
                 src={product.image}
                 alt={product.title}
                 onLoad={() => setImgLoaded(true)}
-                className={`max-h-full max-w-full object-contain relative z-[1] ${!imgLoaded ? 'opacity-0' : show3D ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+                data-product-media="true"
+                style={{ backgroundColor: '#ffffff', background: '#ffffff' }}
+                className={`max-h-full max-w-full object-contain relative z-[1] transition-opacity duration-300 ${!imgLoaded ? 'opacity-0' : 'opacity-100'}`}
               />
               {product.glb && hasHovered && (
                 <div
-                  style={{ backgroundColor: '#ffffff' }}
+                  data-product-media="true"
+                  style={{ backgroundColor: '#ffffff', background: '#ffffff' }}
                   className={`absolute inset-0 w-full h-full z-10 bg-white flex items-center justify-center transition-opacity duration-300 cursor-grab active:cursor-grabbing ${show3D ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
                 >
                   <model-viewer
                     ref={viewerRef}
+                    data-product-media="true"
                     src={product.glb}
                     alt={product.title}
                     loading="eager"
@@ -1012,10 +1016,20 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, 
                     shadow-softness="1.0"
                     tone-mapping="neutral"
                     bounds="tight"
-                    style={{ width: '100%', height: '100%', backgroundColor: '#ffffff' }}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      backgroundColor: '#ffffff',
+                      background: '#ffffff',
+                      '--poster-color': '#ffffff',
+                      '--progress-bar-color': 'transparent',
+                      '--progress-bar-height': '0px',
+                      '--progress-mask': 'transparent',
+                    }}
                   >
-                    <div slot="poster" style={{ backgroundColor: '#ffffff' }} className="w-full h-full flex items-center justify-center p-4 bg-white">
-                      <img src={product.image} alt={product.title} className="max-h-full max-w-full object-contain" />
+                    <div slot="progress-bar" style={{ display: 'none' }} />
+                    <div slot="poster" data-product-media="true" style={{ backgroundColor: '#ffffff', background: '#ffffff' }} className="w-full h-full flex items-center justify-center p-4 bg-white">
+                      <img src={product.image} alt={product.title} data-product-media="true" style={{ backgroundColor: '#ffffff', background: '#ffffff' }} className="max-h-full max-w-full object-contain bg-white" />
                     </div>
                   </model-viewer>
                 </div>

@@ -13,7 +13,7 @@ const createSitePinSvg = () => {
   return pinIconUrl
 }
 
-const createPadiPinSvg = (isSelected = false, isDimmed = false) => {
+const createSitePinSvg = (isSelected = false, isDimmed = false) => {
   return pinIconUrl
 }
 
@@ -653,25 +653,25 @@ export default function InteractiveDiveMap({
             for (const obj of pickedObjects) {
               if (obj && obj.id) {
                 const idStr = String(obj.id.id || '')
-                if (idStr.startsWith('padi-')) {
+                if (idStr.startsWith('site-')) {
                   isPointer = true
-                  const locId = idStr.replace('padi-', '')
+                  const locId = idStr.replace('site-', '')
                   let loc = null
-                  if (obj.id.properties && obj.id.properties.padiLocation) {
-                    const propVal = obj.id.properties.padiLocation
+                  if (obj.id.properties && obj.id.properties.siteLocation) {
+                    const propVal = obj.id.properties.siteLocation
                     loc = typeof propVal.getValue === 'function' ? propVal.getValue(window.Cesium?.JulianDate?.now?.() || new Date()) : propVal
                   }
                   if (!loc) {
                     const cleanId = String(locId).trim()
                     loc = countryLocationsRef.current.find(
-                      (l) => l && (String(l.id).trim() === cleanId || (l.padiId && String(l.padiId).trim() === cleanId))
+                      (l) => l && (String(l.id).trim() === cleanId || (l.siteId && String(l.siteId).trim() === cleanId))
                     )
                   }
                   if (loc) {
                     const creatureInfo = getDiveSiteCreatureInfo(loc)
                     const placeName = getLocationDisplayName(loc) || loc.title || loc.name
                     foundHover = {
-                      type: 'padi',
+                      type: 'site',
                       title: placeName,
                       depth: loc.depth || loc.maxDepth || (loc.minDepth ? `${loc.minDepth}-${loc.maxDepth || 30}m` : '12m - 30m'),
                       visibility: loc.visibility || '20m - 40m',
@@ -725,10 +725,10 @@ export default function InteractiveDiveMap({
 
               if (titleEl) titleEl.textContent = foundHover.title || ''
               if (subtitleEl) {
-                subtitleEl.textContent = foundHover.type === 'padi' ? 'Dive Site • Click to inspect' : 'Country • Click to explore'
+                subtitleEl.textContent = foundHover.type === 'site' ? 'Dive Site • Click to inspect' : 'Country • Click to explore'
               }
               if (detailsEl) {
-                if (foundHover.type === 'padi') {
+                if (foundHover.type === 'site') {
                   detailsEl.style.display = 'flex'
                   if (depthEl) depthEl.textContent = foundHover.depth || '12m - 30m'
                   if (visEl) visEl.textContent = foundHover.visibility || '20m - 40m'
@@ -745,21 +745,21 @@ export default function InteractiveDiveMap({
           const pickedObjects = viewer.scene.drillPick(click.position, 5)
 
           if (pickedObjects && pickedObjects.length > 0) {
-            // 1. Check if user clicked a PADI Dive Location marker first
+            // 1. Check if user clicked a Dive Location marker first
             for (const pickedObject of pickedObjects) {
               if (pickedObject && pickedObject.id) {
                 const idStr = String(pickedObject.id.id || '')
-                if (idStr.startsWith('padi-')) {
-                  const locId = idStr.replace('padi-', '')
+                if (idStr.startsWith('site-')) {
+                  const locId = idStr.replace('site-', '')
                   let loc = null
-                  if (pickedObject.id.properties && pickedObject.id.properties.padiLocation) {
-                    const propVal = pickedObject.id.properties.padiLocation
+                  if (pickedObject.id.properties && pickedObject.id.properties.siteLocation) {
+                    const propVal = pickedObject.id.properties.siteLocation
                     loc = typeof propVal.getValue === 'function' ? propVal.getValue(window.Cesium?.JulianDate?.now?.() || new Date()) : propVal
                   }
                   if (!loc) {
                     const cleanId = String(locId).trim()
                     loc = countryLocationsRef.current.find(
-                      (l) => l && (String(l.id).trim() === cleanId || (l.padiId && String(l.padiId).trim() === cleanId))
+                      (l) => l && (String(l.id).trim() === cleanId || (l.siteId && String(l.siteId).trim() === cleanId))
                     )
                   }
                   if (loc) {
@@ -1091,7 +1091,7 @@ export default function InteractiveDiveMap({
     const selLoc = selectedLocationRef.current
     const hasSelection = Boolean(selLoc)
 
-    // A. Remove existing PADI markers and country highlight envelope
+    // A. Remove existing dive location markers and country highlight envelope
     viewer.entities.suspendEvents()
     try {
       const idsToRemove = []
@@ -1100,7 +1100,7 @@ export default function InteractiveDiveMap({
         const ent = currentEntities[i]
         if (ent && ent.id) {
           const idStr = String(ent.id)
-          if (idStr.startsWith('padi-') || idStr === 'country-envelope') {
+          if (idStr.startsWith('site-') || idStr === 'country-envelope') {
             idsToRemove.push(idStr)
           }
         }
@@ -1122,7 +1122,7 @@ export default function InteractiveDiveMap({
         }
       })
 
-      // C. When country is selected, add all validated PADI dive location markers (NO TEXT LABELS)
+      // C. When country is selected, add all validated dive location markers (NO TEXT LABELS)
       if (canonicalSelectedCountryKey) {
         validLocs.forEach((loc) => {
           const isSel = selLoc && String(selLoc.id) === String(loc.id)
@@ -1130,11 +1130,11 @@ export default function InteractiveDiveMap({
           const displayName = getLocationDisplayName(loc)
 
           viewer.entities.add({
-            id: `padi-${loc.id}`,
+            id: `site-${loc.id}`,
             name: displayName || loc.title || loc.name,
             position: Cesium.Cartesian3.fromDegrees(Number(loc.longitude), Number(loc.latitude)),
             billboard: {
-              image: createPadiPinSvg(isSel, isDimmed),
+              image: createSitePinSvg(isSel, isDimmed),
               width: isSel ? 46 : 34,
               height: isSel ? 26 : 19,
               verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
@@ -1143,7 +1143,7 @@ export default function InteractiveDiveMap({
               translucencyByDistance: new Cesium.NearFarScalar(2.0e4, 1.0, 1.5e7, 0.85)
             },
             properties: {
-              padiLocation: loc,
+              siteLocation: loc,
               displayName,
               countryKey: canonicalSelectedCountryKey
             }
@@ -1226,12 +1226,12 @@ export default function InteractiveDiveMap({
 
     // Update billboard pins & labels state in place without entity recreation
     countryLocations.forEach((loc) => {
-      const entity = viewer.entities.getById(`padi-${loc.id}`)
+      const entity = viewer.entities.getById(`site-${loc.id}`)
       if (entity) {
         const isSel = selectedLocation && String(selectedLocation.id) === String(loc.id)
         const isDimmed = hasSelection && !isSel
         if (entity.billboard) {
-          entity.billboard.image = createPadiPinSvg(isSel, isDimmed)
+          entity.billboard.image = createSitePinSvg(isSel, isDimmed)
           entity.billboard.width = isSel ? 46 : 34
           entity.billboard.height = isSel ? 26 : 19
           entity.billboard.eyeOffset = new window.Cesium.Cartesian3(0, 0, isSel ? -250 : -80)

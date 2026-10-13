@@ -42,7 +42,7 @@ export function isDirectActivity(experience) {
 export function getCourseDisplayName(courseOrName) {
   if (!courseOrName) return ''
   const name = typeof courseOrName === 'string' ? courseOrName : (courseOrName.name || '')
-  return name.replace(/\bPADI\s*/gi, '').trim()
+  return name.trim()
 }
 
 /**
@@ -105,7 +105,7 @@ export const COURSE_CATALOG = [
     experience: 'Scuba Diving',
   },
   {
-    id: 'padi-dsd',
+    id: 'dsd',
     name: 'Discover Scuba Dive',
     category: 'Introductory Programs',
     minimumAge: 8,
@@ -114,7 +114,7 @@ export const COURSE_CATALOG = [
     experience: 'Scuba Diving',
   },
   {
-    id: 'padi-dsd-ow-combo',
+    id: 'dsd-ow-combo',
     name: 'Discover Scuba Dive + Open Water Dive',
     category: 'Bundled Pathways',
     minimumAge: 10,
@@ -132,7 +132,7 @@ export const COURSE_CATALOG = [
     experience: 'Scuba Diving',
   },
   {
-    id: 'padi-open-water',
+    id: 'open-water',
     name: 'Open Water Dive',
     category: 'Certification Courses',
     minimumAge: 8,
@@ -141,7 +141,7 @@ export const COURSE_CATALOG = [
     experience: 'Scuba Diving',
   },
   {
-    id: 'padi-scuba-diver',
+    id: 'scuba-diver',
     name: 'Scuba Dive',
     category: 'Certification Courses',
     minimumAge: 8,
@@ -152,7 +152,7 @@ export const COURSE_CATALOG = [
 
   // Certified Courses
   {
-    id: 'padi-skin-diver',
+    id: 'skin-diver',
     name: 'Skin Dive',
     category: 'Snorkeling',
     minimumAge: 8,
@@ -161,7 +161,7 @@ export const COURSE_CATALOG = [
     experience: 'Scuba Diving',
   },
   {
-    id: 'padi-ow-aow-combo',
+    id: 'ow-aow-combo',
     name: 'Open Water + Advanced Open Water',
     category: 'Bundled Pathways',
     minimumAge: 10,
@@ -170,7 +170,7 @@ export const COURSE_CATALOG = [
     experience: 'Scuba Diving',
   },
   {
-    id: 'padi-reactivate',
+    id: 'reactivate',
     name: 'Reactivate (with dive)',
     category: 'Refreshers',
     minimumAge: 10,
@@ -179,7 +179,7 @@ export const COURSE_CATALOG = [
     experience: 'Scuba Diving',
   },
   {
-    id: 'padi-advanced-ow',
+    id: 'advanced-ow',
     name: 'Advanced Open Water',
     category: 'Continuing Education',
     minimumAge: 12,
@@ -188,7 +188,7 @@ export const COURSE_CATALOG = [
     experience: 'Scuba Diving',
   },
   {
-    id: 'padi-adventure-diver',
+    id: 'adventure-diver',
     name: 'Adventure Dive',
     category: 'Continuing Education',
     minimumAge: 10,
@@ -197,7 +197,7 @@ export const COURSE_CATALOG = [
     experience: 'Scuba Diving',
   },
   {
-    id: 'padi-rescue-diver',
+    id: 'rescue-diver',
     name: 'Rescue Diver',
     category: 'Continuing Education',
     minimumAge: 12,
@@ -260,7 +260,7 @@ export const COURSE_CATALOG = [
     experience: 'Scuba Diving',
   },
   {
-    id: 'padi-divemaster',
+    id: 'divemaster',
     name: 'Dive Master',
     category: 'Professional Track',
     minimumAge: 18,
@@ -394,7 +394,7 @@ export const COURSE_CATALOG = [
 
   // Freediving & Surfing
   {
-    id: 'padi-basic-freediver',
+    id: 'basic-freediver',
     name: 'Basic Freediver',
     category: 'Freediving',
     minimumAge: 8,
@@ -403,7 +403,7 @@ export const COURSE_CATALOG = [
     experience: 'FreeDiving',
   },
   {
-    id: 'padi-freediver',
+    id: 'freediver',
     name: 'Freediver',
     category: 'Freediving',
     minimumAge: 8,
@@ -528,10 +528,10 @@ export function getEligibleCourses(age, hasCert = false, userCerts = [], experie
     const targetIds = [
       'try-dive',
       'dsd-lite',
-      'padi-dsd',
-      'padi-dsd-ow-combo',
+      'dsd',
+      'dsd-ow-combo',
       'zero-to-hero',
-      'padi-open-water',
+      'open-water',
     ]
     return targetIds
       .map((id) => catalog.find((c) => c.id === id))
@@ -543,10 +543,10 @@ export function getEligibleCourses(age, hasCert = false, userCerts = [], experie
     const targetIds = [
       'try-dive',
       'dsd-lite',
-      'padi-dsd',
+      'dsd',
       'zero-to-hero',
-      'padi-open-water',
-      'padi-scuba-diver',
+      'open-water',
+      'scuba-diver',
     ]
     return targetIds
       .map((id) => catalog.find((c) => c.id === id))
@@ -564,33 +564,33 @@ export function getEligibleCourses(age, hasCert = false, userCerts = [], experie
       // Scuba Diver: Zero to Hero, Skin Dive, Open Water Dive, Open Water + Advanced Open Water, Reactivate (with dive)
       allTargetIds.push(
         'zero-to-hero',
-        'padi-skin-diver',
-        'padi-open-water',
-        'padi-ow-aow-combo',
-        'padi-reactivate'
+        'skin-diver',
+        'open-water',
+        'ow-aow-combo',
+        'reactivate'
       )
     } else if (normCert.includes('skindiver')) {
       // Skin Diver: Reactivate (with dive), Open Water Dive
       allTargetIds.push(
-        'padi-reactivate',
-        'padi-open-water'
+        'reactivate',
+        'open-water'
       )
     } else if (normCert.includes('openwater') && !normCert.includes('advanced')) {
       // Open Water Diver: Advanced Open Water + all specialties
       allTargetIds.push(
-        'padi-advanced-ow',
+        'advanced-ow',
         ...SPECIALTY_COURSE_IDS
       )
     } else if (normCert.includes('advancedopenwater') || normCert.includes('aow')) {
       // Advanced Open Water Diver: Adventure Dive + all specialties
       allTargetIds.push(
-        'padi-adventure-diver',
+        'adventure-diver',
         ...SPECIALTY_COURSE_IDS
       )
     } else if (normCert.includes('adventurediver')) {
       // Adventure Diver: Rescue Diver, Emergency First Response + Rescue Diver, Emergency First Response + Rescue Diver+ Dive Master(Prerequisites), Emergency First Response + Rescue Diver+ Dive Master
       allTargetIds.push(
-        'padi-rescue-diver',
+        'rescue-diver',
         'efr-rescue-combo',
         'efr-rescue-dm-prereqs',
         'efr-rescue-dm-combo'
@@ -601,7 +601,7 @@ export function getEligibleCourses(age, hasCert = false, userCerts = [], experie
         'efr-primary-secondary',
         'lite-refresher',
         'full-refresher',
-        'padi-divemaster',
+        'divemaster',
         ...SPECIALTY_COURSE_IDS
       )
     } else if (normCert.includes('efr') || normCert.includes('emergencyfirstresponse')) {

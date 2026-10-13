@@ -14,10 +14,10 @@ print(f"Total shifted Spain sites: {len(spain_shifted)}")
 costa_brava = [r for r in spain_shifted if 41.5 <= float(r['Latitude']) <= 42.5 and 2.5 <= float(r['Longitude']) <= 3.5]
 print(f"Costa Brava shifted ({len(costa_brava)}):")
 for s in costa_brava:
-    print(f"  {s['ID']}: {s['Site_Name']} | Lat: {s['Latitude']}, Lng: {s['Longitude']} | PADI: {s['PADI_Latitude']}, {s['PADI_Longitude']}")
+    print(f"  {s['ID']}: {s['Site_Name']} | Lat: {s['Latitude']}, Lng: {s['Longitude']} | Ref: {s['Ref_Latitude']}, {s['Ref_Longitude']}")
 
 # Let's inspect Costa Blanca (lat 36.5-38.8, lng -1.0 to 0.5)
 costa_blanca = [r for r in spain_shifted if 36.5 <= float(r['Latitude']) <= 38.8 and -1.0 <= float(r['Longitude']) <= 0.5]
 print(f"Costa Blanca shifted ({len(costa_blanca)}):")
 for s in costa_blanca:
-    print(f"  {s['ID']}: {s['Site_Name']} | Lat: {s['Latitude']}, Lng: {s['Longitude']} | PADI: {s['PADI_Latitude']}, {s['PADI_Longitude']}")
+    print(f"  {s['ID']}: {s['Site_Name']} | Lat: {s['Latitude']}, Lng: {s['Longitude']} | Ref: {s['Ref_Latitude']}, {s['Ref_Longitude']}")

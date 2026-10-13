@@ -7,7 +7,7 @@ import flags from 'react-phone-number-input/flags'
 import { useLenis } from '../utils/lenisReact'
 import CompactTwoMonthCalendarPopover from '../components/CompactTwoMonthCalendarPopover'
 import SEOHead from '../components/SEOHead'
-import padiCountries from '../data/padiCountries.json'
+import diveCountries from '../data/diveCountries.json'
 import { bookingService } from '../services/bookingService'
 import { FUN_DIVES_PACKAGES, SERVICES_DATA } from '../data/servicesData'
 import {
@@ -41,22 +41,22 @@ const SERVICE_TO_PROGRAM = {
   // Introductory Programs -> Scuba Diving
   'prog-1': { courseId: 'try-dive', experience: 'Scuba Diving' },
   'prog-2': { courseId: 'dsd-lite', experience: 'Scuba Diving' },
-  'prog-3': { courseId: 'padi-dsd', experience: 'Scuba Diving' },
+  'prog-3': { courseId: 'dsd', experience: 'Scuba Diving' },
   'prog-4': { courseId: 'add-dive-after-dsd', experience: 'Scuba Diving' },
-  'prog-5': { courseId: 'padi-bubblemaker', experience: 'Scuba Diving' },
+  'prog-5': { courseId: 'bubblemaker', experience: 'Scuba Diving' },
   // Snorkeling -> Snorkeling
   'snork-1': { courseId: 'discover-snorkeling', experience: 'Snorkeling' },
   'snork-2': { courseId: 'reef-explorer', experience: 'Snorkeling' },
   'snork-3': { courseId: 'ocean-explorer', experience: 'Snorkeling' },
   // Certification Courses -> Scuba Diving
-  'course-1': { courseId: 'padi-skin-diver', experience: 'Scuba Diving' },
-  'course-2': { courseId: 'padi-scuba-diver', experience: 'Scuba Diving' },
-  'course-3': { courseId: 'padi-open-water', experience: 'Scuba Diving' },
-  'course-4': { courseId: 'padi-adventure-diver', experience: 'Scuba Diving' },
-  'course-5': { courseId: 'padi-advanced-ow', experience: 'Scuba Diving' },
+  'course-1': { courseId: 'skin-diver', experience: 'Scuba Diving' },
+  'course-2': { courseId: 'scuba-diver', experience: 'Scuba Diving' },
+  'course-3': { courseId: 'open-water', experience: 'Scuba Diving' },
+  'course-4': { courseId: 'adventure-diver', experience: 'Scuba Diving' },
+  'course-5': { courseId: 'advanced-ow', experience: 'Scuba Diving' },
   'course-6': { courseId: 'efr-primary-secondary', experience: 'Scuba Diving' },
-  'course-7': { courseId: 'padi-rescue-diver', experience: 'Scuba Diving' },
-  'course-8': { courseId: 'padi-reactivate', experience: 'Scuba Diving' },
+  'course-7': { courseId: 'rescue-diver', experience: 'Scuba Diving' },
+  'course-8': { courseId: 'reactivate', experience: 'Scuba Diving' },
   'course-9': { courseId: 'full-refresher', experience: 'Scuba Diving' },
   'course-10': { courseId: 'lite-refresher', experience: 'Scuba Diving' },
   // Specialties -> Scuba Diving
@@ -68,18 +68,18 @@ const SERVICE_TO_PROGRAM = {
   'spec-6': { courseId: 'enriched-air-nitrox', experience: 'Scuba Diving' },
   'spec-7': { courseId: 'drift-diver', experience: 'Scuba Diving' },
   // Combos & Packages -> Scuba Diving
-  'combo-1': { courseId: 'padi-dsd-ow-combo', experience: 'Scuba Diving' },
-  'combo-2': { courseId: 'padi-ow-aow-combo', experience: 'Scuba Diving' },
+  'combo-1': { courseId: 'dsd-ow-combo', experience: 'Scuba Diving' },
+  'combo-2': { courseId: 'ow-aow-combo', experience: 'Scuba Diving' },
   'combo-3': { courseId: 'efr-rescue-combo', experience: 'Scuba Diving' },
   'combo-fundives': { courseId: 'fun-day-dive', experience: 'Scuba Diving', funDivesCount: 'fun-2' },
   // Pro Courses -> Scuba Diving
-  'pro-1': { courseId: 'padi-divemaster', experience: 'Scuba Diving' },
+  'pro-1': { courseId: 'divemaster', experience: 'Scuba Diving' },
   'pro-2': { courseId: 'efr-rescue-dm-combo', experience: 'Scuba Diving' },
   'pro-3': { courseId: 'efr-rescue-dm-prereqs', experience: 'Scuba Diving' },
   'pro-4': { courseId: 'zero-to-hero', experience: 'Scuba Diving' },
   // Freediving -> FreeDiving
-  'free-1': { courseId: 'padi-basic-freediver', experience: 'FreeDiving' },
-  'free-2': { courseId: 'padi-freediver', experience: 'FreeDiving' },
+  'free-1': { courseId: 'basic-freediver', experience: 'FreeDiving' },
+  'free-2': { courseId: 'freediver', experience: 'FreeDiving' },
   // Surfing -> Surfing
   'surf-1': { courseId: 'discover-surfing', experience: 'Surfing' },
   'surf-3': { courseId: '3-day-surf-academy', experience: 'Surfing' },
@@ -166,7 +166,7 @@ export default function BookUs() {
     }
     // Fallback: check if serviceItem exists and match category
     if (serviceItem) {
-      if (serviceItem.category === 'freediving') return { courseId: 'padi-basic-freediver', experience: 'FreeDiving' }
+      if (serviceItem.category === 'freediving') return { courseId: 'basic-freediver', experience: 'FreeDiving' }
       if (serviceItem.category === 'snorkeling') return { courseId: 'discover-snorkeling', experience: 'Snorkeling' }
       if (serviceItem.category === 'surfing') return { courseId: 'discover-surfing', experience: 'Surfing' }
       return { courseId: 'try-dive', experience: 'Scuba Diving' }
@@ -360,7 +360,7 @@ export default function BookUs() {
   }
 
   // Country list lookup
-  const countries = useMemo(() => padiCountries || [], [])
+  const countries = useMemo(() => diveCountries || [], [])
 
   // Step 1 Handlers
   const handleCountryChange = (newCountry) => {

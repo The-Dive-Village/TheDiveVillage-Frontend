@@ -14,5 +14,5 @@ const mallorcaSites = parsed.data.filter(r => {
 
 console.log('Mallorca sites count:', mallorcaSites.length);
 mallorcaSites.forEach(s => {
-  console.log(`${s.ID}: ${s.Site_Name} | lat: ${s.Latitude}, lng: ${s.Longitude} | PADI: ${s.PADI_Latitude}, ${s.PADI_Longitude} | shift: ${s.Coordinate_Shift_m} | ${s.Water_Correction}`);
+  console.log(`${s.ID}: ${s.Site_Name} | lat: ${s.Latitude}, lng: ${s.Longitude} | Ref: ${s.Ref_Latitude}, ${s.Ref_Longitude} | shift: ${s.Coordinate_Shift_m} | ${s.Water_Correction}`);
 });
