@@ -55,7 +55,8 @@ export const GALLERY_ITEMS = [
     "src": "https://res.cloudinary.com/qvbunv8y/video/upload/v1791458085/TDV-Media/Extras%20for%20Gallery/Clownfish_and_Sea_Anemone.mp4",
     "title": "Clownfish and Sea Anemone",
     "category": "marine",
-    "filename": "Clownfish and Sea Anemone.mp4"
+    "filename": "Clownfish and Sea Anemone.mp4",
+    "playbackRate": 0.7
   },
   {
     "id": "gallery-item-7",

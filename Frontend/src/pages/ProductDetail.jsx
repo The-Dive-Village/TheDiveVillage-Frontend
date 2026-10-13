@@ -70,7 +70,9 @@ export default function ProductDetail() {
     return items
   }
 
-  const [selectedColor, setSelectedColor] = useState(product.colors ? product.colors[0] : { name: 'Standard', hex: '#FFFFFF' })
+  const [selectedColor, setSelectedColor] = useState(
+    product.colors && product.colors.length > 0 ? product.colors[0] : { name: 'Standard', hex: '#FFFFFF' }
+  )
   const mediaItems = buildMediaItems(product, selectedColor)
 
   const [activeMedia, setActiveMedia] = useState(mediaItems[0] || null)
@@ -181,8 +183,9 @@ export default function ProductDetail() {
       return
     }
     setIsAdding(true)
+    const colorName = (product.colors && product.colors.length > 0 && selectedColor?.name) ? selectedColor.name : 'Standard'
     addItem({
-      inventoryId: `${product.id}-${selectedSize}-${selectedColor.name}`,
+      inventoryId: `${product.id}-${selectedSize}-${colorName}`,
       quantity,
       product: {
         id: product.id,
@@ -190,11 +193,12 @@ export default function ProductDetail() {
         price: product.price,
         image: activeMedia?.type === 'image' ? activeMedia.src : product.image,
         selectedSize,
-        selectedColor: selectedColor.name,
+        selectedColor: colorName,
       },
     })
 
-    setToastMessage(`Added ${quantity}x ${product.title} (${selectedSize} / ${selectedColor.name}) to cart`)
+    const colorText = product.colors && product.colors.length > 0 && colorName !== 'Standard' ? ` / ${colorName}` : ''
+    setToastMessage(`Added ${quantity}x ${product.title} (${selectedSize}${colorText}) to cart`)
     setTimeout(() => {
       setIsAdding(false)
       setToastMessage(null)
@@ -207,8 +211,9 @@ export default function ProductDetail() {
       navigate('/login')
       return
     }
+    const colorName = (product.colors && product.colors.length > 0 && selectedColor?.name) ? selectedColor.name : 'Standard'
     addItem({
-      inventoryId: `${product.id}-${selectedSize}-${selectedColor.name}`,
+      inventoryId: `${product.id}-${selectedSize}-${colorName}`,
       quantity,
       product: {
         id: product.id,
@@ -216,7 +221,7 @@ export default function ProductDetail() {
         price: product.price,
         image: activeMedia?.type === 'image' ? activeMedia.src : product.image,
         selectedSize,
-        selectedColor: selectedColor.name,
+        selectedColor: colorName,
       },
     })
     navigate('/checkout')
@@ -533,11 +538,11 @@ export default function ProductDetail() {
             </p>
 
             {/* 1. Color Variant Selection */}
-            {product.colors && product.colors.length > 0 && (
+            {product.colors && product.colors.length > 0 && product.id !== 'product-dive-cap' && (
               <div className="mb-6 pt-5 border-t border-navy/10">
                 <div className="flex justify-between items-center mb-3">
                   <p className="text-xs font-bold uppercase tracking-wider text-navy/70">
-                    Color: <span className="font-bold text-navy normal-case text-sm ml-1">{selectedColor.name}</span>
+                    Color: <span className="font-bold text-navy normal-case text-sm ml-1">{selectedColor?.name}</span>
                   </p>
                 </div>
                 <div className="flex gap-3">
@@ -831,11 +836,11 @@ export default function ProductDetail() {
                   key={p.id}
                   to={`/shop/${p.id}`}
                   data-product-card="true"
-                  style={{ backgroundColor: '#ffffff' }}
-                  className="group w-[220px] xs:w-[250px] sm:w-[270px] lg:w-[285px] shrink-0 rounded-2xl sm:rounded-3xl bg-white border border-navy/5 p-3 sm:p-5 shadow-card hover:shadow-float transition duration-300 flex flex-col justify-between"
+                  style={{ backgroundColor: '#ffffff', background: '#ffffff' }}
+                  className="group w-[220px] xs:w-[250px] sm:w-[270px] lg:w-[285px] shrink-0 rounded-2xl sm:rounded-3xl bg-white border border-navy/10 p-3 sm:p-5 shadow-card hover:shadow-float transition duration-300 flex flex-col justify-between"
                 >
-                  <div>
-                    <div data-product-media="true" style={{ backgroundColor: '#ffffff' }} className="aspect-[4/5] w-full overflow-hidden rounded-xl sm:rounded-2xl bg-white mb-2.5 sm:mb-4 flex items-center justify-center p-2 sm:p-3 relative border border-navy/5">
+                  <div style={{ backgroundColor: '#ffffff', background: '#ffffff' }}>
+                    <div data-product-media="true" style={{ backgroundColor: '#ffffff', background: '#ffffff' }} className="aspect-[4/5] w-full overflow-hidden rounded-xl sm:rounded-2xl bg-white mb-2.5 sm:mb-4 flex items-center justify-center p-2 sm:p-3 relative border border-navy/5">
                       <img
                         src={p.image}
                         alt={p.title}
@@ -850,8 +855,8 @@ export default function ProductDetail() {
                     </h3>
                   </div>
 
-                  <div className="mt-3 sm:mt-4 pt-2 sm:pt-3 border-t border-navy/5 flex justify-end items-center">
-                    <span className="text-[10px] sm:text-xs font-bold text-[#00AEC7] group-hover:underline">
+                  <div style={{ backgroundColor: '#ffffff', background: '#ffffff' }} className="mt-3 sm:mt-4 pt-2 sm:pt-3 border-t border-navy/10 flex justify-end items-center">
+                    <span className="product-card-link text-[10px] sm:text-xs font-bold text-[#00AEC7] group-hover:underline">
                       View Gear →
                     </span>
                   </div>

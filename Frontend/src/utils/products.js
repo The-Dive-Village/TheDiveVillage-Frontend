@@ -2,7 +2,7 @@ import imgFullWetsuitFront from '../assets/Media/done/Full Wet Suit/Black Wetsui
 import imgFullWetsuitBack from '../assets/Media/done/Full Wet Suit/Rear-View Black Wetsuit with Cyan Zipper Strap.png';
 
 // 3D GLB Model Imports
-const glbCap = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791610525/TDV-Media/Products/TDV%20-%203D%20Product%20Files/The_Dive_Village_Foldable_Cap.glb';
+const glbCap = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791861802/TDV-Media/Products/TDV%20-%203D%20Product%20Files/The_Dive_Village_Foldable_Cap.glb';
 const glbBag = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791610581/TDV-Media/Products/TDV%20-%203D%20Product%20Files/The_Dive_Village_Gear_Bag.glb';
 const glbBottomsCompression = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791609610/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Bottoms_with_compression_support.glb';
 const glbFullSleeves = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791609687/TDV-Media/Products/TDV%20-%203D%20Product%20Files/Full_Sleeves_Top.glb';
@@ -31,8 +31,9 @@ const imgWomensPantsModel2 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v
 const imgWomensPantsModel3 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458233/TDV-Media/Products/Bottoms%20with%20compression%20support/4M7A6024.jpg';
 
 // Cap Assets
-const imgCapFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458238/TDV-Media/Products/Cap/catf.webp';
-const imgCapBack = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458237/TDV-Media/Products/Cap/capb.webp';
+const imgCapFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791861797/TDV-Media/Products/Cap/front.jpg';
+const imgCapBack = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791861798/TDV-Media/Products/Cap/back.jpg';
+const imgCapSide = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791861799/TDV-Media/Products/Cap/side.jpg';
 
 // Full Sleeves Tops - Unisex Assets
 const imgFullSleevesFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791609697/TDV-Media/Products/Full%20Sleeves%20Tops%20-%20Unisex/Full_sleeve_front.png';
@@ -364,8 +365,8 @@ export const SHOP_PRODUCTS = [
     price: 1299,
     oldPrice: 1599,
     image: imgCapFront,
-    images: [imgCapFront, imgCapBack],
-    imageLabels: ['Front', 'Back'],
+    images: [imgCapFront, imgCapBack, imgCapSide],
+    imageLabels: ['Front', 'Back', 'Side'],
     glb: glbCap,
     category: 'Accessories',
     description: 'Durable, quick-dry ocean cap with adjustable strap for beach, boat, and water activities.',
@@ -374,9 +375,7 @@ export const SHOP_PRODUCTS = [
       'Adjustable Strap: Secure fit even in windy boat conditions.'
     ],
     sizes: ['One Size Fits Most'],
-    colors: [
-      { name: 'Black', hex: '#000000' }
-    ],
+    colors: [],
     stock: 40,
     stockStatus: 'In Stock',
     rating: 4.9,

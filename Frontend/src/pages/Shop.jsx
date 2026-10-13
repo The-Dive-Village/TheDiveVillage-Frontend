@@ -187,7 +187,7 @@ export default function Shop() {
 
       {/* 1. HERO BANNER */}
       <section className="mx-auto max-w-7xl px-3.5 sm:px-6 lg:px-8 mb-4 sm:mb-10">
-        <div data-shop-banner="true" className={`shop-hero-banner relative rounded-[20px] sm:rounded-[36px] lg:rounded-[40px] overflow-hidden bg-[#001428] shadow-lift ${isNightDive ? 'border border-[#001C39]' : 'border border-white/10'} w-full h-[180px] xs:h-[220px] sm:h-[300px] md:h-[340px] lg:h-[410px] xl:h-[440px] 2xl:h-[460px] flex items-center justify-end`}>
+        <div data-shop-banner="true" className={`shop-hero-banner relative rounded-[20px] sm:rounded-[36px] lg:rounded-[40px] overflow-hidden bg-[#001428] shadow-lift ${isNightDive ? 'border-2 border-[#001C39]' : 'border border-white/10'} w-full h-[180px] xs:h-[220px] sm:h-[300px] md:h-[340px] lg:h-[410px] xl:h-[440px] 2xl:h-[460px] flex items-center justify-end`}>
           <img
             src={bannerImg}
             alt="Merchandise Banner"

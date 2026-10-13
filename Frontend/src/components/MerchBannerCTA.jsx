@@ -19,7 +19,7 @@ export default function MerchBannerCTA({ className = '' }) {
       <div
         onClick={handleClick}
         data-shop-banner="true"
-        className={`shop-hero-banner group relative rounded-[24px] sm:rounded-[36px] lg:rounded-[40px] overflow-hidden bg-[#001428] shadow-lift ${isNightDive ? 'border border-[#001C39]' : 'border border-white/10 hover:border-white/30'} w-full h-[190px] xs:h-[230px] sm:h-[280px] lg:h-[450px] flex items-center justify-end cursor-pointer transition-all duration-300 hover:scale-[1.008]`}
+        className={`shop-hero-banner group relative rounded-[24px] sm:rounded-[36px] lg:rounded-[40px] overflow-hidden bg-[#001428] shadow-lift ${isNightDive ? 'border-2 border-[#001C39]' : 'border border-white/10 hover:border-white/30'} w-full h-[190px] xs:h-[230px] sm:h-[280px] lg:h-[450px] flex items-center justify-end cursor-pointer transition-all duration-300 hover:scale-[1.008]`}
       >
         <img
           src={bannerImg}

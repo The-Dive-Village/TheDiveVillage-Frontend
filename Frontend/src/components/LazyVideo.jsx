@@ -19,6 +19,7 @@ export default function LazyVideo({
   playsInline = true,
   controls = false,
   preload = 'auto',
+  playbackRate = 1,
   ...props
 }) {
   const videoRef = useRef(null)
@@ -147,6 +148,14 @@ export default function LazyVideo({
     }
   }, [isVisible, isInView, autoPlay])
 
+  // Ensure custom playbackRate is maintained
+  useEffect(() => {
+    const video = videoRef.current
+    if (video && playbackRate && playbackRate !== 1) {
+      video.playbackRate = playbackRate
+    }
+  }, [playbackRate, isInView, src])
+
   // Handle user gestures (touch/click/hover) to unlock playback
   const handleUserGesture = () => {
     const video = videoRef.current
@@ -154,7 +163,17 @@ export default function LazyVideo({
       video.muted = true
       video.defaultMuted = true
       video.volume = 0
+      if (playbackRate && playbackRate !== 1) {
+        video.playbackRate = playbackRate
+      }
       video.play().catch(() => {})
+    }
+  }
+
+  const applyPlaybackRate = (e) => {
+    const el = e?.currentTarget || videoRef.current
+    if (el && playbackRate && playbackRate !== 1) {
+      el.playbackRate = playbackRate
     }
   }
 
@@ -213,6 +232,9 @@ export default function LazyVideo({
               el.setAttribute('muted', '')
               el.setAttribute('playsinline', '')
               el.setAttribute('webkit-playsinline', '')
+              if (playbackRate && playbackRate !== 1) {
+                el.playbackRate = playbackRate
+              }
             }
             if (typeof props.ref === 'function') {
               props.ref(el)
@@ -230,16 +252,31 @@ export default function LazyVideo({
           x5-playsinline=""
           controls={controls}
           preload={preload}
-          onPlaying={() => setIsVideoPlaying(true)}
+          onPlaying={(e) => {
+            applyPlaybackRate(e)
+            setIsVideoPlaying(true)
+            props.onPlaying?.(e)
+          }}
+          onPlay={(e) => {
+            applyPlaybackRate(e)
+            props.onPlay?.(e)
+          }}
+          onLoadedMetadata={(e) => {
+            applyPlaybackRate(e)
+            props.onLoadedMetadata?.(e)
+          }}
           onTimeUpdate={(e) => {
+            applyPlaybackRate(e)
             if (e.currentTarget.currentTime > 0.05) {
               setIsVideoPlaying(true)
             }
+            props.onTimeUpdate?.(e)
           }}
-          onPause={() => {
+          onPause={(e) => {
             if (videoRef.current && videoRef.current.currentTime === 0) {
               setIsVideoPlaying(false)
             }
+            props.onPause?.(e)
           }}
           className={`absolute inset-0 w-full h-full ${fitClass} transition-opacity duration-300 ease-out z-[2] ${
             isVideoPlaying ? 'opacity-100' : 'opacity-0'

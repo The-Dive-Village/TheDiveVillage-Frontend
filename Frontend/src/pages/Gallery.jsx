@@ -358,6 +358,7 @@ export default function Gallery() {
                     playsInline
                     muted={true}
                     defaultMuted={true}
+                    playbackRate={currentItem.playbackRate || (currentItem.title?.toLowerCase().includes('clownfish and sea anemone') || currentItem.src?.includes('Clownfish_and_Sea_Anemone') ? 0.7 : 1)}
                     className="w-full h-full max-w-full max-h-full object-contain flex items-center justify-center"
                   />
                 ) : (
@@ -490,6 +491,10 @@ function GalleryGridCard({ item, idx, reduce, onClick }) {
     hoverTimerRef.current = setTimeout(() => {
       const vid = cardRef.current?.querySelector('video')
       if (vid) {
+        const rate = item.playbackRate || (item.title?.toLowerCase().includes('clownfish and sea anemone') || item.src?.includes('Clownfish_and_Sea_Anemone') ? 0.7 : 1)
+        if (rate && rate !== 1) {
+          vid.playbackRate = rate
+        }
         vid.play().catch(() => {})
       }
     }, 3000)
@@ -544,6 +549,7 @@ function GalleryGridCard({ item, idx, reduce, onClick }) {
               loop
               playsInline
               autoPlay={false}
+              playbackRate={item.playbackRate || (item.title?.toLowerCase().includes('clownfish and sea anemone') || item.src?.includes('Clownfish_and_Sea_Anemone') ? 0.7 : 1)}
               className="w-full h-full object-cover"
             />
           </div>
