@@ -7,6 +7,7 @@ import flags from 'react-phone-number-input/flags'
 import { useLenis } from '../utils/lenisReact'
 import CompactTwoMonthCalendarPopover from '../components/CompactTwoMonthCalendarPopover'
 import SEOHead from '../components/SEOHead'
+import { Sun, Sunrise, Moon, AlertTriangle } from 'lucide-react'
 import diveCountries from '../data/diveCountries.json'
 import { bookingService } from '../services/bookingService'
 import { FUN_DIVES_PACKAGES, SERVICES_DATA } from '../data/servicesData'
@@ -101,6 +102,62 @@ const SERVICE_TO_PROGRAM = {
   'fun-night-1': { courseId: 'fun-dives', experience: 'Scuba Diving', funType: 'night', funDivesCount: 'fun-night-1' },
   'fun-night-2': { courseId: 'fun-dives', experience: 'Scuba Diving', funType: 'night', funDivesCount: 'fun-night-2' },
 }
+
+export const DAY_DIVES_OPTIONS = [
+  { id: 'fun-1', title: '1 Dive (Half Day)', dives: 1 },
+  { id: 'fun-2', title: '2 Dives (1 Day)', dives: 2 },
+  { id: 'fun-4', title: '4 Dives (2 Days)', dives: 4 },
+  { id: 'fun-6', title: '6 Dives (3 Days)', dives: 6 },
+  { id: 'fun-8', title: '8 Dives (4 Days)', dives: 8 },
+  { id: 'fun-10', title: '10 Dives (5 Days)', dives: 10 },
+  { id: 'fun-12', title: '12 Dives (6 Days)', dives: 12 },
+  { id: 'fun-post', title: 'Post 12 (extra 2 dives)', dives: 2 },
+]
+
+export const DAWN_DIVES_OPTIONS = [
+  { id: 'fun-dawn-1', title: '1 Dive (Single Dawn Dive)', dives: 1 },
+  { id: 'fun-dawn-2', title: '2 Dives (Dawn + Morning Combo)', dives: 2 },
+  { id: 'fun-dawn-3', title: '3 Dives', dives: 3 },
+  { id: 'fun-dawn-4', title: '4 Dives', dives: 4 },
+]
+
+export const NIGHT_DIVES_OPTIONS = [
+  { id: 'fun-night-1', title: '1 Dive (Single Night Dive)', dives: 1 },
+  { id: 'fun-night-2', title: '2 Dives (Dusk to Dark Combo)', dives: 2 },
+  { id: 'fun-night-3', title: '3 Dives', dives: 3 },
+  { id: 'fun-night-4', title: '4 Dives', dives: 4 },
+]
+
+const SunIcon = ({ className = 'w-4 h-4' }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="5" />
+    <line x1="12" y1="1" x2="12" y2="3" />
+    <line x1="12" y1="21" x2="12" y2="23" />
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+    <line x1="1" y1="12" x2="3" y2="12" />
+    <line x1="21" y1="12" x2="23" y2="12" />
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+  </svg>
+)
+
+const SunriseIcon = ({ className = 'w-4 h-4' }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 2v6m0 0l-3-3m3 3l3-3" />
+    <path d="M4.93 10.93l1.41 1.41" />
+    <path d="M17.66 12.34l1.41-1.41" />
+    <path d="M2 18h20" />
+    <path d="M20 22H4" />
+    <path d="M8 18a4 4 0 0 1 8 0" />
+  </svg>
+)
+
+const MoonIcon = ({ className = 'w-4 h-4' }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+  </svg>
+)
 
 const normalizeAddOn = (raw) => {
   if (!raw || typeof raw !== 'string') return ''
@@ -902,19 +959,39 @@ export default function BookUs() {
       } else {
         nextTypes = [...currentTypes, type]
       }
-      updated[index] = { ...updated[index], funDiveTypes: nextTypes }
-      if (!updated[index].funDivesCount) {
-        updated[index].funDivesCount = 'fun-2'
+      const p = {
+        ...updated[index],
+        funDiveTypes: nextTypes,
       }
+      if (nextTypes.includes('day') && !p.funDayDivesCount) {
+        p.funDayDivesCount = 'fun-2'
+      }
+      if (nextTypes.includes('dawn') && !p.funDawnDivesCount) {
+        p.funDawnDivesCount = 'fun-dawn-1'
+      }
+      if (nextTypes.includes('night') && !p.funNightDivesCount) {
+        p.funNightDivesCount = 'fun-night-1'
+      }
+      p.funDivesCount = p.funDayDivesCount || p.funDawnDivesCount || p.funNightDivesCount || 'fun-2'
+      updated[index] = p
       return updated
     })
   }
 
-  // Update specific dive count package for Fun Dives
-  const handleFunDiveCountChange = (index, packageId) => {
+  // Update specific dive count package for Fun Dives (Day, Dawn, or Night)
+  const handleFunDiveCountChange = (index, type, packageId) => {
     setParticipants((prev) => {
       const updated = [...prev]
-      updated[index] = { ...updated[index], funDivesCount: packageId }
+      const p = { ...updated[index] }
+      if (type === 'day') {
+        p.funDayDivesCount = packageId
+      } else if (type === 'dawn') {
+        p.funDawnDivesCount = packageId
+      } else if (type === 'night') {
+        p.funNightDivesCount = packageId
+      }
+      p.funDivesCount = p.funDayDivesCount || p.funDawnDivesCount || p.funNightDivesCount || packageId
+      updated[index] = p
       return updated
     })
   }
@@ -923,47 +1000,30 @@ export default function BookUs() {
   const getFunDivesSummary = useCallback((p) => {
     if (!p || !isFunDivesProgram(p.selectedProgram)) return ''
     const types = p.funDiveTypes || []
-    const pkg = FUN_DIVES_PACKAGES.find((f) => f.id === p.funDivesCount) || FUN_DIVES_PACKAGES.find((f) => f.id === 'fun-2')
-    const timingsStr = types.map((t) => t.charAt(0).toUpperCase() + t.slice(1)).join(', ')
-    if (pkg && timingsStr) {
-      return `Package: ${pkg.title} | Timings: ${timingsStr}`
-    } else if (pkg) {
-      return `Package: ${pkg.title}`
+    const parts = []
+
+    if (types.includes('day')) {
+      const dayPkg = DAY_DIVES_OPTIONS.find((f) => f.id === p.funDayDivesCount) || DAY_DIVES_OPTIONS.find((f) => f.id === 'fun-2')
+      if (dayPkg) parts.push(`Day: ${dayPkg.title}`)
     }
-    return ''
+    if (types.includes('dawn')) {
+      const dawnPkg = DAWN_DIVES_OPTIONS.find((f) => f.id === p.funDawnDivesCount) || DAWN_DIVES_OPTIONS.find((f) => f.id === 'fun-dawn-1')
+      if (dawnPkg) parts.push(`Dawn: ${dawnPkg.title}`)
+    }
+    if (types.includes('night')) {
+      const nightPkg = NIGHT_DIVES_OPTIONS.find((f) => f.id === p.funNightDivesCount) || NIGHT_DIVES_OPTIONS.find((f) => f.id === 'fun-night-1')
+      if (nightPkg) parts.push(`Night: ${nightPkg.title}`)
+    }
+
+    return parts.join(' | ')
   }, [])
 
-  // Renders Fun Dives package dropdown and multiple-choice Day/Dawn/Night timing selector
+  // Renders Fun Dives multiple-choice Day/Dawn/Night timing selector and separate count dropdowns per timing
   const renderFunDivesCustomizer = (p, idx) => {
     const activeTypes = p.funDiveTypes || []
     return (
-      <div className="mt-3 pt-3 border-t border-navy/10 space-y-3.5">
-        {/* 1. Package selector: Day dive programs are permanently here */}
-        <div className="rounded-lg sm:rounded-xl bg-[#F0F2F5]/70 border border-navy/10 p-2.5 sm:p-3 space-y-1">
-          <label htmlFor={`fundives-package-${idx}`} className="text-[10px] sm:text-xs font-bold text-navy/80 uppercase tracking-wider block">
-            Fun Dives Package <span className="text-red-500">*</span>
-          </label>
-          <div className="relative">
-            <select
-              id={`fundives-package-${idx}`}
-              value={p.funDivesCount || 'fun-2'}
-              onChange={(e) => handleFunDiveCountChange(idx, e.target.value)}
-              required
-              className="w-full rounded-lg sm:rounded-xl bg-white border border-navy/10 px-2.5 py-2 sm:px-3.5 sm:py-2.5 text-[11px] sm:text-sm font-semibold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition appearance-none cursor-pointer pr-8 shadow-sm"
-            >
-              {FUN_DIVES_PACKAGES.map((pkg) => (
-                <option key={pkg.id} value={pkg.id}>
-                  {pkg.title} ({pkg.duration}) — {pkg.tag}
-                </option>
-              ))}
-            </select>
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-navy/50">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 9l6 6 6-6" /></svg>
-            </div>
-          </div>
-        </div>
-
-        {/* 2. Timing multi-select */}
+      <div className="mt-3 pt-3 border-t border-navy/10 space-y-4">
+        {/* 1. Multiple-choice Dive Timings: Day, Dawn, Night Dives */}
         <div>
           <div className="flex items-center justify-between">
             <label className="text-[10px] sm:text-xs font-bold text-navy uppercase tracking-wider block">
@@ -974,16 +1034,17 @@ export default function BookUs() {
             </span>
           </div>
           <p className="text-[10px] sm:text-xs text-navy/60 mt-0.5">
-            Select one or more dive timings. Picking dawn dive or night dive lets us know when you want to dive.
+            Select one or more dive timings. You can choose any combination of Day, Dawn, and Night dives.
           </p>
 
-          <div className="grid grid-cols-3 gap-1.5 sm:gap-2.5 mt-2">
+          <div className="grid grid-cols-3 gap-1.5 sm:gap-2.5 mt-2.5">
             {[
-              { type: 'day', label: 'Day Dives', icon: '☀️', sub: 'Reef & wall exploration' },
-              { type: 'dawn', label: 'Dawn Dives', icon: '🌅', sub: 'Sunrise first-light' },
-              { type: 'night', label: 'Night Dives', icon: '🌙', sub: 'Bioluminescence safari' },
+              { type: 'day', label: 'Day Dives', Icon: SunIcon, sub: 'Reef & wall exploration' },
+              { type: 'dawn', label: 'Dawn Dives', Icon: SunriseIcon, sub: 'Sunrise first-light' },
+              { type: 'night', label: 'Night Dives', Icon: MoonIcon, sub: 'Bioluminescence safari' },
             ].map((item) => {
               const isTypeSelected = activeTypes.includes(item.type)
+              const { Icon } = item
               return (
                 <button
                   key={item.type}
@@ -997,7 +1058,9 @@ export default function BookUs() {
                   }`}
                 >
                   <div className="flex items-center justify-between w-full mb-1">
-                    <span className="text-sm sm:text-base">{item.icon}</span>
+                    <span className={isTypeSelected ? 'text-accent' : 'text-navy/70'}>
+                      <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                    </span>
                     <span
                       className={`w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full border flex items-center justify-center shrink-0 text-[8px] sm:text-[9px] font-bold ${
                         isTypeSelected ? 'bg-white text-navy border-white' : 'border-navy/25 bg-transparent'
@@ -1024,11 +1087,105 @@ export default function BookUs() {
           </div>
 
           {activeTypes.length === 0 && (
-            <div className="mt-2 p-2 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-800 text-[10px] sm:text-xs">
-              ⚠️ Please select at least one dive timing (Day, Dawn, or Night Dives).
+            <div className="mt-2.5 p-2 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-800 text-[10px] sm:text-xs flex items-center gap-1.5">
+              <svg className="w-3.5 h-3.5 shrink-0 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              <span>Please select at least one dive timing (Day, Dawn, or Night Dives).</span>
             </div>
           )}
         </div>
+
+        {/* 2. Number of Dives Dropdown(s) for each selected dive timing */}
+        {activeTypes.length > 0 && (
+          <div className="space-y-3 pt-1">
+            <span className="text-[10px] sm:text-xs font-bold text-navy/70 uppercase tracking-wider block">
+              Select Number of Dives
+            </span>
+
+            {/* Day Dives package dropdown */}
+            {activeTypes.includes('day') && (
+              <div className="rounded-lg sm:rounded-xl bg-[#F0F2F5]/80 border border-navy/10 p-2.5 sm:p-3 space-y-1.5">
+                <label htmlFor={`fundives-day-package-${idx}`} className="text-[10px] sm:text-xs font-bold text-navy/90 uppercase tracking-wider flex items-center gap-1.5">
+                  <SunIcon className="w-3.5 h-3.5 text-navy/70" />
+                  <span>How many Day Dives?</span> <span className="text-red-500">*</span>
+                </label>
+                <div className="relative">
+                  <select
+                    id={`fundives-day-package-${idx}`}
+                    value={p.funDayDivesCount || 'fun-2'}
+                    onChange={(e) => handleFunDiveCountChange(idx, 'day', e.target.value)}
+                    required
+                    className="w-full rounded-lg sm:rounded-xl bg-white border border-navy/10 px-2.5 py-2 sm:px-3.5 sm:py-2.5 text-[11px] sm:text-sm font-semibold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition appearance-none cursor-pointer pr-8 shadow-sm"
+                  >
+                    {DAY_DIVES_OPTIONS.map((pkg) => (
+                      <option key={pkg.id} value={pkg.id}>
+                        {pkg.title}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-navy/50">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 9l6 6 6-6" /></svg>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Dawn Dives package dropdown */}
+            {activeTypes.includes('dawn') && (
+              <div className="rounded-lg sm:rounded-xl bg-[#F0F2F5]/80 border border-navy/10 p-2.5 sm:p-3 space-y-1.5">
+                <label htmlFor={`fundives-dawn-package-${idx}`} className="text-[10px] sm:text-xs font-bold text-navy/90 uppercase tracking-wider flex items-center gap-1.5">
+                  <SunriseIcon className="w-3.5 h-3.5 text-navy/70" />
+                  <span>How many Dawn Dives?</span> <span className="text-red-500">*</span>
+                </label>
+                <div className="relative">
+                  <select
+                    id={`fundives-dawn-package-${idx}`}
+                    value={p.funDawnDivesCount || 'fun-dawn-1'}
+                    onChange={(e) => handleFunDiveCountChange(idx, 'dawn', e.target.value)}
+                    required
+                    className="w-full rounded-lg sm:rounded-xl bg-white border border-navy/10 px-2.5 py-2 sm:px-3.5 sm:py-2.5 text-[11px] sm:text-sm font-semibold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition appearance-none cursor-pointer pr-8 shadow-sm"
+                  >
+                    {DAWN_DIVES_OPTIONS.map((pkg) => (
+                      <option key={pkg.id} value={pkg.id}>
+                        {pkg.title}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-navy/50">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 9l6 6 6-6" /></svg>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Night Dives package dropdown */}
+            {activeTypes.includes('night') && (
+              <div className="rounded-lg sm:rounded-xl bg-[#F0F2F5]/80 border border-navy/10 p-2.5 sm:p-3 space-y-1.5">
+                <label htmlFor={`fundives-night-package-${idx}`} className="text-[10px] sm:text-xs font-bold text-navy/90 uppercase tracking-wider flex items-center gap-1.5">
+                  <MoonIcon className="w-3.5 h-3.5 text-navy/70" />
+                  <span>How many Night Dives?</span> <span className="text-red-500">*</span>
+                </label>
+                <div className="relative">
+                  <select
+                    id={`fundives-night-package-${idx}`}
+                    value={p.funNightDivesCount || 'fun-night-1'}
+                    onChange={(e) => handleFunDiveCountChange(idx, 'night', e.target.value)}
+                    required
+                    className="w-full rounded-lg sm:rounded-xl bg-white border border-navy/10 px-2.5 py-2 sm:px-3.5 sm:py-2.5 text-[11px] sm:text-sm font-semibold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition appearance-none cursor-pointer pr-8 shadow-sm"
+                  >
+                    {NIGHT_DIVES_OPTIONS.map((pkg) => (
+                      <option key={pkg.id} value={pkg.id}>
+                        {pkg.title}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-navy/50">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 9l6 6 6-6" /></svg>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     )
   }

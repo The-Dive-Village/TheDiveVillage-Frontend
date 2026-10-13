@@ -1051,7 +1051,7 @@ export default function DiveExplorerMap({
               x: e.point.x,
               y: e.point.y,
               name: p.siteName,
-              subtitle: p.naturalTypes ? `🌊 ${p.naturalTypes}` : p.country,
+              subtitle: p.naturalTypes ? p.naturalTypes : p.country,
             })
           }
         })
