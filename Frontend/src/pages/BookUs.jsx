@@ -2609,7 +2609,7 @@ export default function BookUs() {
           {showSummaryModal && (
             <div
               data-lenis-prevent="true"
-              className="fixed left-0 right-0 bottom-0 top-[64px] lg:top-[68px] z-[9990] flex items-center justify-center p-3 sm:p-6 bg-black/60 backdrop-blur-md overflow-hidden"
+              className="fixed left-0 right-0 bottom-0 top-[64px] lg:top-[68px] z-[9990] flex items-center justify-center p-3 sm:p-6 bg-black/60 overflow-hidden"
               style={{ top: 'var(--toolbar-bottom, 64px)' }}
               onClick={(e) => {
                 if (e.target === e.currentTarget && !isSubmitting) {
