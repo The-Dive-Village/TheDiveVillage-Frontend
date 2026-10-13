@@ -23,6 +23,7 @@ import {
   sortCoursesByDifficulty,
   validateParticipantBooking,
   normalizeExperienceKey,
+  isFunDivesProgram,
 } from '../utils/courseEligibility'
 import { triggerHaptic, triggerSuccessHaptic, triggerErrorHaptic } from '../utils/haptics'
 
@@ -71,7 +72,7 @@ const SERVICE_TO_PROGRAM = {
   'combo-1': { courseId: 'dsd-ow-combo', experience: 'Scuba Diving' },
   'combo-2': { courseId: 'ow-aow-combo', experience: 'Scuba Diving' },
   'combo-3': { courseId: 'efr-rescue-combo', experience: 'Scuba Diving' },
-  'combo-fundives': { courseId: 'fun-day-dive', experience: 'Scuba Diving', funDivesCount: 'fun-2' },
+  'combo-fundives': { courseId: 'fun-dives', experience: 'Scuba Diving', funType: 'day', funDivesCount: 'fun-2' },
   // Pro Courses -> Scuba Diving
   'pro-1': { courseId: 'divemaster', experience: 'Scuba Diving' },
   'pro-2': { courseId: 'efr-rescue-dm-combo', experience: 'Scuba Diving' },
@@ -84,21 +85,21 @@ const SERVICE_TO_PROGRAM = {
   'surf-1': { courseId: 'discover-surfing', experience: 'Surfing' },
   'surf-3': { courseId: '3-day-surf-academy', experience: 'Surfing' },
   // Fun Dives (individual packages) -> Scuba Diving
-  'fun-day-dive': { courseId: 'fun-day-dive', experience: 'Scuba Diving', funDivesCount: 'fun-2' },
-  'fun-dawn-dive': { courseId: 'fun-dawn-dive', experience: 'Scuba Diving', funDivesCount: 'fun-dawn-1' },
-  'fun-night-dive': { courseId: 'fun-night-dive', experience: 'Scuba Diving', funDivesCount: 'fun-night-1' },
-  'fun-1': { courseId: 'fun-day-dive', experience: 'Scuba Diving', funDivesCount: 'fun-1' },
-  'fun-2': { courseId: 'fun-day-dive', experience: 'Scuba Diving', funDivesCount: 'fun-2' },
-  'fun-4': { courseId: 'fun-day-dive', experience: 'Scuba Diving', funDivesCount: 'fun-4' },
-  'fun-6': { courseId: 'fun-day-dive', experience: 'Scuba Diving', funDivesCount: 'fun-6' },
-  'fun-8': { courseId: 'fun-day-dive', experience: 'Scuba Diving', funDivesCount: 'fun-8' },
-  'fun-10': { courseId: 'fun-day-dive', experience: 'Scuba Diving', funDivesCount: 'fun-10' },
-  'fun-12': { courseId: 'fun-day-dive', experience: 'Scuba Diving', funDivesCount: 'fun-12' },
-  'fun-post': { courseId: 'fun-day-dive', experience: 'Scuba Diving', funDivesCount: 'fun-post' },
-  'fun-dawn-1': { courseId: 'fun-dawn-dive', experience: 'Scuba Diving', funDivesCount: 'fun-dawn-1' },
-  'fun-dawn-2': { courseId: 'fun-dawn-dive', experience: 'Scuba Diving', funDivesCount: 'fun-dawn-2' },
-  'fun-night-1': { courseId: 'fun-night-dive', experience: 'Scuba Diving', funDivesCount: 'fun-night-1' },
-  'fun-night-2': { courseId: 'fun-night-dive', experience: 'Scuba Diving', funDivesCount: 'fun-night-2' },
+  'fun-day-dive': { courseId: 'fun-dives', experience: 'Scuba Diving', funType: 'day', funDivesCount: 'fun-2' },
+  'fun-dawn-dive': { courseId: 'fun-dives', experience: 'Scuba Diving', funType: 'dawn', funDivesCount: 'fun-dawn-1' },
+  'fun-night-dive': { courseId: 'fun-dives', experience: 'Scuba Diving', funType: 'night', funDivesCount: 'fun-night-1' },
+  'fun-1': { courseId: 'fun-dives', experience: 'Scuba Diving', funType: 'day', funDivesCount: 'fun-1' },
+  'fun-2': { courseId: 'fun-dives', experience: 'Scuba Diving', funType: 'day', funDivesCount: 'fun-2' },
+  'fun-4': { courseId: 'fun-dives', experience: 'Scuba Diving', funType: 'day', funDivesCount: 'fun-4' },
+  'fun-6': { courseId: 'fun-dives', experience: 'Scuba Diving', funType: 'day', funDivesCount: 'fun-6' },
+  'fun-8': { courseId: 'fun-dives', experience: 'Scuba Diving', funType: 'day', funDivesCount: 'fun-8' },
+  'fun-10': { courseId: 'fun-dives', experience: 'Scuba Diving', funType: 'day', funDivesCount: 'fun-10' },
+  'fun-12': { courseId: 'fun-dives', experience: 'Scuba Diving', funType: 'day', funDivesCount: 'fun-12' },
+  'fun-post': { courseId: 'fun-dives', experience: 'Scuba Diving', funType: 'day', funDivesCount: 'fun-post' },
+  'fun-dawn-1': { courseId: 'fun-dives', experience: 'Scuba Diving', funType: 'dawn', funDivesCount: 'fun-dawn-1' },
+  'fun-dawn-2': { courseId: 'fun-dives', experience: 'Scuba Diving', funType: 'dawn', funDivesCount: 'fun-dawn-2' },
+  'fun-night-1': { courseId: 'fun-dives', experience: 'Scuba Diving', funType: 'night', funDivesCount: 'fun-night-1' },
+  'fun-night-2': { courseId: 'fun-dives', experience: 'Scuba Diving', funType: 'night', funDivesCount: 'fun-night-2' },
 }
 
 const normalizeAddOn = (raw) => {
@@ -359,8 +360,32 @@ export default function BookUs() {
     return `${day}-${month}-${year}`
   }
 
-  // Country list lookup
-  const countries = useMemo(() => diveCountries || [], [])
+  // Country list lookup: include static diveCountries and dynamically loaded dive sites
+  const countries = useMemo(() => {
+    const set = new Set(diveCountries || [])
+    if (allDiveSites && allDiveSites.length > 0) {
+      allDiveSites.forEach((s) => {
+        if (s.country && s.country !== 'International Waters') set.add(s.country)
+      })
+    }
+    return Array.from(set).sort((a, b) => a.localeCompare(b))
+  }, [allDiveSites])
+
+  // Auto-select island if exactly 1 island is available in selected country
+  useEffect(() => {
+    if (country && availableIslands.length === 1 && !island) {
+      setIsland(availableIslands[0].name)
+    }
+  }, [country, availableIslands, island])
+
+  // Auto-select site if exactly 1 site is available on selected island
+  useEffect(() => {
+    if (country && island && availableSitesForIsland.length === 1 && !location) {
+      const single = availableSitesForIsland[0]
+      setLocation(single.siteName)
+      setLocationId(single.id || single.siteName)
+    }
+  }, [country, island, availableSitesForIsland, location])
 
   // Step 1 Handlers
   const handleCountryChange = (newCountry) => {
@@ -435,7 +460,17 @@ export default function BookUs() {
       hasCertification: false,
       certifications: [],
       selectedProgram: initialFromService?.courseId || initialProgram || '',
-      funDivesCount: initialFromService?.funDivesCount || undefined,
+      funDiveTypes: (() => {
+        const urlTimings = searchParams.get('timings') || searchParams.get('types')
+        if (urlTimings) {
+          const parsed = urlTimings.split(',').map((s) => s.trim().toLowerCase()).filter((s) => ['day', 'dawn', 'night'].includes(s))
+          if (parsed.length > 0) return parsed
+        }
+        if (initialFromService?.funType) return [initialFromService.funType]
+        if (isFunDivesProgram(initialFromService?.courseId || initialProgram)) return ['day']
+        return ['day']
+      })(),
+      funDivesCount: initialFromService?.funDivesCount || (isFunDivesProgram(initialFromService?.courseId || initialProgram) ? 'fun-2' : undefined),
     }
   ])
 
@@ -713,6 +748,10 @@ export default function BookUs() {
         hasCertification: false,
         certifications: [],
         selectedProgram: '',
+        funDiveTypes: [],
+        funDayDivesCount: undefined,
+        funDawnDivesCount: undefined,
+        funNightDivesCount: undefined,
         funDivesCount: undefined,
       }
     ])
@@ -736,6 +775,7 @@ export default function BookUs() {
 
   // Sync group size changes to participants array
   useEffect(() => {
+    if (!groupSize) return
     const count = Math.max(1, parseInt(groupSize, 10) || 1)
     setParticipants((prev) => {
       if (prev.length === count) return prev
@@ -748,7 +788,8 @@ export default function BookUs() {
           hasCertification: false,
           certifications: [],
           selectedProgram: initialFromService?.courseId || '',
-          funDivesCount: initialFromService?.funDivesCount || undefined,
+          funDiveTypes: initialFromService?.funType ? [initialFromService.funType] : (isFunDivesProgram(initialFromService?.courseId) ? ['day'] : ['day']),
+          funDivesCount: initialFromService?.funDivesCount || (isFunDivesProgram(initialFromService?.courseId) ? 'fun-2' : undefined),
         }))
         return [...prev, ...extra]
       }
@@ -783,7 +824,7 @@ export default function BookUs() {
           if (!isCourseService) {
             const validCertsForAge = (updated[index].certifications || []).filter((certId) => {
               const opt = CERTIFICATION_OPTIONS.find((c) => c.id === certId)
-              return opt && ageNum >= opt.minAgeToHold && (!opt.maxAgeToHold || ageNum <= opt.maxAgeToHold)
+              return opt && (opt.minAgeToHold === undefined || ageNum >= opt.minAgeToHold) && (!opt.maxAgeToHold || ageNum <= opt.maxAgeToHold)
             })
             updated[index].certifications = validCertsForAge
 
@@ -801,6 +842,16 @@ export default function BookUs() {
             if (!isCurrentEligible) {
               updated[index].selectedProgram = ''
             }
+          }
+        }
+      }
+
+      if (field === 'selectedProgram') {
+        if (isFunDivesProgram(value)) {
+          if (!updated[index].funDiveTypes || updated[index].funDiveTypes.length === 0) {
+            updated[index].funDiveTypes = ['day']
+            updated[index].funDayDivesCount = updated[index].funDayDivesCount || 'fun-2'
+            updated[index].funDivesCount = updated[index].funDayDivesCount || 'fun-2'
           }
         }
       }
@@ -837,6 +888,149 @@ export default function BookUs() {
       }
       return updated
     })
+  }
+
+  // Toggle Day, Dawn, or Night dive types (multiple-choice) for Fun Dives
+  const handleToggleFunDiveType = (index, type) => {
+    setParticipants((prev) => {
+      const updated = [...prev]
+      const currentTypes = updated[index].funDiveTypes || []
+      let nextTypes
+      if (currentTypes.includes(type)) {
+        if (currentTypes.length === 1) return prev // keep at least 1 selected
+        nextTypes = currentTypes.filter((t) => t !== type)
+      } else {
+        nextTypes = [...currentTypes, type]
+      }
+      updated[index] = { ...updated[index], funDiveTypes: nextTypes }
+      if (!updated[index].funDivesCount) {
+        updated[index].funDivesCount = 'fun-2'
+      }
+      return updated
+    })
+  }
+
+  // Update specific dive count package for Fun Dives
+  const handleFunDiveCountChange = (index, packageId) => {
+    setParticipants((prev) => {
+      const updated = [...prev]
+      updated[index] = { ...updated[index], funDivesCount: packageId }
+      return updated
+    })
+  }
+
+  // Formats human-readable summary of chosen Fun Dives breakdown
+  const getFunDivesSummary = useCallback((p) => {
+    if (!p || !isFunDivesProgram(p.selectedProgram)) return ''
+    const types = p.funDiveTypes || []
+    const pkg = FUN_DIVES_PACKAGES.find((f) => f.id === p.funDivesCount) || FUN_DIVES_PACKAGES.find((f) => f.id === 'fun-2')
+    const timingsStr = types.map((t) => t.charAt(0).toUpperCase() + t.slice(1)).join(', ')
+    if (pkg && timingsStr) {
+      return `Package: ${pkg.title} | Timings: ${timingsStr}`
+    } else if (pkg) {
+      return `Package: ${pkg.title}`
+    }
+    return ''
+  }, [])
+
+  // Renders Fun Dives package dropdown and multiple-choice Day/Dawn/Night timing selector
+  const renderFunDivesCustomizer = (p, idx) => {
+    const activeTypes = p.funDiveTypes || []
+    return (
+      <div className="mt-3 pt-3 border-t border-navy/10 space-y-3.5">
+        {/* 1. Package selector: Day dive programs are permanently here */}
+        <div className="rounded-lg sm:rounded-xl bg-[#F0F2F5]/70 border border-navy/10 p-2.5 sm:p-3 space-y-1">
+          <label htmlFor={`fundives-package-${idx}`} className="text-[10px] sm:text-xs font-bold text-navy/80 uppercase tracking-wider block">
+            Fun Dives Package <span className="text-red-500">*</span>
+          </label>
+          <div className="relative">
+            <select
+              id={`fundives-package-${idx}`}
+              value={p.funDivesCount || 'fun-2'}
+              onChange={(e) => handleFunDiveCountChange(idx, e.target.value)}
+              required
+              className="w-full rounded-lg sm:rounded-xl bg-white border border-navy/10 px-2.5 py-2 sm:px-3.5 sm:py-2.5 text-[11px] sm:text-sm font-semibold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition appearance-none cursor-pointer pr-8 shadow-sm"
+            >
+              {FUN_DIVES_PACKAGES.map((pkg) => (
+                <option key={pkg.id} value={pkg.id}>
+                  {pkg.title} ({pkg.duration}) — {pkg.tag}
+                </option>
+              ))}
+            </select>
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-navy/50">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 9l6 6 6-6" /></svg>
+            </div>
+          </div>
+        </div>
+
+        {/* 2. Timing multi-select */}
+        <div>
+          <div className="flex items-center justify-between">
+            <label className="text-[10px] sm:text-xs font-bold text-navy uppercase tracking-wider block">
+              Preferred Dive Timings <span className="text-red-500">*</span>
+            </label>
+            <span className="text-[9px] sm:text-[10px] text-navy/50 font-medium">
+              Multiple choice
+            </span>
+          </div>
+          <p className="text-[10px] sm:text-xs text-navy/60 mt-0.5">
+            Select one or more dive timings. Picking dawn dive or night dive lets us know when you want to dive.
+          </p>
+
+          <div className="grid grid-cols-3 gap-1.5 sm:gap-2.5 mt-2">
+            {[
+              { type: 'day', label: 'Day Dives', icon: '☀️', sub: 'Reef & wall exploration' },
+              { type: 'dawn', label: 'Dawn Dives', icon: '🌅', sub: 'Sunrise first-light' },
+              { type: 'night', label: 'Night Dives', icon: '🌙', sub: 'Bioluminescence safari' },
+            ].map((item) => {
+              const isTypeSelected = activeTypes.includes(item.type)
+              return (
+                <button
+                  key={item.type}
+                  type="button"
+                  id={`fundive-type-${item.type}-${idx}`}
+                  onClick={() => handleToggleFunDiveType(idx, item.type)}
+                  className={`p-2 sm:p-3 rounded-lg sm:rounded-xl border text-left transition-all flex flex-col justify-between cursor-pointer ${
+                    isTypeSelected
+                      ? 'bg-navy text-white border-navy shadow-sm ring-1 ring-navy'
+                      : 'bg-white text-navy border-navy/15 hover:border-navy/35 hover:bg-navy/[0.02]'
+                  }`}
+                >
+                  <div className="flex items-center justify-between w-full mb-1">
+                    <span className="text-sm sm:text-base">{item.icon}</span>
+                    <span
+                      className={`w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full border flex items-center justify-center shrink-0 text-[8px] sm:text-[9px] font-bold ${
+                        isTypeSelected ? 'bg-white text-navy border-white' : 'border-navy/25 bg-transparent'
+                      }`}
+                    >
+                      {isTypeSelected ? '✓' : ''}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="font-bold text-[11px] sm:text-xs block leading-tight">
+                      {item.label}
+                    </span>
+                    <span
+                      className={`text-[8px] sm:text-[10px] hidden sm:block mt-0.5 line-clamp-1 ${
+                        isTypeSelected ? 'text-white/70' : 'text-navy/50'
+                      }`}
+                    >
+                      {item.sub}
+                    </span>
+                  </div>
+                </button>
+              )
+            })}
+          </div>
+
+          {activeTypes.length === 0 && (
+            <div className="mt-2 p-2 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-800 text-[10px] sm:text-xs">
+              ⚠️ Please select at least one dive timing (Day, Dawn, or Night Dives).
+            </div>
+          )}
+        </div>
+      </div>
+    )
   }
 
   const scrollToFormTop = () => {
@@ -968,11 +1162,31 @@ export default function BookUs() {
         return false
       }
 
-      const hasMissingFunDivesCount = participants.some((p) => ['fun-day-dive', 'fun-dawn-dive', 'fun-night-dive'].includes(p.selectedProgram) && !p.funDivesCount)
-      if (hasMissingFunDivesCount) {
-        triggerErrorHaptic()
-        setStepError('Please select a dive package (number of dives) for each Fun Dive participant.')
-        return false
+      for (let i = 0; i < participants.length; i++) {
+        const p = participants[i]
+        if (isFunDivesProgram(p.selectedProgram)) {
+          const types = p.funDiveTypes || []
+          if (types.length === 0) {
+            triggerErrorHaptic()
+            setStepError(`Please select at least one dive type (Day, Dawn, or Night Dives) for ${p.name || `Participant ${i + 1}`}.`)
+            return false
+          }
+          if (types.includes('day') && !p.funDayDivesCount) {
+            triggerErrorHaptic()
+            setStepError(`Please select the number of Day Dives for ${p.name || `Participant ${i + 1}`}.`)
+            return false
+          }
+          if (types.includes('dawn') && !p.funDawnDivesCount) {
+            triggerErrorHaptic()
+            setStepError(`Please select the number of Dawn Dives for ${p.name || `Participant ${i + 1}`}.`)
+            return false
+          }
+          if (types.includes('night') && !p.funNightDivesCount) {
+            triggerErrorHaptic()
+            setStepError(`Please select the number of Night Dives for ${p.name || `Participant ${i + 1}`}.`)
+            return false
+          }
+        }
       }
 
       for (const p of participants) {
@@ -1108,6 +1322,11 @@ export default function BookUs() {
           certifications: p.certifications,
           selectedProgram: p.selectedProgram,
           funDivesCount: p.funDivesCount,
+          funDiveTypes: p.funDiveTypes || [],
+          funDayDivesCount: p.funDayDivesCount || null,
+          funDawnDivesCount: p.funDawnDivesCount || null,
+          funNightDivesCount: p.funNightDivesCount || null,
+          funDivesSummary: getFunDivesSummary(p) || null,
         })),
       })
 
@@ -1439,6 +1658,9 @@ export default function BookUs() {
                             className="w-full rounded-lg sm:rounded-2xl bg-[#F0F2F5] px-3 py-2 sm:px-5 sm:py-4 pr-8 sm:pr-10 text-[11px] sm:text-sm font-semibold sm:font-bold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition cursor-pointer appearance-none"
                           >
                             <option value="">Select a country</option>
+                            {country && !countries.includes(country) && (
+                              <option value={country}>{country}</option>
+                            )}
                             {countries.map((c) => (
                               <option key={c} value={c}>
                                 {c}
@@ -1712,8 +1934,6 @@ export default function BookUs() {
                               const val = parseInt(groupSize, 10)
                               if (isNaN(val) || val < 1) {
                                 setGroupSize(1)
-                              } else if (val > 20) {
-                                setGroupSize(20)
                               } else {
                                 setGroupSize(val)
                               }
@@ -1863,18 +2083,23 @@ export default function BookUs() {
                               {/* FOR SERVICE FLOW: Show only the automatically filled Program and no certification questions */}
                               {isCourseService ? (
                                 isAgeValid && (
-                                  <div className="rounded-xl sm:rounded-2xl bg-white border border-navy/10 p-3 sm:p-4 shadow-sm flex items-center justify-between gap-3">
-                                    <div className="min-w-0">
-                                      <span className="text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider text-navy/50 block">
-                                        Program
-                                      </span>
-                                      <span className="font-heading font-bold text-navy text-xs sm:text-base truncate block mt-0.5">
-                                        Program - "{programName}"
+                                  <div className="space-y-3">
+                                    <div className="rounded-xl sm:rounded-2xl bg-white border border-navy/10 p-3 sm:p-4 shadow-sm flex items-center justify-between gap-3">
+                                      <div className="min-w-0">
+                                        <span className="text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider text-navy/50 block">
+                                          Program
+                                        </span>
+                                        <span className="font-heading font-bold text-navy text-xs sm:text-base truncate block mt-0.5">
+                                          Program - "{programName}"
+                                        </span>
+                                      </div>
+                                      <span className="px-2.5 py-1 rounded-full bg-accent/20 text-navy text-[10px] sm:text-xs font-extrabold shrink-0">
+                                        Selected
                                       </span>
                                     </div>
-                                    <span className="px-2.5 py-1 rounded-full bg-accent/20 text-navy text-[10px] sm:text-xs font-extrabold shrink-0">
-                                      Selected
-                                    </span>
+
+                                    {/* If arriving via Fun Dives service or package, show the multiple-choice customizer */}
+                                    {isFunDivesProgram(p.selectedProgram) && renderFunDivesCustomizer(p, idx)}
                                   </div>
                                 )
                               ) : (
@@ -2052,30 +2277,8 @@ export default function BookUs() {
                                             })}
                                           </div>
 
-                                          {/* Fun Dives Package Selector if Fun Dives is picked */}
-                                          {['fun-day-dive', 'fun-dawn-dive', 'fun-night-dive'].includes(p.selectedProgram) && (
-                                            <div className="mt-2.5 pt-2.5 border-t border-navy/10">
-                                              <label className="text-[9px] sm:text-xs font-bold text-navy/70 uppercase tracking-wider mb-1.5 block">
-                                                Select Number of Dives <span className="text-red-500">*</span>
-                                              </label>
-                                              <div className="relative">
-                                                <select
-                                                  value={p.funDivesCount || ''}
-                                                  onChange={(e) => handleParticipantChange(idx, 'funDivesCount', e.target.value)}
-                                                  required
-                                                  className="w-full rounded-lg sm:rounded-2xl bg-[#F0F2F5] border border-navy/5 px-2.5 py-2 sm:px-4 sm:py-3.5 text-[11px] sm:text-sm font-semibold sm:font-bold text-navy outline-none focus:ring-2 focus:ring-accent/50 transition appearance-none shadow-inner cursor-pointer pr-8"
-                                                >
-                                                  <option value="" disabled>Choose your dive package...</option>
-                                                  {FUN_DIVES_PACKAGES.map((pkg) => (
-                                                    <option key={pkg.id} value={pkg.id}>{pkg.title} - {pkg.duration}</option>
-                                                  ))}
-                                                </select>
-                                                <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-navy/50">
-                                                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 9l6 6 6-6" /></svg>
-                                                </div>
-                                              </div>
-                                            </div>
-                                          )}
+                                          {/* Fun Dives Customizer if Fun Dives program is picked */}
+                                          {isFunDivesProgram(p.selectedProgram) && renderFunDivesCustomizer(p, idx)}
                                         </div>
                                       )}
                                     </div>
@@ -2365,7 +2568,11 @@ export default function BookUs() {
                               <span className="px-2.5 py-1 rounded-full bg-navy/5 text-navy font-bold text-[11px] inline-block">
                                 {progName}
                               </span>
-                              {p.funDivesCount && (
+                              {isFunDivesProgram(p.selectedProgram) ? (
+                                <span className="block text-[10px] text-navy/70 font-semibold mt-0.5">
+                                  {getFunDivesSummary(p) || (p.funDivesCount ? `Package: ${FUN_DIVES_PACKAGES.find(f => f.id === p.funDivesCount)?.title || p.funDivesCount}` : '')}
+                                </span>
+                              ) : p.funDivesCount && (
                                 <span className="block text-[10px] text-navy/60 font-semibold mt-0.5">
                                   Package: {FUN_DIVES_PACKAGES.find(f => f.id === p.funDivesCount)?.title || p.funDivesCount}
                                 </span>

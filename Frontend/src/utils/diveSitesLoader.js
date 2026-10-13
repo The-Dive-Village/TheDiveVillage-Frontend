@@ -448,7 +448,7 @@ export async function loadDiveSites(csvUrl = '/data/dive-sites.csv') {
         'Kenya': [37.9062, -0.0236],
         'Kuwait': [47.4818, 29.3117],
         'Latvia': [24.6032, 56.8796],
-        'Libya': [17.2283, 26.3351],
+        'Libya': [13.1707, 32.9036],
         'Madagascar': [46.8691, -18.7669],
         'Malaysia': [101.9758, 4.2105],
         'Maldives': [73.2207, 3.2028],

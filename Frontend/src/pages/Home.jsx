@@ -374,7 +374,7 @@ export default function Home() {
               },
               {
                 title: 'Comfortable Stays',
-                desc: 'Handpicked accommodations for luxury holidays and backpacking alike',
+                desc: 'Handpicked accommodations for luxury holidays / budget friendly dive experiences based on guest requirements.',
                 img: stayImg,
                 icon: (
                   <svg className="w-4 h-4 sm:w-5 sm:h-5 text-[#00AEC7]" fill="currentColor" viewBox="0 0 24 24">
@@ -405,7 +405,7 @@ export default function Home() {
                 )
               },
             ].map((item, i) => (
-              <StaggerItem key={i} className="w-[62vw] min-w-[215px] max-w-[270px] aspect-square sm:w-auto sm:aspect-auto shrink-0 snap-center h-full">
+              <StaggerItem key={i} className="w-[76vw] min-w-[240px] max-w-[290px] sm:w-auto shrink-0 snap-center h-full">
                 <div
                   onClick={i === 3 ? () => {
                     const el = document.getElementById('customize-dive-section')
@@ -413,7 +413,7 @@ export default function Home() {
                       el.scrollIntoView({ behavior: 'smooth', block: 'start' })
                     }
                   } : undefined}
-                  className={`group relative h-full w-full rounded-2xl sm:rounded-[28px] lg:rounded-[32px] bg-[#00172b]/40 backdrop-blur-2xl border border-white/20 p-3 sm:p-5 lg:p-6 shadow-none transition-all duration-500 hover:bg-[#00172b]/60 flex flex-col justify-between ${
+                  className={`group relative h-full w-full rounded-2xl sm:rounded-[28px] lg:rounded-[32px] bg-[#00172b]/40 backdrop-blur-2xl border border-white/20 p-4 sm:p-5 lg:p-6 shadow-none transition-all duration-500 hover:bg-[#00172b]/60 flex flex-col justify-between ${
                     i === 3
                       ? 'cursor-pointer hover:-translate-y-3 hover:border-[#00AEC7] hover:shadow-none'
                       : 'cursor-default'
@@ -421,24 +421,24 @@ export default function Home() {
                 >
                   <div className="flex flex-col flex-1">
                     {/* Top Bar: Icon Box */}
-                    <div className="flex items-center mb-1.5 sm:mb-4">
-                      <div className="w-7 h-7 sm:w-11 sm:h-11 lg:w-12 lg:h-12 rounded-xl sm:rounded-2xl bg-[#00AEC7]/20 border border-[#00AEC7]/50 flex items-center justify-center shadow-sm group-hover:bg-[#00AEC7]/30 group-hover:border-[#00AEC7] transition duration-300">
+                    <div className="flex items-center mb-2 sm:mb-4">
+                      <div className="w-8 h-8 sm:w-11 sm:h-11 lg:w-12 lg:h-12 rounded-xl sm:rounded-2xl bg-[#00AEC7]/20 border border-[#00AEC7]/50 flex items-center justify-center shadow-sm group-hover:bg-[#00AEC7]/30 group-hover:border-[#00AEC7] transition duration-300">
                         {item.icon}
                       </div>
                     </div>
 
                     {/* Main Heading Text */}
-                    <h3 className="font-heading text-xs xs:text-sm sm:text-xl lg:text-2xl font-bold text-white uppercase tracking-wide leading-tight mt-0.5 sm:mt-0 mb-3.5 sm:mb-2 text-left group-hover:text-[#FFCD00] transition-colors truncate sm:whitespace-normal">
+                    <h3 className="font-heading text-sm xs:text-base sm:text-xl lg:text-2xl font-bold text-white uppercase tracking-wide leading-tight mt-1 mb-2 text-left group-hover:text-[#FFCD00] transition-colors whitespace-normal">
                       {item.title}
                     </h3>
 
                     {/* Description Text */}
-                    <p className="hidden sm:block text-white/85 text-xs lg:text-sm font-medium leading-relaxed mb-5 text-left min-h-[40px]">
+                    <p className="text-white/90 text-xs sm:text-xs lg:text-sm font-medium leading-relaxed mb-3 sm:mb-4 text-left min-h-[54px] sm:min-h-[68px] lg:min-h-[76px] flex-none">
                       {item.desc}
                     </p>
 
-                    {/* Media Frame (Video or Image) */}
-                    <div className="relative w-full aspect-[16/10] sm:aspect-[16/11] rounded-xl sm:rounded-2xl overflow-hidden bg-black/40 mb-1.5 sm:mb-5 border border-white/20 shadow-none flex-1">
+                    {/* Media Frame (Video or Image) - Uniform aspect ratio and height across all 4 panels */}
+                    <div className="relative w-full aspect-[16/10] sm:aspect-[16/11] rounded-xl sm:rounded-2xl overflow-hidden bg-black/40 mb-2 sm:mb-4 border border-white/20 shadow-none shrink-0">
                       {item.video ? (
                         <LazyVideo
                           src={item.video}
@@ -462,12 +462,16 @@ export default function Home() {
                     </div>
                   </div>
 
-                  {/* Footer: Click to select (Desktop Only - Last panel only) */}
-                  {i === 3 && (
-                    <div className="hidden sm:flex items-center justify-center pt-3 border-t border-white/20 text-xs font-bold">
+                  {/* Footer: Click to select (Desktop Only - identical footer height structure across panels to keep panel size unchanged and media heights identical) */}
+                  {i === 3 ? (
+                    <div className="hidden sm:flex items-center justify-center pt-3 border-t border-white/20 text-xs font-bold shrink-0">
                       <span className="text-white/90 group-hover:text-[#FFCD00] transition-colors">
                         Click to select
                       </span>
+                    </div>
+                  ) : (
+                    <div className="hidden sm:flex items-center justify-center pt-3 border-t border-transparent text-xs font-bold shrink-0 invisible pointer-events-none select-none" aria-hidden="true">
+                      <span>Click to select</span>
                     </div>
                   )}
 

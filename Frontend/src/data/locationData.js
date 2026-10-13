@@ -6,7 +6,7 @@ export const LOCATION_DATA = {
     states: {
       'Andaman and Nicobar Islands': [
         'Port Blair',
-        'Havelock Island (Swaraj Dweep)',
+        'Havelock Island',
         'Neil Island (Shaheed Dweep)',
         'Diglipur',
         'Baratang Island',
@@ -670,6 +670,26 @@ export const LOCATION_DATA = {
       'Cairo': [
         'Cairo',
         'Giza'
+      ]
+    }
+  },
+  Libya: {
+    code: 'LY',
+    callingCode: '+218',
+    states: {
+      'Tripoli District': [
+        'Tripoli',
+        'Bab al-Bahr (Borj Bolila)',
+        'Tajoura',
+        'Janzour'
+      ],
+      'Benghazi District': [
+        'Benghazi',
+        'Al-Khadra'
+      ],
+      'Misrata District': [
+        'Misrata',
+        'Zliten'
       ]
     }
   }

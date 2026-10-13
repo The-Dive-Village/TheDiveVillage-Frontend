@@ -336,6 +336,15 @@ export const COURSE_CATALOG = [
 
   // Fun Dives Packages
   {
+    id: 'fun-dives',
+    name: 'Fun Dives',
+    category: 'Fun Dives',
+    minimumAge: 10,
+    maxAge: null,
+    certLabel: 'Open Water to Dive Master',
+    experience: 'Scuba Diving',
+  },
+  {
     id: 'fun-day-dive',
     name: 'Day Fun Dives',
     category: 'Fun Dives',
@@ -538,12 +547,9 @@ export function getEligibleCourses(age, hasCert = false, userCerts = [], experie
       .filter(Boolean)
   }
 
-  // Case 2: Exact 8 with certificate
+  // Case 2: Exact 8 with certificate (Try Dive, DSD Lite, and DSD removed)
   if (numericAge === 8) {
     const targetIds = [
-      'try-dive',
-      'dsd-lite',
-      'dsd',
       'zero-to-hero',
       'open-water',
       'scuba-diver',
@@ -576,28 +582,32 @@ export function getEligibleCourses(age, hasCert = false, userCerts = [], experie
         'open-water'
       )
     } else if (normCert.includes('openwater') && !normCert.includes('advanced')) {
-      // Open Water Diver: Advanced Open Water + all specialties
+      // Open Water Diver: Fun Dives, Advanced Open Water + all specialties
       allTargetIds.push(
+        'fun-dives',
         'advanced-ow',
         ...SPECIALTY_COURSE_IDS
       )
     } else if (normCert.includes('advancedopenwater') || normCert.includes('aow')) {
-      // Advanced Open Water Diver: Adventure Dive + all specialties
+      // Advanced Open Water Diver: Fun Dives, Adventure Dive + all specialties
       allTargetIds.push(
+        'fun-dives',
         'adventure-diver',
         ...SPECIALTY_COURSE_IDS
       )
     } else if (normCert.includes('adventurediver')) {
-      // Adventure Diver: Rescue Diver, Emergency First Response + Rescue Diver, Emergency First Response + Rescue Diver+ Dive Master(Prerequisites), Emergency First Response + Rescue Diver+ Dive Master
+      // Adventure Diver: Fun Dives, Rescue Diver, Emergency First Response + Rescue Diver, Emergency First Response + Rescue Diver+ Dive Master(Prerequisites), Emergency First Response + Rescue Diver+ Dive Master
       allTargetIds.push(
+        'fun-dives',
         'rescue-diver',
         'efr-rescue-combo',
         'efr-rescue-dm-prereqs',
         'efr-rescue-dm-combo'
       )
     } else if (normCert.includes('rescue')) {
-      // Rescue Diver: Emergency First Response Primary & Secondary Care, Lite Refresher (confined only), Full Refresher (with Dive), Dive Master + all specialties
+      // Rescue Diver: Fun Dives, Emergency First Response Primary & Secondary Care, Lite Refresher (confined only), Full Refresher (with Dive), Dive Master + all specialties
       allTargetIds.push(
+        'fun-dives',
         'efr-primary-secondary',
         'lite-refresher',
         'full-refresher',
@@ -605,13 +615,15 @@ export function getEligibleCourses(age, hasCert = false, userCerts = [], experie
         ...SPECIALTY_COURSE_IDS
       )
     } else if (normCert.includes('efr') || normCert.includes('emergencyfirstresponse')) {
-      // Emergency First Response (EFR): all specialties
+      // Emergency First Response (EFR): Fun Dives + all specialties
       allTargetIds.push(
+        'fun-dives',
         ...SPECIALTY_COURSE_IDS
       )
     } else if (normCert.includes('divemaster')) {
-      // Dive Master: all specialties
+      // Dive Master: Fun Dives + all specialties
       allTargetIds.push(
+        'fun-dives',
         ...SPECIALTY_COURSE_IDS
       )
     }
@@ -668,6 +680,11 @@ export function validateParticipantBooking(participant, experience = 'Scuba Divi
   return { valid: true }
 }
 
+export function isFunDivesProgram(courseId) {
+  if (!courseId) return false
+  return ['fun-dives', 'fun-day-dive', 'fun-dawn-dive', 'fun-night-dive'].includes(courseId)
+}
+
 export default {
   EXPERIENCE_OPTIONS,
   ADD_ON_OPTIONS,
@@ -684,4 +701,5 @@ export default {
   sortCoursesByDifficulty,
   validateParticipantBooking,
   normalizeExperienceKey,
+  isFunDivesProgram,
 }

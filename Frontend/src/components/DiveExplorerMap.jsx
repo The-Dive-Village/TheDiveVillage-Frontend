@@ -44,7 +44,7 @@ if (typeof window !== 'undefined') {
  * Generates a crisp #FFD500 yellow dive goggles pin icon from assets/pin.png for MapLibre WebGL.
  * Features a subtle dark drop shadow so it pops cleanly over both deep blue ocean and light coastlines.
  */
-function createDiveGogglesPinIcon(img, width = 28, height = 16) {
+function createDiveGogglesPinIcon(img, width = 30, height = 17) {
   const dpr = 2
   const pad = 3
   const canvas = document.createElement('canvas')
@@ -349,10 +349,10 @@ export default function DiveExplorerMap({
       const dLng = Math.abs(ne[0] - sw[0])
       const dLat = Math.abs(ne[1] - sw[1])
 
-      // Single-site or zero-area bounding box (e.g. Iran, Russia, Romania, Senegal)
+      // Single-site or zero-area bounding box (e.g. Libya, Iran, Russia, Romania, Senegal)
       if (dLng < 0.05 && dLat < 0.05) {
         map.flyTo({
-          center: [countryData.longitude, countryData.latitude],
+          center: [sw[0], sw[1]],
           zoom: 7.5,
           duration: 1200,
         })
@@ -497,7 +497,7 @@ export default function DiveExplorerMap({
     const q = searchQuery.trim().toLowerCase()
     const filtered = allSites.filter((site) => {
       // Must match selected country if active
-      if (selectedCountry && site.country !== selectedCountry) {
+      if (selectedCountry && site.country?.trim().toLowerCase() !== selectedCountry.trim().toLowerCase()) {
         return false
       }
       // Search query
@@ -617,21 +617,20 @@ export default function DiveExplorerMap({
         if (id === 'country-pin-custom' || id === 'country-pin-icon') {
           const pinImg = await preloadPinImage()
           if (pinImg && !map.hasImage(id)) {
-            map.addImage(id, createDiveGogglesPinIcon(pinImg, 28, 16), { pixelRatio: 2 })
+            map.addImage(id, createDiveGogglesPinIcon(pinImg, 30, 17), { pixelRatio: 2 })
           }
         } else if (id === 'site-pin-custom' || id === 'site-pin-icon') {
           const pinImg = await preloadPinImage()
           if (pinImg && !map.hasImage(id)) {
-            // Smaller dive site custom goggles icon
-            map.addImage(id, createDiveGogglesPinIcon(pinImg, 18, 10), { pixelRatio: 2 })
+            map.addImage(id, createDiveGogglesPinIcon(pinImg, 22, 12.5), { pixelRatio: 2 })
           }
         } else if (id === 'country-pin-red') {
           if (!map.hasImage(id)) {
-            map.addImage(id, createRedDropPinIcon(20, 28), { pixelRatio: 2 })
+            map.addImage(id, createRedDropPinIcon(18, 25), { pixelRatio: 2 })
           }
         } else if (id === 'site-pin-red') {
           if (!map.hasImage(id)) {
-            map.addImage(id, createRedDropPinIcon(15, 21), { pixelRatio: 2 })
+            map.addImage(id, createRedDropPinIcon(14, 20), { pixelRatio: 2 })
           }
         }
       })
@@ -641,17 +640,28 @@ export default function DiveExplorerMap({
 
         mapRef.current = map
 
-        // 1. Force English ONLY on all basemap place names (removes regional scripts like "Bharat / भारत")
+        // 1. Force English ONLY on all basemap place names & ensure clean Havelock Island name (removes "Swaraj Dweep / Swarajdeep")
         try {
           const styleLayers = map.getStyle().layers || []
           styleLayers.forEach((layer) => {
             if (layer.type === 'symbol' && layer.layout && layer.layout['text-field']) {
               map.setLayoutProperty(layer.id, 'text-field', [
-                'coalesce',
-                ['get', 'name:en'],
-                ['get', 'name_en'],
-                ['get', 'name:latin'],
-                ['get', 'name'],
+                'case',
+                [
+                  'any',
+                  ['in', 'Swaraj', ['coalesce', ['get', 'name:en'], ['get', 'name_en'], ['get', 'name:latin'], ['get', 'name'], '']],
+                  ['in', 'swaraj', ['coalesce', ['get', 'name:en'], ['get', 'name_en'], ['get', 'name:latin'], ['get', 'name'], '']],
+                  ['in', 'Swarajdeep', ['coalesce', ['get', 'name:en'], ['get', 'name_en'], ['get', 'name:latin'], ['get', 'name'], '']],
+                  ['in', 'swarajdeep', ['coalesce', ['get', 'name:en'], ['get', 'name_en'], ['get', 'name:latin'], ['get', 'name'], '']],
+                ],
+                'Havelock Island',
+                [
+                  'coalesce',
+                  ['get', 'name:en'],
+                  ['get', 'name_en'],
+                  ['get', 'name:latin'],
+                  ['get', 'name'],
+                ],
               ])
             }
           })
@@ -695,35 +705,34 @@ export default function DiveExplorerMap({
           const pinImg = await preloadPinImage()
           if (pinImg) {
             if (!map.hasImage('country-pin-custom')) {
-              map.addImage('country-pin-custom', createDiveGogglesPinIcon(pinImg, 28, 16), { pixelRatio: 2 })
+              map.addImage('country-pin-custom', createDiveGogglesPinIcon(pinImg, 30, 17), { pixelRatio: 2 })
             }
             if (!map.hasImage('site-pin-custom')) {
-              // Made dive sites pin smaller as requested: 18x10 instead of 28x16
-              map.addImage('site-pin-custom', createDiveGogglesPinIcon(pinImg, 18, 10), { pixelRatio: 2 })
+              map.addImage('site-pin-custom', createDiveGogglesPinIcon(pinImg, 22, 12.5), { pixelRatio: 2 })
             }
             // Backwards-compatible aliases
             if (!map.hasImage('country-pin-icon')) {
-              map.addImage('country-pin-icon', createDiveGogglesPinIcon(pinImg, 28, 16), { pixelRatio: 2 })
+              map.addImage('country-pin-icon', createDiveGogglesPinIcon(pinImg, 30, 17), { pixelRatio: 2 })
             }
             if (!map.hasImage('site-pin-icon')) {
-              map.addImage('site-pin-icon', createDiveGogglesPinIcon(pinImg, 18, 10), { pixelRatio: 2 })
+              map.addImage('site-pin-icon', createDiveGogglesPinIcon(pinImg, 22, 12.5), { pixelRatio: 2 })
             }
           } else {
             const res = await map.loadImage(pinIconUrl)
             if (res && res.data) {
-              if (!map.hasImage('country-pin-custom')) map.addImage('country-pin-custom', res.data, { pixelRatio: 4.4 })
-              if (!map.hasImage('site-pin-custom')) map.addImage('site-pin-custom', res.data, { pixelRatio: 6.5 })
-              if (!map.hasImage('country-pin-icon')) map.addImage('country-pin-icon', res.data, { pixelRatio: 4.4 })
-              if (!map.hasImage('site-pin-icon')) map.addImage('site-pin-icon', res.data, { pixelRatio: 6.5 })
+              if (!map.hasImage('country-pin-custom')) map.addImage('country-pin-custom', res.data, { pixelRatio: 4.1 })
+              if (!map.hasImage('site-pin-custom')) map.addImage('site-pin-custom', res.data, { pixelRatio: 5.6 })
+              if (!map.hasImage('country-pin-icon')) map.addImage('country-pin-icon', res.data, { pixelRatio: 4.1 })
+              if (!map.hasImage('site-pin-icon')) map.addImage('site-pin-icon', res.data, { pixelRatio: 5.6 })
             }
           }
 
           // Register classic red drop pins
           if (!map.hasImage('country-pin-red')) {
-            map.addImage('country-pin-red', createRedDropPinIcon(20, 28), { pixelRatio: 2 })
+            map.addImage('country-pin-red', createRedDropPinIcon(18, 25), { pixelRatio: 2 })
           }
           if (!map.hasImage('site-pin-red')) {
-            map.addImage('site-pin-red', createRedDropPinIcon(15, 21), { pixelRatio: 2 })
+            map.addImage('site-pin-red', createRedDropPinIcon(14, 20), { pixelRatio: 2 })
           }
         } catch (e) {
           console.warn('[DiveExplorer] Icon registration notice:', e)
@@ -787,13 +796,27 @@ export default function DiveExplorerMap({
           source: 'country-centroids-source',
           layout: {
             'icon-image': initialCountryIcon,
-            'icon-size': 1,
+            'icon-size': [
+              'interpolate',
+              ['linear'],
+              ['zoom'],
+              1.5, 0.72,
+              3.5, 0.95,
+              6.5, 1.25,
+            ],
             'icon-anchor': 'bottom',
             'icon-allow-overlap': true,
             'icon-ignore-placement': true,
             'text-field': ['get', 'country'],
             'text-font': ['Noto Sans Bold'],
-            'text-size': 10,
+            'text-size': [
+              'interpolate',
+              ['linear'],
+              ['zoom'],
+              1.5, 8.5,
+              4.0, 10,
+              6.5, 11.5,
+            ],
             'text-offset': [0, 0.35],
             'text-anchor': 'top',
             'text-optional': true,
@@ -820,12 +843,27 @@ export default function DiveExplorerMap({
           source: 'dive-sites-source',
           layout: {
             'icon-image': initialSiteIcon,
-            'icon-size': 1,
+            'icon-size': [
+              'interpolate',
+              ['linear'],
+              ['zoom'],
+              4.0, 0.65,
+              7.5, 0.90,
+              10.5, 1.20,
+              13.5, 1.50,
+            ],
             'icon-anchor': 'bottom',
             'icon-allow-overlap': true,
             'text-field': ['get', 'siteName'],
             'text-font': ['Noto Sans Bold'],
-            'text-size': 9.5,
+            'text-size': [
+              'interpolate',
+              ['linear'],
+              ['zoom'],
+              4.0, 8.0,
+              8.0, 9.5,
+              12.0, 11.5,
+            ],
             'text-offset': [0, 0.35],
             'text-anchor': 'top',
             'text-optional': true,
@@ -1304,7 +1342,7 @@ export default function DiveExplorerMap({
     }
 
     if (match && mapRef.current) {
-      if (match.country && match.country !== selectedCountry) {
+      if (match.country && match.country.toLowerCase() !== (selectedCountry || '').toLowerCase()) {
         setSelectedCountry(match.country)
         if (onSelectCountry) onSelectCountry(match.country)
       }
@@ -1346,7 +1384,7 @@ export default function DiveExplorerMap({
   // Count of currently visible items
   const activeCountryStats = useMemo(() => {
     if (!selectedCountry) return null
-    return countryCentroids.find((c) => c.country === selectedCountry) || null
+    return countryCentroids.find((c) => c.country?.toLowerCase() === selectedCountry.toLowerCase()) || null
   }, [selectedCountry, countryCentroids])
 
   return (

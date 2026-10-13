@@ -223,7 +223,7 @@ export default function Gallery() {
         </div>
 
         {/* 4. INSTAGRAM & COMMUNITY SECTION */}
-        <div className="rounded-[40px] bg-[#F0F2F5] p-8 sm:p-14 mb-24">
+        <div className="rounded-3xl sm:rounded-[40px] bg-[#F0F2F5] p-6 sm:p-14 mb-16 sm:mb-24 border border-navy/10 night-dive-panel transition-colors">
           <div className="grid lg:grid-cols-12 gap-8 items-center">
             <div className="lg:col-span-8">
               <span className="text-accent font-bold tracking-widest uppercase text-xs mb-3 block">
@@ -245,7 +245,7 @@ export default function Gallery() {
               >
                 Follow on Instagram →
               </a>
-              <Button as={Link} to="/book-us" variant="secondary" className="justify-center !border-navy/20 !text-navy hover:!bg-navy/5">
+              <Button as={Link} to="/book-us" variant="secondary" className="justify-center !border-navy/20 !text-navy hover:!bg-navy/5 night-dive-btn-secondary">
                 Join Next Expedition
               </Button>
             </div>
