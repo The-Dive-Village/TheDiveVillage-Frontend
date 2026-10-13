@@ -504,7 +504,8 @@ export default function DiveExplorerMap({
       if (q) {
         const nameMatch = (site.siteName || '').toLowerCase().includes(q)
         const countryMatch = (site.country || '').toLowerCase().includes(q)
-        if (!nameMatch && !countryMatch) return false
+        const typeMatch = (site.naturalTypes || '').toLowerCase().includes(q)
+        if (!nameMatch && !countryMatch && !typeMatch) return false
       }
       return true
     })
