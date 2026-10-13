@@ -12,6 +12,21 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
     productId === 'product-ocean-bag'
   )
 
+  const isFullSleeves = Boolean(
+    productId === 'product-full-sleeves-unisex' ||
+    (src && (
+      src.toLowerCase().includes('full_sleeves') ||
+      src.toLowerCase().includes('full-sleeves')
+    )) ||
+    (alt && (alt.toLowerCase().includes('full sleeve') && alt.toLowerCase().includes('top')))
+  )
+
+  const isBottomsCompression = Boolean(
+    productId === 'product-womens-pants' ||
+    (src && src.toLowerCase().includes('bottoms_with_compression')) ||
+    (alt && (alt.toLowerCase().includes('bottom') && alt.toLowerCase().includes('compression')))
+  )
+
   useEffect(() => {
     const el = containerRef.current
     if (!el || typeof IntersectionObserver === 'undefined') return
@@ -249,7 +264,7 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
           threeMat.metalness = 0.0
 
           // Rich ambient diffuse lighting so garments are brightly lit and fully visible
-          threeMat.envMapIntensity = 0.95
+          threeMat.envMapIntensity = isFullSleeves ? 1.45 : (isBottomsCompression ? 1.25 : 0.95)
 
           if ('clearcoat' in threeMat) threeMat.clearcoat = 0.0
           if ('clearcoatRoughness' in threeMat) threeMat.clearcoatRoughness = 1.0
@@ -270,11 +285,12 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
             threeMat.normalScale.set(0.75, 0.75)
           }
 
-          // Lift dark tones so black models have rich graphite visibility instead of pitch-dark silhouettes
+          // Lift dark tones: slightly more brighter for full sleeves unisex top, slightly brighter for bottoms with compression
           if (threeMat.color) {
-            threeMat.color.r = Math.max(threeMat.color.r, 0.22)
-            threeMat.color.g = Math.max(threeMat.color.g, 0.22)
-            threeMat.color.b = Math.max(threeMat.color.b, 0.22)
+            const minTone = isFullSleeves ? 0.38 : (isBottomsCompression ? 0.32 : 0.22)
+            threeMat.color.r = Math.max(threeMat.color.r, minTone)
+            threeMat.color.g = Math.max(threeMat.color.g, minTone)
+            threeMat.color.b = Math.max(threeMat.color.b, minTone)
           }
 
           threeMat.needsUpdate = true
@@ -331,7 +347,7 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
         min-camera-orbit="auto 75deg auto"
         max-camera-orbit="auto 75deg auto"
         environment-image="neutral"
-        exposure="1.85"
+        exposure={isFullSleeves ? "2.75" : (isBottomsCompression ? "2.35" : "1.85")}
         shadow-intensity="0.10"
         shadow-softness="1.0"
         tone-mapping="neutral"

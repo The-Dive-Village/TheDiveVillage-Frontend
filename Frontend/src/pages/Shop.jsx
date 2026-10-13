@@ -825,6 +825,25 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, 
   const [imgLoaded, setImgLoaded] = useState(false)
   const viewerRef = useRef(null)
 
+  const isFullSleeves = Boolean(
+    product?.id === 'product-full-sleeves-unisex' ||
+    (product?.glb && (
+      product.glb.toLowerCase().includes('full_sleeves') ||
+      product.glb.toLowerCase().includes('full-sleeves')
+    )) ||
+    (product?.title && (
+      (product.title.toLowerCase().includes('full sleeve') && product.title.toLowerCase().includes('top'))
+    ))
+  )
+
+  const isBottomsCompression = Boolean(
+    product?.id === 'product-womens-pants' ||
+    (product?.glb && product.glb.toLowerCase().includes('bottoms_with_compression')) ||
+    (product?.title && (
+      (product.title.toLowerCase().includes('bottom') && product.title.toLowerCase().includes('compression'))
+    ))
+  )
+
   useEffect(() => {
     if (typeof window !== 'undefined' && !customElements.get('model-viewer')) {
       const script = document.createElement('script')
@@ -944,7 +963,7 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, 
             threeMat.metalness = 0.0
 
             // Rich ambient diffuse lighting so garments are brightly lit and fully visible
-            threeMat.envMapIntensity = 0.95
+            threeMat.envMapIntensity = isFullSleeves ? 1.45 : (isBottomsCompression ? 1.25 : 0.95)
 
             if ('clearcoat' in threeMat) threeMat.clearcoat = 0.0
             if ('clearcoatRoughness' in threeMat) threeMat.clearcoatRoughness = 1.0
@@ -965,11 +984,12 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, 
               threeMat.normalScale.set(0.75, 0.75)
             }
 
-            // Lift dark tones so black models have rich graphite visibility instead of pitch-dark silhouettes
+            // Lift dark tones: slightly more brighter for full sleeves unisex top, slightly brighter for bottoms with compression
             if (threeMat.color) {
-              threeMat.color.r = Math.max(threeMat.color.r, 0.22)
-              threeMat.color.g = Math.max(threeMat.color.g, 0.22)
-              threeMat.color.b = Math.max(threeMat.color.b, 0.22)
+              const minTone = isFullSleeves ? 0.38 : (isBottomsCompression ? 0.32 : 0.22)
+              threeMat.color.r = Math.max(threeMat.color.r, minTone)
+              threeMat.color.g = Math.max(threeMat.color.g, minTone)
+              threeMat.color.b = Math.max(threeMat.color.b, minTone)
             }
 
             threeMat.needsUpdate = true
@@ -1131,7 +1151,7 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, 
                     max-camera-orbit="auto 75deg auto"
                     interaction-prompt="none"
                     environment-image="neutral"
-                    exposure="1.85"
+                    exposure={isFullSleeves ? "2.75" : (isBottomsCompression ? "2.35" : "1.85")}
                     shadow-intensity="0.10"
                     shadow-softness="1.0"
                     tone-mapping="neutral"
