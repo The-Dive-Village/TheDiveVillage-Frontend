@@ -2663,209 +2663,275 @@ export default function BookUs() {
             />
           </div>
         </div>
-
-        {/* 5. ORDER SUMMARY & CONFIRMATION POPUP MODAL */}
-        <AnimatePresence>
-          {showSummaryModal && (
-            <div
-              data-booking-page="true"
-              data-booking-modal="true"
-              data-lenis-prevent="true"
-              className="fixed left-0 right-0 bottom-0 top-[64px] lg:top-[68px] z-[9990] flex items-center justify-center p-3 sm:p-6 bg-transparent overflow-hidden"
-              style={{ top: 'var(--toolbar-bottom, 64px)', backdropFilter: 'none', WebkitBackdropFilter: 'none' }}
-              onClick={(e) => {
-                if (e.target === e.currentTarget && !isSubmitting) {
-                  setShowSummaryModal(false)
-                }
-              }}
-            >
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95, y: 15 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95, y: 15 }}
-                transition={{ duration: 0.2 }}
-                className="bg-white rounded-3xl max-w-2xl w-full max-h-[calc(100vh-var(--toolbar-bottom,64px)-24px)] flex flex-col shadow-2xl border border-navy/15 overflow-hidden text-navy"
-                onClick={(e) => e.stopPropagation()}
-              >
-                {/* Modal Header */}
-                <div className="px-4 py-3 sm:px-6 sm:py-4 border-b border-navy/10 flex items-center justify-between bg-gradient-to-r from-navy to-[#003865] text-white shrink-0">
-                  <div>
-                    <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-[#FFCD00] block mb-0.5">
-                      Order Summary & Confirmation
-                    </span>
-                    <h3 className="font-heading text-base sm:text-xl font-bold">
-                      Review Your Booking Details
-                    </h3>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setShowSummaryModal(false)}
-                    className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition active:scale-90 cursor-pointer text-sm font-bold"
-                    aria-label="Close summary modal"
-                  >
-                    ✕
-                  </button>
-                </div>
-
-                {/* Modal Body */}
-                <div
-                  data-lenis-prevent="true"
-                  className="p-3.5 sm:p-5 overflow-y-auto space-y-3 sm:space-y-4 text-xs sm:text-sm overscroll-contain flex-1"
-                >
-
-                  {/* 1. Trip & Location Details */}
-                  <div className="rounded-2xl bg-[#FAFAFA] border border-navy/10 p-4 space-y-2.5">
-                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-navy/50 block">
-                      1. Destination & Schedule
-                    </span>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-navy">
-                      <div>
-                        <span className="text-navy/60 block text-[11px]">Country & Island:</span>
-                        <strong className="font-bold">{country} {island ? `• ${island}` : ''}</strong>
-                      </div>
-                      <div>
-                        <span className="text-navy/60 block text-[11px]">Dive Site / Location:</span>
-                        <strong className="font-bold">{location || 'To Be Arranged'}</strong>
-                      </div>
-                      <div>
-                        <span className="text-navy/60 block text-[11px]">Date:</span>
-                        <strong className="font-bold">{formatDateToDDMMYYYY(date)}</strong>
-                      </div>
-                      <div>
-                        <span className="text-navy/60 block text-[11px]">Total Group Size:</span>
-                        <strong className="font-bold">{participants.length} Person{participants.length > 1 ? 's' : ''}</strong>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* 2. Experience & Add-Ons */}
-                  <div className="rounded-2xl bg-[#FAFAFA] border border-navy/10 p-4 space-y-2.5">
-                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-navy/50 block">
-                      2. Experience & Add-Ons
-                    </span>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-navy">
-                      <div>
-                        <span className="text-navy/60 block text-[11px]">Primary Experience:</span>
-                        <strong className="font-bold">{experience || 'Direct Add-On / Custom'}</strong>
-                      </div>
-                      <div>
-                        <span className="text-navy/60 block text-[11px]">Selected Add-Ons:</span>
-                        <strong className="font-bold">
-                          {selectedAddOns.filter(a => a !== 'None').length > 0
-                            ? selectedAddOns.filter(a => a !== 'None').join(', ')
-                            : 'None'}
-                        </strong>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* 3. Participants & Program Breakdown */}
-                  <div className="rounded-2xl bg-[#FAFAFA] border border-navy/10 p-4 space-y-3">
-                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-navy/50 block">
-                      3. Participants & Courses
-                    </span>
-                    <div className="space-y-2">
-                      {participants.map((p, idx) => {
-                        const progName = COURSE_CATALOG.find(c => c.id === p.selectedProgram)?.name || p.selectedProgram || 'Standard Activity'
-                        const isUnder12 = parseInt(p.age, 10) < 12
-                        return (
-                          <div key={p.id} className="p-3 bg-white rounded-xl border border-navy/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                            <div>
-                              <span className="font-bold text-navy">
-                                {idx + 1}. {p.name || `Participant ${idx + 1}`}
-                              </span>
-                              <span className="text-navy/60 ml-2 font-medium">
-                                (Age: {p.age})
-                              </span>
-                              {isUnder12 && p.parentalConsent && (
-                                <span className="block text-[10px] text-amber-700 font-semibold mt-0.5">
-                                  ✓ Parental Consent Confirmed
-                                </span>
-                              )}
-                            </div>
-                            <div className="text-left sm:text-right">
-                              <span className="px-2.5 py-1 rounded-full bg-navy/5 text-navy font-bold text-[11px] inline-block">
-                                {progName}
-                              </span>
-                              {isFunDivesProgram(p.selectedProgram) ? (
-                                <span className="block text-[10px] text-navy/70 font-semibold mt-0.5">
-                                  {getFunDivesSummary(p) || (p.funDivesCount ? `Package: ${FUN_DIVES_PACKAGES.find(f => f.id === p.funDivesCount)?.title || p.funDivesCount}` : '')}
-                                </span>
-                              ) : p.funDivesCount && (
-                                <span className="block text-[10px] text-navy/60 font-semibold mt-0.5">
-                                  Package: {FUN_DIVES_PACKAGES.find(f => f.id === p.funDivesCount)?.title || p.funDivesCount}
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        )
-                      })}
-                    </div>
-                  </div>
-
-                  {/* 4. Contact Details & Notes */}
-                  <div className="rounded-2xl bg-[#FAFAFA] border border-navy/10 p-4 space-y-2.5">
-                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-navy/50 block">
-                      4. Contact Information
-                    </span>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-navy">
-                      <div>
-                        <span className="text-navy/60 block text-[11px]">Primary Contact:</span>
-                        <strong className="font-bold">{contact.name}</strong>
-                      </div>
-                      <div>
-                        <span className="text-navy/60 block text-[11px]">Email Address:</span>
-                        <strong className="font-bold">{contact.email}</strong>
-                      </div>
-                      <div>
-                        <span className="text-navy/60 block text-[11px]">Phone Number:</span>
-                        <strong className="font-bold">{contact.phone || 'Not provided'}</strong>
-                      </div>
-                      {contact.requests && (
-                        <div className="sm:col-span-2 mt-1">
-                          <span className="text-navy/60 block text-[11px]">Special Notes & Requests:</span>
-                          <p className="font-medium text-navy/80 whitespace-pre-line bg-white p-2.5 rounded-lg border border-navy/10 mt-1">
-                            {contact.requests}
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                </div>
-
-                {/* Modal Footer Controls */}
-                <div className="p-3 sm:p-4 border-t border-navy/10 bg-[#FAFAFA] flex items-center justify-between gap-3 shrink-0">
-                  <button
-                    type="button"
-                    onClick={() => setShowSummaryModal(false)}
-                    className="rounded-full px-4 py-2 sm:px-6 sm:py-2.5 text-xs sm:text-sm font-bold text-navy hover:bg-navy/10 active:scale-95 transition cursor-pointer"
-                  >
-                    ← Edit Booking
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={handleFinalSubmit}
-                    disabled={isSubmitting}
-                    className="rounded-full bg-accent hover:!bg-navy hover:!text-white active:scale-95 px-5 py-2 sm:px-7 sm:py-2.5 text-xs sm:text-sm font-extrabold text-[#001e3d] transition-all duration-200 shadow-md cursor-pointer border border-[#FFCD00] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <span className="w-4 h-4 border-2 border-navy border-t-transparent rounded-full animate-spin inline-block" />
-                        <span>Submitting Booking...</span>
-                      </>
-                    ) : (
-                      <span>Confirm & Submit Booking ✓</span>
-                    )}
-                  </button>
-                </div>
-
-              </motion.div>
-            </div>
-          )}
-        </AnimatePresence>
       </div>
+
+      {/* 5. ORDER SUMMARY & CONFIRMATION POPUP MODAL */}
+      <AnimatePresence>
+        {showSummaryModal && (
+          <div
+            data-booking-confirmation-modal="true"
+            data-booking-modal="true"
+            data-lenis-prevent="true"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="order-summary-title"
+            className="fixed inset-x-0 bottom-0 z-[9990] flex flex-col items-center justify-start sm:justify-center overflow-y-auto overscroll-contain p-2 xs:p-3 sm:p-6 bg-black/60 backdrop-blur-sm"
+            style={{
+              top: 'var(--toolbar-bottom, 64px)',
+              height: 'calc(100dvh - var(--toolbar-bottom, 64px))',
+              maxHeight: 'calc(100dvh - var(--toolbar-bottom, 64px))',
+              paddingBottom: 'calc(0.75rem + env(safe-area-inset-bottom, 0px))',
+            }}
+            onClick={(e) => {
+              if (e.target === e.currentTarget && !isSubmitting) {
+                setShowSummaryModal(false)
+              }
+            }}
+          >
+            <motion.div
+              data-booking-modal-card="true"
+              initial={{ opacity: 0, scale: 0.96, y: 12 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.96, y: 12 }}
+              transition={{ duration: 0.2 }}
+              className="relative w-full max-w-2xl bg-white rounded-2xl xs:rounded-3xl shadow-2xl border border-navy/15 flex flex-col overflow-hidden text-navy my-auto min-h-0"
+              style={{
+                maxHeight: 'calc(100dvh - var(--toolbar-bottom, 64px) - 1.25rem - env(safe-area-inset-bottom, 0px))',
+                backgroundColor: '#ffffff',
+                color: '#003865',
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Modal Header */}
+              <div className="px-3.5 py-2.5 sm:px-6 sm:py-4 border-b border-navy/10 flex items-center justify-between bg-gradient-to-r from-navy to-[#003865] text-white shrink-0">
+                <div>
+                  <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-[#FFCD00] block mb-0.5">
+                    Order Summary & Confirmation
+                  </span>
+                  <h3 id="order-summary-title" className="font-heading text-base sm:text-xl font-bold text-white">
+                    Review Your Booking Details
+                  </h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowSummaryModal(false)}
+                  className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition active:scale-90 cursor-pointer text-sm font-bold shrink-0"
+                  aria-label="Close summary modal"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* Modal Body */}
+              <div
+                data-lenis-prevent="true"
+                className="p-3 xs:p-4 sm:p-5 overflow-y-auto overscroll-contain space-y-3 sm:space-y-4 text-xs sm:text-sm flex-1 min-h-0 text-navy"
+                style={{ WebkitOverflowScrolling: 'touch', color: '#003865' }}
+              >
+
+                {/* 1. Trip & Location Details */}
+                <div
+                  data-booking-summary-section="true"
+                  className="rounded-2xl bg-[#FAFAFA] border border-navy/10 p-3.5 sm:p-4 space-y-2.5"
+                  style={{ backgroundColor: '#FAFAFA', borderColor: 'rgba(0, 56, 101, 0.1)', color: '#003865' }}
+                >
+                  <span className="text-[10px] font-extrabold uppercase tracking-wider block" style={{ color: 'rgba(0, 56, 101, 0.5)' }}>
+                    1. Destination & Schedule
+                  </span>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-navy" style={{ color: '#003865' }}>
+                    <div>
+                      <span className="block text-[11px]" style={{ color: 'rgba(0, 56, 101, 0.6)' }}>Country & Island:</span>
+                      <strong className="font-bold text-navy" style={{ color: '#003865' }}>{country} {island ? `• ${island}` : ''}</strong>
+                    </div>
+                    <div>
+                      <span className="block text-[11px]" style={{ color: 'rgba(0, 56, 101, 0.6)' }}>Dive Site / Location:</span>
+                      <strong className="font-bold text-navy" style={{ color: '#003865' }}>{location || 'To Be Arranged'}</strong>
+                    </div>
+                    <div>
+                      <span className="block text-[11px]" style={{ color: 'rgba(0, 56, 101, 0.6)' }}>Date:</span>
+                      <strong className="font-bold text-navy" style={{ color: '#003865' }}>{formatDateToDDMMYYYY(date)}</strong>
+                    </div>
+                    <div>
+                      <span className="block text-[11px]" style={{ color: 'rgba(0, 56, 101, 0.6)' }}>Total Group Size:</span>
+                      <strong className="font-bold text-navy" style={{ color: '#003865' }}>{participants.length} Person{participants.length > 1 ? 's' : ''}</strong>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2. Experience & Add-Ons */}
+                <div
+                  data-booking-summary-section="true"
+                  className="rounded-2xl bg-[#FAFAFA] border border-navy/10 p-3.5 sm:p-4 space-y-2.5"
+                  style={{ backgroundColor: '#FAFAFA', borderColor: 'rgba(0, 56, 101, 0.1)', color: '#003865' }}
+                >
+                  <span className="text-[10px] font-extrabold uppercase tracking-wider block" style={{ color: 'rgba(0, 56, 101, 0.5)' }}>
+                    2. Experience & Add-Ons
+                  </span>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-navy" style={{ color: '#003865' }}>
+                    <div>
+                      <span className="block text-[11px]" style={{ color: 'rgba(0, 56, 101, 0.6)' }}>Primary Experience:</span>
+                      <strong className="font-bold text-navy" style={{ color: '#003865' }}>{experience || 'Direct Add-On / Custom'}</strong>
+                    </div>
+                    <div>
+                      <span className="block text-[11px]" style={{ color: 'rgba(0, 56, 101, 0.6)' }}>Selected Add-Ons:</span>
+                      <strong className="font-bold text-navy" style={{ color: '#003865' }}>
+                        {selectedAddOns.filter(a => a !== 'None').length > 0
+                          ? selectedAddOns.filter(a => a !== 'None').join(', ')
+                          : 'None'}
+                      </strong>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 3. Participants & Program Breakdown */}
+                <div
+                  data-booking-summary-section="true"
+                  className="rounded-2xl bg-[#FAFAFA] border border-navy/10 p-3.5 sm:p-4 space-y-3"
+                  style={{ backgroundColor: '#FAFAFA', borderColor: 'rgba(0, 56, 101, 0.1)', color: '#003865' }}
+                >
+                  <span className="text-[10px] font-extrabold uppercase tracking-wider block" style={{ color: 'rgba(0, 56, 101, 0.5)' }}>
+                    3. Participants & Courses
+                  </span>
+                  <div className="space-y-2">
+                    {participants.map((p, idx) => {
+                      const progName = COURSE_CATALOG.find(c => c.id === p.selectedProgram)?.name || p.selectedProgram || 'Standard Activity'
+                      const isUnder12 = parseInt(p.age, 10) < 12
+                      return (
+                        <div
+                          key={p.id}
+                          data-booking-participant-row="true"
+                          className="p-3 bg-white rounded-xl border border-navy/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2"
+                          style={{ backgroundColor: '#ffffff', borderColor: 'rgba(0, 56, 101, 0.1)', color: '#003865' }}
+                        >
+                          <div>
+                            <span className="font-bold text-navy" style={{ color: '#003865' }}>
+                              {idx + 1}. {p.name || `Participant ${idx + 1}`}
+                            </span>
+                            <span className="ml-2 font-medium" style={{ color: 'rgba(0, 56, 101, 0.6)' }}>
+                              (Age: {p.age})
+                            </span>
+                            {isUnder12 && p.parentalConsent && (
+                              <span className="block text-[10px] text-amber-700 font-semibold mt-0.5">
+                                ✓ Parental Consent Confirmed
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-left sm:text-right">
+                            <span
+                              data-booking-course-badge="true"
+                              className="px-2.5 py-1 rounded-full font-bold text-[11px] inline-block"
+                              style={{
+                                backgroundColor: 'rgba(0, 56, 101, 0.08)',
+                                color: '#003865',
+                                border: '1px solid rgba(0, 56, 101, 0.12)',
+                              }}
+                            >
+                              {progName}
+                            </span>
+                            {isFunDivesProgram(p.selectedProgram) ? (
+                              <span className="block text-[10px] font-semibold mt-0.5" style={{ color: 'rgba(0, 56, 101, 0.7)' }}>
+                                {getFunDivesSummary(p) || (p.funDivesCount ? `Package: ${FUN_DIVES_PACKAGES.find(f => f.id === p.funDivesCount)?.title || p.funDivesCount}` : '')}
+                              </span>
+                            ) : p.funDivesCount && (
+                              <span className="block text-[10px] font-semibold mt-0.5" style={{ color: 'rgba(0, 56, 101, 0.6)' }}>
+                                Package: {FUN_DIVES_PACKAGES.find(f => f.id === p.funDivesCount)?.title || p.funDivesCount}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+
+                {/* 4. Contact Details & Notes */}
+                <div
+                  data-booking-summary-section="true"
+                  className="rounded-2xl bg-[#FAFAFA] border border-navy/10 p-3.5 sm:p-4 space-y-2.5"
+                  style={{ backgroundColor: '#FAFAFA', borderColor: 'rgba(0, 56, 101, 0.1)', color: '#003865' }}
+                >
+                  <span className="text-[10px] font-extrabold uppercase tracking-wider block" style={{ color: 'rgba(0, 56, 101, 0.5)' }}>
+                    4. Contact Information
+                  </span>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-navy" style={{ color: '#003865' }}>
+                    <div>
+                      <span className="block text-[11px]" style={{ color: 'rgba(0, 56, 101, 0.6)' }}>Primary Contact:</span>
+                      <strong className="font-bold text-navy" style={{ color: '#003865' }}>{contact.name}</strong>
+                    </div>
+                    <div>
+                      <span className="block text-[11px]" style={{ color: 'rgba(0, 56, 101, 0.6)' }}>Email Address:</span>
+                      <strong className="font-bold text-navy" style={{ color: '#003865' }}>{contact.email}</strong>
+                    </div>
+                    <div>
+                      <span className="block text-[11px]" style={{ color: 'rgba(0, 56, 101, 0.6)' }}>Phone Number:</span>
+                      <strong className="font-bold text-navy" style={{ color: '#003865' }}>{contact.phone || 'Not provided'}</strong>
+                    </div>
+                    {contact.requests && (
+                      <div className="sm:col-span-2 mt-1">
+                        <span className="block text-[11px]" style={{ color: 'rgba(0, 56, 101, 0.6)' }}>Special Notes & Requests:</span>
+                        <p
+                          className="font-medium whitespace-pre-line p-2.5 rounded-lg border mt-1 text-navy"
+                          style={{
+                            backgroundColor: '#ffffff',
+                            color: '#003865',
+                            borderColor: 'rgba(0, 56, 101, 0.1)',
+                          }}
+                        >
+                          {contact.requests}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Modal Footer Controls */}
+              <div
+                className="p-3 sm:p-4 border-t border-navy/10 bg-[#FAFAFA] flex items-center justify-between gap-2.5 sm:gap-3 shrink-0"
+                style={{ backgroundColor: '#FAFAFA', borderColor: 'rgba(0, 56, 101, 0.1)' }}
+              >
+                <button
+                  type="button"
+                  data-booking-back-btn="true"
+                  onClick={() => setShowSummaryModal(false)}
+                  className="rounded-full px-3.5 py-2 sm:px-6 sm:py-2.5 text-xs sm:text-sm font-bold transition active:scale-95 cursor-pointer shrink-0 hover:!bg-[#003865]/10"
+                  style={{
+                    backgroundColor: 'transparent',
+                    color: '#003865',
+                    border: '1px solid rgba(0, 56, 101, 0.25)',
+                  }}
+                >
+                  ← Edit Booking
+                </button>
+
+                <button
+                  type="button"
+                  data-booking-submit-btn="true"
+                  onClick={handleFinalSubmit}
+                  disabled={isSubmitting}
+                  className="rounded-full px-4 py-2 sm:px-7 sm:py-2.5 text-xs sm:text-sm font-extrabold transition-all duration-200 shadow-md cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 hover:!bg-navy hover:!text-white"
+                  style={{
+                    backgroundColor: '#FFCD00',
+                    color: '#001e3d',
+                    border: '1px solid #FFCD00',
+                  }}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <span className="w-4 h-4 border-2 border-[#001e3d] border-t-transparent rounded-full animate-spin inline-block" />
+                      <span>Submitting Booking...</span>
+                    </>
+                  ) : (
+                    <span>Confirm & Submit Booking ✓</span>
+                  )}
+                </button>
+              </div>
+
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
