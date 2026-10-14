@@ -4,17 +4,26 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { PANEL_IMAGES } from '../utils/images'
 import FloatingVideoPip from './FloatingVideoPip'
 
-// Activity Media (Cloudflare R2 video URLs & Cloudinary poster URLs)
-const vidSafari = '/media/TDV-Media/AirportToAirport/gallery1.mp4'
+// Activity Media (High-Performance Cloudinary Video & Poster URLs)
+const vidSafari = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791691465/TDV-Media/AirportToAirport/gallery1.mp4'
 const imgSafari = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791685504/TDV-Media/AddOns/safari.webp'
-const vidTrekking = '/media/TDV-Media/AddOns/Trekking.mp4'
+
+const vidTrekking = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791685324/TDV-Media/AddOns/Trekking.mp4'
 const imgTrekking = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791685508/TDV-Media/AddOns/trekking.webp'
-const vidSightseeing = '/media/TDV-Media/AddOns/sightseeing.mp4'
+
+const vidSightseeing = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791685371/TDV-Media/AddOns/sightseeing.mp4'
 const imgSightseeing = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791685509/TDV-Media/AddOns/sightseeing.webp'
-const vidCampers = '/media/TDV-Media/AddOns/Campers.mp4'
+
+const vidCampers = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791686777/TDV-Media/AddOns/Campers.mp4'
 const imgCampers = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791685511/TDV-Media/AddOns/campers.webp'
-const vidLiveaboard = '/media/TDV-Media/AddOns/liveaboard.mp4'
+
+const vidLiveaboard = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791685388/TDV-Media/AddOns/liveaboard.mp4'
 const imgLiveaboard = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791685512/TDV-Media/AddOns/liveaboard.webp'
+
+const vidCanoneering = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791460085/TDV-Media/Services/Other/Canoneering.mp4'
+const vidSurfing = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458534/TDV-Media/Services/3_Day_Surf_Academy_Course.mp4'
+const vidSnorkeling = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458610/TDV-Media/Services/Discover_Snorkelling.mp4'
+const imgSnorkeling = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791691302/TDV-Media/ServicesThumbnails/Snorkeling.webp'
 
 function HoverVideoPreview({ videoSrc, poster, displayName }) {
   const videoRef = useRef(null)
@@ -25,9 +34,13 @@ function HoverVideoPreview({ videoSrc, poster, displayName }) {
     if (!v) return
     v.muted = true
     v.defaultMuted = true
+    v.volume = 0
+    if (v.readyState >= 2) {
+      setIsLoaded(true)
+    }
     const p = v.play()
     if (p !== undefined) {
-      p.catch(() => {})
+      p.then(() => setIsLoaded(true)).catch(() => {})
     }
   }, [videoSrc])
 
@@ -50,9 +63,14 @@ function HoverVideoPreview({ videoSrc, poster, displayName }) {
         loop
         muted
         playsInline
+        webkit-playsinline=""
+        x5-playsinline=""
         preload="auto"
+        onLoadedMetadata={() => setIsLoaded(true)}
         onLoadedData={() => setIsLoaded(true)}
         onCanPlay={() => setIsLoaded(true)}
+        onPlay={() => setIsLoaded(true)}
+        onPlaying={() => setIsLoaded(true)}
         className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
           isLoaded ? 'opacity-100' : 'opacity-0'
         }`}
@@ -72,7 +90,8 @@ const CUSTOM_ACTIVITIES = [
   {
     id: 'canyoneering',
     name: 'Canyoneering',
-    video: '/media/TDV-Media/Services/Other/Canoneering.mp4',
+    video: vidCanoneering,
+    poster: imgTrekking,
   },
   {
     id: 'safari',
@@ -89,7 +108,8 @@ const CUSTOM_ACTIVITIES = [
   {
     id: 'surfing',
     name: 'Surfing',
-    video: '/media/TDV-Media/Services/3_Day_Surf_Academy_Course.mp4',
+    video: vidSurfing,
+    poster: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458191/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp',
   },
   {
     id: 'sightseeing',
@@ -100,7 +120,8 @@ const CUSTOM_ACTIVITIES = [
   {
     id: 'snorkeling',
     name: 'Snorkeling',
-    video: '/media/TDV-Media/Services/Discover_Snorkelling.mp4',
+    video: vidSnorkeling,
+    poster: imgSnorkeling,
   },
   {
     id: 'camping_camper',
@@ -126,13 +147,7 @@ export default function CustomizeExperiencePanel({ className = '', images = PANE
   const openPipForCampers = () => {
     setPipVideo({
       id: 'camping_camper',
-      title: 'Campers Adventure',
-      subtitle: 'Overland Island Road Trips & Coastal Camping',
-      description:
-        'Hit the open road in fully equipped camper vehicles with sleeping quarters, outdoor cooking gear, and off-grid amenities.',
       video: vidCampers,
-      fallbackVideo:
-        'https://res.cloudinary.com/qvbunv8y/video/upload/v1791686777/TDV-Media/AddOns/Campers.mp4',
       poster: imgCampers,
     })
     setHoveredActivity(null)
@@ -141,7 +156,11 @@ export default function CustomizeExperiencePanel({ className = '', images = PANE
   const handleActivityClick = (activity) => {
     toggleActivity(activity.id)
     if (activity.id === 'camping_camper') {
-      openPipForCampers()
+      if (pipVideo) {
+        setPipVideo(null)
+      } else {
+        openPipForCampers()
+      }
     }
   }
   

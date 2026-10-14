@@ -30,7 +30,7 @@ for (const t of tests) {
       const out = execSync(`"${ffmpegPath}" -i "${f}" 2>&1`, { encoding: 'utf8' });
       const resMatch = out.match(/Stream #.*Video:.* (\d{3,4})x(\d{3,4})/);
       console.log(t.name, 'RESOLUTION:', resMatch ? resMatch[0] : 'unknown');
-    } catch (e) {
+    } catch (_e) {
       console.log(t.name, 'error');
     }
     if (fs.existsSync(f)) fs.unlinkSync(f);

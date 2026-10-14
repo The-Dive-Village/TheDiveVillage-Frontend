@@ -49,8 +49,8 @@ export function getLqipUrl(url, { isVideo = false } = {}) {
   if (url.includes('res.cloudinary.com')) {
     const isVid = isVideo || url.includes('/video/upload/') || /\.(mp4|mov|webm)$/i.test(url)
     if (isVid) {
-      // 40px wide, q_20, blurred frame extracted at second 2
-      return transformCloudinaryUrl(url, 'so_2,w_40,q_20,f_auto,e_blur:200').replace(/\.(mp4|mov|webm)$/i, '.jpg')
+      // Cloudinary account does not have dynamic derived video-frame extraction enabled
+      return ''
     }
     // 40px wide, q_20, blurred image
     return transformCloudinaryUrl(url, 'w_40,q_20,f_auto,e_blur:200')
@@ -78,11 +78,15 @@ export function getOptimizedImageUrl(url, { width = 800, quality = 'auto' } = {}
  */
 export function getOptimizedVideoPoster(url, { width = 800 } = {}) {
   if (!url || typeof url !== 'string') return ''
+  if (url.includes('/video/upload/') || /\.(mp4|mov|webm)$/i.test(url)) {
+    // Cloudinary does not have dynamic video-frame extraction enabled on this plan
+    return ''
+  }
   if (!url.includes('res.cloudinary.com')) {
     return url.replace(/\.(mp4|mov|webm)$/i, '.webp')
   }
 
-  return transformCloudinaryUrl(url, `so_2,w_${width},q_auto,f_auto`).replace(/\.(mp4|mov|webm)$/i, '.webp')
+  return transformCloudinaryUrl(url, `w_${width},q_auto,f_auto`)
 }
 
 /**

@@ -9,11 +9,7 @@ import pinIconUrl from '../assets/pin.png'
 const svgCache = new Map()
 
 // Generate billboard pin for countries and dive locations from assets/pin.png (#FFD500 yellow)
-const createSitePinSvg = () => {
-  return pinIconUrl
-}
-
-const createSitePinSvg = (isSelected = false, isDimmed = false) => {
+const createSitePinSvg = (_isSelected = false, _isDimmed = false) => {
   return pinIconUrl
 }
 

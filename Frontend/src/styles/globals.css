@@ -1454,6 +1454,83 @@ html body.night-dive [data-booking-page] #dive-explorer-map .maplibregl-ctrl but
 }
 
 /* ==========================================================================
+   BOOKING CONFIRMATION POPUP ("Great! We'll get in touch with you")
+   Must strictly remain in default Day Dive mode styling at all times,
+   never in Night Dive mode, even when night dive mode is enabled.
+   ========================================================================== */
+html body.night-dive [data-booking-confirmation],
+.night-dive [data-booking-confirmation] {
+  background-color: #FAFAFA !important;
+  color: #003865 !important;
+}
+
+html body.night-dive [data-booking-confirmation] [data-booking-confirmation-card],
+.night-dive [data-booking-confirmation] [data-booking-confirmation-card] {
+  background-color: #ffffff !important;
+  color: #003865 !important;
+  border-color: rgba(0, 56, 101, 0.05) !important;
+  box-shadow: 0 20px 60px -15px rgba(0, 56, 101, 0.1) !important;
+}
+
+html body.night-dive [data-booking-confirmation] [class*="bg-[#FAFAFA]"],
+.night-dive [data-booking-confirmation] [class*="bg-[#FAFAFA]"] {
+  background-color: #FAFAFA !important;
+}
+
+html body.night-dive [data-booking-confirmation] [class*="bg-[#F8F9FA]"],
+.night-dive [data-booking-confirmation] [class*="bg-[#F8F9FA]"] {
+  background-color: #F8F9FA !important;
+  border-color: rgba(0, 56, 101, 0.2) !important;
+}
+
+html body.night-dive [data-booking-confirmation] .bg-white,
+.night-dive [data-booking-confirmation] .bg-white {
+  background-color: #ffffff !important;
+  color: #003865 !important;
+  border-color: rgba(0, 56, 101, 0.05) !important;
+}
+
+html body.night-dive [data-booking-confirmation] h2,
+.night-dive [data-booking-confirmation] h2,
+html body.night-dive [data-booking-confirmation] [class*="text-navy"],
+.night-dive [data-booking-confirmation] [class*="text-navy"] {
+  color: #003865 !important;
+}
+
+html body.night-dive [data-booking-confirmation] [class*="text-navy/70"],
+.night-dive [data-booking-confirmation] [class*="text-navy/70"] {
+  color: rgba(0, 56, 101, 0.7) !important;
+}
+
+html body.night-dive [data-booking-confirmation] [class*="text-navy/60"],
+.night-dive [data-booking-confirmation] [class*="text-navy/60"] {
+  color: rgba(0, 56, 101, 0.6) !important;
+}
+
+html body.night-dive [data-booking-confirmation] [class*="text-navy/50"],
+.night-dive [data-booking-confirmation] [class*="text-navy/50"] {
+  color: rgba(0, 56, 101, 0.5) !important;
+}
+
+html body.night-dive [data-booking-confirmation] .text-accent,
+.night-dive [data-booking-confirmation] .text-accent {
+  color: #FFCD00 !important;
+}
+
+html body.night-dive [data-booking-confirmation] button[class*="bg-navy"],
+.night-dive [data-booking-confirmation] button[class*="bg-navy"] {
+  background-color: #003865 !important;
+  color: #ffffff !important;
+  box-shadow: 0 8px 20px rgba(0, 56, 101, 0.15) !important;
+}
+
+html body.night-dive [data-booking-confirmation] button[class*="bg-navy"]:hover,
+.night-dive [data-booking-confirmation] button[class*="bg-navy"]:hover {
+  background-color: #FFCD00 !important;
+  color: #003865 !important;
+}
+
+/* ==========================================================================
    GLOBAL TRANSLUCENT BUTTONS & YELLOW HOVER ONLY
    ========================================================================== */
 button:not([data-no-glass]):not(.switch__input),

@@ -1302,17 +1302,6 @@ function InteractiveProductImage({ src, alt, onOpenFloating }) {
         </div>
       )}
 
-      {/* Hint Badge when Not Hovered — desktop only */}
-      {!isMobile && (
-        <div className={`absolute bottom-4 left-1/2 -translate-x-1/2 z-10 px-3.5 py-1.5 rounded-full bg-white/95 backdrop-blur-md text-navy text-[11px] font-bold shadow-md border border-navy/10 pointer-events-none flex items-center gap-2 transition-opacity duration-200 ${isHovered ? 'opacity-0' : 'opacity-90'}`}>
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-accent">
-            <circle cx="11" cy="11" r="8"/>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-          </svg>
-          <span>Hover to Magnify</span>
-        </div>
-      )}
-
       {/* Floating Window Lightbox Button */}
       <button
         type="button"

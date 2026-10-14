@@ -6,6 +6,7 @@ import SafeImage from '../components/SafeImage'
 import LazyVideo from '../components/LazyVideo'
 import SEOHead from '../components/SEOHead'
 import MerchBannerCTA from '../components/MerchBannerCTA'
+import FloatingVideoPip from '../components/FloatingVideoPip'
 import { IMAGES, CAROUSEL_IMAGES } from '../utils/images'
 
 import { CATEGORIES, SERVICES_DATA } from '../data/servicesData'
@@ -17,6 +18,7 @@ export default function Services() {
   const location = useLocation()
   const navigate = useNavigate()
   const reduce = useReducedMotion()
+  const [pipVideo, setPipVideo] = useState(null)
 
   const getInitialCategory = () => {
     const param = searchParams.get('category') || searchParams.get('tab')
@@ -129,7 +131,19 @@ export default function Services() {
                   onClick={() => navigate(`/services/${service.id}`)}
                   className="group rounded-2xl sm:rounded-[32px] bg-white border border-navy/5 shadow-sm hover:shadow-float transition duration-300 flex flex-col justify-between cursor-pointer overflow-hidden relative active:scale-[0.99]"
                 >
-                  <div className="relative aspect-[16/10] sm:aspect-[16/10] w-full overflow-hidden bg-[#00172b] shrink-0">
+                  <div 
+                    className="relative aspect-[16/10] sm:aspect-[16/10] w-full overflow-hidden bg-[#00172b] shrink-0"
+                    onClick={(e) => {
+                      const isCamping = service.id === 'addon-campers' || service.title?.toLowerCase().includes('camper') || service.title?.toLowerCase().includes('camp')
+                      if (isCamping && service.video) {
+                        e.stopPropagation()
+                        setPipVideo({
+                          video: service.video,
+                          poster: service.image,
+                        })
+                      }
+                    }}
+                  >
                     {service.video ? (
                       <LazyVideo
                         src={service.video}
@@ -224,6 +238,15 @@ export default function Services() {
         <MerchBannerCTA className="mt-8" />
 
       </div>
+
+      {/* Floating Picture-in-Picture Player */}
+      {pipVideo && (
+        <FloatingVideoPip
+          videoSrc={pipVideo.video}
+          poster={pipVideo.poster}
+          onClose={() => setPipVideo(null)}
+        />
+      )}
     </div>
   )
 }

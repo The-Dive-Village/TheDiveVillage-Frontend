@@ -1,17 +1,6 @@
 // Helper to generate optimized Cloudinary video poster/thumbnail frame
-export const getVideoThumbnail = (videoUrl) => {
-  if (!videoUrl) return ''
-  if (videoUrl.includes('res.cloudinary.com') && videoUrl.includes('/video/upload/')) {
-    if (videoUrl.includes('/c_crop,ar_9:16/')) {
-      return videoUrl
-        .replace('/c_crop,ar_9:16/', '/c_crop,ar_9:16/so_2,w_800,q_auto,f_auto/')
-        .replace(/\.(mp4|MP4)$/i, '.jpg')
-    }
-    return videoUrl
-      .replace('/video/upload/', '/video/upload/so_2,w_800,q_auto,f_auto/')
-      .replace(/\.(mp4|MP4)$/i, '.jpg')
-  }
-  return videoUrl.replace(/\.(mp4|MP4)$/i, '.jpg')
+export const getVideoThumbnail = (_videoUrl) => {
+  return ''
 }
 
 // Distinct High-Res Images
@@ -282,7 +271,7 @@ export const SERVICES_DATA = [
     short_desc: 'Learn the basics of snorkeling in a safe, guided setting.',
     long_desc: 'Includes briefing, equipment use orientation, and a 1 hour open water snorkeling session with a professional leading you.',
     video: vidDiscoverSnorkelling,
-    image: getVideoThumbnail(vidDiscoverSnorkelling),
+    image: imgSnorkelingPng,
     highlights: 'Total Time: 1 hr | Knowledge development + water session',
     faqs: [
       {
@@ -302,7 +291,7 @@ export const SERVICES_DATA = [
     short_desc: 'Guided reef snorkeling for beginners.',
     long_desc: 'Perfect shallow-water snorkel trip to see colorful reef fish, corals, and safe lagoon sites.',
     video: vidReefExplorer,
-    image: getVideoThumbnail(vidReefExplorer),
+    image: imgSnorkelingPng,
     highlights: 'Total Time: 1–1.5 hrs | Suitable for all ages',
     faqs: [
       {
@@ -322,7 +311,7 @@ export const SERVICES_DATA = [
     short_desc: 'Snorkel further into the blue.',
     long_desc: 'Explore deeper reef areas, spot turtles and bigger marine life, with guided safety.',
     video: vidOceanExplorer,
-    image: getVideoThumbnail(vidOceanExplorer),
+    image: imgSnorkelingPng,
     highlights: 'Total Time: 1.5–2 hrs | Includes equipment & guide',
     faqs: [
       {
@@ -970,7 +959,7 @@ export const SERVICES_DATA = [
     short_desc: 'Introductory surfboard lesson for beginners.',
     long_desc: 'Learn pop-up techniques, wave timing, board balance, and safety in shallow ocean breaks with an experienced instructor.',
     video: vidDiscoverSurfing,
-    image: getVideoThumbnail(vidDiscoverSurfing),
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458191/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp',
     highlights: 'Total Time: 2 hrs | Includes surfboard, rashguard & instructor',
     min_age: 8.0,
     faqs: [
@@ -991,7 +980,7 @@ export const SERVICES_DATA = [
     short_desc: 'Master wave reading, paddling, and maneuvers.',
     long_desc: 'Comprehensive 3-day surfing course covering ocean currents, line-up positioning, turns, and riding green waves.',
     video: vid3DaySurf,
-    image: getVideoThumbnail(vid3DaySurf),
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458191/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp',
     highlights: 'Duration: 3 Days | Video analysis & surf log included',
     days_min: 3.0,
     days_max: 3.0,
@@ -1016,7 +1005,7 @@ export const SERVICES_DATA = [
     short_desc: 'An adventurous canoneering experience.',
     long_desc: 'Explore the rugged terrains, rappel down waterfalls, and navigate through natural canyons in this thrilling canoneering adventure.',
     video: vidCanoneering,
-    image: getVideoThumbnail(vidCanoneering),
+    image: imgTrekking,
     highlights: 'Adventurous | Guided Tour',
     faqs: [
       {
