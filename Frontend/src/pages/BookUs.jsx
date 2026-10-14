@@ -1556,8 +1556,9 @@ export default function BookUs() {
     }
 
     return (
-      <div className="bg-[#FAFAFA] flex min-h-[80vh] flex-col items-center justify-center px-4 py-16 text-center">
+      <div className={`flex min-h-[80vh] flex-col items-center justify-center px-4 py-16 text-center ${isNightDive ? 'bg-[#003865]' : 'bg-[#FAFAFA]'}`}>
         <motion.div
+          data-booking-page="true"
           initial={{ opacity: 0, y: 30, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ type: 'spring', damping: 25, stiffness: 300 }}
@@ -1730,7 +1731,7 @@ export default function BookUs() {
       </section>
 
       {/* 2. MAIN 4-STEP BOOKING WIZARD & 2D DIVE EXPLORER MAP */}
-      <div className="mx-auto max-w-[1600px] px-3 xs:px-4 sm:px-6 lg:px-8 pt-[74px] sm:pt-6 pb-28 sm:pb-40 w-full min-w-0 relative z-20">
+      <div data-booking-page="true" className="mx-auto max-w-[1600px] px-3 xs:px-4 sm:px-6 lg:px-8 pt-[74px] sm:pt-6 pb-28 sm:pb-40 w-full min-w-0 relative z-20">
         {/* Responsive Grid Layout (Desktop: Form + Map side-by-side; Mobile: Form on top, Map right below) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 xl:gap-10 items-start">
 
@@ -2608,6 +2609,8 @@ export default function BookUs() {
         <AnimatePresence>
           {showSummaryModal && (
             <div
+              data-booking-page="true"
+              data-booking-modal="true"
               data-lenis-prevent="true"
               className="fixed left-0 right-0 bottom-0 top-[64px] lg:top-[68px] z-[9990] flex items-center justify-center p-3 sm:p-6 bg-transparent overflow-hidden"
               style={{ top: 'var(--toolbar-bottom, 64px)', backdropFilter: 'none', WebkitBackdropFilter: 'none' }}

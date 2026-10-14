@@ -94,13 +94,15 @@ export default function Services() {
           {CATEGORIES.map((cat) => (
             <button
               key={cat.key}
+              data-category-tab={cat.key}
+              data-active={activeTab === cat.key ? 'true' : 'false'}
               onClick={() => handleTabChange(cat.key)}
-              className={`w-full md:w-auto rounded-xl md:rounded-full px-1.5 sm:px-3 md:px-5 py-2 md:py-2.5 text-[11px] xs:text-xs sm:text-sm font-bold text-center transition-all duration-200 cursor-pointer flex items-center justify-center ${activeTab === cat.key
+              className={`group services-category-tab w-full md:w-auto rounded-xl md:rounded-full px-1.5 sm:px-3 md:px-5 py-2 md:py-2.5 text-[11px] xs:text-xs sm:text-sm font-bold text-center transition-all duration-200 cursor-pointer flex items-center justify-center ${activeTab === cat.key
                   ? `bg-navy text-white shadow-md border-2 ${isNightDive ? 'border-[#FFCD00]' : 'border-transparent'}`
-                  : `bg-white text-navy border ${isNightDive ? 'border-white/20' : 'border-navy/15'} hover:bg-navy/5`
+                  : `bg-white text-navy border ${isNightDive ? 'border-white/20 hover:!bg-navy hover:!text-white hover:border-white/40' : 'border-navy/15 hover:bg-navy/5'}`
                 }`}
             >
-              <span className="truncate">{cat.label}</span>
+              <span className={`truncate ${isNightDive ? 'group-hover:!text-white' : ''}`}>{cat.label}</span>
             </button>
           ))}
         </div>
