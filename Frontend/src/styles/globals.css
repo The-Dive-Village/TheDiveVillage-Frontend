@@ -1800,9 +1800,17 @@ html body.night-dive .universal-sizing-header th {
   color: #ffffff !important;
 }
 
-/* Night Mode Power of Diving Cards white border */
+/* Night Mode Power of Diving Cards white border and dark blue text */
 html body.night-dive .power-point-card {
   border: 2px solid #ffffff !important;
+}
+
+html body.night-dive .power-point-card h3 {
+  color: #001e3d !important;
+}
+
+html body.night-dive .power-point-card p {
+  color: rgba(0, 30, 61, 0.75) !important;
 }
 
 

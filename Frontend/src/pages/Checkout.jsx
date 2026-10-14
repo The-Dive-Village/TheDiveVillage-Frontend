@@ -890,8 +890,8 @@ export default function Checkout() {
         <div
           role="dialog"
           aria-modal="true"
-          className="fixed left-0 right-0 bottom-0 top-[64px] lg:top-[68px] z-[9990] flex items-center justify-center p-3 sm:p-6 bg-navy/80 backdrop-blur-md animate-fade-in overflow-hidden"
-          style={{ top: 'var(--toolbar-bottom, 64px)' }}
+          className="fixed left-0 right-0 bottom-0 top-[64px] lg:top-[68px] z-[9990] flex items-center justify-center p-3 sm:p-6 bg-transparent animate-fade-in overflow-hidden"
+          style={{ top: 'var(--toolbar-bottom, 64px)', backdropFilter: 'none', WebkitBackdropFilter: 'none' }}
         >
           <div className="relative w-full max-w-2xl bg-white rounded-[28px] sm:rounded-[36px] shadow-2xl border border-navy/10 overflow-hidden my-auto max-h-[calc(100vh-var(--toolbar-bottom,64px)-24px)] flex flex-col animate-scale-up">
             

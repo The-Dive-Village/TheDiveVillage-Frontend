@@ -17,6 +17,7 @@ export default function LazyVideo({
   autoPlay = true,
   loop = true,
   muted = true,
+  defaultMuted,
   playsInline = true,
   controls = false,
   controlsList,
