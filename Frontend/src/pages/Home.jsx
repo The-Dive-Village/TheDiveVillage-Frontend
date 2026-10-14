@@ -420,6 +420,15 @@ export default function Home() {
                       : 'cursor-default'
                   }`}
                 >
+                  {/* Mobile Top-Right: Click to select for Personal Itineraries */}
+                  {i === 3 && (
+                    <div className="sm:hidden absolute top-3.5 right-3.5 z-10 flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#FFCD00]/20 border border-[#FFCD00]/50 backdrop-blur-md shadow-sm pointer-events-none">
+                      <span className="text-[10px] font-bold text-[#FFCD00] uppercase tracking-wider leading-none">
+                        click to select
+                      </span>
+                    </div>
+                  )}
+
                   <div className="flex flex-col flex-1">
                     {/* Top Bar: Icon Box */}
                     <div className="flex items-center mb-2 sm:mb-4">

@@ -13,11 +13,14 @@ export default function LazyVideo({
   src,
   poster,
   className = '',
+  videoClassName = '',
   autoPlay = true,
   loop = true,
   muted = true,
   playsInline = true,
   controls = false,
+  controlsList,
+  disablePictureInPicture,
   preload = 'auto',
   playbackRate = 1,
   ...props
@@ -120,9 +123,7 @@ export default function LazyVideo({
         const p = video.play()
         if (p !== undefined) {
           p.then(() => {
-            if (video.currentTime > 0) {
-              setIsVideoPlaying(true)
-            }
+            setIsVideoPlaying(true)
           }).catch(() => {})
         }
       }
@@ -215,7 +216,7 @@ export default function LazyVideo({
           decoding="async"
           onLoad={handlePosterSuccess}
           className={`absolute inset-0 w-full h-full ${fitClass} z-[1] pointer-events-none ${
-            posterLoaded ? 'opacity-100' : 'opacity-0'
+            posterLoaded && !isVideoPlaying ? 'opacity-100' : 'opacity-0'
           } ${alreadyCached ? '' : 'transition-opacity duration-300 ease-out'}`}
         />
       )}
@@ -251,6 +252,8 @@ export default function LazyVideo({
           webkit-playsinline=""
           x5-playsinline=""
           controls={controls}
+          controlsList={controlsList}
+          disablePictureInPicture={disablePictureInPicture}
           preload={preload}
           onPlaying={(e) => {
             applyPlaybackRate(e)
@@ -259,7 +262,13 @@ export default function LazyVideo({
           }}
           onPlay={(e) => {
             applyPlaybackRate(e)
+            setIsVideoPlaying(true)
             props.onPlay?.(e)
+          }}
+          onLoadedData={(e) => {
+            applyPlaybackRate(e)
+            setIsVideoPlaying(true)
+            props.onLoadedData?.(e)
           }}
           onLoadedMetadata={(e) => {
             applyPlaybackRate(e)
@@ -280,7 +289,7 @@ export default function LazyVideo({
           }}
           className={`absolute inset-0 w-full h-full ${fitClass} transition-opacity duration-300 ease-out z-[2] ${
             isVideoPlaying ? 'opacity-100' : 'opacity-0'
-          }`}
+          } ${videoClassName}`}
           style={{ objectFit: fitClass === 'object-contain' ? 'contain' : 'cover' }}
           {...props}
         />

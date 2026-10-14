@@ -368,7 +368,7 @@ export default function Gallery() {
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.97, y: 10 }}
                 transition={{ duration: 0.2 }}
-                className="relative bg-navy rounded-2xl sm:rounded-3xl shadow-2xl p-2 sm:p-3.5 max-w-4xl sm:max-w-5xl lg:max-w-6xl w-full h-full max-h-[calc(100vh-var(--toolbar-bottom,68px)-36px)] flex flex-col gap-2 select-none border border-white/15 overflow-hidden"
+                className="gallery-preview-modal relative bg-navy rounded-2xl sm:rounded-3xl shadow-2xl p-2 sm:p-3.5 max-w-4xl sm:max-w-5xl lg:max-w-6xl w-full h-full max-h-[calc(100vh-var(--toolbar-bottom,68px)-36px)] flex flex-col gap-2 select-none border border-white/15 overflow-hidden"
                 onClick={(e) => e.stopPropagation()}
               >
               {/* Floating Top-Right Close Button */}
@@ -414,6 +414,8 @@ export default function Gallery() {
                   <LazyVideo
                     src={currentItem.src}
                     controls
+                    controlsList="nodownload noplaybackrate noremoteplayback"
+                    disablePictureInPicture={true}
                     autoPlay
                     loop
                     playsInline
@@ -421,7 +423,8 @@ export default function Gallery() {
                     defaultMuted={true}
                     playbackRate={currentItem.playbackRate || (currentItem.title?.toLowerCase().includes('clownfish and sea anemone') || currentItem.src?.includes('Clownfish_and_Sea_Anemone') ? 0.7 : 1)}
                     style={{ objectFit: 'contain', maxHeight: '100%', maxWidth: '100%' }}
-                    className="w-full h-full max-w-full max-h-full object-contain flex items-center justify-center"
+                    className="w-full h-full max-w-full max-h-full object-contain flex items-center justify-center gallery-preview-video"
+                    videoClassName="gallery-preview-video-element"
                   />
                 ) : (
                   <img
@@ -598,11 +601,7 @@ function GalleryGridCard({ item, idx, reduce, onClick, isHighlighted }) {
       initial={reduce ? false : { opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: Math.min(idx * 0.02, 0.25) }}
-      className={`scroll-mt-28 group flex flex-col rounded-2xl sm:rounded-[24px] overflow-hidden bg-white border transition-all duration-500 cursor-pointer active:scale-[0.99] ${
-        isHighlighted
-          ? 'ring-4 ring-[#FFCD00] shadow-[0_0_40px_rgba(255,205,0,0.7)] border-[#FFCD00] scale-[1.02] sm:scale-[1.03] animate-pulse z-10'
-          : 'border-navy/10 shadow-sm hover:shadow-xl hover:border-cyan-500/30'
-      }`}
+      className={`scroll-mt-28 group flex flex-col rounded-2xl sm:rounded-[24px] overflow-hidden bg-white border border-navy/10 shadow-sm hover:shadow-xl hover:border-cyan-500/30 transition-all duration-500 cursor-pointer active:scale-[0.99]`}
       onClick={onClick}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}

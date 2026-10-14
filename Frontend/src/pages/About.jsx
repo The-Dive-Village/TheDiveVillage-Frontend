@@ -107,7 +107,7 @@ export default function About() {
   }, [])
 
   return (
-    <div className="min-h-screen font-body overflow-x-hidden pointer-events-none relative bg-[#001e3d] text-white">
+    <div className="min-h-screen font-body overflow-x-hidden pointer-events-none relative bg-transparent text-white">
       <SEOHead
         title="About Us | Certified Scuba Instructors & Ocean Sanctuary | The Dive Village"
         description="Discover the story behind The Dive Village. Dedicated to safety, marine conservation, diving excellence, and building an inclusive underwater community."
@@ -127,11 +127,10 @@ export default function About() {
           onPlay={(e) => { e.currentTarget.playbackRate = 0.7 }}
           className="w-full h-full object-cover transition-opacity duration-700 opacity-95 sm:opacity-100"
         />
-        <div className={`absolute inset-0 transition-colors duration-700 ${
-          isNightDive
-            ? 'bg-[#030a12]/30'
-            : 'bg-[#00223D]/25'
-        }`} />
+        <div 
+          className="absolute inset-0 pointer-events-none transition-colors duration-700" 
+          style={{ backgroundColor: isNightDive ? 'rgba(0, 14, 28, 0.4)' : 'rgba(0, 34, 61, 0.25)' }} 
+        />
       </div>
 
       {/* 1. HERO BANNER — STAGGERED WORD ANIMATION */}

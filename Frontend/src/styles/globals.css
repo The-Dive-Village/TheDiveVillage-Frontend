@@ -744,36 +744,36 @@ body.night-dive #root,
   box-shadow: none !important;
 }
 
-/* Headings and high-contrast text elements */
-.night-dive h1,
-.night-dive h2,
-.night-dive h3,
-.night-dive h4,
-.night-dive h5,
-.night-dive h6,
-.night-dive [class*="text-slate-900"]:not(button[class*="bg-white"]):not(button[class*="bg-white"] *):not(button[class*="F0F2F5"]):not(button[class*="F0F2F5"] *):not(a[class*="bg-white"]):not(a[class*="bg-white"] *),
-.night-dive [class*="text-slate-800"]:not(button[class*="bg-white"]):not(button[class*="bg-white"] *):not(button[class*="F0F2F5"]):not(button[class*="F0F2F5"] *):not(a[class*="bg-white"]):not(a[class*="bg-white"] *),
-.night-dive [class*="text-slate-700"]:not(button[class*="bg-white"]):not(button[class*="bg-white"] *):not(button[class*="F0F2F5"]):not(button[class*="F0F2F5"] *):not(a[class*="bg-white"]):not(a[class*="bg-white"] *),
-.night-dive [class*="text-gray-900"]:not(button[class*="bg-white"]):not(button[class*="bg-white"] *):not(button[class*="F0F2F5"]):not(button[class*="F0F2F5"] *):not(a[class*="bg-white"]):not(a[class*="bg-white"] *),
-.night-dive [class*="text-gray-800"]:not(button[class*="bg-white"]):not(button[class*="bg-white"] *):not(button[class*="F0F2F5"]):not(button[class*="F0F2F5"] *):not(a[class*="bg-white"]):not(a[class*="bg-white"] *),
-.night-dive [class*="text-navy"]:not(button[class*="bg-white"]):not(button[class*="bg-white"] *):not(button[class*="F0F2F5"]):not(button[class*="F0F2F5"] *):not(a[class*="bg-white"]):not(a[class*="bg-white"] *),
-.night-dive [class*="text-[#003865]"]:not(button[class*="bg-white"]):not(button[class*="bg-white"] *):not(button[class*="F0F2F5"]):not(button[class*="F0F2F5"] *):not(a[class*="bg-white"]):not(a[class*="bg-white"] *) {
+/* Headings and high-contrast text elements (excluded inside product cards and white backgrounds) */
+.night-dive h1:not([data-product-card] *):not([data-white-bg] *):not([style*="#ffffff"] *),
+.night-dive h2:not([data-product-card] *):not([data-white-bg] *):not([style*="#ffffff"] *),
+.night-dive h3:not([data-product-card] *):not([data-white-bg] *):not([style*="#ffffff"] *):not(.product-card-title),
+.night-dive h4:not([data-product-card] *):not([data-white-bg] *):not([style*="#ffffff"] *),
+.night-dive h5:not([data-product-card] *):not([data-white-bg] *):not([style*="#ffffff"] *),
+.night-dive h6:not([data-product-card] *):not([data-white-bg] *):not([style*="#ffffff"] *),
+.night-dive [class*="text-slate-900"]:not([data-product-card] *):not([data-white-bg] *):not([style*="#ffffff"] *):not(button[class*="bg-white"]):not(button[class*="bg-white"] *):not(button[class*="F0F2F5"]):not(button[class*="F0F2F5"] *):not(a[class*="bg-white"]):not(a[class*="bg-white"] *),
+.night-dive [class*="text-slate-800"]:not([data-product-card] *):not([data-white-bg] *):not([style*="#ffffff"] *):not(button[class*="bg-white"]):not(button[class*="bg-white"] *):not(button[class*="F0F2F5"]):not(button[class*="F0F2F5"] *):not(a[class*="bg-white"]):not(a[class*="bg-white"] *),
+.night-dive [class*="text-slate-700"]:not([data-product-card] *):not([data-white-bg] *):not([style*="#ffffff"] *):not(button[class*="bg-white"]):not(button[class*="bg-white"] *):not(button[class*="F0F2F5"]):not(button[class*="F0F2F5"] *):not(a[class*="bg-white"]):not(a[class*="bg-white"] *),
+.night-dive [class*="text-gray-900"]:not([data-product-card] *):not([data-white-bg] *):not([style*="#ffffff"] *):not(button[class*="bg-white"]):not(button[class*="bg-white"] *):not(button[class*="F0F2F5"]):not(button[class*="F0F2F5"] *):not(a[class*="bg-white"]):not(a[class*="bg-white"] *),
+.night-dive [class*="text-gray-800"]:not([data-product-card] *):not([data-white-bg] *):not([style*="#ffffff"] *):not(button[class*="bg-white"]):not(button[class*="bg-white"] *):not(button[class*="F0F2F5"]):not(button[class*="F0F2F5"] *):not(a[class*="bg-white"]):not(a[class*="bg-white"] *),
+.night-dive [class*="text-navy"]:not([data-product-card] *):not([data-white-bg] *):not([style*="#ffffff"] *):not(.product-card-title):not(button[class*="bg-white"]):not(button[class*="bg-white"] *):not(button[class*="F0F2F5"]):not(button[class*="F0F2F5"] *):not(a[class*="bg-white"]):not(a[class*="bg-white"] *),
+.night-dive [class*="text-[#003865]"]:not([data-product-card] *):not([data-white-bg] *):not([style*="#ffffff"] *):not(button[class*="bg-white"]):not(button[class*="bg-white"] *):not(button[class*="F0F2F5"]):not(button[class*="F0F2F5"] *):not(a[class*="bg-white"]):not(a[class*="bg-white"] *) {
   color: #ffffff !important;
 }
 
-/* Muted / secondary subtext */
-.night-dive [class*="text-slate-600"]:not(button[class*="bg-white"]):not(button[class*="bg-white"] *):not(button[class*="F0F2F5"]):not(button[class*="F0F2F5"] *):not(a[class*="bg-white"]):not(a[class*="bg-white"] *),
-.night-dive [class*="text-slate-500"]:not(button[class*="bg-white"]):not(button[class*="bg-white"] *):not(button[class*="F0F2F5"]):not(button[class*="F0F2F5"] *):not(a[class*="bg-white"]):not(a[class*="bg-white"] *),
-.night-dive [class*="text-slate-400"]:not(button[class*="bg-white"]):not(button[class*="bg-white"] *):not(button[class*="F0F2F5"]):not(button[class*="F0F2F5"] *):not(a[class*="bg-white"]):not(a[class*="bg-white"] *),
-.night-dive [class*="text-gray-600"]:not(button[class*="bg-white"]):not(button[class*="bg-white"] *):not(button[class*="F0F2F5"]):not(button[class*="F0F2F5"] *):not(a[class*="bg-white"]):not(a[class*="bg-white"] *),
-.night-dive [class*="text-gray-500"]:not(button[class*="bg-white"]):not(button[class*="bg-white"] *):not(button[class*="F0F2F5"]):not(button[class*="F0F2F5"] *):not(a[class*="bg-white"]):not(a[class*="bg-white"] *),
-.night-dive [class*="text-gray-400"]:not(button[class*="bg-white"]):not(button[class*="bg-white"] *):not(button[class*="F0F2F5"]):not(button[class*="F0F2F5"] *):not(a[class*="bg-white"]):not(a[class*="bg-white"] *),
-.night-dive [class*="text-navy/"]:not(button[class*="bg-white"]):not(button[class*="bg-white"] *):not(button[class*="F0F2F5"]):not(button[class*="F0F2F5"] *):not(a[class*="bg-white"]):not(a[class*="bg-white"] *) {
+/* Muted / secondary subtext (excluded inside product cards and white backgrounds) */
+.night-dive [class*="text-slate-600"]:not([data-product-card] *):not([data-white-bg] *):not([style*="#ffffff"] *):not(button[class*="bg-white"]):not(button[class*="bg-white"] *):not(button[class*="F0F2F5"]):not(button[class*="F0F2F5"] *):not(a[class*="bg-white"]):not(a[class*="bg-white"] *),
+.night-dive [class*="text-slate-500"]:not([data-product-card] *):not([data-white-bg] *):not([style*="#ffffff"] *):not(button[class*="bg-white"]):not(button[class*="bg-white"] *):not(button[class*="F0F2F5"]):not(button[class*="F0F2F5"] *):not(a[class*="bg-white"]):not(a[class*="bg-white"] *),
+.night-dive [class*="text-slate-400"]:not([data-product-card] *):not([data-white-bg] *):not([style*="#ffffff"] *):not(button[class*="bg-white"]):not(button[class*="bg-white"] *):not(button[class*="F0F2F5"]):not(button[class*="F0F2F5"] *):not(a[class*="bg-white"]):not(a[class*="bg-white"] *),
+.night-dive [class*="text-gray-600"]:not([data-product-card] *):not([data-white-bg] *):not([style*="#ffffff"] *):not(button[class*="bg-white"]):not(button[class*="bg-white"] *):not(button[class*="F0F2F5"]):not(button[class*="F0F2F5"] *):not(a[class*="bg-white"]):not(a[class*="bg-white"] *),
+.night-dive [class*="text-gray-500"]:not([data-product-card] *):not([data-white-bg] *):not([style*="#ffffff"] *):not(button[class*="bg-white"]):not(button[class*="bg-white"] *):not(button[class*="F0F2F5"]):not(button[class*="F0F2F5"] *):not(a[class*="bg-white"]):not(a[class*="bg-white"] *),
+.night-dive [class*="text-gray-400"]:not([data-product-card] *):not([data-white-bg] *):not([style*="#ffffff"] *):not(button[class*="bg-white"]):not(button[class*="bg-white"] *):not(button[class*="F0F2F5"]):not(button[class*="F0F2F5"] *):not(a[class*="bg-white"]):not(a[class*="bg-white"] *),
+.night-dive [class*="text-navy/"]:not([data-product-card] *):not([data-white-bg] *):not([style*="#ffffff"] *):not(.product-card-desc):not(button[class*="bg-white"]):not(button[class*="bg-white"] *):not(button[class*="F0F2F5"]):not(button[class*="F0F2F5"] *):not(a[class*="bg-white"]):not(a[class*="bg-white"] *) {
   color: rgba(255, 255, 255, 0.75) !important;
 }
 
-.night-dive [class*="text-[#00AEC7]"]:not([data-product-card] *):not([data-product-card]),
-.night-dive [class*="text-accent"]:not([data-product-card] *):not([data-product-card]) {
+.night-dive [class*="text-[#00AEC7]"]:not([data-product-card] *):not([data-product-card]):not([data-white-bg] *):not([style*="#ffffff"] *),
+.night-dive [class*="text-accent"]:not([data-product-card] *):not([data-product-card]):not([data-white-bg] *):not([style*="#ffffff"] *) {
   color: #FFCD00 !important;
 }
 
@@ -1310,9 +1310,9 @@ a.glass-btn:hover,
   background-color: rgba(0, 56, 101, 0.05) !important;
 }
 
-/* Night-dive button contrast adjustment */
-.night-dive button.bg-accent,
-.night-dive a.bg-accent {
+/* Night-dive button contrast adjustment (excluding selected mode buttons) */
+.night-dive button.bg-accent:not([data-selected="true"]):not([data-active="true"]):not([aria-selected="true"]):not(.selected),
+.night-dive a.bg-accent:not([data-selected="true"]):not([data-active="true"]):not([aria-selected="true"]):not(.selected) {
   background-color: rgba(255, 255, 255, 0.12) !important;
   color: #ffffff !important;
   border-color: rgba(255, 255, 255, 0.2) !important;
@@ -1686,9 +1686,18 @@ html body.night-dive [data-floating-image-card] {
   box-shadow: none !important;
 }
 
-html body.night-dive button[data-thumb-btn][data-active="true"] {
-  border-color: #FFCD00 !important;
-  box-shadow: 0 0 0 2px rgba(255, 205, 0, 0.5) !important;
+/* Buttons in selected mode in Night Dive Mode have a white border */
+html body.night-dive button[data-thumb-btn][data-active="true"],
+html body.night-dive button[data-selected="true"],
+html body.night-dive button[aria-selected="true"],
+html body.night-dive button[aria-pressed="true"],
+html body.night-dive button[data-active="true"],
+html body.night-dive button[data-color-btn][data-selected="true"],
+html body.night-dive button[data-size-btn][data-selected="true"],
+html body.night-dive button.selected,
+html body.night-dive .selected-mode {
+  border: 2px solid #ffffff !important;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.4) !important;
 }
 
 html body.night-dive button[data-thumb-btn][data-active="false"] {
@@ -1705,20 +1714,30 @@ html body.night-dive div[data-product-card] {
   background: #ffffff !important;
 }
 
-/* Headings and titles inside product cards */
+/* Headings and titles inside product cards & any white background containers (HAS to be dark blue) */
 html body.night-dive [data-product-card] h3,
-html body.night-dive [data-product-card] .product-card-title {
+html body.night-dive [data-product-card] .product-card-title,
+html body.night-dive div[data-product-card] h3,
+html body.night-dive div[data-product-card] .product-card-title,
+html body.night-dive [data-product-card] h3.product-card-title,
+html body.night-dive [data-white-bg] h1,
+html body.night-dive [data-white-bg] h2,
+html body.night-dive [data-white-bg] h3,
+html body.night-dive [data-white-bg] p,
+html body.night-dive [style*="background-color: #ffffff"] h3,
+html body.night-dive [style*="background: #ffffff"] h3 {
   color: #001e3d !important;
 }
 
-html body.night-dive [data-product-card]:hover .product-card-title {
+html body.night-dive [data-product-card]:hover .product-card-title,
+html body.night-dive [data-product-card]:hover h3 {
   color: #00AEC7 !important;
 }
 
 /* Descriptions inside product cards */
 html body.night-dive [data-product-card] p,
 html body.night-dive [data-product-card] .product-card-desc {
-  color: rgba(0, 30, 61, 0.72) !important;
+  color: rgba(0, 30, 61, 0.75) !important;
 }
 
 /* Category tags */
@@ -1767,6 +1786,26 @@ html body.night-dive [data-product-card] .product-add-btn:hover {
   color: #001e3d !important;
 }
 
+/* Night Mode Product Sub-page Add to Cart button white outline */
+html body.night-dive [data-add-to-cart-btn],
+html body.night-dive .bottom-bar-add-btn {
+  border: 2px solid #ffffff !important;
+}
+
+/* Night Mode Universal Sizing Chart first row in dark blue */
+html body.night-dive .universal-sizing-header,
+html body.night-dive tr.universal-sizing-header,
+html body.night-dive .universal-sizing-header th {
+  background-color: #002b4e !important;
+  color: #ffffff !important;
+}
+
+/* Night Mode Power of Diving Cards white border */
+html body.night-dive .power-point-card {
+  border: 2px solid #ffffff !important;
+}
+
+
 /* Mobile Add to Cart button */
 html body.night-dive [data-product-card] .product-add-btn-mobile {
   background-color: #FFCD00 !important;
@@ -1775,6 +1814,42 @@ html body.night-dive [data-product-card] .product-add-btn-mobile {
 
 html body.night-dive [data-product-card] .product-add-btn-mobile span {
   color: #000000 !important;
+}
+
+/* ==========================================================================
+   GALLERY PREVIEW MODAL VIDEO CONTROLS: HIDE MUTE BUTTON AND 3-DOTS OVERFLOW
+   ========================================================================== */
+.gallery-preview-modal video::-webkit-media-controls-volume-control-container,
+.gallery-preview-modal video::-webkit-media-controls-mute-button,
+.gallery-preview-modal video::-webkit-media-controls-volume-slider,
+.gallery-preview-video video::-webkit-media-controls-volume-control-container,
+.gallery-preview-video video::-webkit-media-controls-mute-button,
+.gallery-preview-video video::-webkit-media-controls-volume-slider,
+video.gallery-preview-video-element::-webkit-media-controls-volume-control-container,
+video.gallery-preview-video-element::-webkit-media-controls-mute-button,
+video.gallery-preview-video-element::-webkit-media-controls-volume-slider {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  max-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.gallery-preview-modal video::-webkit-media-controls-overflow-button,
+.gallery-preview-modal video::-internal-media-controls-overflow-button,
+.gallery-preview-video video::-webkit-media-controls-overflow-button,
+.gallery-preview-video video::-internal-media-controls-overflow-button,
+video.gallery-preview-video-element::-webkit-media-controls-overflow-button,
+video.gallery-preview-video-element::-internal-media-controls-overflow-button {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  max-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 /* Night Dive Preloader Screen & White Diver Video Animation */
