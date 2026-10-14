@@ -1054,7 +1054,7 @@ export default function BookUs() {
                   className={`p-2 sm:p-3 rounded-lg sm:rounded-xl border text-left transition-all flex flex-col justify-between cursor-pointer ${
                     isTypeSelected
                       ? 'bg-navy text-white border-navy shadow-sm ring-1 ring-navy'
-                      : 'bg-white text-navy border-navy/15 hover:border-navy/35 hover:bg-navy/[0.02]'
+                      : 'bg-white text-navy !text-[#003865] border-navy/15 hover:border-navy/35 hover:bg-slate-50'
                   }`}
                 >
                   <div className="flex items-center justify-between w-full mb-1">
@@ -1981,14 +1981,14 @@ export default function BookUs() {
                             onClick={() => handleToggleAddOn('None')}
                             className={`group relative flex items-center justify-between px-3.5 py-3 rounded-2xl text-xs sm:text-sm font-bold transition-all text-left border cursor-pointer ${selectedAddOns.includes('None')
                                 ? 'bg-navy text-white border-navy shadow-md ring-1 ring-navy'
-                                : 'bg-white text-navy border-navy/15 hover:border-navy/35 hover:bg-navy/[0.02]'
+                                : 'bg-white text-navy !text-[#003865] border-navy/15 hover:border-navy/35 hover:bg-slate-50'
                               }`}
                           >
-                            <span className="truncate pr-2">None</span>
+                            <span className={`truncate pr-2 ${selectedAddOns.includes('None') ? 'text-white' : 'text-navy !text-[#003865]'}`}>None</span>
                             <span
                               className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 text-[9px] transition-all ${selectedAddOns.includes('None')
                                   ? 'border-white bg-white text-navy font-black scale-105'
-                                  : 'border-navy/20 bg-white/60 group-hover:border-navy/40'
+                                  : 'border-navy/20 bg-white/60 group-hover:border-navy/40 !border-[#003865]/30'
                                 }`}
                             >
                               {selectedAddOns.includes('None') ? '✓' : ''}
@@ -2004,14 +2004,14 @@ export default function BookUs() {
                                 onClick={() => handleToggleAddOn(addOn)}
                                 className={`group relative flex items-center justify-between px-3.5 py-3 rounded-2xl text-xs sm:text-sm font-bold transition-all text-left border cursor-pointer ${isSelected
                                     ? 'bg-navy text-white border-navy shadow-md ring-1 ring-navy'
-                                    : 'bg-white text-navy border-navy/15 hover:border-navy/35 hover:bg-navy/[0.02]'
+                                    : 'bg-white text-navy !text-[#003865] border-navy/15 hover:border-navy/35 hover:bg-slate-50'
                                   }`}
                               >
-                                <span className="truncate pr-2">{addOn}</span>
+                                <span className={`truncate pr-2 ${isSelected ? 'text-white' : 'text-navy !text-[#003865]'}`}>{addOn}</span>
                                 <span
                                   className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 text-[9px] transition-all ${isSelected
                                       ? 'border-white bg-white text-navy font-black scale-105'
-                                      : 'border-navy/20 bg-white/60 group-hover:border-navy/40'
+                                      : 'border-navy/20 bg-white/60 group-hover:border-navy/40 !border-[#003865]/30'
                                     }`}
                                 >
                                   {isSelected ? '✓' : ''}

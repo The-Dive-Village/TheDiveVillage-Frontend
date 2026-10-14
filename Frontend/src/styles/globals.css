@@ -1251,6 +1251,33 @@ input.PhoneInputInput:focus,
 }
 
 /* ==========================================================================
+   BOOK US WIZARD: ADD-ONS & OPTION BUTTONS IN NIGHT DIVE MODE
+   Unselected option buttons have white background with dark blue text (#003865).
+   ========================================================================== */
+html body.night-dive #booking-wizard-form button[class*="bg-white"]:not([class~="bg-navy"]),
+html body.night-dive #booking-wizard-form button[class*="bg-white"]:not([class~="bg-navy"]) span,
+html body.night-dive #booking-wizard-form button[class*="bg-white"]:not([class~="bg-navy"]) *,
+.night-dive #booking-wizard-form button[class*="bg-white"]:not([class~="bg-navy"]),
+.night-dive #booking-wizard-form button[class*="bg-white"]:not([class~="bg-navy"]) span,
+.night-dive #booking-wizard-form button[class*="bg-white"]:not([class~="bg-navy"]) * {
+  color: #003865 !important;
+}
+
+html body.night-dive #booking-wizard-form button[class*="bg-navy"],
+html body.night-dive #booking-wizard-form button[class*="bg-navy"] > span.truncate,
+.night-dive #booking-wizard-form button[class*="bg-navy"],
+.night-dive #booking-wizard-form button[class*="bg-navy"] > span.truncate {
+  color: #ffffff !important;
+}
+
+html body.night-dive #booking-wizard-form button[class*="bg-white"]:not([class~="bg-navy"]):hover,
+html body.night-dive #booking-wizard-form button[class*="bg-white"]:not([class~="bg-navy"]):hover * {
+  background-color: #FFCD00 !important;
+  color: #001e3d !important;
+  border-color: #FFCD00 !important;
+}
+
+/* ==========================================================================
    GLOBAL TRANSLUCENT BUTTONS & YELLOW HOVER ONLY
    ========================================================================== */
 button:not([data-no-glass]):not(.switch__input),
