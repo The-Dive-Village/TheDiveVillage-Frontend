@@ -875,7 +875,7 @@ export default function ProductDetail() {
               type="button"
               onClick={() => scrollRelated('left')}
               aria-label="Previous products"
-              className="absolute -left-3 sm:-left-5 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/95 border border-navy/15 shadow-float backdrop-blur-md flex items-center justify-center text-navy hover:text-accent hover:bg-white hover:scale-110 active:scale-95 transition-all duration-200 cursor-pointer"
+              className="related-carousel-btn absolute left-0 sm:left-1 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/95 border border-navy/15 shadow-float backdrop-blur-md flex items-center justify-center text-navy hover:text-[#00AEC7] hover:border-[#00AEC7]/40 hover:bg-white active:scale-95 transition-all duration-200 cursor-pointer"
             >
               <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" />
@@ -926,7 +926,7 @@ export default function ProductDetail() {
               type="button"
               onClick={() => scrollRelated('right')}
               aria-label="Next products"
-              className="absolute -right-3 sm:-right-5 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/95 border border-navy/15 shadow-float backdrop-blur-md flex items-center justify-center text-navy hover:text-accent hover:bg-white hover:scale-110 active:scale-95 transition-all duration-200 cursor-pointer"
+              className="related-carousel-btn absolute right-0 sm:right-1 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/95 border border-navy/15 shadow-float backdrop-blur-md flex items-center justify-center text-navy hover:text-[#00AEC7] hover:border-[#00AEC7]/40 hover:bg-white active:scale-95 transition-all duration-200 cursor-pointer"
             >
               <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" />
