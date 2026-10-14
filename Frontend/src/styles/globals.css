@@ -702,7 +702,7 @@ body.night-dive #root,
 }
 
 /* Primary surface cards, panels & modals in Night Dive Mode */
-.night-dive [class*="bg-white"]:not([data-product-card]):not([data-product-card] *):not([data-product-media]):not([data-product-media] *):not([data-product-showcase]):not([data-product-showcase] *):not(.product-media-panel):not(.product-media-panel *):not(.product-3d-wrapper):not(.product-3d-wrapper *):not([data-floating-image-card]):not([data-floating-image-card] *):not(model-viewer):not(model-viewer *):not(.hero-btn):not(input):not(select):not(textarea),
+.night-dive [class*="bg-white"]:not([data-product-card]):not([data-product-card] *):not([data-product-media]):not([data-product-media] *):not([data-product-showcase]):not([data-product-showcase] *):not(.product-media-panel):not(.product-media-panel *):not(.product-3d-wrapper):not(.product-3d-wrapper *):not([data-floating-image-card]):not([data-floating-image-card] *):not(model-viewer):not(model-viewer *):not(.hero-btn):not(input):not(select):not(textarea):not(button):not(button *):not(a.btn):not(a[class*="rounded"]):not(a[role="button"]),
 .night-dive aside nav {
   background-color: #001e3d !important;
   color: #ffffff !important;
@@ -751,24 +751,24 @@ body.night-dive #root,
 .night-dive h4,
 .night-dive h5,
 .night-dive h6,
-.night-dive [class*="text-slate-900"],
-.night-dive [class*="text-slate-800"],
-.night-dive [class*="text-slate-700"],
-.night-dive [class*="text-gray-900"],
-.night-dive [class*="text-gray-800"],
-.night-dive [class*="text-navy"],
-.night-dive [class*="text-[#003865]"] {
+.night-dive [class*="text-slate-900"]:not(button[class*="bg-white"]):not(button[class*="bg-white"] *):not(button[class*="F0F2F5"]):not(button[class*="F0F2F5"] *):not(a[class*="bg-white"]):not(a[class*="bg-white"] *),
+.night-dive [class*="text-slate-800"]:not(button[class*="bg-white"]):not(button[class*="bg-white"] *):not(button[class*="F0F2F5"]):not(button[class*="F0F2F5"] *):not(a[class*="bg-white"]):not(a[class*="bg-white"] *),
+.night-dive [class*="text-slate-700"]:not(button[class*="bg-white"]):not(button[class*="bg-white"] *):not(button[class*="F0F2F5"]):not(button[class*="F0F2F5"] *):not(a[class*="bg-white"]):not(a[class*="bg-white"] *),
+.night-dive [class*="text-gray-900"]:not(button[class*="bg-white"]):not(button[class*="bg-white"] *):not(button[class*="F0F2F5"]):not(button[class*="F0F2F5"] *):not(a[class*="bg-white"]):not(a[class*="bg-white"] *),
+.night-dive [class*="text-gray-800"]:not(button[class*="bg-white"]):not(button[class*="bg-white"] *):not(button[class*="F0F2F5"]):not(button[class*="F0F2F5"] *):not(a[class*="bg-white"]):not(a[class*="bg-white"] *),
+.night-dive [class*="text-navy"]:not(button[class*="bg-white"]):not(button[class*="bg-white"] *):not(button[class*="F0F2F5"]):not(button[class*="F0F2F5"] *):not(a[class*="bg-white"]):not(a[class*="bg-white"] *),
+.night-dive [class*="text-[#003865]"]:not(button[class*="bg-white"]):not(button[class*="bg-white"] *):not(button[class*="F0F2F5"]):not(button[class*="F0F2F5"] *):not(a[class*="bg-white"]):not(a[class*="bg-white"] *) {
   color: #ffffff !important;
 }
 
 /* Muted / secondary subtext */
-.night-dive [class*="text-slate-600"],
-.night-dive [class*="text-slate-500"],
-.night-dive [class*="text-slate-400"],
-.night-dive [class*="text-gray-600"],
-.night-dive [class*="text-gray-500"],
-.night-dive [class*="text-gray-400"],
-.night-dive [class*="text-navy/"] {
+.night-dive [class*="text-slate-600"]:not(button[class*="bg-white"]):not(button[class*="bg-white"] *):not(button[class*="F0F2F5"]):not(button[class*="F0F2F5"] *):not(a[class*="bg-white"]):not(a[class*="bg-white"] *),
+.night-dive [class*="text-slate-500"]:not(button[class*="bg-white"]):not(button[class*="bg-white"] *):not(button[class*="F0F2F5"]):not(button[class*="F0F2F5"] *):not(a[class*="bg-white"]):not(a[class*="bg-white"] *),
+.night-dive [class*="text-slate-400"]:not(button[class*="bg-white"]):not(button[class*="bg-white"] *):not(button[class*="F0F2F5"]):not(button[class*="F0F2F5"] *):not(a[class*="bg-white"]):not(a[class*="bg-white"] *),
+.night-dive [class*="text-gray-600"]:not(button[class*="bg-white"]):not(button[class*="bg-white"] *):not(button[class*="F0F2F5"]):not(button[class*="F0F2F5"] *):not(a[class*="bg-white"]):not(a[class*="bg-white"] *),
+.night-dive [class*="text-gray-500"]:not(button[class*="bg-white"]):not(button[class*="bg-white"] *):not(button[class*="F0F2F5"]):not(button[class*="F0F2F5"] *):not(a[class*="bg-white"]):not(a[class*="bg-white"] *),
+.night-dive [class*="text-gray-400"]:not(button[class*="bg-white"]):not(button[class*="bg-white"] *):not(button[class*="F0F2F5"]):not(button[class*="F0F2F5"] *):not(a[class*="bg-white"]):not(a[class*="bg-white"] *),
+.night-dive [class*="text-navy/"]:not(button[class*="bg-white"]):not(button[class*="bg-white"] *):not(button[class*="F0F2F5"]):not(button[class*="F0F2F5"] *):not(a[class*="bg-white"]):not(a[class*="bg-white"] *) {
   color: rgba(255, 255, 255, 0.75) !important;
 }
 
@@ -827,22 +827,180 @@ body.night-dive #root,
   transform: translateY(-1px);
 }
 
-/* Secondary / Outline Buttons */
-.night-dive button[class*="border-gray-300"],
-.night-dive a[class*="border-gray-300"],
-.night-dive button[class*="bg-white"]:not([data-thumb-btn]):not([data-product-media]):not(.hero-btn):not([data-product-card]):not([data-product-card] *),
-.night-dive a[class*="bg-white"]:not(.hero-btn):not([data-product-card]):not([data-product-card] *) {
-  background-color: rgba(255, 255, 255, 0.08) !important;
-  color: #ffffff !important;
-  border-color: rgba(255, 255, 255, 0.2) !important;
+/* ==========================================================================
+   NIGHT DIVE MODE: WHITE BUTTONS MUST HAVE BLUE TEXT ACROSS ALL PAGES
+   ========================================================================== */
+html body.night-dive button[class*="bg-white"]:not(.hero-btn):not([data-thumb-btn]):not([class*="bg-navy"]):not([class*="bg-accent"]),
+html body.night-dive a[class*="bg-white"]:not(.hero-btn):not([class*="bg-navy"]):not([class*="bg-accent"]),
+html body.night-dive button[class*="bg-[#fff]"]:not(.hero-btn):not([class*="bg-navy"]):not([class*="bg-accent"]),
+html body.night-dive a[class*="bg-[#fff]"]:not(.hero-btn):not([class*="bg-navy"]):not([class*="bg-accent"]),
+html body.night-dive button[class*="bg-[#FFF]"]:not(.hero-btn):not([class*="bg-navy"]):not([class*="bg-accent"]),
+html body.night-dive a[class*="bg-[#FFF]"]:not(.hero-btn):not([class*="bg-navy"]):not([class*="bg-accent"]),
+html body.night-dive button[class*="bg-[#ffffff]"]:not(.hero-btn):not([class*="bg-navy"]):not([class*="bg-accent"]),
+html body.night-dive a[class*="bg-[#ffffff]"]:not(.hero-btn):not([class*="bg-navy"]):not([class*="bg-accent"]),
+html body.night-dive button[class*="bg-[#F0F2F5]"]:not([class*="bg-navy"]):not([class*="bg-accent"]):not([data-input-box]):not([aria-label*="preferred dive date"]),
+html body.night-dive a[class*="bg-[#F0F2F5]"]:not([class*="bg-navy"]):not([class*="bg-accent"]),
+html body.night-dive button[class*="bg-[#f0f2f5]"]:not([class*="bg-navy"]):not([class*="bg-accent"]):not([data-input-box]):not([aria-label*="preferred dive date"]),
+html body.night-dive a[class*="bg-[#f0f2f5]"]:not([class*="bg-navy"]):not([class*="bg-accent"]),
+html body.night-dive button[class*="bg-slate-50"]:not([class*="bg-navy"]):not([class*="bg-accent"]),
+html body.night-dive a[class*="bg-slate-50"]:not([class*="bg-navy"]):not([class*="bg-accent"]),
+html body.night-dive button[class*="bg-slate-100"]:not([class*="bg-navy"]):not([class*="bg-accent"]),
+html body.night-dive a[class*="bg-slate-100"]:not([class*="bg-navy"]):not([class*="bg-accent"]),
+html body.night-dive button[class*="bg-gray-50"]:not([class*="bg-navy"]):not([class*="bg-accent"]),
+html body.night-dive a[class*="bg-gray-50"]:not([class*="bg-navy"]):not([class*="bg-accent"]),
+html body.night-dive button[class*="bg-gray-100"]:not([class*="bg-navy"]):not([class*="bg-accent"]),
+html body.night-dive a[class*="bg-gray-100"]:not([class*="bg-navy"]):not([class*="bg-accent"]),
+html body.night-dive button[class*="bg-white/95"],
+html body.night-dive a[class*="bg-white/95"],
+html body.night-dive button[class*="bg-white/90"],
+html body.night-dive a[class*="bg-white/90"],
+html body.night-dive button[class*="border-gray-300"]:not([class*="bg-navy"]):not([class*="bg-accent"]),
+html body.night-dive a[class*="border-gray-300"]:not([class*="bg-navy"]):not([class*="bg-accent"]),
+html body.night-dive button[class*="border-slate-300"]:not([class*="bg-navy"]):not([class*="bg-accent"]),
+html body.night-dive a[class*="border-slate-300"]:not([class*="bg-navy"]):not([class*="bg-accent"]),
+html body.night-dive button.btn-white,
+html body.night-dive a.btn-white,
+html body.night-dive .white-btn,
+html body.night-dive [data-white-btn],
+html body.night-dive button.night-dive-btn-white,
+html body.night-dive a.night-dive-btn-white,
+html body.night-dive .night-dive-btn-secondary {
+  background-color: #ffffff !important;
+  background: #ffffff !important;
+  color: #003865 !important;
+  border-color: rgba(0, 56, 101, 0.18) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
 }
 
-.night-dive button[class*="border-gray-300"]:hover,
-.night-dive a[class*="border-gray-300"]:hover,
-.night-dive button[class*="bg-white"]:not([data-thumb-btn]):not([data-product-media]):not(.hero-btn):not([data-product-card]):not([data-product-card] *):hover,
-.night-dive a[class*="bg-white"]:not(.hero-btn):not([data-product-card]):not([data-product-card] *):hover {
-  background-color: rgba(255, 255, 255, 0.15) !important;
-  color: #ffffff !important;
+html body.night-dive button[class*="bg-white"]:not(.hero-btn):not([data-thumb-btn]):not([class*="bg-navy"]):not([class*="bg-accent"]) *,
+html body.night-dive a[class*="bg-white"]:not(.hero-btn):not([class*="bg-navy"]):not([class*="bg-accent"]) *,
+html body.night-dive button[class*="bg-[#fff]"]:not(.hero-btn):not([class*="bg-navy"]):not([class*="bg-accent"]) *,
+html body.night-dive a[class*="bg-[#fff]"]:not(.hero-btn):not([class*="bg-navy"]):not([class*="bg-accent"]) *,
+html body.night-dive button[class*="bg-[#FFF]"]:not(.hero-btn):not([class*="bg-navy"]):not([class*="bg-accent"]) *,
+html body.night-dive a[class*="bg-[#FFF]"]:not(.hero-btn):not([class*="bg-navy"]):not([class*="bg-accent"]) *,
+html body.night-dive button[class*="bg-[#ffffff]"]:not(.hero-btn):not([class*="bg-navy"]):not([class*="bg-accent"]) *,
+html body.night-dive a[class*="bg-[#ffffff]"]:not(.hero-btn):not([class*="bg-navy"]):not([class*="bg-accent"]) *,
+html body.night-dive button[class*="bg-[#F0F2F5]"]:not([class*="bg-navy"]):not([class*="bg-accent"]):not([data-input-box]):not([aria-label*="preferred dive date"]) *,
+html body.night-dive a[class*="bg-[#F0F2F5]"]:not([class*="bg-navy"]):not([class*="bg-accent"]) *,
+html body.night-dive button[class*="bg-[#f0f2f5]"]:not([class*="bg-navy"]):not([class*="bg-accent"]):not([data-input-box]):not([aria-label*="preferred dive date"]) *,
+html body.night-dive a[class*="bg-[#f0f2f5]"]:not([class*="bg-navy"]):not([class*="bg-accent"]) *,
+html body.night-dive button[class*="bg-slate-50"]:not([class*="bg-navy"]):not([class*="bg-accent"]) *,
+html body.night-dive a[class*="bg-slate-50"]:not([class*="bg-navy"]):not([class*="bg-accent"]) *,
+html body.night-dive button[class*="bg-slate-100"]:not([class*="bg-navy"]):not([class*="bg-accent"]) *,
+html body.night-dive a[class*="bg-slate-100"]:not([class*="bg-navy"]):not([class*="bg-accent"]) *,
+html body.night-dive button[class*="bg-gray-50"]:not([class*="bg-navy"]):not([class*="bg-accent"]) *,
+html body.night-dive a[class*="bg-gray-50"]:not([class*="bg-navy"]):not([class*="bg-accent"]) *,
+html body.night-dive button[class*="bg-gray-100"]:not([class*="bg-navy"]):not([class*="bg-accent"]) *,
+html body.night-dive a[class*="bg-gray-100"]:not([class*="bg-navy"]):not([class*="bg-accent"]) *,
+html body.night-dive button[class*="bg-white/95"] *,
+html body.night-dive a[class*="bg-white/95"] *,
+html body.night-dive button[class*="bg-white/90"] *,
+html body.night-dive a[class*="bg-white/90"] *,
+html body.night-dive button[class*="border-gray-300"]:not([class*="bg-navy"]):not([class*="bg-accent"]) *,
+html body.night-dive a[class*="border-gray-300"]:not([class*="bg-navy"]):not([class*="bg-accent"]) *,
+html body.night-dive button[class*="border-slate-300"]:not([class*="bg-navy"]):not([class*="bg-accent"]) *,
+html body.night-dive a[class*="border-slate-300"]:not([class*="bg-navy"]):not([class*="bg-accent"]) *,
+html body.night-dive button.btn-white *,
+html body.night-dive a.btn-white *,
+html body.night-dive .white-btn *,
+html body.night-dive [data-white-btn] *,
+html body.night-dive button.night-dive-btn-white *,
+html body.night-dive a.night-dive-btn-white *,
+html body.night-dive .night-dive-btn-secondary * {
+  color: #003865 !important;
+}
+
+/* Ensure monochrome SVGs inside white buttons are styled with blue color */
+html body.night-dive button[class*="bg-white"]:not(.hero-btn) svg:not(:has(path[fill="#4285F4"])),
+html body.night-dive a[class*="bg-white"]:not(.hero-btn) svg:not(:has(path[fill="#4285F4"])),
+html body.night-dive button[class*="bg-[#fff]"] svg,
+html body.night-dive a[class*="bg-[#fff]"] svg,
+html body.night-dive button[class*="bg-[#FFF]"] svg,
+html body.night-dive a[class*="bg-[#FFF]"] svg,
+html body.night-dive button[class*="bg-[#ffffff]"] svg,
+html body.night-dive a[class*="bg-[#ffffff]"] svg,
+html body.night-dive button[class*="bg-[#F0F2F5]"] svg,
+html body.night-dive a[class*="bg-[#F0F2F5]"] svg,
+html body.night-dive button[class*="bg-[#f0f2f5]"] svg,
+html body.night-dive a[class*="bg-[#f0f2f5]"] svg,
+html body.night-dive button[class*="border-gray-300"] svg,
+html body.night-dive a[class*="border-gray-300"] svg,
+html body.night-dive button[class*="border-slate-300"] svg,
+html body.night-dive a[class*="border-slate-300"] svg,
+html body.night-dive .white-btn svg,
+html body.night-dive [data-white-btn] svg,
+html body.night-dive button.night-dive-btn-white svg,
+html body.night-dive a.night-dive-btn-white svg,
+html body.night-dive .night-dive-btn-secondary svg {
+  color: #003865 !important;
+  stroke: currentColor !important;
+}
+
+/* White buttons hover in Night Dive mode: brand yellow #FFCD00 with dark navy text */
+html body.night-dive button[class*="bg-white"]:not(.hero-btn):not([data-thumb-btn]):not([class*="bg-navy"]):not([class*="bg-accent"]):hover,
+html body.night-dive a[class*="bg-white"]:not(.hero-btn):not([class*="bg-navy"]):not([class*="bg-accent"]):hover,
+html body.night-dive button[class*="bg-[#fff]"]:not(.hero-btn):hover,
+html body.night-dive a[class*="bg-[#fff]"]:not(.hero-btn):hover,
+html body.night-dive button[class*="bg-[#FFF]"]:not(.hero-btn):hover,
+html body.night-dive a[class*="bg-[#FFF]"]:not(.hero-btn):hover,
+html body.night-dive button[class*="bg-[#ffffff]"]:not(.hero-btn):hover,
+html body.night-dive a[class*="bg-[#ffffff]"]:not(.hero-btn):hover,
+html body.night-dive button[class*="bg-[#F0F2F5]"]:not([class*="bg-navy"]):not([class*="bg-accent"]):not([data-input-box]):not([aria-label*="preferred dive date"]):hover,
+html body.night-dive a[class*="bg-[#F0F2F5]"]:not([class*="bg-navy"]):not([class*="bg-accent"]):hover,
+html body.night-dive button[class*="bg-[#f0f2f5]"]:not([class*="bg-navy"]):not([class*="bg-accent"]):not([data-input-box]):not([aria-label*="preferred dive date"]):hover,
+html body.night-dive a[class*="bg-[#f0f2f5]"]:not([class*="bg-navy"]):not([class*="bg-accent"]):hover,
+html body.night-dive button[class*="bg-slate-50"]:hover,
+html body.night-dive a[class*="bg-slate-50"]:hover,
+html body.night-dive button[class*="bg-slate-100"]:hover,
+html body.night-dive a[class*="bg-slate-100"]:hover,
+html body.night-dive button[class*="bg-gray-50"]:hover,
+html body.night-dive a[class*="bg-gray-50"]:hover,
+html body.night-dive button[class*="bg-gray-100"]:hover,
+html body.night-dive a[class*="bg-gray-100"]:hover,
+html body.night-dive button[class*="bg-white/95"]:hover,
+html body.night-dive a[class*="bg-white/95"]:hover,
+html body.night-dive button[class*="border-gray-300"]:hover,
+html body.night-dive a[class*="border-gray-300"]:hover,
+html body.night-dive button[class*="border-slate-300"]:hover,
+html body.night-dive a[class*="border-slate-300"]:hover,
+html body.night-dive button.btn-white:hover,
+html body.night-dive a.btn-white:hover,
+html body.night-dive .white-btn:hover,
+html body.night-dive [data-white-btn]:hover,
+html body.night-dive button.night-dive-btn-white:hover,
+html body.night-dive a.night-dive-btn-white:hover,
+html body.night-dive .night-dive-btn-secondary:hover {
+  background-color: #FFCD00 !important;
+  color: #001e3d !important;
+  border-color: #FFCD00 !important;
+  transform: translateY(-1px);
+}
+
+html body.night-dive button[class*="bg-white"]:not(.hero-btn):not([data-thumb-btn]):not([class*="bg-navy"]):not([class*="bg-accent"]):hover *,
+html body.night-dive a[class*="bg-white"]:not(.hero-btn):not([class*="bg-navy"]):not([class*="bg-accent"]):hover *,
+html body.night-dive button[class*="bg-[#fff]"]:hover *,
+html body.night-dive a[class*="bg-[#fff]"]:hover *,
+html body.night-dive button[class*="bg-[#FFF]"]:hover *,
+html body.night-dive a[class*="bg-[#FFF]"]:hover *,
+html body.night-dive button[class*="bg-[#ffffff]"]:hover *,
+html body.night-dive a[class*="bg-[#ffffff]"]:hover *,
+html body.night-dive button[class*="bg-[#F0F2F5]"]:not([class*="bg-navy"]):not([class*="bg-accent"]):hover *,
+html body.night-dive a[class*="bg-[#F0F2F5]"]:not([class*="bg-navy"]):not([class*="bg-accent"]):hover *,
+html body.night-dive button[class*="bg-[#f0f2f5]"]:not([class*="bg-navy"]):not([class*="bg-accent"]):hover *,
+html body.night-dive a[class*="bg-[#f0f2f5]"]:not([class*="bg-navy"]):not([class*="bg-accent"]):hover *,
+html body.night-dive button[class*="border-gray-300"]:hover *,
+html body.night-dive a[class*="border-gray-300"]:hover *,
+html body.night-dive button[class*="border-slate-300"]:hover *,
+html body.night-dive a[class*="border-slate-300"]:hover *,
+html body.night-dive button.btn-white:hover *,
+html body.night-dive a.btn-white:hover *,
+html body.night-dive .white-btn:hover *,
+html body.night-dive [data-white-btn]:hover *,
+html body.night-dive button.night-dive-btn-white:hover *,
+html body.night-dive a.night-dive-btn-white:hover *,
+html body.night-dive .night-dive-btn-secondary:hover * {
+  color: #001e3d !important;
+  stroke: #001e3d !important;
 }
 
 /* Hero section buttons hover in Night Dive mode: yellow #FFCD00 with navy text/border/icon */
@@ -969,20 +1127,13 @@ body.night-dive [data-shop-banner],
   border-color: rgba(255, 255, 255, 0.15) !important;
 }
 
-.night-dive .night-dive-btn-secondary {
-  border-color: rgba(255, 255, 255, 0.25) !important;
-  color: #ffffff !important;
-  background-color: rgba(255, 255, 255, 0.1) !important;
-}
-
 /* Boxes where you type in content like name, phone number, email, date, etc. */
 .night-dive input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="range"]):not(.switch__input):not(.PhoneInputInput),
 .night-dive select,
 .night-dive textarea,
 .night-dive .PhoneInput,
 .night-dive form div[class*="bg-[#F0F2F5]"],
-.night-dive form div[class*="bg-white"],
-.night-dive form button[class*="bg-[#F0F2F5]"],
+.night-dive form div[class*="bg-white"]:not(button):not(button *),
 .night-dive form [class*="border-dashed"],
 .night-dive [data-input-box],
 .night-dive .phone-input-wrapper {
@@ -1071,18 +1222,18 @@ input.PhoneInputInput:focus,
 .night-dive form label *,
 .night-dive form legend,
 .night-dive form p,
-.night-dive form span:not([class*="bg-accent"]):not(.bg-accent):not(.text-red-500):not(.text-red-600),
+.night-dive form span:not([class*="bg-accent"]):not(.bg-accent):not(.text-red-500):not(.text-red-600):not(button[class*="bg-white"] *):not(button[class*="bg-[#F0F2F5]"] *):not(button[class*="bg-[#fff]"] *):not(.white-btn *):not([data-white-btn] *),
 .night-dive form h1,
 .night-dive form h2,
 .night-dive form h3,
 .night-dive form h4,
 .night-dive form h5,
 .night-dive form h6,
-.night-dive form [class*="text-navy"],
-.night-dive form [class*="text-slate"],
-.night-dive form [class*="text-gray"],
+.night-dive form [class*="text-navy"]:not(button[class*="bg-white"] *):not(button[class*="bg-[#F0F2F5]"] *):not(button[class*="bg-[#fff]"] *):not(.white-btn *):not([data-white-btn] *),
+.night-dive form [class*="text-slate"]:not(button[class*="bg-white"] *):not(button[class*="bg-[#F0F2F5]"] *):not(button[class*="bg-[#fff]"] *):not(.white-btn *):not([data-white-btn] *),
+.night-dive form [class*="text-gray"]:not(button[class*="bg-white"] *):not(button[class*="bg-[#F0F2F5]"] *):not(button[class*="bg-[#fff]"] *):not(.white-btn *):not([data-white-btn] *),
 .night-dive form [class*="text-blue-600"],
-.night-dive form button:not([type="submit"]):not([class*="bg-accent"]):not([class*="bg-navy"]) {
+.night-dive form button:not([type="submit"]):not([class*="bg-accent"]):not([class*="bg-navy"]):not([class*="bg-white"]):not([class*="bg-[#F0F2F5]"]):not([class*="bg-[#fff]"]):not([class*="bg-slate-50"]):not(.white-btn):not([data-white-btn]):not(.night-dive-btn-white) {
   color: #ffffff !important;
 }
 
@@ -1258,7 +1409,7 @@ a.glass-btn:hover,
 }
 
 .switch__icon-part--2 {
-  background-color: transparent;
+  background-color: hsl(var(--hue), 10%, 10%);
   top: calc(50% - 0.4375em);
   left: calc(50% - 0.0625em);
   width: 0.5em;
@@ -1267,7 +1418,7 @@ a.glass-btn:hover,
 }
 
 .switch__icon-part--3 {
-  box-shadow: none !important;
+  box-shadow: 0 0 0 0.625em hsl(var(--hue), 10%, 10%) inset;
   width: 1.25em;
   height: 1.25em;
   transform: scale(0.25);
@@ -1333,12 +1484,11 @@ a.glass-btn:hover,
 }
 
 .switch__input:checked~.switch__icon .switch__icon-part--2 {
-  background-color: hsl(var(--hue), 10%, 10%);
   transform: translate(0, 0) scale(1);
 }
 
 .switch__input:checked~.switch__icon .switch__icon-part--3 {
-  box-shadow: none !important;
+  box-shadow: 0 0 0 0.25em hsl(var(--hue), 10%, 10%) inset;
   transform: scale(1);
 }
 

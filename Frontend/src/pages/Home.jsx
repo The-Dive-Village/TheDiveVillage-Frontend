@@ -375,6 +375,7 @@ export default function Home() {
               {
                 title: 'Comfortable Stays',
                 desc: 'Handpicked accommodations for luxury holidays / budget friendly dive experiences based on guest requirements.',
+                mobileDesc: 'Handpicked stays for luxury / budget friendly dive experiences.',
                 img: stayImg,
                 icon: (
                   <svg className="w-4 h-4 sm:w-5 sm:h-5 text-[#00AEC7]" fill="currentColor" viewBox="0 0 24 24">
@@ -434,7 +435,14 @@ export default function Home() {
 
                     {/* Description Text */}
                     <p className="text-white/90 text-xs sm:text-xs lg:text-sm font-medium leading-relaxed mb-3 sm:mb-4 text-left min-h-[54px] sm:min-h-[68px] lg:min-h-[76px] flex-none">
-                      {item.desc}
+                      {item.mobileDesc ? (
+                        <>
+                          <span className="sm:hidden">{item.mobileDesc}</span>
+                          <span className="hidden sm:inline">{item.desc}</span>
+                        </>
+                      ) : (
+                        item.desc
+                      )}
                     </p>
 
                     {/* Media Frame (Video or Image) - Uniform aspect ratio and height across all 4 panels */}

@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from 'react'
-import { Link } from 'react-router'
+import { Link, useLocation, useSearchParams } from 'react-router'
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import Button from '../components/Button'
 import SafeImage from '../components/SafeImage'
@@ -22,6 +22,9 @@ const SANITIZED_GALLERY_ITEMS = GALLERY_ITEMS.map((item) => ({
 export default function Gallery() {
   const [itemsList, setItemsList] = useState(SANITIZED_GALLERY_ITEMS)
   const [selectedMediaIndex, setSelectedMediaIndex] = useState(null)
+  const [highlightedItemId, setHighlightedItemId] = useState(null)
+  const location = useLocation()
+  const [searchParams] = useSearchParams()
   const reduce = useReducedMotion()
   const lenis = useLenis()
 
@@ -29,22 +32,72 @@ export default function Gallery() {
   const touchStartY = useRef(0)
 
   const filteredItems = itemsList
+  const targetItemId = searchParams.get('item') || (location.hash ? location.hash.replace('#', '') : null)
 
-  // Always scroll to top when mounting or reloading the Gallery page
+  // Scroll handling: If arriving for a specific item, smoothly scroll to that image. Otherwise scroll to top.
   useEffect(() => {
-    if ('scrollRestoration' in window.history) {
-      window.history.scrollRestoration = 'manual'
-    }
-    window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
-    if (lenis) {
-      lenis.scrollTo(0, { immediate: true })
-    }
-    const timer = setTimeout(() => {
+    if (targetItemId) {
+      setHighlightedItemId(targetItemId)
+
+      let attempts = 0
+
+      const performScroll = (smooth = true) => {
+        const el = document.getElementById(targetItemId)
+        if (el) {
+          const activeLenis = lenis || (typeof window !== 'undefined' ? window.lenis : null)
+          if (activeLenis && typeof activeLenis.scrollTo === 'function') {
+            activeLenis.scrollTo(el, { offset: -100, duration: smooth ? 1.0 : 0, immediate: !smooth })
+          } else {
+            const rect = el.getBoundingClientRect()
+            const scrollTop = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0
+            const targetY = rect.top + scrollTop - 100
+            window.scrollTo({ top: Math.max(0, targetY), behavior: smooth ? 'smooth' : 'auto' })
+          }
+          return true
+        }
+        return false
+      }
+
+      // Initial jump if element is already present, then smooth staggered reinforcement as layout settles
+      performScroll(false)
+      const t1 = setTimeout(() => performScroll(true), 60)
+      const t2 = setTimeout(() => performScroll(true), 250)
+      const t3 = setTimeout(() => performScroll(true), 600)
+
+      const pollInterval = setInterval(() => {
+        attempts++
+        if (performScroll(true) || attempts > 20) {
+          clearInterval(pollInterval)
+        }
+      }, 100)
+
+      const highlightTimer = setTimeout(() => {
+        setHighlightedItemId(null)
+      }, 4500)
+
+      return () => {
+        clearTimeout(t1)
+        clearTimeout(t2)
+        clearTimeout(t3)
+        clearInterval(pollInterval)
+        clearTimeout(highlightTimer)
+      }
+    } else {
+      if ('scrollRestoration' in window.history) {
+        window.history.scrollRestoration = 'manual'
+      }
       window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
-      if (lenis) lenis.scrollTo(0, { immediate: true })
-    }, 50)
-    return () => clearTimeout(timer)
-  }, [lenis])
+      const activeLenis = lenis || (typeof window !== 'undefined' ? window.lenis : null)
+      if (activeLenis && typeof activeLenis.scrollTo === 'function') {
+        activeLenis.scrollTo(0, { immediate: true })
+      }
+      const timer = setTimeout(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+        if (activeLenis && typeof activeLenis.scrollTo === 'function') activeLenis.scrollTo(0, { immediate: true })
+      }, 50)
+      return () => clearTimeout(timer)
+    }
+  }, [targetItemId, lenis])
 
   // High-Res Preloading for adjacent images in Lightbox
   useEffect(() => {
@@ -218,6 +271,7 @@ export default function Gallery() {
               idx={idx}
               reduce={reduce}
               onClick={() => openLightbox(idx)}
+              isHighlighted={highlightedItemId === item.id}
             />
           ))}
         </div>
@@ -488,7 +542,7 @@ export default function Gallery() {
   )
 }
 
-function GalleryGridCard({ item, idx, reduce, onClick }) {
+function GalleryGridCard({ item, idx, reduce, onClick, isHighlighted }) {
   const cardRef = useRef(null)
   const hoverTimerRef = useRef(null)
 
@@ -540,10 +594,15 @@ function GalleryGridCard({ item, idx, reduce, onClick }) {
   return (
     <motion.div
       ref={cardRef}
+      id={item.id}
       initial={reduce ? false : { opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: Math.min(idx * 0.02, 0.25) }}
-      className="group flex flex-col rounded-2xl sm:rounded-[24px] overflow-hidden bg-white border border-navy/10 shadow-sm hover:shadow-xl hover:border-cyan-500/30 transition-all duration-300 cursor-pointer active:scale-[0.99]"
+      className={`scroll-mt-28 group flex flex-col rounded-2xl sm:rounded-[24px] overflow-hidden bg-white border transition-all duration-500 cursor-pointer active:scale-[0.99] ${
+        isHighlighted
+          ? 'ring-4 ring-[#FFCD00] shadow-[0_0_40px_rgba(255,205,0,0.7)] border-[#FFCD00] scale-[1.02] sm:scale-[1.03] animate-pulse z-10'
+          : 'border-navy/10 shadow-sm hover:shadow-xl hover:border-cyan-500/30'
+      }`}
       onClick={onClick}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -583,10 +642,17 @@ function GalleryGridCard({ item, idx, reduce, onClick }) {
       </div>
 
       {/* Information Panel Below Media - Title */}
-      <div className="p-2 sm:p-5 bg-white">
-        <h3 className="font-heading text-xs sm:text-lg font-bold text-navy group-hover:text-accent transition duration-200 line-clamp-1 leading-tight">
+      <div className="p-2 sm:p-5 bg-white flex items-center justify-between gap-2">
+        <h3 className={`font-heading text-xs sm:text-lg font-bold group-hover:text-accent transition duration-200 line-clamp-1 leading-tight ${
+          isHighlighted ? 'text-accent font-extrabold' : 'text-navy'
+        }`}>
           {item.title}
         </h3>
+        {isHighlighted && (
+          <span className="shrink-0 text-[10px] sm:text-xs font-bold uppercase tracking-wider bg-[#FFCD00] text-[#001e3d] px-2.5 py-0.5 rounded-full shadow-sm">
+            Selected
+          </span>
+        )}
       </div>
     </motion.div>
   )

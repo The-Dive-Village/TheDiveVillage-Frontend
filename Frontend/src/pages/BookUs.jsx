@@ -1981,7 +1981,7 @@ export default function BookUs() {
                             onClick={() => handleToggleAddOn('None')}
                             className={`group relative flex items-center justify-between px-3.5 py-3 rounded-2xl text-xs sm:text-sm font-bold transition-all text-left border cursor-pointer ${selectedAddOns.includes('None')
                                 ? 'bg-navy text-white border-navy shadow-md ring-1 ring-navy'
-                                : 'bg-[#F0F2F5] text-navy/80 border-transparent hover:bg-[#E5E9EF] hover:text-navy'
+                                : 'bg-white text-navy border-navy/15 hover:border-navy/35 hover:bg-navy/[0.02]'
                               }`}
                           >
                             <span className="truncate pr-2">None</span>
@@ -2004,7 +2004,7 @@ export default function BookUs() {
                                 onClick={() => handleToggleAddOn(addOn)}
                                 className={`group relative flex items-center justify-between px-3.5 py-3 rounded-2xl text-xs sm:text-sm font-bold transition-all text-left border cursor-pointer ${isSelected
                                     ? 'bg-navy text-white border-navy shadow-md ring-1 ring-navy'
-                                    : 'bg-[#F0F2F5] text-navy/80 border-transparent hover:bg-[#E5E9EF] hover:text-navy'
+                                    : 'bg-white text-navy border-navy/15 hover:border-navy/35 hover:bg-navy/[0.02]'
                                   }`}
                               >
                                 <span className="truncate pr-2">{addOn}</span>

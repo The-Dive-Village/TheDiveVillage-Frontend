@@ -95,7 +95,7 @@ export default function Services() {
               onClick={() => handleTabChange(cat.key)}
               className={`w-full md:w-auto rounded-xl md:rounded-full px-1.5 sm:px-3 md:px-5 py-2 md:py-2.5 text-[11px] xs:text-xs sm:text-sm font-bold text-center transition-all duration-200 cursor-pointer flex items-center justify-center ${activeTab === cat.key
                   ? 'bg-navy text-white shadow-md'
-                  : 'bg-[#F0F2F5] text-navy/70 hover:bg-navy/10 hover:text-navy'
+                  : 'bg-white text-navy border border-navy/15 hover:bg-navy/5'
                 }`}
             >
               <span className="truncate">{cat.label}</span>

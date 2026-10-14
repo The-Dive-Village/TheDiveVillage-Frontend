@@ -9,9 +9,9 @@ import SEOHead from '../components/SEOHead'
 import MerchBannerCTA from '../components/MerchBannerCTA'
 import { CAROUSEL_IMAGES } from '../utils/images'
 import { useReviews } from '../contexts/ReviewsContext'
-const aboutVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/TDV-Media/Background/About.mp4'
+const backgroundVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/TDV-Media/Background/About.mp4'
 const nightDiveVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/TDV-Media/Background/Night_Dive.mp4'
-const divingVid = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790244035/dive-village/ui-videos/diving_1_mp4.mp4';
+const founderVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791940436/TDV-Media/About/Founder.mp4'
 import useNightDive from '../hooks/useNightDive'
 
 const certifiedCoursesImg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791691284/TDV-Media/ServicesThumbnails/Certified%20Courses.webp'
@@ -118,8 +118,8 @@ export default function About() {
       {/* FULL-SCREEN VIDEO BACKGROUND (DYNAMIC FOR NIGHT DIVE ACROSS ENTIRE PAGE) */}
       <div className="fixed inset-0 w-full h-full z-0 pointer-events-none overflow-hidden">
         <LazyVideo
-          key={isNightDive ? 'night-dive-bg' : 'day-diving-bg'}
-          src={isNightDive ? nightDiveVideo : divingVid}
+          key={isNightDive ? 'night-dive-bg' : 'day-about-bg'}
+          src={isNightDive ? nightDiveVideo : backgroundVideo}
           autoPlay
           loop
           muted
@@ -259,7 +259,7 @@ export default function About() {
             {/* Right Video Frame next to Sanjeev's Story */}
             <div className="lg:col-span-5 relative min-h-[360px] lg:min-h-full overflow-hidden rounded-b-[40px] lg:rounded-b-none lg:rounded-r-[40px]">
               <LazyVideo
-                src={aboutVid} 
+                src={founderVideo} 
                 autoPlay
                 loop
                 muted
