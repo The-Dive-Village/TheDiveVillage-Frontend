@@ -9,8 +9,10 @@ import MerchBannerCTA from '../components/MerchBannerCTA'
 import { IMAGES, CAROUSEL_IMAGES } from '../utils/images'
 
 import { CATEGORIES, SERVICES_DATA } from '../data/servicesData'
+import useNightDive from '../hooks/useNightDive'
 
 export default function Services() {
+  const isNightDive = useNightDive()
   const [searchParams, setSearchParams] = useSearchParams()
   const location = useLocation()
   const navigate = useNavigate()
@@ -94,8 +96,8 @@ export default function Services() {
               key={cat.key}
               onClick={() => handleTabChange(cat.key)}
               className={`w-full md:w-auto rounded-xl md:rounded-full px-1.5 sm:px-3 md:px-5 py-2 md:py-2.5 text-[11px] xs:text-xs sm:text-sm font-bold text-center transition-all duration-200 cursor-pointer flex items-center justify-center ${activeTab === cat.key
-                  ? 'bg-navy text-white shadow-md'
-                  : 'bg-[#F0F2F5] text-navy/70 hover:bg-navy/10 hover:text-navy'
+                  ? `bg-navy text-white shadow-md border-2 ${isNightDive ? 'border-[#FFCD00]' : 'border-transparent'}`
+                  : `bg-white text-navy border ${isNightDive ? 'border-white/20' : 'border-navy/15'} hover:bg-navy/5`
                 }`}
             >
               <span className="truncate">{cat.label}</span>
@@ -144,9 +146,8 @@ export default function Services() {
                         imgClassName="w-full h-full object-cover object-center"
                       />
                     )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-navy/95 via-navy/40 to-transparent pointer-events-none z-10" />
                     <div className="absolute bottom-2 left-2 right-2 sm:bottom-4 sm:left-5 sm:right-3 z-20">
-                      <h3 className="font-heading text-xs xs:text-sm sm:text-xl font-bold text-white leading-tight line-clamp-2">
+                      <h3 className="font-heading text-xs xs:text-sm sm:text-xl font-bold text-white leading-tight line-clamp-2 drop-shadow-[0_2px_8px_rgba(0,0,0,0.85)]">
                         {service.title}
                       </h3>
                     </div>
@@ -198,7 +199,11 @@ export default function Services() {
                 desc: 'Instils respect for oceans and sustainability, aligning with modern educational goals.',
               },
             ].map((p) => (
-              <div key={p.num} className="bg-white rounded-3xl p-6 sm:p-8 shadow-soft flex flex-col justify-between hover:-translate-y-1 transition duration-300">
+              <div
+                key={p.num}
+                className="power-point-card bg-white rounded-3xl p-6 sm:p-8 shadow-soft flex flex-col justify-between hover:-translate-y-1 transition duration-300"
+                style={isNightDive ? { borderColor: '#ffffff', borderWidth: '2px', borderStyle: 'solid' } : undefined}
+              >
                 <div>
                   <div className="w-12 h-12 rounded-full bg-navy text-accent flex items-center justify-center mb-5 text-lg font-bold">
                     {p.num}

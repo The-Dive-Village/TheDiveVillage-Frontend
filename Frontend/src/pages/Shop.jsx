@@ -300,22 +300,30 @@ export default function Shop() {
 
         {/* Category Pills Horizontal Scroll */}
         <div className="flex gap-2 overflow-x-auto pb-1 mt-3.5 scrollbar-none items-center">
-          {CATEGORIES.map((cat) => (
-            <button
-              key={cat.key}
-              onClick={() => {
-                triggerHaptic(8)
-                setSelectedCategory(cat.key)
-              }}
-              className={`rounded-full px-4 py-2 text-xs font-bold whitespace-nowrap transition-all duration-200 cursor-pointer ${
-                selectedCategory === cat.key
-                  ? 'bg-[#FFCD00] text-slate-900 shadow-sm'
-                  : 'bg-white text-slate-700 border border-slate-300/80 hover:bg-slate-50'
-              }`}
-            >
-              {cat.label}
-            </button>
-          ))}
+          {CATEGORIES.map((cat) => {
+            const isSelected = selectedCategory === cat.key
+            return (
+              <button
+                key={cat.key}
+                data-selected={isSelected ? 'true' : 'false'}
+                onClick={() => {
+                  triggerHaptic(8)
+                  setSelectedCategory(cat.key)
+                }}
+                className={`rounded-full px-4 py-2 text-xs font-bold whitespace-nowrap transition-all duration-200 cursor-pointer ${
+                  isSelected
+                    ? isNightDive
+                      ? 'bg-[#FFCD00] text-slate-900 shadow-sm border-2 border-white ring-1 ring-white/50 font-extrabold'
+                      : 'bg-[#FFCD00] text-slate-900 shadow-sm border-2 border-transparent'
+                    : isNightDive
+                      ? 'bg-white/10 text-white border border-white/20 hover:bg-white/20'
+                      : 'bg-white text-slate-700 border border-slate-300/80 hover:bg-slate-50'
+                }`}
+              >
+                {cat.label}
+              </button>
+            )
+          })}
         </div>
 
         {/* Product Count & Filter Button */}
@@ -410,21 +418,30 @@ export default function Shop() {
         </div>
 
         <div className="flex gap-2.5 overflow-x-auto pb-2 mt-6 scrollbar-none">
-          {CATEGORIES.map((cat) => (
-            <button
-              key={cat.key}
-              onClick={() => {
-                triggerHaptic(8)
-                setSelectedCategory(cat.key)
-              }}
-              className={`rounded-full px-5 py-2.5 text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 cursor-pointer ${selectedCategory === cat.key
-                ? 'bg-accent text-[#001e3d] shadow-md font-extrabold'
-                : 'bg-white text-navy/70 border border-navy/10 hover:bg-[#003865] hover:text-white hover:border-[#003865]'
+          {CATEGORIES.map((cat) => {
+            const isSelected = selectedCategory === cat.key
+            return (
+              <button
+                key={cat.key}
+                data-selected={isSelected ? 'true' : 'false'}
+                onClick={() => {
+                  triggerHaptic(8)
+                  setSelectedCategory(cat.key)
+                }}
+                className={`rounded-full px-5 py-2.5 text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 cursor-pointer ${
+                  isSelected
+                    ? isNightDive
+                      ? 'bg-accent text-[#001e3d] shadow-md font-extrabold border-2 border-white ring-1 ring-white/50'
+                      : 'bg-accent text-[#001e3d] shadow-md font-extrabold border-2 border-transparent'
+                    : isNightDive
+                      ? 'bg-white/10 text-white border border-white/20 hover:bg-[#00223D] hover:border-white/40'
+                      : 'bg-white text-navy/70 border border-navy/10 hover:bg-[#003865] hover:text-white hover:border-[#003865]'
                 }`}
-            >
-              {cat.label}
-            </button>
-          ))}
+              >
+                {cat.label}
+              </button>
+            )
+          })}
         </div>
       </section>
 
@@ -516,23 +533,29 @@ export default function Shop() {
               <div className="mt-4">
                 <span className="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-2">Category</span>
                 <div className="flex flex-wrap gap-2">
-                  {CATEGORIES.map((cat) => (
-                    <button
-                      key={cat.key}
-                      type="button"
-                      onClick={() => {
-                        triggerHaptic(8)
-                        setSelectedCategory(cat.key)
-                      }}
-                      className={`rounded-full px-3.5 py-1.5 text-xs font-bold transition cursor-pointer ${
-                        selectedCategory === cat.key
-                          ? 'bg-[#FFCD00] text-black shadow-sm'
-                          : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                      }`}
-                    >
-                      {cat.label}
-                    </button>
-                  ))}
+                  {CATEGORIES.map((cat) => {
+                    const isSelected = selectedCategory === cat.key
+                    return (
+                      <button
+                        key={cat.key}
+                        data-selected={isSelected ? 'true' : 'false'}
+                        type="button"
+                        onClick={() => {
+                          triggerHaptic(8)
+                          setSelectedCategory(cat.key)
+                        }}
+                        className={`rounded-full px-3.5 py-1.5 text-xs font-bold transition cursor-pointer ${
+                          isSelected
+                            ? isNightDive
+                              ? 'bg-[#FFCD00] text-black shadow-sm border-2 border-white ring-1 ring-white/50'
+                              : 'bg-[#FFCD00] text-black shadow-sm border border-transparent'
+                            : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                        }`}
+                      >
+                        {cat.label}
+                      </button>
+                    )
+                  })}
                 </div>
               </div>
 
@@ -545,23 +568,29 @@ export default function Shop() {
                     { val: 'price-low', label: 'Price: Low to High' },
                     { val: 'price-high', label: 'Price: High to Low' },
                     { val: 'rating', label: 'Highest Rated' },
-                  ].map((opt) => (
-                    <button
-                      key={opt.val}
-                      type="button"
-                      onClick={() => {
-                        triggerHaptic(8)
-                        setSortBy(opt.val)
-                      }}
-                      className={`rounded-xl px-3 py-2 text-xs font-semibold text-left border transition cursor-pointer ${
-                        sortBy === opt.val
-                          ? 'border-[#FFCD00] bg-[#FFCD00]/20 text-slate-900 font-bold'
-                          : 'border-slate-200 bg-white text-slate-700'
-                      }`}
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
+                  ].map((opt) => {
+                    const isSelected = sortBy === opt.val
+                    return (
+                      <button
+                        key={opt.val}
+                        data-selected={isSelected ? 'true' : 'false'}
+                        type="button"
+                        onClick={() => {
+                          triggerHaptic(8)
+                          setSortBy(opt.val)
+                        }}
+                        className={`rounded-xl px-3 py-2 text-xs font-semibold text-left border transition cursor-pointer ${
+                          isSelected
+                            ? isNightDive
+                              ? 'border-2 border-white bg-[#FFCD00]/25 text-slate-900 font-bold ring-1 ring-white/50'
+                              : 'border-[#FFCD00] bg-[#FFCD00]/20 text-slate-900 font-bold'
+                            : 'border-slate-200 bg-white text-slate-700'
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    )
+                  })}
                 </div>
               </div>
 
@@ -1035,13 +1064,15 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, 
       {/* MOBILE PRODUCT CARD (md:hidden - White Card) */}
       <div
         data-product-card="true"
+        data-white-bg="true"
         onClick={() => navigate(`/shop/${product.id}`)}
-        style={{ backgroundColor: '#ffffff' }}
-        className="md:hidden group rounded-2xl bg-white border border-slate-200/90 text-navy shadow-sm p-2.5 xs:p-3 flex flex-col justify-between cursor-pointer relative transition active:scale-[0.99]"
+        style={{ backgroundColor: '#ffffff', background: '#ffffff', color: '#001e3d' }}
+        className="md:hidden group rounded-2xl bg-white border border-slate-200/90 text-[#001e3d] shadow-sm p-2.5 xs:p-3 flex flex-col justify-between cursor-pointer relative transition active:scale-[0.99]"
       >
         {/* Wishlist Button (Top Right) */}
         <button
           type="button"
+          data-selected={isWishlisted ? 'true' : 'false'}
           onClick={(e) => {
             e.stopPropagation()
             onToggleWishlist(e)
@@ -1079,7 +1110,10 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, 
             <span className="product-card-category text-[10px] font-semibold uppercase tracking-wider text-[#00AEC7] block mb-0.5">
               {product.category || 'MERCH'}
             </span>
-            <h3 className="product-card-title font-bold text-navy text-xs xs:text-[13px] leading-snug line-clamp-2 min-h-[32px]">
+            <h3
+              className="product-card-title font-bold text-[#001e3d] text-xs xs:text-[13px] leading-snug line-clamp-2 min-h-[32px]"
+              style={{ color: '#001e3d' }}
+            >
               {product.title || product.name}
             </h3>
           </div>
@@ -1103,14 +1137,15 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, 
       {/* DESKTOP PRODUCT CARD (hidden md:flex - White Card) */}
       <div
         data-product-card="true"
+        data-white-bg="true"
         onClick={() => navigate(`/shop/${product.id}`)}
         onMouseEnter={() => {
           setIsHovered(true)
           setHasHovered(true)
         }}
         onMouseLeave={() => setIsHovered(false)}
-        style={{ backgroundColor: '#ffffff', background: '#ffffff' }}
-        className="hidden md:flex group rounded-2xl sm:rounded-[32px] bg-white border border-navy/10 text-navy p-3 sm:p-6 shadow-card hover:shadow-float transition duration-300 flex-col justify-between cursor-pointer relative"
+        style={{ backgroundColor: '#ffffff', background: '#ffffff', color: '#001e3d' }}
+        className="hidden md:flex group rounded-2xl sm:rounded-[32px] bg-white border border-navy/10 text-[#001e3d] p-3 sm:p-6 shadow-card hover:shadow-float transition duration-300 flex-col justify-between cursor-pointer relative"
       >
         <div style={{ backgroundColor: '#ffffff', background: '#ffffff' }}>
           <div data-product-media="true" style={{ backgroundColor: '#ffffff', background: '#ffffff' }} className="relative mb-3 sm:mb-5">
@@ -1179,8 +1214,18 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, 
 
           <div className="mb-2 sm:mb-4">
             <span className="product-card-category text-[9px] sm:text-[11px] font-bold uppercase tracking-wider text-[#00AEC7] block mb-0.5 sm:mb-1">{product.category}</span>
-            <h3 className="product-card-title font-heading text-xs xs:text-sm sm:text-xl font-bold text-navy leading-tight sm:leading-snug transition line-clamp-2 sm:line-clamp-none">{product.title}</h3>
-            <p className="product-card-desc text-[10px] sm:text-xs text-navy/70 line-clamp-1 sm:line-clamp-2 mt-1 sm:mt-2 leading-relaxed hidden xs:block">{product.description}</p>
+            <h3
+              className="product-card-title font-heading text-xs xs:text-sm sm:text-xl font-bold text-[#001e3d] leading-tight sm:leading-snug transition line-clamp-2 sm:line-clamp-none group-hover:text-[#00AEC7]"
+              style={{ color: '#001e3d' }}
+            >
+              {product.title}
+            </h3>
+            <p
+              className="product-card-desc text-[10px] sm:text-xs text-[#001e3d]/75 line-clamp-1 sm:line-clamp-2 mt-1 sm:mt-2 leading-relaxed hidden xs:block"
+              style={{ color: '#001e3d', opacity: 0.75 }}
+            >
+              {product.description}
+            </p>
           </div>
         </div>
 
@@ -1189,6 +1234,7 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, 
           <div className="flex items-center gap-1.5 sm:gap-2 ml-auto sm:ml-0">
             <button
               type="button"
+              data-selected={isWishlisted ? 'true' : 'false'}
               onClick={onToggleWishlist}
               className="product-wishlist-btn w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-navy/5 hover:bg-navy border border-navy/15 text-navy hover:text-white flex items-center justify-center shadow-sm transition duration-200 hover:scale-110 active:scale-95 cursor-pointer shrink-0"
               aria-label="Wishlist"

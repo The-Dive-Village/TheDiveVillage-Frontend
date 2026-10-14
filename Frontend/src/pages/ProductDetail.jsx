@@ -6,12 +6,14 @@ import { SHOP_PRODUCTS } from '../utils/products'
 import { useCart } from '../hooks/useCart'
 import { useWishlist } from '../hooks/useWishlist'
 import { useAuth } from '../hooks/useAuth'
+import useNightDive from '../hooks/useNightDive'
 import Product3DViewer from '../components/Product3DViewer'
 import SEOHead from '../components/SEOHead'
 import { triggerHaptic, triggerSuccessHaptic } from '../utils/haptics'
 import { shareContent } from '../utils/share'
 
 export default function ProductDetail() {
+  const isNightDive = useNightDive()
   const { id } = useParams()
   const navigate = useNavigate()
   const { user } = useAuth()
@@ -606,6 +608,8 @@ export default function ProductDetail() {
                   {product.colors.map((color, idx) => (
                     <button
                       key={idx}
+                      data-color-btn="true"
+                      data-selected={selectedColor.name === color.name ? 'true' : 'false'}
                       onClick={() => {
                         triggerHaptic(10)
                         setSelectedColor(color)
@@ -662,6 +666,8 @@ export default function ProductDetail() {
                       <button
                         key={sz}
                         type="button"
+                        data-size-btn="true"
+                        data-selected={selectedSize === sz ? 'true' : 'false'}
                         onClick={() => {
                           triggerHaptic(10)
                           setSelectedSize(sz)
@@ -724,7 +730,10 @@ export default function ProductDetail() {
                 <button
                   onClick={handleAddToCart}
                   disabled={isAdding}
-                  className="w-full sm:w-44 lg:w-48 bg-navy hover:bg-[#002b4e] active:scale-[0.98] text-white font-bold py-3.5 sm:py-4 px-4 sm:px-5 rounded-full transition shadow-md flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer shrink-0"
+                  data-add-to-cart-btn
+                  className={`w-full sm:w-44 lg:w-48 bg-navy hover:bg-[#002b4e] active:scale-[0.98] text-white font-bold py-3.5 sm:py-4 px-4 sm:px-5 rounded-full transition shadow-md flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer shrink-0 border-2 ${
+                    isNightDive ? 'border-white' : 'border-transparent'
+                  }`}
                 >
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                     <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
@@ -843,13 +852,16 @@ export default function ProductDetail() {
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs sm:text-sm border-collapse">
                   <thead>
-                    <tr className="bg-[#F0F2F5] text-navy font-bold">
-                      <th className="p-3.5 rounded-l-xl">Option</th>
-                      <th className="p-3.5">Fits Sizes</th>
-                      <th className="p-3.5">Chest / Bust (in)</th>
-                      <th className="p-3.5">Waist (in)</th>
-                      <th className="p-3.5">Height (cm)</th>
-                      <th className="p-3.5 rounded-r-xl">Weight (kg)</th>
+                    <tr 
+                      className="font-bold universal-sizing-header"
+                      style={isNightDive ? { backgroundColor: '#002b4e', color: '#ffffff' } : { backgroundColor: '#F0F2F5', color: '#001e3d' }}
+                    >
+                      <th className="p-3.5 rounded-l-xl" style={isNightDive ? { backgroundColor: '#002b4e', color: '#ffffff' } : {}}>Option</th>
+                      <th className="p-3.5" style={isNightDive ? { backgroundColor: '#002b4e', color: '#ffffff' } : {}}>Fits Sizes</th>
+                      <th className="p-3.5" style={isNightDive ? { backgroundColor: '#002b4e', color: '#ffffff' } : {}}>Chest / Bust (in)</th>
+                      <th className="p-3.5" style={isNightDive ? { backgroundColor: '#002b4e', color: '#ffffff' } : {}}>Waist (in)</th>
+                      <th className="p-3.5" style={isNightDive ? { backgroundColor: '#002b4e', color: '#ffffff' } : {}}>Height (cm)</th>
+                      <th className="p-3.5 rounded-r-xl" style={isNightDive ? { backgroundColor: '#002b4e', color: '#ffffff' } : {}}>Weight (kg)</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-navy/10 text-navy/80">
@@ -943,7 +955,10 @@ export default function ProductDetail() {
         <button
           onClick={handleAddToCart}
           disabled={isAdding}
-          className="bottom-bar-add-btn flex-1 max-w-xs sm:max-w-sm bg-navy active:scale-95 hover:bg-[#002b4e] text-white font-bold py-3 px-6 rounded-full transition shadow-md flex items-center justify-center gap-2.5 text-xs sm:text-sm cursor-pointer disabled:opacity-50"
+          data-add-to-cart-btn
+          className={`bottom-bar-add-btn flex-1 max-w-xs sm:max-w-sm bg-navy active:scale-95 hover:bg-[#002b4e] text-white font-bold py-3 px-6 rounded-full transition shadow-md flex items-center justify-center gap-2.5 text-xs sm:text-sm cursor-pointer disabled:opacity-50 border-2 ${
+            isNightDive ? 'border-white' : 'border-transparent'
+          }`}
           aria-label="Add to cart"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="shrink-0">

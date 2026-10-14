@@ -72,6 +72,7 @@ export function getOptimizedImageUrl(url, { width = 800, quality = 'auto' } = {}
   return url
 }
 
+
 /**
  * Generates an optimized WebP poster frame from a video or image URL.
  */

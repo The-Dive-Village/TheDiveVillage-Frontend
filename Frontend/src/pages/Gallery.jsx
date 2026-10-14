@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from 'react'
-import { Link } from 'react-router'
+import { Link, useLocation, useSearchParams } from 'react-router'
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import Button from '../components/Button'
 import SafeImage from '../components/SafeImage'
@@ -22,6 +22,9 @@ const SANITIZED_GALLERY_ITEMS = GALLERY_ITEMS.map((item) => ({
 export default function Gallery() {
   const [itemsList, setItemsList] = useState(SANITIZED_GALLERY_ITEMS)
   const [selectedMediaIndex, setSelectedMediaIndex] = useState(null)
+  const [highlightedItemId, setHighlightedItemId] = useState(null)
+  const location = useLocation()
+  const [searchParams] = useSearchParams()
   const reduce = useReducedMotion()
   const lenis = useLenis()
 
@@ -29,22 +32,72 @@ export default function Gallery() {
   const touchStartY = useRef(0)
 
   const filteredItems = itemsList
+  const targetItemId = searchParams.get('item') || (location.hash ? location.hash.replace('#', '') : null)
 
-  // Always scroll to top when mounting or reloading the Gallery page
+  // Scroll handling: If arriving for a specific item, smoothly scroll to that image. Otherwise scroll to top.
   useEffect(() => {
-    if ('scrollRestoration' in window.history) {
-      window.history.scrollRestoration = 'manual'
-    }
-    window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
-    if (lenis) {
-      lenis.scrollTo(0, { immediate: true })
-    }
-    const timer = setTimeout(() => {
+    if (targetItemId) {
+      setHighlightedItemId(targetItemId)
+
+      let attempts = 0
+
+      const performScroll = (smooth = true) => {
+        const el = document.getElementById(targetItemId)
+        if (el) {
+          const activeLenis = lenis || (typeof window !== 'undefined' ? window.lenis : null)
+          if (activeLenis && typeof activeLenis.scrollTo === 'function') {
+            activeLenis.scrollTo(el, { offset: -100, duration: smooth ? 1.0 : 0, immediate: !smooth })
+          } else {
+            const rect = el.getBoundingClientRect()
+            const scrollTop = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0
+            const targetY = rect.top + scrollTop - 100
+            window.scrollTo({ top: Math.max(0, targetY), behavior: smooth ? 'smooth' : 'auto' })
+          }
+          return true
+        }
+        return false
+      }
+
+      // Initial jump if element is already present, then smooth staggered reinforcement as layout settles
+      performScroll(false)
+      const t1 = setTimeout(() => performScroll(true), 60)
+      const t2 = setTimeout(() => performScroll(true), 250)
+      const t3 = setTimeout(() => performScroll(true), 600)
+
+      const pollInterval = setInterval(() => {
+        attempts++
+        if (performScroll(true) || attempts > 20) {
+          clearInterval(pollInterval)
+        }
+      }, 100)
+
+      const highlightTimer = setTimeout(() => {
+        setHighlightedItemId(null)
+      }, 4500)
+
+      return () => {
+        clearTimeout(t1)
+        clearTimeout(t2)
+        clearTimeout(t3)
+        clearInterval(pollInterval)
+        clearTimeout(highlightTimer)
+      }
+    } else {
+      if ('scrollRestoration' in window.history) {
+        window.history.scrollRestoration = 'manual'
+      }
       window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
-      if (lenis) lenis.scrollTo(0, { immediate: true })
-    }, 50)
-    return () => clearTimeout(timer)
-  }, [lenis])
+      const activeLenis = lenis || (typeof window !== 'undefined' ? window.lenis : null)
+      if (activeLenis && typeof activeLenis.scrollTo === 'function') {
+        activeLenis.scrollTo(0, { immediate: true })
+      }
+      const timer = setTimeout(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+        if (activeLenis && typeof activeLenis.scrollTo === 'function') activeLenis.scrollTo(0, { immediate: true })
+      }, 50)
+      return () => clearTimeout(timer)
+    }
+  }, [targetItemId, lenis])
 
   // High-Res Preloading for adjacent images in Lightbox
   useEffect(() => {
@@ -218,12 +271,13 @@ export default function Gallery() {
               idx={idx}
               reduce={reduce}
               onClick={() => openLightbox(idx)}
+              isHighlighted={highlightedItemId === item.id}
             />
           ))}
         </div>
 
         {/* 4. INSTAGRAM & COMMUNITY SECTION */}
-        <div className="rounded-[40px] bg-[#F0F2F5] p-8 sm:p-14 mb-24">
+        <div className="rounded-3xl sm:rounded-[40px] bg-[#F0F2F5] p-6 sm:p-14 mb-16 sm:mb-24 border border-navy/10 night-dive-panel transition-colors">
           <div className="grid lg:grid-cols-12 gap-8 items-center">
             <div className="lg:col-span-8">
               <span className="text-accent font-bold tracking-widest uppercase text-xs mb-3 block">
@@ -245,7 +299,7 @@ export default function Gallery() {
               >
                 Follow on Instagram →
               </a>
-              <Button as={Link} to="/book-us" variant="secondary" className="justify-center !border-navy/20 !text-navy hover:!bg-navy/5">
+              <Button as={Link} to="/book-us" variant="secondary" className="justify-center !border-navy/20 !text-navy hover:!bg-navy/5 night-dive-btn-secondary">
                 Join Next Expedition
               </Button>
             </div>
@@ -314,7 +368,7 @@ export default function Gallery() {
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.97, y: 10 }}
                 transition={{ duration: 0.2 }}
-                className="relative bg-navy rounded-2xl sm:rounded-3xl shadow-2xl p-2 sm:p-3.5 max-w-4xl sm:max-w-5xl lg:max-w-6xl w-full h-full max-h-[calc(100vh-var(--toolbar-bottom,68px)-36px)] flex flex-col gap-2 select-none border border-white/15 overflow-hidden"
+                className="gallery-preview-modal relative bg-navy rounded-2xl sm:rounded-3xl shadow-2xl p-2 sm:p-3.5 max-w-4xl sm:max-w-5xl lg:max-w-6xl w-full h-full max-h-[calc(100vh-var(--toolbar-bottom,68px)-36px)] flex flex-col gap-2 select-none border border-white/15 overflow-hidden"
                 onClick={(e) => e.stopPropagation()}
               >
               {/* Floating Top-Right Close Button */}
@@ -360,6 +414,8 @@ export default function Gallery() {
                   <LazyVideo
                     src={currentItem.src}
                     controls
+                    controlsList="nodownload noplaybackrate noremoteplayback"
+                    disablePictureInPicture={true}
                     autoPlay
                     loop
                     playsInline
@@ -367,7 +423,8 @@ export default function Gallery() {
                     defaultMuted={true}
                     playbackRate={currentItem.playbackRate || (currentItem.title?.toLowerCase().includes('clownfish and sea anemone') || currentItem.src?.includes('Clownfish_and_Sea_Anemone') ? 0.7 : 1)}
                     style={{ objectFit: 'contain', maxHeight: '100%', maxWidth: '100%' }}
-                    className="w-full h-full max-w-full max-h-full object-contain flex items-center justify-center"
+                    className="w-full h-full max-w-full max-h-full object-contain flex items-center justify-center gallery-preview-video"
+                    videoClassName="gallery-preview-video-element"
                   />
                 ) : (
                   <img
@@ -488,7 +545,7 @@ export default function Gallery() {
   )
 }
 
-function GalleryGridCard({ item, idx, reduce, onClick }) {
+function GalleryGridCard({ item, idx, reduce, onClick, isHighlighted }) {
   const cardRef = useRef(null)
   const hoverTimerRef = useRef(null)
 
@@ -540,10 +597,11 @@ function GalleryGridCard({ item, idx, reduce, onClick }) {
   return (
     <motion.div
       ref={cardRef}
+      id={item.id}
       initial={reduce ? false : { opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: Math.min(idx * 0.02, 0.25) }}
-      className="group flex flex-col rounded-2xl sm:rounded-[24px] overflow-hidden bg-white border border-navy/10 shadow-sm hover:shadow-xl hover:border-cyan-500/30 transition-all duration-300 cursor-pointer active:scale-[0.99]"
+      className={`scroll-mt-28 group flex flex-col rounded-2xl sm:rounded-[24px] overflow-hidden bg-white border border-navy/10 shadow-sm hover:shadow-xl hover:border-cyan-500/30 transition-all duration-500 cursor-pointer active:scale-[0.99]`}
       onClick={onClick}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -583,10 +641,17 @@ function GalleryGridCard({ item, idx, reduce, onClick }) {
       </div>
 
       {/* Information Panel Below Media - Title */}
-      <div className="p-2 sm:p-5 bg-white">
-        <h3 className="font-heading text-xs sm:text-lg font-bold text-navy group-hover:text-accent transition duration-200 line-clamp-1 leading-tight">
+      <div className="p-2 sm:p-5 bg-white flex items-center justify-between gap-2">
+        <h3 className={`font-heading text-xs sm:text-lg font-bold group-hover:text-accent transition duration-200 line-clamp-1 leading-tight ${
+          isHighlighted ? 'text-accent font-extrabold' : 'text-navy'
+        }`}>
           {item.title}
         </h3>
+        {isHighlighted && (
+          <span className="shrink-0 text-[10px] sm:text-xs font-bold uppercase tracking-wider bg-[#FFCD00] text-[#001e3d] px-2.5 py-0.5 rounded-full shadow-sm">
+            Selected
+          </span>
+        )}
       </div>
     </motion.div>
   )
