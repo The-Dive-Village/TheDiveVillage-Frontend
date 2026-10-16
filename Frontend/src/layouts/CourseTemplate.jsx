@@ -2,6 +2,7 @@ import LazyVideo from '../components/LazyVideo'
 import { Link } from 'react-router'
 import { motion, useReducedMotion } from 'framer-motion'
 import Button from '../components/Button'
+import { getOptimizedImageUrl } from '../utils/mediaOptimizer'
 
 // Reusable CourseTemplate based on the reference design
 export default function CourseTemplate({
@@ -58,12 +59,15 @@ export default function CourseTemplate({
               playsInline
               onPlay={(e) => { e.currentTarget.playbackRate = 0.75 }}
               className="w-full h-full object-cover scale-110 origin-center transition-all duration-700"
-              poster={heroImage}
+              poster={getOptimizedImageUrl(heroImage, { width: 1400 }) || heroImage}
             />
           ) : (
             <img 
-              src={heroImage} 
+              src={getOptimizedImageUrl(heroImage, { width: 1600 }) || heroImage} 
               alt={titleTop ? `${titleTop} ${titleBottom || ''}` : 'Hero'} 
+              loading="eager"
+              fetchPriority="high"
+              decoding="sync"
               className="w-full h-full object-cover scale-110 origin-center transition-all duration-700" 
             />
           )}
@@ -119,10 +123,10 @@ export default function CourseTemplate({
 
           <div className="mt-12 sm:mt-16 grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 relative">
             <div className="rounded-3xl overflow-hidden aspect-[4/3] shadow-xl">
-              <img src={aboutImg1} alt="About 1" className="w-full h-full object-cover" />
+              <img src={getOptimizedImageUrl(aboutImg1, { width: 600 }) || aboutImg1} alt="About 1" loading="lazy" decoding="async" className="w-full h-full object-cover" />
             </div>
             <div className="rounded-3xl overflow-hidden aspect-[4/3] shadow-xl">
-              <img src={aboutImg2} alt="About 2" className="w-full h-full object-cover" />
+              <img src={getOptimizedImageUrl(aboutImg2, { width: 600 }) || aboutImg2} alt="About 2" loading="lazy" decoding="async" className="w-full h-full object-cover" />
             </div>
           </div>
         </div>
@@ -147,7 +151,7 @@ export default function CourseTemplate({
           {tours.map((tour, i) => (
             <div key={i} className="w-[85vw] sm:w-[350px] flex-shrink-0 snap-start bg-[#F8FAFC] rounded-3xl overflow-hidden shadow-sm border border-navy/5 group hover:shadow-xl transition duration-300 relative">
               <div className="aspect-[4/3] relative">
-                <img src={tour.image} alt={tour.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+                <img src={getOptimizedImageUrl(tour.image, { width: 500 }) || tour.image} alt={tour.title} loading="lazy" decoding="async" className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
                 <div className="absolute -bottom-4 right-6 bg-accent text-[#001e3d] font-bold text-sm px-4 py-2 rounded-xl shadow-lg">
                   Inquire
                 </div>
@@ -204,7 +208,7 @@ export default function CourseTemplate({
             
             <div className="order-1 lg:order-2 relative">
               <div className="rounded-[40px] overflow-hidden aspect-[4/5] shadow-2xl">
-                <img src={statsImage} alt="Stats" className="w-full h-full object-cover" />
+                <img src={getOptimizedImageUrl(statsImage, { width: 800 }) || statsImage} alt="Stats" loading="lazy" decoding="async" className="w-full h-full object-cover" />
               </div>
               <div className="absolute -bottom-10 -left-10 bg-white p-8 rounded-3xl shadow-xl max-w-sm border border-navy/5 hidden sm:block">
                 <div className="w-12 h-12 bg-accent/10 text-accent rounded-full flex items-center justify-center mb-4">

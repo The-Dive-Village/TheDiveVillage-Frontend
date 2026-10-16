@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
+import { getOptimizedImageUrl } from '../utils/mediaOptimizer'
 
 export default function Product3DViewer({ src, alt = '3D Product Model', productId, poster }) {
   const [scriptLoaded, setScriptLoaded] = useState(false)
   const [autoRotate, setAutoRotate] = useState(true)
+  const [isInViewport, setIsInViewport] = useState(false)
   const modelRef = useRef(null)
   const containerRef = useRef(null)
 
@@ -27,17 +29,24 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
     (alt && (alt.toLowerCase().includes('bottom') && alt.toLowerCase().includes('compression')))
   )
 
+  // Viewport intersection observer to defer script injection and pause rotation when off-screen
   useEffect(() => {
     const el = containerRef.current
-    if (!el || typeof IntersectionObserver === 'undefined') return
+    if (!el || typeof IntersectionObserver === 'undefined') {
+      setIsInViewport(true)
+      return
+    }
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsInViewport(true)
+          }
           setAutoRotate(entry.isIntersecting && !document.hidden)
         })
       },
-      { threshold: 0.1 }
+      { threshold: 0.05, rootMargin: '200px' }
     )
 
     const handleVisibility = () => {
@@ -55,8 +64,18 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
     }
   }, [])
 
+  // Lazy-load model-viewer script only when container nears viewport
   useEffect(() => {
+    if (!isInViewport) return
+
     if (typeof window !== 'undefined' && !customElements.get('model-viewer')) {
+      const existingScript = document.querySelector('script[src*="model-viewer"]')
+      if (existingScript) {
+        existingScript.addEventListener('load', () => setScriptLoaded(true))
+        if (customElements.get('model-viewer')) setScriptLoaded(true)
+        return
+      }
+
       const script = document.createElement('script')
       script.type = 'module'
       script.src = 'https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js'
@@ -65,7 +84,7 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
     } else {
       setScriptLoaded(true)
     }
-  }, [])
+  }, [isInViewport])
 
   // Handle two-finger horizontal drag on mobile/touchscreens and trackpads
   useEffect(() => {
@@ -202,27 +221,28 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
           })
         }
 
-        // 2. Deep recursive traversal across all Three.js materials in the scene
-        const visited = new Set()
+        // 2. Safe Three.js materials lookup without recursive DOM element traversal
         const threeMaterials = new Set()
-
-        const scan = (obj, depth = 0) => {
-          if (!obj || depth > 6 || visited.has(obj) || typeof obj !== 'object') return
-          visited.add(obj)
-
-          if (obj.isMaterial) {
-            threeMaterials.add(obj)
-            return
-          }
-          if (obj.isMesh && obj.material) {
-            if (Array.isArray(obj.material)) {
-              obj.material.forEach((m) => threeMaterials.add(m))
-            } else {
-              threeMaterials.add(obj.material)
+        const symbols = Object.getOwnPropertySymbols(viewer)
+        const sceneSymbol = symbols.find((s) => s.description === 'scene' || String(s).includes('scene'))
+        const threeScene = sceneSymbol ? viewer[sceneSymbol] : null
+        if (threeScene && typeof threeScene.traverse === 'function') {
+          threeScene.traverse((node) => {
+            if (node.isMesh && node.material) {
+              if (Array.isArray(node.material)) {
+                node.material.forEach((m) => threeMaterials.add(m))
+              } else {
+                threeMaterials.add(node.material)
+              }
             }
-          }
-          if (obj.isScene || obj.isObject3D) {
-            obj.traverse((node) => {
+          })
+        }
+        if (viewer.model) {
+          const modelSymbols = Object.getOwnPropertySymbols(viewer.model)
+          const modelSceneSym = modelSymbols.find((s) => s.description === 'scene' || String(s).includes('scene'))
+          const modelScene = modelSceneSym ? viewer.model[modelSceneSym] : null
+          if (modelScene && typeof modelScene.traverse === 'function') {
+            modelScene.traverse((node) => {
               if (node.isMesh && node.material) {
                 if (Array.isArray(node.material)) {
                   node.material.forEach((m) => threeMaterials.add(m))
@@ -231,30 +251,8 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
                 }
               }
             })
-            return
           }
-
-          if (typeof obj.forEach === 'function') {
-            try {
-              obj.forEach((item) => scan(item, depth + 1))
-            } catch (e) {}
-          }
-
-          Object.getOwnPropertySymbols(obj).forEach((sym) => {
-            try {
-              scan(obj[sym], depth + 1)
-            } catch (e) {}
-          })
-
-          Object.getOwnPropertyNames(obj).forEach((key) => {
-            try {
-              scan(obj[key], depth + 1)
-            } catch (e) {}
-          })
         }
-
-        scan(viewer)
-        if (viewer.model) scan(viewer.model)
 
         threeMaterials.forEach((threeMat) => {
           if (!threeMat || !threeMat.isMaterial) return
@@ -332,8 +330,8 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
         data-product-media="true"
         src={src ? src : undefined}
         alt={alt}
-        poster={poster || undefined}
-        loading="eager"
+        poster={poster ? (getOptimizedImageUrl(poster, { width: 800 }) || poster) : undefined}
+        loading="lazy"
         reveal="auto"
         auto-rotate={autoRotate ? true : undefined}
         rotation-per-second="25deg"
@@ -367,7 +365,15 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
         <div slot="progress-bar" style={{ display: 'none' }} />
         <div slot="poster" data-product-media="true" style={{ backgroundColor: '#ffffff', background: '#ffffff' }} className="w-full h-full flex flex-col items-center justify-center bg-white p-4">
           {poster ? (
-            <img src={poster} alt={alt} data-product-media="true" style={{ backgroundColor: '#ffffff' }} className="max-h-full max-w-full object-contain bg-white" />
+            <img
+              src={getOptimizedImageUrl(poster, { width: 800 }) || poster}
+              alt={alt}
+              data-product-media="true"
+              loading="lazy"
+              decoding="async"
+              style={{ backgroundColor: '#ffffff' }}
+              className="max-h-full max-w-full object-contain bg-white"
+            />
           ) : (
             <>
               <div className="w-9 h-9 border-4 border-navy border-t-transparent rounded-full animate-spin mb-2" />

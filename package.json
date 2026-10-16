@@ -6,13 +6,15 @@
     "Frontend"
   ],
   "scripts": {
-    "build": "node scripts/hydrate-lfs-assets.js && node scripts/verify-lfs-assets.js && npm run build --workspace=Frontend",
+    "check:perf": "node scripts/check_optimizations.mjs",
+    "build": "node scripts/check_optimizations.mjs && node scripts/hydrate-lfs-assets.js && node scripts/verify-lfs-assets.js && npm run build --workspace=Frontend",
     "dev": "npm run dev --workspace=Frontend"
   },
   "engines": {
     "node": ">=20.0.0"
   },
   "devDependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "cloudinary": "^2.11.0",
     "dotenv": "^18.0.6"
   }

@@ -1,6 +1,7 @@
 import { Outlet, useLocation } from 'react-router'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
+
 import VideoSphereBackground from '../components/VideoSphereBackground'
 
 export default function PublicLayout() {

@@ -70,7 +70,7 @@ export function get360PosterUrl(url, { width = 1920, quality = 'best' } = {}) {
   const transform = `so_0,f_webp,q_auto:${quality},c_limit,w_${width}`
   return cleanUrl
     .replace('/video/upload/', `/video/upload/${transform}/`)
-    .replace(/\.(mp4|m3u8)(\?.*)?$/i, '.webp$1')
+    .replace(/\.(mp4|m3u8)(\?.*)?$/i, '.webp')
 }
 
 // Active 360 Stream Constants

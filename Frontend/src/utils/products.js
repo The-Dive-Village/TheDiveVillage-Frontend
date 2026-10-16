@@ -1,5 +1,5 @@
-import imgFullWetsuitFront from '../assets/Media/done/Full Wet Suit/Black Wetsuit with Dive Village Logos.png';
-import imgFullWetsuitBack from '../assets/Media/done/Full Wet Suit/Rear-View Black Wetsuit with Cyan Zipper Strap.png';
+const imgFullWetsuitFront = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792101228/TDV-Media/Products/Wet%20Suit%20-%20Full%20Length/Black_Wetsuit_with_Dive_Village_Logos.png';
+const imgFullWetsuitBack = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792101232/TDV-Media/Products/Wet%20Suit%20-%20Full%20Length/Rear-View_Black_Wetsuit_with_Cyan_Zipper_Strap.png';
 
 // 3D GLB Model Imports
 const glbCap = 'https://res.cloudinary.com/qvbunv8y/raw/upload/v1791861802/TDV-Media/Products/TDV%20-%203D%20Product%20Files/The_Dive_Village_Foldable_Cap.glb';

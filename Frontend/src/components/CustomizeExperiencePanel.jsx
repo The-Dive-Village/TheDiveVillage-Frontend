@@ -3,85 +3,176 @@ import { useNavigate } from 'react-router'
 import { motion, AnimatePresence } from 'framer-motion'
 import { PANEL_IMAGES } from '../utils/images'
 import FloatingVideoPip from './FloatingVideoPip'
+import { isVideoCached, markVideoCached, cacheVideoOnce } from '../utils/videoCacheManager'
 
-// Activity Media (High-Performance Cloudinary Video & Poster URLs)
-const vidSafari = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791691465/TDV-Media/AirportToAirport/gallery1.mp4'
+// Activity Media (High-Performance Low-Resolution Preview & Poster URLs)
+const vidSafari = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1792112831/TDV-Media/AddOnsLow/safari_preview.mp4'
 const imgSafari = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791685504/TDV-Media/AddOns/safari.webp'
 
-const vidTrekking = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791685324/TDV-Media/AddOns/Trekking.mp4'
+const vidTrekking = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1792112833/TDV-Media/AddOnsLow/trekking_preview.mp4'
 const imgTrekking = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791685508/TDV-Media/AddOns/trekking.webp'
 
-const vidSightseeing = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791685371/TDV-Media/AddOns/sightseeing.mp4'
+const vidSightseeing = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1792112838/TDV-Media/AddOnsLow/sightseeing_preview.mp4'
 const imgSightseeing = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791685509/TDV-Media/AddOns/sightseeing.webp'
 
-const vidCampers = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791686777/TDV-Media/AddOns/Campers.mp4'
+const vidCampers = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1792112840/TDV-Media/AddOnsLow/camping_camper_preview.mp4'
 const imgCampers = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791685511/TDV-Media/AddOns/campers.webp'
 
-const vidLiveaboard = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791685388/TDV-Media/AddOns/liveaboard.mp4'
+const vidLiveaboard = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1792112845/TDV-Media/AddOnsLow/liveaboard_preview.mp4'
 const imgLiveaboard = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791685512/TDV-Media/AddOns/liveaboard.webp'
 
-const vidCanoneering = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791460085/TDV-Media/Services/Other/Canoneering.mp4'
-const vidSurfing = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458534/TDV-Media/Services/3_Day_Surf_Academy_Course.mp4'
-const vidSnorkeling = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458610/TDV-Media/Services/Discover_Snorkelling.mp4'
+const vidCanoneering = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1792112829/TDV-Media/AddOnsLow/canyoneering_preview.mp4'
+const vidSurfing = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1792112835/TDV-Media/AddOnsLow/surfing_preview.mp4'
+const vidSnorkeling = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1792112843/TDV-Media/AddOnsLow/snorkeling_preview.mp4'
 const imgSnorkeling = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791691302/TDV-Media/ServicesThumbnails/Snorkeling.webp'
 
-function HoverVideoPreview({ videoSrc, poster, displayName }) {
-  const videoRef = useRef(null)
-  const [isLoaded, setIsLoaded] = useState(false)
+// Pre-warmed video pool: keeps video elements in memory with buffered ranges across hovers
+const previewVideoPool = new Map()
+
+function getOrCreatePreviewVideo(src) {
+  if (previewVideoPool.has(src)) {
+    return previewVideoPool.get(src)
+  }
+  const video = document.createElement('video')
+  video.src = src
+  video.muted = true
+  video.defaultMuted = true
+  video.volume = 0
+  video.loop = true
+  video.playsInline = true
+  video.crossOrigin = 'anonymous'
+  video.setAttribute('muted', '')
+  video.setAttribute('playsinline', '')
+  video.setAttribute('webkit-playsinline', '')
+  video.setAttribute('x5-playsinline', '')
+  video.disableRemotePlayback = true
+  video.disablePictureInPicture = true
+  video.preload = 'auto'
+  video.className = 'absolute inset-0 w-full h-full object-cover transition-opacity duration-300'
+  previewVideoPool.set(src, video)
+  return video
+}
+
+function HoverVideoPreview({ videoSrc, fallbackSrc, poster, displayName }) {
+  const containerRef = useRef(null)
+  const isCached = isVideoCached(videoSrc)
+  const [isPlayingSmoothly, setIsPlayingSmoothly] = useState(isCached)
 
   useEffect(() => {
-    const v = videoRef.current
-    if (!v) return
-    v.muted = true
-    v.defaultMuted = true
-    v.volume = 0
-    if (v.readyState >= 2) {
-      setIsLoaded(true)
+    const container = containerRef.current
+    if (!container || !videoSrc) return
+
+    const video = getOrCreatePreviewVideo(videoSrc)
+    if (isCached && video.readyState >= 2) {
+      video.style.opacity = '1'
+      setIsPlayingSmoothly(true)
+    } else {
+      video.style.opacity = '0'
     }
-    const p = v.play()
-    if (p !== undefined) {
-      p.then(() => setIsLoaded(true)).catch(() => {})
+    container.appendChild(video)
+
+    let rvfcId = null
+    let frameCount = 0
+    let isCancelled = false
+
+    const handleError = () => {
+      if (fallbackSrc && video.src !== fallbackSrc && !video.src.endsWith(fallbackSrc)) {
+        video.src = fallbackSrc
+        video.load()
+        video.play().catch(() => {})
+      }
     }
-  }, [videoSrc])
+    video.addEventListener('error', handleError)
+
+    const onFrame = () => {
+      if (isCancelled) return
+      frameCount++
+      // Require at least 2 presented frames before fading in to ensure 60fps continuity
+      if (frameCount >= 2 || isCached) {
+        setIsPlayingSmoothly(true)
+        video.style.opacity = '1'
+        markVideoCached(videoSrc)
+        cacheVideoOnce(videoSrc).catch(() => {})
+      } else if (video.requestVideoFrameCallback) {
+        rvfcId = video.requestVideoFrameCallback(onFrame)
+      }
+    }
+
+    const handleWaiting = () => {
+      // Don't show frozen video frame if waiting on network buffer
+      if (!isCached) {
+        setIsPlayingSmoothly(false)
+        video.style.opacity = '0'
+      }
+    }
+
+    video.addEventListener('waiting', handleWaiting)
+
+    // Attempt smooth autoplay
+    const playPromise = video.play()
+    if (playPromise !== undefined) {
+      playPromise
+        .then(() => {
+          if (isCancelled) return
+          if (video.requestVideoFrameCallback) {
+            rvfcId = video.requestVideoFrameCallback(onFrame)
+          } else {
+            // Fallback for browsers without requestVideoFrameCallback
+            const checkTime = () => {
+              if (isCancelled) return
+              if (video.currentTime > 0.05) {
+                setIsPlayingSmoothly(true)
+                video.style.opacity = '1'
+                markVideoCached(videoSrc)
+                cacheVideoOnce(videoSrc).catch(() => {})
+              } else if (!video.paused) {
+                requestAnimationFrame(checkTime)
+              }
+            }
+            requestAnimationFrame(checkTime)
+          }
+        })
+        .catch(() => {})
+    }
+
+    return () => {
+      isCancelled = true
+      if (rvfcId && video.cancelVideoFrameCallback) {
+        video.cancelVideoFrameCallback(rvfcId)
+      }
+      video.removeEventListener('waiting', handleWaiting)
+      video.removeEventListener('error', handleError)
+      video.pause()
+      if (container.contains(video)) {
+        container.removeChild(video)
+      }
+    }
+  }, [videoSrc, fallbackSrc])
 
   return (
     <div className="absolute inset-0 w-full h-full bg-[#001428] overflow-hidden">
+      {/* High-quality poster stays visible until video frames are confirmed running at 60fps */}
       {poster && (
         <img
           src={poster}
           alt={displayName}
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 pointer-events-none ${
-            isLoaded ? 'opacity-0' : 'opacity-100'
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 pointer-events-none z-0 ${
+            isPlayingSmoothly ? 'opacity-0' : 'opacity-100'
           }`}
         />
       )}
-      <video
-        ref={videoRef}
-        src={videoSrc}
-        poster={poster || undefined}
-        autoPlay
-        loop
-        muted
-        playsInline
-        webkit-playsinline=""
-        x5-playsinline=""
-        preload="auto"
-        onLoadedMetadata={() => setIsLoaded(true)}
-        onLoadedData={() => setIsLoaded(true)}
-        onCanPlay={() => setIsLoaded(true)}
-        onPlay={() => setIsLoaded(true)}
-        onPlaying={() => setIsLoaded(true)}
-        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
-          isLoaded ? 'opacity-100' : 'opacity-0'
-        }`}
+      {/* Container where the pooled smooth video is mounted */}
+      <div
+        ref={containerRef}
+        className="absolute inset-0 w-full h-full pointer-events-none z-10"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent pointer-events-none" />
-      <div className="relative z-10 mt-auto p-2">
+      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent pointer-events-none z-20" />
+      <div className="relative z-30 mt-auto p-2 pointer-events-none">
         <span className="text-[11px] font-heading font-bold text-white drop-shadow block leading-tight truncate">
           {displayName}
         </span>
       </div>
-      <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-[#001428] rotate-45 border-r-2 border-b-2 border-[#FFCD00]" />
+      <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-[#001428] rotate-45 border-r-2 border-b-2 border-[#FFCD00] z-20" />
     </div>
   )
 }
@@ -91,48 +182,56 @@ const CUSTOM_ACTIVITIES = [
     id: 'canyoneering',
     name: 'Canyoneering',
     video: vidCanoneering,
+    fallbackVideo: '/videos/customize/canyoneering.mp4',
     poster: imgTrekking,
   },
   {
     id: 'safari',
     name: 'Safari',
     video: vidSafari,
+    fallbackVideo: '/videos/customize/safari.mp4',
     poster: imgSafari,
   },
   {
     id: 'trekking',
     name: 'Trekking',
     video: vidTrekking,
+    fallbackVideo: '/videos/customize/trekking.mp4',
     poster: imgTrekking,
   },
   {
     id: 'surfing',
     name: 'Surfing',
     video: vidSurfing,
+    fallbackVideo: '/videos/customize/surfing.mp4',
     poster: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458191/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp',
   },
   {
     id: 'sightseeing',
     name: 'Local Sightseeing',
     video: vidSightseeing,
+    fallbackVideo: '/videos/customize/sightseeing.mp4',
     poster: imgSightseeing,
   },
   {
     id: 'snorkeling',
     name: 'Snorkeling',
     video: vidSnorkeling,
+    fallbackVideo: '/videos/customize/snorkeling.mp4',
     poster: imgSnorkeling,
   },
   {
     id: 'camping_camper',
     name: 'Camping / Camper',
     video: vidCampers,
+    fallbackVideo: '/videos/customize/camping_camper.mp4',
     poster: imgCampers,
   },
   {
     id: 'liveaboard',
     name: 'Liveaboard',
     video: vidLiveaboard,
+    fallbackVideo: '/videos/customize/liveaboard.mp4',
     poster: imgLiveaboard,
   },
 ]
@@ -143,11 +242,40 @@ export default function CustomizeExperiencePanel({ className = '', images = PANE
   const [hoveredActivity, setHoveredActivity] = useState(null)
   const [pipVideo, setPipVideo] = useState(null)
   const navigate = useNavigate()
+  const hoverTimeoutRef = useRef(null)
+
+  const handleMouseEnterActivity = (id) => {
+    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current)
+    hoverTimeoutRef.current = setTimeout(() => {
+      setHoveredActivity(id)
+    }, 75)
+  }
+
+  const handleMouseLeaveActivity = () => {
+    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current)
+    setHoveredActivity(null)
+  }
+
+  // Pre-warm video network connections when panel mounts during browser idle
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      CUSTOM_ACTIVITIES.forEach((act) => {
+        if (act.video) {
+          const v = getOrCreatePreviewVideo(act.video)
+          if (v.readyState === 0) {
+            v.load()
+          }
+        }
+      })
+    }, 1200)
+    return () => clearTimeout(timer)
+  }, [])
 
   const openPipForCampers = () => {
     setPipVideo({
       id: 'camping_camper',
       video: vidCampers,
+      fallbackVideo: '/videos/customize/camping_camper.mp4',
       poster: imgCampers,
     })
     setHoveredActivity(null)
@@ -301,8 +429,8 @@ export default function CustomizeExperiencePanel({ className = '', images = PANE
                       <div
                         key={activity.id}
                         className="relative shrink-0"
-                        onMouseEnter={() => setHoveredActivity(activity.id)}
-                        onMouseLeave={() => setHoveredActivity(null)}
+                        onMouseEnter={() => handleMouseEnterActivity(activity.id)}
+                        onMouseLeave={handleMouseLeaveActivity}
                       >
                         <AnimatePresence>
                           {isHovered && activity.video && (!pipVideo || pipVideo.id !== activity.id) && (
@@ -315,6 +443,7 @@ export default function CustomizeExperiencePanel({ className = '', images = PANE
                             >
                               <HoverVideoPreview
                                 videoSrc={activity.video}
+                                fallbackSrc={activity.fallbackVideo}
                                 poster={activity.poster}
                                 displayName={displayName}
                               />
@@ -353,8 +482,8 @@ export default function CustomizeExperiencePanel({ className = '', images = PANE
                   <div
                     key={activity.id}
                     className="relative"
-                    onMouseEnter={() => setHoveredActivity(activity.id)}
-                    onMouseLeave={() => setHoveredActivity(null)}
+                    onMouseEnter={() => handleMouseEnterActivity(activity.id)}
+                    onMouseLeave={handleMouseLeaveActivity}
                   >
                     {/* Hover Floating Video Preview Box */}
                     <AnimatePresence>
@@ -368,6 +497,7 @@ export default function CustomizeExperiencePanel({ className = '', images = PANE
                         >
                           <HoverVideoPreview
                             videoSrc={activity.video}
+                            fallbackSrc={activity.fallbackVideo}
                             poster={activity.poster}
                             displayName={activity.name}
                           />
@@ -436,6 +566,7 @@ export default function CustomizeExperiencePanel({ className = '', images = PANE
           videoSrc={pipVideo.video}
           fallbackSrc={pipVideo.fallbackVideo}
           poster={pipVideo.poster}
+          isPaused={Boolean(hoveredActivity)}
           onClose={() => setPipVideo(null)}
         />
       )}

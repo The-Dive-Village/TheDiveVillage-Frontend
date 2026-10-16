@@ -725,66 +725,67 @@ export default function VideoSphereBackground() {
               display: isSpherePage ? 'block' : 'none',
             }}
           />
-          <div
-            style={{
-              width: '100%',
-              height: '100%',
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              zIndex: 1,
-              display: shouldRenderCanvas ? 'block' : 'none',
-              pointerEvents: shouldRenderCanvas ? 'auto' : 'none',
-            }}
-          >
-            <Canvas
-              frameloop={shouldRenderCanvas ? 'always' : 'never'}
-              dpr={[1, 1.5]}
-              camera={{ position: [0, 0, 0.1], fov: 85 }}
-              gl={{ powerPreference: 'high-performance', antialias: false }}
-              onCreated={({ gl, scene }) => {
-                scene.background = new THREE.Color('#001e3d')
-                gl.domElement.addEventListener(
-                  'webglcontextlost',
-                  (e) => {
-                    e.preventDefault()
-                    console.warn('THREE.WebGLRenderer: Context Lost. Handling gracefully.')
-                  },
-                  false
-                )
-                gl.domElement.addEventListener(
-                  'webglcontextrestored',
-                  () => {
-                    console.info('THREE.WebGLRenderer: Context Restored.')
-                  },
-                  false
-                )
+          {shouldRenderCanvas && (
+            <div
+              style={{
+                width: '100%',
+                height: '100%',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                zIndex: 1,
+                pointerEvents: 'auto',
               }}
             >
-              <color attach="background" args={['#001e3d']} />
-              {isSpherePage && (
-                <>
-                  <Suspense fallback={null}>
-                    <VideoSphere
-                      videoSrc={currentVideo}
-                      key={currentVideo}
-                      isNightDive={isNightDive}
-                      joystickVelocity={joystickVelocity}
-                      isVisible={isVisible}
+              <Canvas
+                frameloop="always"
+                dpr={[1, 1.5]}
+                camera={{ position: [0, 0, 0.1], fov: 85 }}
+                gl={{ powerPreference: 'high-performance', antialias: false }}
+                onCreated={({ gl, scene }) => {
+                  scene.background = new THREE.Color('#001e3d')
+                  gl.domElement.addEventListener(
+                    'webglcontextlost',
+                    (e) => {
+                      e.preventDefault()
+                      console.warn('THREE.WebGLRenderer: Context Lost. Handling gracefully.')
+                    },
+                    false
+                  )
+                  gl.domElement.addEventListener(
+                    'webglcontextrestored',
+                    () => {
+                      console.info('THREE.WebGLRenderer: Context Restored.')
+                    },
+                    false
+                  )
+                }}
+              >
+                <color attach="background" args={['#001e3d']} />
+                {isSpherePage && (
+                  <>
+                    <Suspense fallback={null}>
+                      <VideoSphere
+                        videoSrc={currentVideo}
+                        key={currentVideo}
+                        isNightDive={isNightDive}
+                        joystickVelocity={joystickVelocity}
+                        isVisible={isVisible}
+                      />
+                    </Suspense>
+                    <OrbitControls
+                      enableZoom={false}
+                      enablePan={false}
+                      enableDamping={true}
+                      dampingFactor={0.05}
+                      autoRotate={false}
+                      rotateSpeed={-0.15}
                     />
-                  </Suspense>
-                  <OrbitControls
-                    enableZoom={false}
-                    enablePan={false}
-                    enableDamping={true}
-                    dampingFactor={0.05}
-                    autoRotate={false}
-                    rotateSpeed={-0.15}
-                  />
-                </>
-              )}
-            </Canvas>
-          </div>
+                  </>
+                )}
+              </Canvas>
+            </div>
+          )}
         </div>
       </div>
       {!isNightDive && !isHiddenJoystickPath && <JoystickControl joystickVelocity={joystickVelocity} />}

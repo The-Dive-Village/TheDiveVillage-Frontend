@@ -125,7 +125,7 @@ const vidCampers = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791686777
 const imgCampers = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791685511/TDV-Media/AddOns/campers.webp'
 const vidSafari = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791691465/TDV-Media/AirportToAirport/gallery1.mp4'
 const imgSafari = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791685504/TDV-Media/AddOns/safari.webp'
-const vidLiveaboard = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791685388/TDV-Media/AddOns/liveaboard.mp4'
+const vidLiveaboard = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1792112845/TDV-Media/AddOnsLow/liveaboard_preview.mp4'
 const imgLiveaboard = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791685512/TDV-Media/AddOns/liveaboard.webp'
 
 export const CATEGORIES = [

@@ -1,14 +1,33 @@
 import { useEffect } from 'react'
 
+const TARGET_SITE_ORIGIN = 'https://thedivevillage.co'
+const DEFAULT_LOGO_URL = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791691225/TDV-Media/UI/Logo.png'
+
 export default function SEOHead({
   title = "The Dive Village | It's a Community",
   description = 'Experience world-class scuba diving certifications, guided freediving excursions, and premium ocean apparel with certified professional divemasters at The Dive Village.',
   keywords = 'scuba diving, freediving, scuba certification, diving courses, dive center, dive gear, underwater exploration, ocean apparel, dive village',
-  canonicalUrl = 'https://thedivevillage.co',
-  ogImage = '/src/assets/Logo.png',
+  canonicalUrl = '',
+  ogImage = DEFAULT_LOGO_URL,
   ogType = 'website'
 }) {
   useEffect(() => {
+    // 1. Resolve canonical URL to ensure permanent .co alignment regardless of future additions
+    let resolvedCanonical = canonicalUrl
+    if (!resolvedCanonical) {
+      resolvedCanonical = typeof window !== 'undefined'
+        ? `${TARGET_SITE_ORIGIN}${window.location.pathname}`
+        : TARGET_SITE_ORIGIN
+    } else if (resolvedCanonical.startsWith('/')) {
+      resolvedCanonical = `${TARGET_SITE_ORIGIN}${resolvedCanonical}`
+    } else if (resolvedCanonical.includes('thedivevillage.com')) {
+      // Auto-correct any accidental future .com copy-paste
+      resolvedCanonical = resolvedCanonical.replace('https://thedivevillage.com', TARGET_SITE_ORIGIN).replace('http://thedivevillage.com', TARGET_SITE_ORIGIN)
+    }
+
+    // Strip trailing query strings or hash for canonical purity
+    resolvedCanonical = resolvedCanonical.split('?')[0].split('#')[0]
+
     // Update Title
     document.title = title
 
@@ -53,12 +72,12 @@ export default function SEOHead({
         : typeof window !== 'undefined'
         ? new URL(ogImage, window.location.origin).href
         : ogImage
-      : (typeof window !== 'undefined' ? `${window.location.origin}/src/assets/Logo.png` : '/src/assets/Logo.png')
+      : DEFAULT_LOGO_URL
 
     setMetaTag('property', 'og:image', fullImageUrl)
     setMetaTag('property', 'og:image:secure_url', fullImageUrl)
     setMetaTag('property', 'og:image:alt', title)
-    setMetaTag('property', 'og:url', canonicalUrl || (typeof window !== 'undefined' ? window.location.href : ''))
+    setMetaTag('property', 'og:url', resolvedCanonical)
 
     // Twitter Card Tags
     setMetaTag('name', 'twitter:card', 'summary_large_image')
@@ -74,7 +93,7 @@ export default function SEOHead({
         linkCanonical.setAttribute('rel', 'canonical')
         document.head.appendChild(linkCanonical)
       }
-      linkCanonical.setAttribute('href', canonicalUrl || window.location.href)
+      linkCanonical.setAttribute('href', resolvedCanonical)
     }
   }, [title, description, keywords, canonicalUrl, ogImage, ogType])
 

@@ -53,19 +53,16 @@ export function attachHlsStream({
     const hls = new Hls({
       // NON-NEGOTIABLE FOR 360° VIDEO:
       // Prevent hls.js from capping quality to the canvas/window DOM dimensions.
-      // 360 equirectangular projections crop a narrow FOV from the full frame,
-      // so 4K resolution is vital for apparent sharpness even on small screens.
       capLevelToPlayerSize: false,
-      maxBufferLength: 30,
-      maxMaxBufferLength: 60,
+      maxBufferLength: 20,
+      maxMaxBufferLength: 40,
       enableWorker: true,
       lowLatencyMode: false,
-      backBufferLength: 15,
-      // Start with auto ABR; on high-resolution desktop viewports, prefer top quality
+      backBufferLength: 10,
       startLevel: -1,
       testBandwidth: true,
-      abrEwmaFastLive: 3.0,
-      abrEwmaSlowLive: 9.0,
+      abrEwmaFastLive: 2.0,
+      abrEwmaSlowLive: 6.0,
     })
     hlsInstance = hls
 
@@ -74,9 +71,18 @@ export function attachHlsStream({
 
     hls.on(Hls.Events.MANIFEST_PARSED, (_event, data) => {
       if (isDestroyed) return
-      // If desktop user on capable connection, guide initial level toward top 4K rendition
-      if (typeof window !== 'undefined' && window.innerWidth >= 1024 && data.levels && data.levels.length > 0) {
-        hls.nextLevel = data.levels.length - 1
+      // Always start on high-definition top-tier level (4K / 3840x1920) so 360 video is crisp and never blurry
+      if (data.levels && data.levels.length > 0) {
+        let maxBitrateIdx = 0
+        let maxBitrate = 0
+        data.levels.forEach((lvl, idx) => {
+          if (lvl.bitrate > maxBitrate) {
+            maxBitrate = lvl.bitrate
+            maxBitrateIdx = idx
+          }
+        })
+        hls.startLevel = maxBitrateIdx
+        hls.nextLevel = maxBitrateIdx
       }
       attemptPlay()
       if (onLoaded) onLoaded({ levels: data.levels, hls })

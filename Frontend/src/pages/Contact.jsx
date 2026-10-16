@@ -278,7 +278,7 @@ export default function Contact() {
         title="Contact Us & Custom Dive Charters | The Dive Village"
         description="Get in touch with The Dive Village for custom scuba itineraries, diving course enquiries, private boat charters, partnerships, careers, and island travel logistics."
         keywords="contact dive village, scuba diving inquiry, course booking, dive center partnership, scuba careers, island travel assistance"
-        canonicalUrl="https://thedivevillage.com/contact"
+        canonicalUrl="https://thedivevillage.co/contact"
       />
 
       {/* 1. HEADER VIDEO HERO (DYNAMIC COMPILED NIGHT DIVE VIDEO) */}

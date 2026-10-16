@@ -3,6 +3,7 @@ import { Link } from 'react-router'
 import { motion, useReducedMotion } from 'framer-motion'
 import { IMAGES } from '../utils/images'
 import Button from '../components/Button'
+import { getOptimizedImageUrl } from '../utils/mediaOptimizer'
 
 const scubaVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458719/TDV-Media/Services/Open_Water_Diver.mp4';
 const snorkelingVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458610/TDV-Media/Services/Discover_Snorkelling.mp4';
@@ -64,10 +65,16 @@ export default function AllCourses() {
                 muted
                 playsInline
                 className="w-full h-full object-cover transition duration-700 group-hover:scale-110"
-                poster={cat.img}
+                poster={getOptimizedImageUrl(cat.img, { width: 800 }) || cat.img}
               />
             ) : (
-              <img src={cat.img} alt={cat.title} className="w-full h-full object-cover transition duration-700 group-hover:scale-110" />
+              <img
+                src={getOptimizedImageUrl(cat.img, { width: 800 }) || cat.img}
+                alt={cat.title}
+                loading="lazy"
+                decoding="async"
+                className="w-full h-full object-cover transition duration-700 group-hover:scale-110"
+              />
             )}
             <div className="absolute inset-0 bg-gradient-to-t from-navy/95 via-navy/40 to-transparent pointer-events-none"></div>
             <div className="absolute inset-0 p-5 sm:p-8 flex flex-col justify-end">

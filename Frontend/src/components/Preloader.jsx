@@ -1,9 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
-import preloaderVideoLocal from '../assets/preloader.mp4'
-
-const CLOUD_PRELOADER = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791918482/TDV-Media/UI/preloader.mp4'
-const preloaderVideo = preloaderVideoLocal || CLOUD_PRELOADER
+const CLOUD_PRELOADER = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1792101253/TDV-Media/UI/preloader.mp4'
+const preloaderVideo = CLOUD_PRELOADER
 import {
   subscribeHeroVideoReady,
   getHeroVideoReady,
@@ -57,11 +55,15 @@ function DiverAnimation({ src, fallbackSrc, className, isNightDive }) {
 
     const ctx = canvas.getContext('2d', { willReadFrequently: true })
     let animId
+    let lastRenderTime = 0
     isRunningRef.current = isVisible
 
-    const render = () => {
+    const render = (now) => {
       if (!isRunningRef.current) return
-      if (video.readyState >= 2) {
+
+      // Throttle software chroma key to ~30 FPS to preserve CPU during page hydration
+      if (now - lastRenderTime >= 33 && video.readyState >= 2) {
+        lastRenderTime = now
         const targetW = 320
         const aspect = (video.videoWidth && video.videoHeight) ? (video.videoHeight / video.videoWidth) : (9 / 16)
         const targetH = Math.round(targetW * aspect) || 180
@@ -157,7 +159,7 @@ export default function Preloader({ onComplete }) {
   }, [])
 
   useEffect(() => {
-    const maxSafetyTimeout = 1800 // Hard safety cap guaranteeing preloader finishes within 2.0s
+    const maxSafetyTimeout = 3000 // Extended safety cap ensuring high-res 4K frame renders before preloader dismisses
     const baseTargetDuration = 1400 // Smooth progress duration (~1.4s)
     let animationFrameId
     let completed = false

@@ -1,5 +1,5 @@
 import LazyVideo from '../components/LazyVideo'
-import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
+import { useState, useEffect, useMemo, useCallback, useRef, lazy, Suspense } from 'react'
 import { useSearchParams, useLocation } from 'react-router'
 import { motion, AnimatePresence } from 'framer-motion'
 import PhoneInput, { parsePhoneNumber, getCountryCallingCode } from 'react-phone-number-input'
@@ -31,7 +31,7 @@ import { triggerHaptic, triggerSuccessHaptic, triggerErrorHaptic } from '../util
 const turtleAnnaVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/TDV-Media/Background/Turtle.mp4'
 const compiledNightDiveVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/TDV-Media/Background/Night_Dive.mp4'
 import useNightDive from '../hooks/useNightDive'
-import DiveExplorerMap from '../components/DiveExplorerMap'
+const DiveExplorerMap = lazy(() => import('../components/DiveExplorerMap'))
 import { loadDiveSites } from '../utils/diveSitesLoader'
 import { getIslandsForCountry, getSitesForIsland, getIslandForSite } from '../utils/diveIslandCatalog'
 
@@ -1734,7 +1734,7 @@ export default function BookUs() {
         title="Book Scuba Diving Courses & Expeditions Online | The Dive Village"
         description="Book certified scuba diving courses, Discovery dives, snorkeling trips, and freediving packages online with instant confirmation at The Dive Village."
         keywords="book scuba dive online, scuba course reservation, dive charter booking, snorkeling trip reservation, dive village booking"
-        canonicalUrl="https://thedivevillage.com/book-us"
+        canonicalUrl="https://thedivevillage.co/book-us"
       />
 
       {/* 1. HEADER VIDEO HERO (DYNAMIC COMPILED NIGHT DIVE VIDEO - DESKTOP ONLY) */}
@@ -2649,18 +2649,25 @@ export default function BookUs() {
 
           {/* Column 2: Interactive 2D Worldwide Dive Map (Beside Booking Form on Desktop, Directly Below on Mobile) */}
           <div id="dive-explorer-map" data-lenis-prevent="true" className="lg:col-span-6 xl:col-span-7 w-full min-w-0 lg:sticky lg:top-28 self-start mt-6 sm:mt-10 lg:mt-0">
-            <DiveExplorerMap
-              onSelectSite={handleMapSelectSite}
-              onBookSite={handleMapSelectSite}
-              onSelectCountry={handleMapSelectCountry}
-              selectedCountry={country}
-              selectedIsland={island}
-              selectedSite={location}
-              selectedSiteId={locationId}
-              title="Dive Explorer"
-              subtitle="Explore 3,500+ worldwide dive sites on this interactive 2D map. Click any site to auto-fill your booking location!"
-              showHeading={true}
-            />
+            <Suspense fallback={
+              <div className="h-[500px] w-full rounded-3xl bg-[#00172b] border border-white/10 flex flex-col items-center justify-center text-white/60 p-6">
+                <div className="w-8 h-8 border-3 border-accent border-t-transparent rounded-full animate-spin mb-3" />
+                <span className="text-xs font-bold uppercase tracking-widest text-[#00AEC7]">Loading Dive Explorer Map...</span>
+              </div>
+            }>
+              <DiveExplorerMap
+                onSelectSite={handleMapSelectSite}
+                onBookSite={handleMapSelectSite}
+                onSelectCountry={handleMapSelectCountry}
+                selectedCountry={country}
+                selectedIsland={island}
+                selectedSite={location}
+                selectedSiteId={locationId}
+                title="Dive Explorer"
+                subtitle="Explore 3,500+ worldwide dive sites on this interactive 2D map. Click any site to auto-fill your booking location!"
+                showHeading={true}
+              />
+            </Suspense>
           </div>
         </div>
       </div>

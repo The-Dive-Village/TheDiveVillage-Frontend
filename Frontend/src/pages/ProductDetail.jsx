@@ -11,6 +11,7 @@ import Product3DViewer from '../components/Product3DViewer'
 import SEOHead from '../components/SEOHead'
 import { triggerHaptic, triggerSuccessHaptic } from '../utils/haptics'
 import { shareContent } from '../utils/share'
+import { getOptimizedImageUrl, getOptimizedVideoPoster } from '../utils/mediaOptimizer'
 
 export default function ProductDetail() {
   const isNightDive = useNightDive()
@@ -339,7 +340,7 @@ export default function ProductDetail() {
         title={`${product.title || product.name} | Ocean Apparel | The Dive Village`}
         description={`${product.description}. Premium quality dive gear and eco-friendly apparel crafted by The Dive Village.`}
         keywords={`${product.title || product.name}, dive apparel, ocean wear, scuba gear, sustainable marine clothing, ${product.category}`}
-        canonicalUrl={`https://thedivevillage.com/shop/${product.id}`}
+        canonicalUrl={`https://thedivevillage.co/shop/${product.id}`}
         ogImage={product.image || (product.images && product.images[0])}
       />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -512,16 +513,28 @@ export default function ProductDetail() {
                       >
                         {item.type === 'image' ? (
                           <img 
-                            src={item.src} 
+                            src={getOptimizedImageUrl(item.src, { width: 160 }) || item.src} 
                             alt={item.label} 
+                            loading="lazy"
+                            decoding="async"
                             data-product-media="true"
                             style={{ backgroundColor: '#ffffff' }}
                             className="w-full h-full object-cover bg-white" 
                           />
                         ) : item.type === 'video' ? (
-                          <div className="relative w-full h-full bg-black flex items-center justify-center">
-                            <LazyVideo src={item.src} className="w-full h-full object-cover opacity-70 pointer-events-none" muted />
-                            <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                          <div className="relative w-full h-full bg-slate-900 flex items-center justify-center overflow-hidden">
+                            {getOptimizedVideoPoster(item.src, { width: 160 }) ? (
+                              <img
+                                src={getOptimizedVideoPoster(item.src, { width: 160 })}
+                                alt={item.label}
+                                loading="lazy"
+                                decoding="async"
+                                className="w-full h-full object-cover opacity-80"
+                              />
+                            ) : (
+                              <div className="w-full h-full bg-navy/40" />
+                            )}
+                            <div className="absolute inset-0 flex items-center justify-center bg-black/30">
                               <span className="w-6 h-6 rounded-full bg-accent text-navy flex items-center justify-center text-xs font-bold shadow-sm">
                                 ▶
                               </span>
@@ -1256,8 +1269,10 @@ function InteractiveProductImage({ src, alt, onOpenFloating }) {
     >
       {/* Base Product Image */}
       <img
-        src={src}
+        src={getOptimizedImageUrl(src, { width: 1000 }) || src}
         alt={alt}
+        loading="eager"
+        decoding="async"
         data-product-media="true"
         className="w-full h-full object-contain p-6 pointer-events-none select-none transition-transform duration-300 bg-white"
         style={{
@@ -1283,8 +1298,10 @@ function InteractiveProductImage({ src, alt, onOpenFloating }) {
           {/* Zoomed Image Inside the Square View Box */}
           <div data-product-media="true" style={{ backgroundColor: '#ffffff' }} className="relative w-full h-full overflow-hidden bg-white">
             <img
-              src={src}
+              src={getOptimizedImageUrl(src, { width: 1600 }) || src}
               alt={alt}
+              loading="lazy"
+              decoding="async"
               data-product-media="true"
               className="absolute max-w-none pointer-events-none select-none bg-white"
               style={{

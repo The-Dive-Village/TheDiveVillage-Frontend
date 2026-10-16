@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
+import { getOptimizedImageUrl } from '../utils/mediaOptimizer'
 
 const certifiedCoursesImg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791691284/TDV-Media/ServicesThumbnails/Certified%20Courses.webp'
 const introProgImg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791691278/TDV-Media/ServicesThumbnails/Introductory%20Programs.webp'
@@ -138,8 +139,10 @@ function SafetyPromiseCard({ promise, i, scrollYProgress, totalCount }) {
         {promise.image && (
           <div className="h-44 w-full rounded-2xl overflow-hidden mb-5 border border-white/15 relative bg-black/30 shadow-md">
             <img 
-              src={promise.image} 
+              src={getOptimizedImageUrl(promise.image, { width: 600 }) || promise.image} 
               alt={promise.title} 
+              loading="lazy"
+              decoding="async"
               className="w-full h-full object-cover" 
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />

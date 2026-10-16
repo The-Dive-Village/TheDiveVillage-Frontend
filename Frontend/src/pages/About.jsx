@@ -112,7 +112,7 @@ export default function About() {
         title="About Us | Certified Scuba Instructors & Ocean Sanctuary | The Dive Village"
         description="Discover the story behind The Dive Village. Dedicated to safety, marine conservation, diving excellence, and building an inclusive underwater community."
         keywords="about the dive village, certified instructors, marine conservation dive center, eco scuba diving, ocean community"
-        canonicalUrl="https://thedivevillage.com/about"
+        canonicalUrl="https://thedivevillage.co/about"
       />
       
       {/* FULL-SCREEN VIDEO BACKGROUND (DYNAMIC FOR NIGHT DIVE ACROSS ENTIRE PAGE) */}
@@ -138,7 +138,7 @@ export default function About() {
         <motion.div
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: false, margin: "-80px" }}
+          viewport={{ once: true, margin: "-80px" }}
           variants={containerVariants}
           className="flex flex-col items-center text-center max-w-4xl mx-auto"
         >
@@ -290,10 +290,12 @@ export default function About() {
                 <div>
                   {/* Photo Container */}
                   <div className="h-28 sm:h-44 w-full rounded-xl sm:rounded-2xl overflow-hidden mb-3 sm:mb-5 border border-white/15 relative bg-black/20 shadow-md">
-                    <img 
+                    <SafeImage 
                       src={s.image} 
                       alt={s.title} 
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                      targetWidth={500}
+                      disableParallax={true}
+                      imgClassName="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
                   </div>

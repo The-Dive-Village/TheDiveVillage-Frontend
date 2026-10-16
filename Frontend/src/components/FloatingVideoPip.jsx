@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X } from 'lucide-react'
+import { isVideoCached, markVideoCached, cacheVideoOnce } from '../utils/videoCacheManager'
 
 /**
  * FloatingVideoPip - Pure Picture-in-Picture floating video player
@@ -11,39 +12,82 @@ export default function FloatingVideoPip({
   fallbackSrc,
   poster,
   onClose,
+  isPaused = false,
 }) {
   const videoRef = useRef(null)
   const [currentSrc, setCurrentSrc] = useState(videoSrc)
   const [triedFallback, setTriedFallback] = useState(false)
-  const [isLoaded, setIsLoaded] = useState(false)
+  const isCached = isVideoCached(videoSrc)
+  const [isPlayingSmoothly, setIsPlayingSmoothly] = useState(isCached)
 
   // Update src when videoSrc prop changes
   useEffect(() => {
     setCurrentSrc(videoSrc)
     setTriedFallback(false)
-    setIsLoaded(false)
+    setIsPlayingSmoothly(isVideoCached(videoSrc))
   }, [videoSrc])
 
-  // Play video on mount / src change
+  // Coordinate playback and pause states
   useEffect(() => {
     const video = videoRef.current
     if (!video) return
+
+    if (isPaused) {
+      video.pause()
+      return
+    }
 
     video.muted = true
     video.defaultMuted = true
     video.volume = 0
 
-    if (video.readyState >= 2) {
-      setIsLoaded(true)
+    let rvfcId = null
+    let frameCount = 0
+    let isCancelled = false
+
+    const onFrame = () => {
+      if (isCancelled) return
+      frameCount++
+      if (frameCount >= 2 || isVideoCached(currentSrc)) {
+        setIsPlayingSmoothly(true)
+        markVideoCached(currentSrc)
+        cacheVideoOnce(currentSrc).catch(() => {})
+      } else if (video.requestVideoFrameCallback) {
+        rvfcId = video.requestVideoFrameCallback(onFrame)
+      }
     }
 
     const playPromise = video.play()
     if (playPromise !== undefined) {
       playPromise
-        .then(() => setIsLoaded(true))
+        .then(() => {
+          if (isCancelled) return
+          if (video.requestVideoFrameCallback) {
+            rvfcId = video.requestVideoFrameCallback(onFrame)
+          } else {
+            const checkTime = () => {
+              if (isCancelled) return
+              if (video.currentTime > 0.05) {
+                setIsPlayingSmoothly(true)
+                markVideoCached(currentSrc)
+                cacheVideoOnce(currentSrc).catch(() => {})
+              } else if (!video.paused) {
+                requestAnimationFrame(checkTime)
+              }
+            }
+            requestAnimationFrame(checkTime)
+          }
+        })
         .catch(() => {})
     }
-  }, [currentSrc])
+
+    return () => {
+      isCancelled = true
+      if (rvfcId && video.cancelVideoFrameCallback) {
+        video.cancelVideoFrameCallback(rvfcId)
+      }
+    }
+  }, [currentSrc, isPaused])
 
   const handleVideoError = () => {
     if (!triedFallback && fallbackSrc && fallbackSrc !== currentSrc) {
@@ -72,7 +116,7 @@ export default function FloatingVideoPip({
             src={poster}
             alt=""
             className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 pointer-events-none z-0 ${
-              isLoaded ? 'opacity-0' : 'opacity-100'
+              isPlayingSmoothly ? 'opacity-0' : 'opacity-100'
             }`}
           />
         )}
@@ -88,15 +132,14 @@ export default function FloatingVideoPip({
           playsInline
           webkit-playsinline=""
           x5-playsinline=""
+          crossOrigin="anonymous"
           preload="auto"
-          onLoadedMetadata={() => setIsLoaded(true)}
-          onLoadedData={() => setIsLoaded(true)}
-          onCanPlay={() => setIsLoaded(true)}
-          onPlay={() => setIsLoaded(true)}
-          onPlaying={() => setIsLoaded(true)}
+          disableRemotePlayback
+          disablePictureInPicture
           onError={handleVideoError}
+          onWaiting={() => setIsPlayingSmoothly(false)}
           className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 z-10 pointer-events-none ${
-            isLoaded ? 'opacity-100' : 'opacity-0'
+            isPlayingSmoothly ? 'opacity-100' : 'opacity-0'
           }`}
         />
 

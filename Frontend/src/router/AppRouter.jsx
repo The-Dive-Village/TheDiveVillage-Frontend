@@ -6,9 +6,6 @@ import AdminLayout from '../layouts/AdminLayout'
 import ProtectedRoute from './ProtectedRoute'
 import ErrorBoundary from '../components/ErrorBoundary'
 
-// Initial home page is direct for fast startup
-import Home from '../pages/Home'
-
 // Helper to retry dynamic component imports if chunk loading fails
 const lazyWithRetry = (componentImport) =>
   lazy(async () => {
@@ -28,6 +25,9 @@ const lazyWithRetry = (componentImport) =>
       throw error
     }
   })
+
+// Lazy load Home page with retry to isolate initial root entry chunk
+const Home = lazyWithRetry(() => import('../pages/Home'))
 
 // Dynamic lazy imports for all secondary routes to enable route-level code splitting
 const About = lazyWithRetry(() => import('../pages/About'))

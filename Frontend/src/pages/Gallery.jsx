@@ -9,7 +9,7 @@ import { GALLERY_ITEMS } from '../utils/galleryData'
 import { triggerHaptic } from '../utils/haptics'
 import { shareContent } from '../utils/share'
 import { useLenis } from '../utils/lenisReact'
-import { getOptimizedImageUrl, getOptimizedVideoPoster } from '../utils/mediaOptimizer'
+import { getOptimizedImageUrl, getOptimizedVideoPoster, getLqipUrl } from '../utils/mediaOptimizer'
 
 const diversBg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458258/TDV-Media/Products/Group/4M7A6732.jpg'
 
@@ -22,7 +22,12 @@ const SANITIZED_GALLERY_ITEMS = GALLERY_ITEMS.map((item) => ({
 export default function Gallery() {
   const [itemsList, setItemsList] = useState(SANITIZED_GALLERY_ITEMS)
   const [selectedMediaIndex, setSelectedMediaIndex] = useState(null)
+  const [lightboxImgLoaded, setLightboxImgLoaded] = useState(false)
   const [highlightedItemId, setHighlightedItemId] = useState(null)
+
+  useEffect(() => {
+    setLightboxImgLoaded(false)
+  }, [selectedMediaIndex])
   const location = useLocation()
   const [searchParams] = useSearchParams()
   const reduce = useReducedMotion()
@@ -243,7 +248,7 @@ export default function Gallery() {
         title="Underwater Photography & Scuba Gallery | The Dive Village"
         description="Explore our visual gallery of underwater expeditions, vibrant coral reefs, sea turtle encounters, and diving moments captured at The Dive Village."
         keywords="underwater photography, scuba diving gallery, marine life photos, coral reef images, dive village photos"
-        canonicalUrl="https://thedivevillage.com/gallery"
+        canonicalUrl="https://thedivevillage.co/gallery"
       />
       <div className="mx-auto max-w-7xl px-3 sm:px-6 lg:px-8">
         
@@ -427,15 +432,43 @@ export default function Gallery() {
                     videoClassName="gallery-preview-video-element"
                   />
                 ) : (
-                  <img
-                    src={currentItem.src}
-                    alt={currentItem.title || 'Gallery visual'}
-                    loading="eager"
-                    decoding="async"
-                    style={{ objectFit: 'contain', maxHeight: '100%', maxWidth: '100%' }}
-                    className="w-full h-full max-w-full max-h-full object-contain select-none m-auto block pointer-events-auto"
-                    draggable={false}
-                  />
+                  <div className="relative w-full h-full flex items-center justify-center">
+                    {/* Instant LQIP Blurred Preview */}
+                    {!lightboxImgLoaded && (
+                      <img
+                        src={getLqipUrl(currentItem.src)}
+                        alt=""
+                        aria-hidden="true"
+                        style={{ objectFit: 'contain', maxHeight: '100%', maxWidth: '100%' }}
+                        className="w-full h-full max-w-full max-h-full object-contain filter blur-[14px] scale-105 select-none pointer-events-none absolute inset-0 m-auto z-10"
+                      />
+                    )}
+
+                    {/* Glowing Oceanic Loading Spinner */}
+                    {!lightboxImgLoaded && (
+                      <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 pointer-events-none z-20">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-3 border-white/20 border-t-[#FFCD00] animate-spin shadow-lg" />
+                        <span className="text-xs font-heading font-semibold text-white/80 tracking-widest uppercase drop-shadow">
+                          Loading...
+                        </span>
+                      </div>
+                    )}
+
+                    <img
+                      key={currentItem.src}
+                      src={currentItem.src}
+                      alt={currentItem.title || 'Gallery visual'}
+                      loading="eager"
+                      fetchPriority="high"
+                      decoding="async"
+                      onLoad={() => setLightboxImgLoaded(true)}
+                      style={{ objectFit: 'contain', maxHeight: '100%', maxWidth: '100%' }}
+                      className={`w-full h-full max-w-full max-h-full object-contain select-none m-auto block pointer-events-auto transition-opacity duration-300 relative z-10 ${
+                        lightboxImgLoaded ? 'opacity-100' : 'opacity-0'
+                      }`}
+                      draggable={false}
+                    />
+                  </div>
                 )}
               </div>
 
@@ -491,15 +524,15 @@ export default function Gallery() {
                           title={item.title}
                         >
                           {item.type === 'video' ? (
-                            <div className="relative w-full h-full bg-black flex items-center justify-center">
-                              <img
-                                src={getOptimizedVideoPoster(item.src, { width: 120 })}
-                                alt=""
+                            <div className="relative w-full h-full bg-[#00172b] flex items-center justify-center overflow-hidden">
+                              <video
+                                src={`${item.src}#t=0.001`}
+                                muted
+                                playsInline
+                                preload="metadata"
                                 className="w-full h-full object-cover pointer-events-none opacity-85"
-                                loading="lazy"
-                                decoding="async"
                               />
-                              <div className="absolute inset-0 bg-black/40 flex items-center justify-center text-white text-[7px] sm:text-[8px]">
+                              <div className="absolute inset-0 bg-black/30 flex items-center justify-center text-white text-[7px] sm:text-[8px] pointer-events-none">
                                 ▶
                               </div>
                             </div>
@@ -554,7 +587,7 @@ function GalleryGridCard({ item, idx, reduce, onClick, isHighlighted }) {
     if (hoverTimerRef.current) {
       clearTimeout(hoverTimerRef.current)
     }
-    // Hover 3 seconds to play
+    // Hover 250ms debounce before playing video preview
     hoverTimerRef.current = setTimeout(() => {
       const vid = cardRef.current?.querySelector('video')
       if (vid) {
@@ -564,7 +597,7 @@ function GalleryGridCard({ item, idx, reduce, onClick, isHighlighted }) {
         }
         vid.play().catch(() => {})
       }
-    }, 3000)
+    }, 250)
   }
 
   const handleMouseLeave = () => {

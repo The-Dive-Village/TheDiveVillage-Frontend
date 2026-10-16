@@ -10,11 +10,12 @@ import Button from '../components/Button'
 import SEOHead from '../components/SEOHead'
 import { useLenis } from '../utils/lenisReact'
 import useNightDive from '../hooks/useNightDive'
+import { getOptimizedImageUrl, getLqipUrl } from '../utils/mediaOptimizer'
 
 import { triggerHaptic, triggerSuccessHaptic } from '../utils/haptics'
-const bannerImg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791686007/TDV-Media/Merch/banner.jpg';
-const pop1Local = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458274/TDV-Media/Products/pop1.webp';
-const pop2Local = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458275/TDV-Media/Products/pop2.webp';
+const bannerImg = getOptimizedImageUrl('https://res.cloudinary.com/qvbunv8y/image/upload/v1791686007/TDV-Media/Merch/banner.jpg', { width: 1600 })
+const pop1Local = getOptimizedImageUrl('https://res.cloudinary.com/qvbunv8y/image/upload/v1791458274/TDV-Media/Products/pop1.webp', { width: 600 })
+const pop2Local = getOptimizedImageUrl('https://res.cloudinary.com/qvbunv8y/image/upload/v1791458275/TDV-Media/Products/pop2.webp', { width: 600 })
 const pop1 = pop1Local
 const pop2 = pop2Local
 
@@ -166,7 +167,7 @@ export default function Shop() {
         title="Dive Shop & Sustainable Marine Apparel | The Dive Village"
         description="Shop high-performance ocean gear, eco-friendly dive apparel, dive suits, and diving accessories. Designed for comfort, durability, and marine conservation."
         keywords="scuba diving shop, dive gear store, ocean apparel, dive suits, eco-friendly swimsuits, dive village merch"
-        canonicalUrl="https://thedivevillage.com/shop"
+        canonicalUrl="https://thedivevillage.co/shop"
       />
       {/* Toast Notification */}
       <AnimatePresence>
@@ -627,9 +628,14 @@ export default function Shop() {
 
 function GroupGallerySection() {
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(null)
+  const [photoLoaded, setPhotoLoaded] = useState(false)
   const lenis = useLenis()
 
   const selectedPhoto = selectedPhotoIndex !== null ? GROUP_PHOTOS[selectedPhotoIndex] : null
+
+  useEffect(() => {
+    setPhotoLoaded(false)
+  }, [selectedPhotoIndex])
 
   const nextPhoto = () => {
     triggerHaptic(8)
@@ -718,10 +724,11 @@ function GroupGallerySection() {
             className="group relative aspect-[4/3] rounded-2xl overflow-hidden bg-white cursor-pointer shadow-sm hover:shadow-float transition duration-300 border border-navy/5"
           >
             <img
-              src={photo.src}
+              src={getOptimizedImageUrl(photo.src, { width: 500 }) || photo.src}
               alt="Community Photo"
               className="w-full h-full object-cover object-top group-hover:scale-105 transition duration-500"
               loading="lazy"
+              decoding="async"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-navy/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex items-end p-3" />
           </div>
@@ -808,10 +815,42 @@ function GroupGallerySection() {
                 >
                   ✕
                 </button>
+
+                {/* Instant Low Quality Image Placeholder (Blur-up) */}
+                {selectedPhoto && !photoLoaded && (
+                  <img
+                    src={getLqipUrl(selectedPhoto.src)}
+                    alt=""
+                    aria-hidden="true"
+                    style={{
+                      objectFit: 'contain',
+                      maxHeight: 'calc(100vh - var(--toolbar-bottom, 68px) - 72px)',
+                      maxWidth: 'min(calc(100vw - 64px), 1100px)',
+                      width: 'auto',
+                      height: 'auto',
+                    }}
+                    className="rounded-xl sm:rounded-2xl filter blur-[14px] scale-105 select-none pointer-events-none absolute inset-0 m-auto z-10"
+                  />
+                )}
+
+                {/* Sleek Oceanic Loader while high-res image is buffering */}
+                {!photoLoaded && (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 pointer-events-none z-20">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-3 border-white/20 border-t-[#FFCD00] animate-spin shadow-lg" />
+                    <span className="text-xs font-heading font-semibold text-white/80 tracking-widest uppercase drop-shadow">
+                      Loading...
+                    </span>
+                  </div>
+                )}
+
                 <img
                   key={selectedPhoto.src}
-                  src={selectedPhoto.src}
+                  src={getOptimizedImageUrl(selectedPhoto.src, { width: 1400 }) || selectedPhoto.src}
                   alt={selectedPhoto.title || "Community Photo"}
+                  loading="eager"
+                  fetchPriority="high"
+                  decoding="async"
+                  onLoad={() => setPhotoLoaded(true)}
                   style={{
                     objectFit: 'contain',
                     maxHeight: 'calc(100vh - var(--toolbar-bottom, 68px) - 72px)',
@@ -819,7 +858,9 @@ function GroupGallerySection() {
                     width: 'auto',
                     height: 'auto',
                   }}
-                  className="rounded-xl sm:rounded-2xl shadow-inner select-none block"
+                  className={`rounded-xl sm:rounded-2xl shadow-inner select-none block transition-opacity duration-300 relative z-10 ${
+                    photoLoaded ? 'opacity-100' : 'opacity-0'
+                  }`}
                   draggable={false}
                 />
 
@@ -849,7 +890,6 @@ function GroupGallerySection() {
 function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, isNightDive }) {
   const navigate = useNavigate()
   const [isHovered, setIsHovered] = useState(false)
-  const [hasHovered, setHasHovered] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)
   const [imgLoaded, setImgLoaded] = useState(false)
   const viewerRef = useRef(null)
@@ -875,10 +915,12 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, 
 
   useEffect(() => {
     if (typeof window !== 'undefined' && !customElements.get('model-viewer')) {
-      const script = document.createElement('script')
-      script.type = 'module'
-      script.src = 'https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js'
-      document.head.appendChild(script)
+      if (!document.querySelector('script[src*="model-viewer"]')) {
+        const script = document.createElement('script')
+        script.type = 'module'
+        script.src = 'https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js'
+        document.head.appendChild(script)
+      }
     }
   }, [])
 
@@ -930,27 +972,28 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, 
             })
           }
 
-          // Deep recursive traversal across all Three.js materials
-          const visited = new Set()
+          // Safe Three.js materials lookup without recursive DOM element traversal
           const threeMaterials = new Set()
-
-          const scan = (obj, depth = 0) => {
-            if (!obj || depth > 6 || visited.has(obj) || typeof obj !== 'object') return
-            visited.add(obj)
-
-            if (obj.isMaterial) {
-              threeMaterials.add(obj)
-              return
-            }
-            if (obj.isMesh && obj.material) {
-              if (Array.isArray(obj.material)) {
-                obj.material.forEach((m) => threeMaterials.add(m))
-              } else {
-                threeMaterials.add(obj.material)
+          const symbols = Object.getOwnPropertySymbols(el)
+          const sceneSymbol = symbols.find((s) => s.description === 'scene' || String(s).includes('scene'))
+          const threeScene = sceneSymbol ? el[sceneSymbol] : null
+          if (threeScene && typeof threeScene.traverse === 'function') {
+            threeScene.traverse((node) => {
+              if (node.isMesh && node.material) {
+                if (Array.isArray(node.material)) {
+                  node.material.forEach((m) => threeMaterials.add(m))
+                } else {
+                  threeMaterials.add(node.material)
+                }
               }
-            }
-            if (obj.isScene || obj.isObject3D) {
-              obj.traverse((node) => {
+            })
+          }
+          if (el.model) {
+            const modelSymbols = Object.getOwnPropertySymbols(el.model)
+            const modelSceneSym = modelSymbols.find((s) => s.description === 'scene' || String(s).includes('scene'))
+            const modelScene = modelSceneSym ? el.model[modelSceneSym] : null
+            if (modelScene && typeof modelScene.traverse === 'function') {
+              modelScene.traverse((node) => {
                 if (node.isMesh && node.material) {
                   if (Array.isArray(node.material)) {
                     node.material.forEach((m) => threeMaterials.add(m))
@@ -959,30 +1002,8 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, 
                   }
                 }
               })
-              return
             }
-
-            if (typeof obj.forEach === 'function') {
-              try {
-                obj.forEach((item) => scan(item, depth + 1))
-              } catch (e) {}
-            }
-
-            Object.getOwnPropertySymbols(obj).forEach((sym) => {
-              try {
-                scan(obj[sym], depth + 1)
-              } catch (e) {}
-            })
-
-            Object.getOwnPropertyNames(obj).forEach((key) => {
-              try {
-                scan(obj[key], depth + 1)
-              } catch (e) {}
-            })
           }
-
-          scan(el)
-          if (el.model) scan(el.model)
 
           threeMaterials.forEach((threeMat) => {
             if (!threeMat || !threeMat.isMaterial) return
@@ -1031,7 +1052,6 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, 
         setIsLoaded(true)
         applyMatte()
         setTimeout(applyMatte, 150)
-        setTimeout(applyMatte, 600)
       }
 
       if (el.loaded) {
@@ -1055,9 +1075,9 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, 
       active = false
       clearTimeout(fallbackTimer)
     }
-  }, [product?.glb, hasHovered])
+  }, [product?.glb, isHovered])
 
-  const show3D = isHovered && hasHovered
+  const show3D = isHovered
 
   return (
     <>
@@ -1139,10 +1159,7 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, 
         data-product-card="true"
         data-white-bg="true"
         onClick={() => navigate(`/shop/${product.id}`)}
-        onMouseEnter={() => {
-          setIsHovered(true)
-          setHasHovered(true)
-        }}
+        onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         style={{ backgroundColor: '#ffffff', background: '#ffffff', color: '#001e3d' }}
         className="hidden md:flex group rounded-2xl sm:rounded-[32px] bg-white border border-navy/10 text-[#001e3d] p-3 sm:p-6 shadow-card hover:shadow-float transition duration-300 flex-col justify-between cursor-pointer relative"
@@ -1155,25 +1172,28 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, 
                 <div className="absolute inset-0 skeleton-shimmer bg-navy/5 z-0" aria-hidden="true" />
               )}
               <img
-                src={product.image}
+                src={getOptimizedImageUrl(product.image, { width: 500 }) || product.image}
                 alt={product.title}
+                loading="lazy"
+                decoding="async"
                 onLoad={() => setImgLoaded(true)}
                 data-product-media="true"
                 style={{ backgroundColor: '#ffffff', background: '#ffffff' }}
                 className={`max-h-full max-w-full object-contain relative z-[1] transition-opacity duration-300 ${!imgLoaded ? 'opacity-0' : 'opacity-100'}`}
               />
-              {product.glb && hasHovered && (
+              {product.glb && isHovered && (
                 <div
                   data-product-media="true"
                   style={{ backgroundColor: '#ffffff', background: '#ffffff' }}
-                  className={`absolute inset-0 w-full h-full z-10 bg-white flex items-center justify-center transition-opacity duration-300 cursor-grab active:cursor-grabbing ${show3D ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+                  className={`absolute inset-0 w-full h-full z-10 bg-white flex items-center justify-center transition-opacity duration-300 pointer-events-none ${show3D ? 'opacity-100' : 'opacity-0'}`}
                 >
                   <model-viewer
                     ref={viewerRef}
                     data-product-media="true"
                     src={product.glb}
                     alt={product.title}
-                    loading="eager"
+                    poster={getOptimizedImageUrl(product.image, { width: 500 }) || product.image}
+                    loading="lazy"
                     reveal="auto"
                     auto-rotate
                     auto-rotate-delay="0"
@@ -1194,6 +1214,7 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, 
                     style={{
                       width: '100%',
                       height: '100%',
+                      pointerEvents: 'none',
                       backgroundColor: '#ffffff',
                       background: '#ffffff',
                       '--poster-color': '#ffffff',
@@ -1204,7 +1225,7 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, 
                   >
                     <div slot="progress-bar" style={{ display: 'none' }} />
                     <div slot="poster" data-product-media="true" style={{ backgroundColor: '#ffffff', background: '#ffffff' }} className="w-full h-full flex items-center justify-center p-4 bg-white">
-                      <img src={product.image} alt={product.title} data-product-media="true" style={{ backgroundColor: '#ffffff', background: '#ffffff' }} className="max-h-full max-w-full object-contain bg-white" />
+                      <img src={getOptimizedImageUrl(product.image, { width: 500 }) || product.image} alt={product.title} data-product-media="true" loading="lazy" decoding="async" style={{ backgroundColor: '#ffffff', background: '#ffffff' }} className="max-h-full max-w-full object-contain bg-white" />
                     </div>
                   </model-viewer>
                 </div>

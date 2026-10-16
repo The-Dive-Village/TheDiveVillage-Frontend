@@ -117,12 +117,44 @@ export default defineConfig({
       workbox: {
         maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
-        globIgnores: ['**/assets/*.{mp4,MP4,webm,mov,MOV,mp3,wav,ogg,glb,GLB}'],
+        globIgnores: [
+          '**/assets/*.{mp4,MP4,webm,mov,MOV,mp3,wav,ogg,glb,GLB}',
+          '**/assets/vendor-three-*.js',
+          '**/assets/vendor-maplibre-*.js',
+          '**/assets/vendor-hls-*.js',
+          '**/assets/maplibre-gl-worker-*.js'
+        ],
         navigateFallbackDenylist: [/^\/assets\/.*\.(mp4|webm|mov|mp3|ogg|glb)$/i],
         runtimeCaching: [
           {
-            urlPattern: /\.(?:mp4|webm|mov|mp3|ogg|glb)$/i,
+            urlPattern: /^https:\/\/res\.cloudinary\.com\/.*\/video\/upload\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'cloudinary-videos-cache',
+              rangeRequests: true,
+              expiration: {
+                maxEntries: 50,
+                maxAgeSeconds: 60 * 60 * 24 * 30 // 30 Days
+              },
+              cacheableResponse: {
+                statuses: [0, 200]
+              }
+            }
+          },
+          {
+            urlPattern: /^(?!https:\/\/res\.cloudinary\.com).*\.(?:mp4|webm|mov|mp3|ogg|glb)$/i,
             handler: 'NetworkOnly',
+          },
+          {
+            urlPattern: /\/assets\/(?:vendor-(?:three|maplibre|hls)|maplibre-gl-worker)-.*\.js$/i,
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'heavy-vendor-chunks',
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 60 * 60 * 24 * 30
+              }
+            }
           },
           {
             urlPattern: /^https:\/\/res\.cloudinary\.com\/.*/i,
@@ -130,7 +162,7 @@ export default defineConfig({
             options: {
               cacheName: 'cloudinary-media-qvbunv8y',
               expiration: {
-                maxEntries: 100,
+                maxEntries: 120,
                 maxAgeSeconds: 60 * 60 * 24 * 30 // 30 Days
               },
               cacheableResponse: {
@@ -157,6 +189,29 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
+    },
+  },
+  build: {
+    chunkSizeWarningLimit: 650,
+    cssCodeSplit: true,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules/three') || id.includes('node_modules/@react-three')) {
+            return 'vendor-three';
+          }
+          if (id.includes('node_modules/hls.js')) {
+            return 'vendor-hls';
+          }
+          if (id.includes('node_modules/maplibre-gl')) {
+            return 'vendor-maplibre';
+          }
+          if (id.includes('node_modules/framer-motion')) {
+            return 'vendor-framer';
+          }
+
+        },
+      },
     },
   },
   server: {
