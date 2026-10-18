@@ -13,9 +13,9 @@ import useNightDive from '../hooks/useNightDive'
 import { getOptimizedImageUrl, getLqipUrl } from '../utils/mediaOptimizer'
 
 import { triggerHaptic, triggerSuccessHaptic } from '../utils/haptics'
-const bannerImg = getOptimizedImageUrl('https://res.cloudinary.com/qvbunv8y/image/upload/v1791686007/TDV-Media/Merch/banner.jpg', { width: 1600 })
-const pop1Local = getOptimizedImageUrl('https://res.cloudinary.com/qvbunv8y/image/upload/v1791458274/TDV-Media/Products/pop1.webp', { width: 600 })
-const pop2Local = getOptimizedImageUrl('https://res.cloudinary.com/qvbunv8y/image/upload/v1791458275/TDV-Media/Products/pop2.webp', { width: 600 })
+const bannerImg = getOptimizedImageUrl('https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Merch/banner.jpg', { width: 1600 })
+const pop1Local = getOptimizedImageUrl('https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Products/pop1.webp', { width: 600 })
+const pop2Local = getOptimizedImageUrl('https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Products/pop2.webp', { width: 600 })
 const pop1 = pop1Local
 const pop2 = pop2Local
 

@@ -18,22 +18,22 @@
  */
 
 // Master Source Assets (Cloudinary raw/master endpoints)
-export const RAW_CLOUDINARY_CLOWNFISH = 'https://res.cloudinary.com/qvbunv8y/video/upload/TDV-Media/Background/ClownFish.mp4'
-export const RAW_CLOUDINARY_BARRACUDA = 'https://res.cloudinary.com/qvbunv8y/video/upload/TDV-Media/Background/baracuda.mp4'
-export const RAW_CLOUDINARY_TURTLE = 'https://res.cloudinary.com/qvbunv8y/video/upload/TDV-Media/Background/Turtle.mp4'
-export const RAW_CLOUDINARY_NIGHT_DIVE = 'https://res.cloudinary.com/qvbunv8y/video/upload/TDV-Media/Background/Night_Dive.mp4'
+export const RAW_CLOUDINARY_CLOWNFISH = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Background/ClownFish.mp4'
+export const RAW_CLOUDINARY_BARRACUDA = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Background/baracuda.mp4'
+export const RAW_CLOUDINARY_TURTLE = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Background/Turtle.mp4'
+export const RAW_CLOUDINARY_NIGHT_DIVE = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Background/Night_Dive.mp4'
 
 // 1920x1080 Master Bitrate Video Assets (Legacy MP4 fallbacks)
-export const MASTER_1080P_CLOWNFISH = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791729293/TDV-Media/Background/ClownFish_1080p.mp4'
-export const MASTER_1080P_BARRACUDA = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791729341/TDV-Media/Background/baracuda_1080p.mp4'
+export const MASTER_1080P_CLOWNFISH = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Background/ClownFish_1080p.mp4'
+export const MASTER_1080P_BARRACUDA = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Background/baracuda_1080p.mp4'
 export const MASTER_1080P_TURTLE = RAW_CLOUDINARY_TURTLE
 export const MASTER_1080P_NIGHT_DIVE = RAW_CLOUDINARY_NIGHT_DIVE
 
 // Cloudinary 4K Adaptive Bitrate HLS (.m3u8) Streams
-export const HLS_4K_CLOWNFISH = 'https://res.cloudinary.com/qvbunv8y/video/upload/sp_4k/v1791626590/TDV-Media/Background/ClownFish.m3u8'
-export const HLS_4K_BARRACUDA = 'https://res.cloudinary.com/qvbunv8y/video/upload/sp_4k/v1791627870/TDV-Media/Background/baracuda.m3u8'
-export const HLS_4K_TURTLE = 'https://res.cloudinary.com/qvbunv8y/video/upload/sp_4k/v1791626669/TDV-Media/Background/Turtle.m3u8'
-export const HLS_4K_NIGHT_DIVE = 'https://res.cloudinary.com/qvbunv8y/video/upload/sp_4k/v1791626977/TDV-Media/Background/Night_Dive.m3u8'
+export const HLS_4K_CLOWNFISH = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Background/ClownFish.mp4'
+export const HLS_4K_BARRACUDA = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Background/baracuda.mp4'
+export const HLS_4K_TURTLE = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Background/Turtle.mp4'
+export const HLS_4K_NIGHT_DIVE = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Background/Night_Dive.mp4'
 
 // Stream Definitions bundling HLS primary URL with MP4 fallback URL
 export const STREAM_CLOWNFISH = {

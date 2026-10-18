@@ -6,25 +6,25 @@ import FloatingVideoPip from './FloatingVideoPip'
 import { isVideoCached, markVideoCached, cacheVideoOnce } from '../utils/videoCacheManager'
 
 // Activity Media (High-Performance Low-Resolution Preview & Poster URLs)
-const vidSafari = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1792112831/TDV-Media/AddOnsLow/safari_preview.mp4'
-const imgSafari = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791685504/TDV-Media/AddOns/safari.webp'
+const vidSafari = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOnsLow/safari_preview.mp4'
+const imgSafari = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOns/safari.webp'
 
-const vidTrekking = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1792112833/TDV-Media/AddOnsLow/trekking_preview.mp4'
-const imgTrekking = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791685508/TDV-Media/AddOns/trekking.webp'
+const vidTrekking = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOnsLow/trekking_preview.mp4'
+const imgTrekking = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOns/trekking.webp'
 
-const vidSightseeing = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1792112838/TDV-Media/AddOnsLow/sightseeing_preview.mp4'
-const imgSightseeing = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791685509/TDV-Media/AddOns/sightseeing.webp'
+const vidSightseeing = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOnsLow/sightseeing_preview.mp4'
+const imgSightseeing = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOns/sightseeing.webp'
 
-const vidCampers = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1792112840/TDV-Media/AddOnsLow/camping_camper_preview.mp4'
-const imgCampers = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791685511/TDV-Media/AddOns/campers.webp'
+const vidCampers = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOnsLow/camping_camper_preview.mp4'
+const imgCampers = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOns/campers.webp'
 
-const vidLiveaboard = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1792112845/TDV-Media/AddOnsLow/liveaboard_preview.mp4'
-const imgLiveaboard = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791685512/TDV-Media/AddOns/liveaboard.webp'
+const vidLiveaboard = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOnsLow/liveaboard_preview.mp4'
+const imgLiveaboard = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOns/liveaboard.webp'
 
-const vidCanoneering = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1792112829/TDV-Media/AddOnsLow/canyoneering_preview.mp4'
-const vidSurfing = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1792112835/TDV-Media/AddOnsLow/surfing_preview.mp4'
-const vidSnorkeling = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1792112843/TDV-Media/AddOnsLow/snorkeling_preview.mp4'
-const imgSnorkeling = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791691302/TDV-Media/ServicesThumbnails/Snorkeling.webp'
+const vidCanoneering = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOnsLow/canyoneering_preview.mp4'
+const vidSurfing = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOnsLow/surfing_preview.mp4'
+const vidSnorkeling = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOnsLow/snorkeling_preview.mp4'
+const imgSnorkeling = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/ServicesThumbnails/Snorkeling.webp'
 
 // Pre-warmed video pool: keeps video elements in memory with buffered ranges across hovers
 const previewVideoPool = new Map()
@@ -204,7 +204,7 @@ const CUSTOM_ACTIVITIES = [
     name: 'Surfing',
     video: vidSurfing,
     fallbackVideo: '/videos/customize/surfing.mp4',
-    poster: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458191/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp',
+    poster: 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp',
   },
   {
     id: 'sightseeing',

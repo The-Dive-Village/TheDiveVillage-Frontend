@@ -28,8 +28,8 @@ import {
 } from '../utils/courseEligibility'
 import { triggerHaptic, triggerSuccessHaptic, triggerErrorHaptic } from '../utils/haptics'
 
-const turtleAnnaVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/TDV-Media/Background/Turtle.mp4'
-const compiledNightDiveVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/TDV-Media/Background/Night_Dive.mp4'
+const turtleAnnaVideo = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Background/Turtle.mp4'
+const compiledNightDiveVideo = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Background/Night_Dive.mp4'
 import useNightDive from '../hooks/useNightDive'
 const DiveExplorerMap = lazy(() => import('../components/DiveExplorerMap'))
 import { loadDiveSites } from '../utils/diveSitesLoader'

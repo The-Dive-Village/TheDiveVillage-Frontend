@@ -26,7 +26,7 @@ console.log('InteractiveVideoSphere.jsx updated.');
 let preloader = fs.readFileSync('TheDiveVillage-Frontend/Frontend/src/components/Preloader.jsx', 'utf8');
 preloader = preloader.replace(
   /import preloaderVideoLocal[^\n\r]+/,
-  "const preloaderVideoLocal = 'https://res.cloudinary.com/bbgt5nk7/video/upload/v1790244018/dive-village/ui-videos/preloader_mp4.mp4'"
+  "const preloaderVideoLocal = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1792101253/TDV-Media/UI/preloader.mp4'"
 );
 fs.writeFileSync('TheDiveVillage-Frontend/Frontend/src/components/Preloader.jsx', preloader, 'utf8');
 console.log('Preloader.jsx updated.');

@@ -11,7 +11,7 @@ import { shareContent } from '../utils/share'
 import { useLenis } from '../utils/lenisReact'
 import { getOptimizedImageUrl, getOptimizedVideoPoster, getLqipUrl } from '../utils/mediaOptimizer'
 
-const diversBg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458258/TDV-Media/Products/Group/4M7A6732.jpg'
+const diversBg = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Products/Group/4M7A6732.jpg'
 
 const cleanTitle = (t) => (t ? t.replace(/\s*\(\d+\)/g, '').trim() : '')
 const SANITIZED_GALLERY_ITEMS = GALLERY_ITEMS.map((item) => ({

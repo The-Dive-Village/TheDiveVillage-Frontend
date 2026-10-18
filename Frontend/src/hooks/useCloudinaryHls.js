@@ -49,7 +49,9 @@ export function attachHlsStream({
     }
   }
 
-  if (Hls.isSupported() && hlsUrl) {
+  const isHls = typeof hlsUrl === 'string' && (hlsUrl.includes('.m3u8') || hlsUrl.includes('/hls/'))
+
+  if (Hls.isSupported() && isHls) {
     const hls = new Hls({
       // NON-NEGOTIABLE FOR 360° VIDEO:
       // Prevent hls.js from capping quality to the canvas/window DOM dimensions.
@@ -113,7 +115,7 @@ export function attachHlsStream({
         }
       }
     })
-  } else if (video.canPlayType('application/vnd.apple.mpegurl') && hlsUrl) {
+  } else if (video.canPlayType('application/vnd.apple.mpegurl') && isHls) {
     // Native Safari HLS (iOS and macOS Safari)
     video.src = hlsUrl
     const onLoadedMetadata = () => {
@@ -121,14 +123,18 @@ export function attachHlsStream({
       if (onLoaded) onLoaded({ native: true })
     }
     video.addEventListener('loadedmetadata', onLoadedMetadata, { once: true })
-  } else if (mp4FallbackUrl) {
-    // Direct MP4 fallback for browsers without HLS support
-    video.src = mp4FallbackUrl
+  } else if (hlsUrl || mp4FallbackUrl) {
+    // Direct MP4 fallback for browsers without HLS support or static MP4 hosting (R2)
+    const directUrl = (!isHls && hlsUrl) ? hlsUrl : mp4FallbackUrl
+    if (video.src !== directUrl) {
+      video.src = directUrl
+    }
     const onLoadedMetadata = () => {
       attemptPlay()
       if (onLoaded) onLoaded({ mp4Fallback: true })
     }
     video.addEventListener('loadedmetadata', onLoadedMetadata, { once: true })
+    attemptPlay()
   }
 
   return {

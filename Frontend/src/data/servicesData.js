@@ -4,129 +4,129 @@ export const getVideoThumbnail = (_videoUrl) => {
 }
 
 // Distinct High-Res Images
-const imgPhoto86440 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86448 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgIntroProg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791691278/TDV-Media/ServicesThumbnails/Introductory%20Programs.webp'
-const imgPhoto86450 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86726 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgSnorkelingPng = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791691302/TDV-Media/ServicesThumbnails/Snorkeling.webp'
-const imgPhoto86451 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86454 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86476 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgScuba1Jpg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgCertCourses = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791691284/TDV-Media/ServicesThumbnails/Certified%20Courses.webp'
-const imgScuba2Jpg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgScuba3Jpg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgStay = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791691313/TDV-Media/AirportToAirport/Stay.webp'
-const imgScuba4Jpg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgScuba5Jpg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgScubadiving = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458191/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp';
-const imgPhoto86485 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86509 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgCrownOfThorns = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86561 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86567 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86573 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgNightDive = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86574 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86576 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgFlexFunDives = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86578 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgSeaFanJpg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458192/TDV-Media/Extras%20for%20Gallery/Sea_fan.webp';
-const imgPhoto86586 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86587 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86588 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86611 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86694 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86723 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgSky1 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86738 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgZero2Hero = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86739 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86742 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86760 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgFreeDivingPng = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791691291/TDV-Media/ServicesThumbnails/Free%20Diving.webp'
-const imgFreeDivingJpg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86761 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86765 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86771 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86440 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86448 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgIntroProg = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/ServicesThumbnails/Introductory%20Programs.webp'
+const imgPhoto86450 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86726 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgSnorkelingPng = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/ServicesThumbnails/Snorkeling.webp'
+const imgPhoto86451 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86454 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86476 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgScuba1Jpg = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgCertCourses = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/ServicesThumbnails/Certified%20Courses.webp'
+const imgScuba2Jpg = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgScuba3Jpg = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgStay = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AirportToAirport/Stay.webp'
+const imgScuba4Jpg = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgScuba5Jpg = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgScubadiving = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp';
+const imgPhoto86485 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86509 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgCrownOfThorns = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86561 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86567 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86573 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgNightDive = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86574 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86576 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgFlexFunDives = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86578 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgSeaFanJpg = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Sea_fan.webp';
+const imgPhoto86586 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86587 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86588 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86611 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86694 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86723 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgSky1 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86738 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgZero2Hero = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86739 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86742 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86760 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgFreeDivingPng = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/ServicesThumbnails/Free%20Diving.webp'
+const imgFreeDivingJpg = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86761 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86765 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86771 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
 
 // Extras for Gallery
-const extScubaDiving = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp';
-const extOpenWater = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458178/TDV-Media/Extras%20for%20Gallery/Open_Water_Scuba_Diving.webp';
-const extScubaDiving2 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458189/TDV-Media/Extras%20for%20Gallery/Scubadiving_2.webp';
-const extScubadiving1 = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458191/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp';
-const extSeaFan = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458192/TDV-Media/Extras%20for%20Gallery/Sea_fan.webp';
-const extShoal = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458193/TDV-Media/Extras%20for%20Gallery/Shoal.webp';
-const extSunset = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458204/TDV-Media/Extras%20for%20Gallery/Sunset.jpg';
-const extBandedCoral = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791457833/TDV-Media/Extras%20for%20Gallery/Banded_Coral_Shrimp.webp';
-const extVaricose = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458209/TDV-Media/Extras%20for%20Gallery/Varicose_Wart_Slug.webp';
-const extYellowback = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458221/TDV-Media/Extras%20for%20Gallery/Yellowback_fusiliers.webp';
-const extGiantClam = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458100/TDV-Media/Extras%20for%20Gallery/Giant_Clam.webp';
-const extLionfish = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458123/TDV-Media/Extras%20for%20Gallery/Lionfish.webp';
-const extBubbleCoral = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458078/TDV-Media/Extras%20for%20Gallery/Bubble_Coral.webp';
-const extBaitball = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458179/TDV-Media/Extras%20for%20Gallery/School_of_Baitball.webp';
-const extMantaRayVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458144/TDV-Media/Extras%20for%20Gallery/Manta_Ray_2.mp4';
-const extBarracudasVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458200/TDV-Media/Extras%20for%20Gallery/Silver_Barracudas.mp4';
-const extTurtleVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/c_crop,ar_9:16/v1791458106/TDV-Media/Extras%20for%20Gallery/Hawksbill_Sea_Turtle_2.mp4';
-const extTrevallyVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458043/TDV-Media/Extras%20for%20Gallery/Big_Eye_Trevally.mp4';
-const extStingrayVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458073/TDV-Media/Extras%20for%20Gallery/Bluespotted_Stingray.mp4';
-const extScubaDiverVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458832/TDV-Media/Services/Scuba_Diver.mp4';
-const extMorayEelVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791457997/TDV-Media/Extras%20for%20Gallery/A_Moray_Eel_in_a_Giant_Barrel_Sponge.mp4';
-const extAnemoneVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458085/TDV-Media/Extras%20for%20Gallery/Clownfish_and_Sea_Anemone.mp4';
-const extSeafanVid = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458006/TDV-Media/Extras%20for%20Gallery/A_Seafan.mp4';
+const extScubaDiving = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp';
+const extOpenWater = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Open_Water_Scuba_Diving.webp';
+const extScubaDiving2 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving_2.webp';
+const extScubadiving1 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp';
+const extSeaFan = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Sea_fan.webp';
+const extShoal = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Shoal.webp';
+const extSunset = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Sunset.jpg';
+const extBandedCoral = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Banded_Coral_Shrimp.webp';
+const extVaricose = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Varicose_Wart_Slug.webp';
+const extYellowback = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Yellowback_fusiliers.webp';
+const extGiantClam = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Giant_Clam.webp';
+const extLionfish = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Lionfish.webp';
+const extBubbleCoral = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Bubble_Coral.webp';
+const extBaitball = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/School_of_Baitball.webp';
+const extMantaRayVid = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Manta_Ray_2.mp4';
+const extBarracudasVid = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Silver_Barracudas.mp4';
+const extTurtleVid = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Hawksbill_Sea_Turtle_2.mp4';
+const extTrevallyVid = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Big_Eye_Trevally.mp4';
+const extStingrayVid = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Bluespotted_Stingray.mp4';
+const extScubaDiverVid = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Scuba_Diver.mp4';
+const extMorayEelVid = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/A_Moray_Eel_in_a_Giant_Barrel_Sponge.mp4';
+const extAnemoneVid = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Clownfish_and_Sea_Anemone.mp4';
+const extSeafanVid = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/A_Seafan.mp4';
 
 // Exact Service Media Video Imports from Assets/Media/Services
-const vidTryDive = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458850/TDV-Media/Services/Try_Dive.mp4';
-const vidDSDLite = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458599/TDV-Media/Services/Discover_Scuba_Dive_Lite.mp4';
-const vidDiscoverScuba = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458604/TDV-Media/Services/Discover_Scuba_Dive.mp4';
-const vidDiscoverSnorkelling = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458610/TDV-Media/Services/Discover_Snorkelling.mp4';
-const vidBubblemaker = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458569/TDV-Media/Services/Bubblemaker.mp4';
-const vidAddDiveAfterDSD = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458540/TDV-Media/Services/Additional_dive_ater_discover_scuba_dive.mp4';
-const vidSkinDiver = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458841/TDV-Media/Services/Skin_Diver.mp4';
-const vidScubaDiver = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458832/TDV-Media/Services/Scuba_Diver.mp4';
-const vidOpenWater = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458719/TDV-Media/Services/Open_Water_Diver.mp4';
-const vidAdventureDiver = 'https://res.cloudinary.com/qvbunv8y/video/upload/c_crop,ar_9:16/v1791458554/TDV-Media/Services/AdventureDiver.mp4';
-const vidAdvancedOpenWater = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458550/TDV-Media/Services/Advanced_Open_Water.mp4';
-const vidEFR = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458635/TDV-Media/Services/EFR_Primary_Secondary_Care.mp4';
-const vidRescueDiver = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458823/TDV-Media/Services/Rescue_Diver.mp4';
-const vidReactivate = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458802/TDV-Media/Services/Reactivate_with_dive.mp4';
-const vidFullRefresher = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458687/TDV-Media/Services/Full_Refresher_with_dive.mp4';
-const vidLiteRefresher = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458695/TDV-Media/Services/Lite_Refresher.mp4';
-const vidBuoyancy = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458783/TDV-Media/Services/Peak_Perormance_Buoyancy.mp4';
-const vidProjectAware = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458794/TDV-Media/Services/Project_AWARE.mp4';
-const vidDeepDiver = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458576/TDV-Media/Services/DeepDiver.mp4';
-const vidWreckDiver = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458856/TDV-Media/Services/Wreck_Diver.mp4';
-const vidNightDiveBackground = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458701/TDV-Media/Services/Night_Diver.mp4';
-const vidNitrox = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458669/TDV-Media/Services/Enriched_Air_Nitrox.mp4';
+const vidTryDive = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Try_Dive.mp4';
+const vidDSDLite = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Discover_Scuba_Dive_Lite.mp4';
+const vidDiscoverScuba = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Discover_Scuba_Dive.mp4';
+const vidDiscoverSnorkelling = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Discover_Snorkelling.mp4';
+const vidBubblemaker = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Bubblemaker.mp4';
+const vidAddDiveAfterDSD = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Additional_dive_ater_discover_scuba_dive.mp4';
+const vidSkinDiver = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Skin_Diver.mp4';
+const vidScubaDiver = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Scuba_Diver.mp4';
+const vidOpenWater = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Open_Water_Diver.mp4';
+const vidAdventureDiver = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/AdventureDiver.mp4';
+const vidAdvancedOpenWater = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Advanced_Open_Water.mp4';
+const vidEFR = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/EFR_Primary_Secondary_Care.mp4';
+const vidRescueDiver = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Rescue_Diver.mp4';
+const vidReactivate = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Reactivate_with_dive.mp4';
+const vidFullRefresher = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Full_Refresher_with_dive.mp4';
+const vidLiteRefresher = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Lite_Refresher.mp4';
+const vidBuoyancy = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Peak_Perormance_Buoyancy.mp4';
+const vidProjectAware = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Project_AWARE.mp4';
+const vidDeepDiver = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/DeepDiver.mp4';
+const vidWreckDiver = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Wreck_Diver.mp4';
+const vidNightDiveBackground = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Night_Diver.mp4';
+const vidNitrox = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Enriched_Air_Nitrox.mp4';
 const vidFunDive = extTurtleVid;
-const vidDSDOpenWater = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458588/TDV-Media/Services/Discover_Scuba_Dive_Open_Water.mp4';
-const vidOWAdvanced = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458729/TDV-Media/Services/Open_water_Advanced_Openwater.mp4';
-const vidEFRRescue = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458642/TDV-Media/Services/Emergency_First_Response_Rescue_Diver.mp4';
-const vidDivemaster = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458623/TDV-Media/Services/DiveMaster.mp4';
-const vidEFRRescueDM = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458665/TDV-Media/Services/Emergency_First_Response_Rescue_DiveMaster.mp4';
-const vidEFRRescueDMPrereq = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458656/TDV-Media/Services/Emergency_First_Response_Rescue_DiveMaster_Prequesites.mp4';
-const vidZeroToHero = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458861/TDV-Media/Services/Zero_to_hero_-_Open_Water_to_Dive_Master.mp4';
-const vidBasicFreediver = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458559/TDV-Media/Services/BasicFreeDiver.mp4';
-const vidFreediver = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458677/TDV-Media/Services/Freediver.mp4';
-const vidReefExplorer = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458813/TDV-Media/Services/reefexplorer.mp4';
-const vidOceanExplorer = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458710/TDV-Media/Services/oceanexplorer.mp4';
-const vidDriftDiver = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458629/TDV-Media/Services/Drift_Dive.mp4';
-const vid3DaySurf = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458534/TDV-Media/Services/3_Day_Surf_Academy_Course.mp4';
-const vidDiscoverSurfing = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791458614/TDV-Media/Services/discover_surfing.mp4';
-const vidCanoneering = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791460085/TDV-Media/Services/Other/Canoneering.mp4';
+const vidDSDOpenWater = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Discover_Scuba_Dive_Open_Water.mp4';
+const vidOWAdvanced = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Open_water_Advanced_Openwater.mp4';
+const vidEFRRescue = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Emergency_First_Response_Rescue_Diver.mp4';
+const vidDivemaster = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/DiveMaster.mp4';
+const vidEFRRescueDM = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Emergency_First_Response_Rescue_DiveMaster.mp4';
+const vidEFRRescueDMPrereq = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Emergency_First_Response_Rescue_DiveMaster_Prequesites.mp4';
+const vidZeroToHero = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Zero_to_hero_-_Open_Water_to_Dive_Master.mp4';
+const vidBasicFreediver = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/BasicFreeDiver.mp4';
+const vidFreediver = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Freediver.mp4';
+const vidReefExplorer = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/reefexplorer.mp4';
+const vidOceanExplorer = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/oceanexplorer.mp4';
+const vidDriftDiver = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Drift_Dive.mp4';
+const vid3DaySurf = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/3_Day_Surf_Academy_Course.mp4';
+const vidDiscoverSurfing = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/discover_surfing.mp4';
+const vidCanoneering = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Other/Canoneering.mp4';
 
 // Add Ons Media (Cloudinary URLs)
-const vidTrekking = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791685324/TDV-Media/AddOns/Trekking.mp4'
-const imgTrekking = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791685508/TDV-Media/AddOns/trekking.webp'
-const vidSightseeing = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791685371/TDV-Media/AddOns/sightseeing.mp4'
-const imgSightseeing = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791685509/TDV-Media/AddOns/sightseeing.webp'
-const vidCampers = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791686777/TDV-Media/AddOns/Campers.mp4'
-const imgCampers = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791685511/TDV-Media/AddOns/campers.webp'
-const vidSafari = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791691465/TDV-Media/AirportToAirport/gallery1.mp4'
-const imgSafari = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791685504/TDV-Media/AddOns/safari.webp'
-const vidLiveaboard = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1792112845/TDV-Media/AddOnsLow/liveaboard_preview.mp4'
-const imgLiveaboard = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791685512/TDV-Media/AddOns/liveaboard.webp'
+const vidTrekking = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOns/Trekking.mp4'
+const imgTrekking = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOns/trekking.webp'
+const vidSightseeing = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOns/sightseeing.mp4'
+const imgSightseeing = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOns/sightseeing.webp'
+const vidCampers = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOns/Campers.mp4'
+const imgCampers = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOns/campers.webp'
+const vidSafari = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AirportToAirport/gallery1.mp4'
+const imgSafari = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOns/safari.webp'
+const vidLiveaboard = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOnsLow/liveaboard_preview.mp4'
+const imgLiveaboard = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOns/liveaboard.webp'
 
 export const CATEGORIES = [
   { key: 'all', label: 'All Services' },
@@ -959,7 +959,7 @@ export const SERVICES_DATA = [
     short_desc: 'Introductory surfboard lesson for beginners.',
     long_desc: 'Learn pop-up techniques, wave timing, board balance, and safety in shallow ocean breaks with an experienced instructor.',
     video: vidDiscoverSurfing,
-    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458191/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp',
+    image: 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp',
     highlights: 'Total Time: 2 hrs | Includes surfboard, rashguard & instructor',
     min_age: 8.0,
     faqs: [
@@ -980,7 +980,7 @@ export const SERVICES_DATA = [
     short_desc: 'Master wave reading, paddling, and maneuvers.',
     long_desc: 'Comprehensive 3-day surfing course covering ocean currents, line-up positioning, turns, and riding green waves.',
     video: vid3DaySurf,
-    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791458191/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp',
+    image: 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp',
     highlights: 'Duration: 3 Days | Video analysis & surf log included',
     days_min: 3.0,
     days_max: 3.0,

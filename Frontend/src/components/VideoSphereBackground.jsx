@@ -23,7 +23,7 @@ const CLOUDINARY_CLOWNFISH = OPTIMIZED_CLOWNFISH_360 || RAW_CLOUDINARY_CLOWNFISH
 const CLOUDINARY_BARRACUDA = OPTIMIZED_BARRACUDA_360 || RAW_CLOUDINARY_BARRACUDA
 const CLOUDINARY_TURTLE = OPTIMIZED_TURTLE_360 || RAW_CLOUDINARY_TURTLE
 const CLOUDINARY_NIGHT_DIVE = OPTIMIZED_NIGHT_DIVE_360 || RAW_CLOUDINARY_NIGHT_DIVE
-const CLOUDINARY_AUDIO = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791685502/TDV-Media/Audio/Audio.mp3'
+const CLOUDINARY_AUDIO = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Audio/Audio.mp3'
 
 import { globalAudio } from '../utils/audioManager'
 import {
@@ -618,21 +618,28 @@ export default function VideoSphereBackground() {
     return () => observer.disconnect()
   }, [])
 
-  // Control night dive video playback and HLS stream when mode changes or tab visibility changes
+  // Control night dive video playback and stream when mode changes or tab visibility changes
   useEffect(() => {
     const video = nightVideoRef.current
     if (!video) return
 
     if (isNightDive && isSpherePage && isVisible) {
-      if (!nightHlsControllerRef.current) {
-        nightHlsControllerRef.current = attachHlsStream({
-          video,
-          hlsUrl: nightDiveVideo,
-          mp4FallbackUrl: MASTER_1080P_NIGHT_DIVE,
-          autoPlay: true,
-        })
+      if (nightDiveVideo && nightDiveVideo.includes('.m3u8')) {
+        if (!nightHlsControllerRef.current) {
+          nightHlsControllerRef.current = attachHlsStream({
+            video,
+            hlsUrl: nightDiveVideo,
+            mp4FallbackUrl: MASTER_1080P_NIGHT_DIVE,
+            autoPlay: true,
+          })
+        } else {
+          nightHlsControllerRef.current.startLoad()
+          video.play().catch(() => {})
+        }
       } else {
-        nightHlsControllerRef.current.startLoad()
+        if (video.src !== nightDiveVideo) {
+          video.src = nightDiveVideo
+        }
         video.play().catch(() => {})
       }
     } else {
@@ -701,11 +708,12 @@ export default function VideoSphereBackground() {
                 nightVideoRef.current = el
               }
             }}
+            src={isSpherePage ? nightDiveVideo : undefined}
             autoPlay={isSpherePage && isNightDive && isVisible}
             loop
             muted
             playsInline
-            preload={isSpherePage && isNightDive ? 'auto' : 'none'}
+            preload={isSpherePage ? 'auto' : 'none'}
             disablePictureInPicture
             disableRemotePlayback
             style={{

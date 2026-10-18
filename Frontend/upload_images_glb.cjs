@@ -2,10 +2,24 @@ const fs = require('fs');
 const path = require('path');
 const cloudinary = require('cloudinary').v2;
 
+const envPaths = [
+  path.resolve(__dirname, '../../TheDiveVillage-Backend/server/.env'),
+  path.resolve(__dirname, '.env')
+];
+const env = {};
+envPaths.forEach(envPath => {
+  if (fs.existsSync(envPath)) {
+    fs.readFileSync(envPath, 'utf8').split('\n').forEach(line => {
+      const [k, ...v] = line.trim().split('=');
+      if (k && v.length) env[k.trim()] = v.join('=').trim().replace(/^["']|["']$/g, '');
+    });
+  }
+});
+
 cloudinary.config({ 
-  cloud_name: 'qvbunv8y', 
-  api_key: '494533968621116', 
-  api_secret: 'eZa4bBcDJbsQ3RpEkfJgdWww-vM',
+  cloud_name: env.CLOUDINARY_CLOUD_NAME || process.env.CLOUDINARY_CLOUD_NAME, 
+  api_key: env.CLOUDINARY_API_KEY || process.env.CLOUDINARY_API_KEY, 
+  api_secret: env.CLOUDINARY_API_SECRET || process.env.CLOUDINARY_API_SECRET,
   secure: true
 });
 

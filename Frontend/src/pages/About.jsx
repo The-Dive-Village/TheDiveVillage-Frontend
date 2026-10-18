@@ -9,15 +9,15 @@ import SEOHead from '../components/SEOHead'
 import MerchBannerCTA from '../components/MerchBannerCTA'
 import { CAROUSEL_IMAGES } from '../utils/images'
 import { useReviews } from '../contexts/ReviewsContext'
-const backgroundVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/TDV-Media/Background/About.mp4'
-const nightDiveVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/TDV-Media/Background/Night_Dive.mp4'
-const founderVideo = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1791940436/TDV-Media/About/Founder.mp4'
+const backgroundVideo = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Background/About.mp4'
+const nightDiveVideo = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Background/Night_Dive.mp4'
+const founderVideo = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/About/Founder.mp4'
 import useNightDive from '../hooks/useNightDive'
 
-const certifiedCoursesImg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791691284/TDV-Media/ServicesThumbnails/Certified%20Courses.webp'
-const introProgImg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791691278/TDV-Media/ServicesThumbnails/Introductory%20Programs.webp'
-const freeDivingImg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791691291/TDV-Media/ServicesThumbnails/Free%20Diving.webp'
-const flexibleFunDivesImg = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791691298/TDV-Media/ServicesThumbnails/Flexible%20Fun%20Dives.webp'
+const certifiedCoursesImg = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/ServicesThumbnails/Certified%20Courses.webp'
+const introProgImg = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/ServicesThumbnails/Introductory%20Programs.webp'
+const freeDivingImg = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/ServicesThumbnails/Free%20Diving.webp'
+const flexibleFunDivesImg = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/ServicesThumbnails/Flexible%20Fun%20Dives.webp'
 
 const SAFETY_PROMISES = [
   {

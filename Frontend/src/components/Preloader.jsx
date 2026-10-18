@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
-const CLOUD_PRELOADER = 'https://res.cloudinary.com/qvbunv8y/video/upload/v1792101253/TDV-Media/UI/preloader.mp4'
+const CLOUD_PRELOADER = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/UI/preloader.mp4'
 const preloaderVideo = CLOUD_PRELOADER
 import {
   subscribeHeroVideoReady,

@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 
 const TARGET_SITE_ORIGIN = 'https://thedivevillage.co'
-const DEFAULT_LOGO_URL = 'https://res.cloudinary.com/qvbunv8y/image/upload/v1791691225/TDV-Media/UI/Logo.png'
+const DEFAULT_LOGO_URL = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/UI/Logo.png'
 
 export default function SEOHead({
   title = "The Dive Village | It's a Community",
