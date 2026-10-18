@@ -15,10 +15,9 @@ export function AuthProvider({ children }) {
       setRole('guest')
       return null
     }
-    const token = await firebaseUser.getIdToken()
-    localStorage.setItem('tdv_id_token', token)
 
     const isAdminEmail = firebaseUser.email?.toLowerCase() === 'admin@tdv.com'
+    const initialRole = isAdminEmail ? 'admin' : 'customer'
 
     const googleMetadata = {
       uid: firebaseUser.uid,
@@ -29,14 +28,27 @@ export function AuthProvider({ children }) {
       creationTime: firebaseUser.metadata?.creationTime || null,
       lastSignInTime: firebaseUser.metadata?.lastSignInTime || null,
       providerId: firebaseUser.providerData?.[0]?.providerId || 'google.com',
+      role: initialRole,
     }
 
+    // Instantly set authenticated user in state (0ms delay so ProtectedRoute and Navbar update immediately)
+    setUser(googleMetadata)
+    setRole(initialRole)
+
     try {
-      const { data } = await authService.sync()
+      const token = await firebaseUser.getIdToken()
+      localStorage.setItem('tdv_id_token', token)
+
+      // Fast non-blocking sync with backend (timeout capped to 4s)
+      const syncPromise = authService.sync()
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Sync timeout')), 4000)
+      )
+      const { data } = await Promise.race([syncPromise, timeoutPromise])
       const payload = data?.data || data || {}
       const dbUser = payload?.user || {}
       const rawRole = payload?.role || (typeof dbUser.role === 'object' ? dbUser.role?.name : dbUser.role)
-      const userRole = isAdminEmail ? 'admin' : (rawRole || 'customer')
+      const userRole = isAdminEmail ? 'admin' : (rawRole || initialRole)
 
       const enrichedUser = {
         ...googleMetadata,
@@ -50,20 +62,24 @@ export function AuthProvider({ children }) {
       setRole(userRole)
       return enrichedUser
     } catch {
-      const fallbackRole = isAdminEmail ? 'admin' : 'customer'
-      const fallbackUser = {
-        ...googleMetadata,
-        role: fallbackRole,
-      }
-      setUser(fallbackUser)
-      setRole(fallbackRole)
-      return fallbackUser
+      return googleMetadata
     }
   }, [])
 
   useEffect(() => {
     let unsub = () => {}
     try {
+      // Check for redirect result from mobile Google sign-in
+      if (firebaseAuth.getRedirectResult) {
+        firebaseAuth.getRedirectResult().then(async (result) => {
+          if (result?.user) {
+            setLoading(true)
+            await syncWithBackend(result.user)
+            setLoading(false)
+          }
+        }).catch(() => {})
+      }
+
       unsub = firebaseAuth.onAuthStateChanged(async (firebaseUser) => {
         setLoading(true)
         await syncWithBackend(firebaseUser)

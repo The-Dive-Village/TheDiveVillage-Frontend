@@ -17,7 +17,8 @@ export default function ProtectedRoute({ children, roles }) {
     return <Navigate to="/login" replace state={{ from: location }} />
   }
 
-  if (roles && !roles.includes(role)) {
+  const effectiveRole = role && role !== 'guest' ? role : 'customer'
+  if (roles && !roles.includes(effectiveRole)) {
     return <Navigate to="/dashboard" replace />
   }
 

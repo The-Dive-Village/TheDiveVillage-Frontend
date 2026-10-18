@@ -112,9 +112,38 @@ export const firebaseAuth = {
     try {
       const { auth: a, authMod } = await getAuthModule()
       const provider = new authMod.GoogleAuthProvider()
-      return await authMod.signInWithPopup(a, provider)
+      provider.setCustomParameters({ prompt: 'select_account' })
+
+      try {
+        return await authMod.signInWithPopup(a, provider)
+      } catch (popupErr) {
+        // If popup was blocked or unsupported on mobile, fall back to redirect
+        const isMobileOrBlocked =
+          popupErr?.code === 'auth/popup-blocked' ||
+          popupErr?.code === 'auth/popup-closed-by-user' ||
+          popupErr?.code === 'auth/operation-not-supported-in-this-environment' ||
+          (typeof window !== 'undefined' && window.innerWidth < 768)
+
+        if (isMobileOrBlocked && authMod.signInWithRedirect) {
+          console.log('[Firebase Auth] Switching to signInWithRedirect for mobile browser...')
+          await authMod.signInWithRedirect(a, provider)
+          return null
+        }
+        throw popupErr
+      }
     } catch (err) {
       handleAuthError(err)
+    }
+  },
+  getRedirectResult: async () => {
+    if (!isFirebaseConfigured) return null
+    try {
+      const { auth: a, authMod } = await getAuthModule()
+      if (!a || !authMod.getRedirectResult) return null
+      return await authMod.getRedirectResult(a)
+    } catch (err) {
+      console.warn('[Firebase Auth] getRedirectResult error:', err)
+      return null
     }
   },
   sendPasswordReset: async (email) => {

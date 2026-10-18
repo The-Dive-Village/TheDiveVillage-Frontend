@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { useAuth } from '../hooks/useAuth'
 import LazyVideo from '../components/LazyVideo'
@@ -7,20 +7,35 @@ const vidDiscoverScuba = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TD
 
 export default function Signup() {
   const navigate = useNavigate()
-  const { signup, loginWithGoogle } = useAuth()
+  const { user, isAuthenticated, signup, loginWithGoogle } = useAuth()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
+  // Immediately redirect to profile or admin if user is already authenticated
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      if (user.role === 'admin') {
+        navigate('/admin', { replace: true })
+      } else {
+        navigate('/dashboard/profile', { replace: true })
+      }
+    }
+  }, [isAuthenticated, user, navigate])
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
     setLoading(true)
     try {
-      await signup(email, password, { displayName: name })
-      navigate('/dashboard/profile')
+      const u = await signup(email, password, { displayName: name })
+      if (u?.role === 'admin') {
+        navigate('/admin', { replace: true })
+      } else {
+        navigate('/dashboard/profile', { replace: true })
+      }
     } catch (err) {
       let friendlyMsg = 'Failed to create account. Please check your information.'
       const code = err?.code || ''
@@ -46,8 +61,12 @@ export default function Signup() {
     setError('')
     setLoading(true)
     try {
-      await loginWithGoogle()
-      navigate('/dashboard/profile')
+      const u = await loginWithGoogle()
+      if (u?.role === 'admin') {
+        navigate('/admin', { replace: true })
+      } else if (u) {
+        navigate('/dashboard/profile', { replace: true })
+      }
     } catch (err) {
       setError(err.message || 'Google sign-up failed.')
     } finally {

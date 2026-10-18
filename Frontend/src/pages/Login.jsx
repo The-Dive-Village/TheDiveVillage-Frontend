@@ -1,5 +1,5 @@
 import LazyVideo from '../components/LazyVideo'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { useAuth } from '../hooks/useAuth'
 import { firebaseAuth } from '../services/firebase'
@@ -7,12 +7,23 @@ const vidDiscoverScuba = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TD
 
 export default function Login() {
   const navigate = useNavigate()
-  const { login, loginWithGoogle } = useAuth()
+  const { user, isAuthenticated, login, loginWithGoogle } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [infoMsg, setInfoMsg] = useState('')
   const [loading, setLoading] = useState(false)
+
+  // Immediately redirect to profile or admin if user is already authenticated
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      if (user.role === 'admin') {
+        navigate('/admin', { replace: true })
+      } else {
+        navigate('/dashboard/profile', { replace: true })
+      }
+    }
+  }, [isAuthenticated, user, navigate])
 
   const handleForgotPassword = async () => {
     if (!email.trim()) {
@@ -36,9 +47,9 @@ export default function Login() {
     try {
       const u = await login(email, password)
       if (u?.role === 'admin') {
-        navigate('/admin')
+        navigate('/admin', { replace: true })
       } else {
-        navigate('/dashboard/profile')
+        navigate('/dashboard/profile', { replace: true })
       }
     } catch (err) {
       let friendlyMsg = 'Failed to sign in. Please check your credentials.'
@@ -67,8 +78,12 @@ export default function Login() {
     setError('')
     setLoading(true)
     try {
-      await loginWithGoogle()
-      navigate('/dashboard/profile')
+      const u = await loginWithGoogle()
+      if (u?.role === 'admin') {
+        navigate('/admin', { replace: true })
+      } else if (u) {
+        navigate('/dashboard/profile', { replace: true })
+      }
     } catch (err) {
       setError(err.message || 'Google sign-in failed.')
     } finally {
