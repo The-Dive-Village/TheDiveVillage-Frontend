@@ -18,7 +18,7 @@ const NAV = [
   { to: '/services', label: 'Services' },
   { to: '/gallery', label: 'Gallery' },
   { to: '/shop', label: 'Shop' },
-  { to: '/book-us', label: 'Book Us', highlight: true },
+  { to: 'https://thedivevillage.com/book-us', label: 'Book Us', highlight: true, external: true },
 ]
 
 export default function Navbar() {
@@ -198,19 +198,14 @@ export default function Navbar() {
           >
             Home
           </NavLink>
-          <NavLink
-            to="/book-us"
-            onMouseEnter={() => prefetchRoute('/book-us')}
-            onTouchStart={() => prefetchRoute('/book-us')}
-            className={({ isActive }) =>
-              `relative whitespace-nowrap font-body text-[15px] sm:text-[15px] font-bold tracking-wide transition-all duration-300 focus:outline-none focus-visible:outline-none ${isActive
-                ? 'text-[#FFCD00] after:content-[""] after:absolute after:-bottom-1.5 after:left-0 after:w-full after:h-[2.5px] after:bg-[#FFCD00]'
-                : `${textColor} hover:text-[#FFCD00] after:content-[""] after:absolute after:-bottom-1.5 after:left-0 after:w-full after:h-[2.5px] after:bg-[#FFCD00] after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300`
-              }`
-            }
+          <a
+            href="https://thedivevillage.com/book-us"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`relative whitespace-nowrap font-body text-[15px] sm:text-[15px] font-bold tracking-wide transition-all duration-300 focus:outline-none focus-visible:outline-none ${textColor} hover:text-[#FFCD00] after:content-[""] after:absolute after:-bottom-1.5 after:left-0 after:w-full after:h-[2.5px] after:bg-[#FFCD00] after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300`}
           >
             Book Us
-          </NavLink>
+          </a>
           <NavLink
             to="/shop"
             onMouseEnter={() => prefetchRoute('/shop')}
@@ -341,22 +336,35 @@ export default function Navbar() {
 
               <nav className="flex flex-col gap-1" aria-label="Mobile">
                 {NAV.map((item) => (
-                  <NavLink
-                    key={item.to}
-                    to={item.to}
-                    end={item.end}
-                    onMouseEnter={() => prefetchRoute(item.to)}
-                    onTouchStart={() => prefetchRoute(item.to)}
-                    onClick={() => setOpen(false)}
-                    className={({ isActive }) =>
-                      `rounded-xl px-4 py-3 font-heading text-[15px] font-bold transition duration-hover ${isActive
-                        ? 'bg-white/15 text-white'
-                        : 'text-white hover:bg-white/10 hover:text-white'
-                      }`
-                    }
-                  >
-                    {item.label}
-                  </NavLink>
+                  item.external ? (
+                    <a
+                      key={item.label}
+                      href={item.to}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => setOpen(false)}
+                      className="rounded-xl px-4 py-3 font-heading text-[15px] font-bold transition duration-hover text-white hover:bg-white/10 hover:text-white"
+                    >
+                      {item.label}
+                    </a>
+                  ) : (
+                    <NavLink
+                      key={item.to}
+                      to={item.to}
+                      end={item.end}
+                      onMouseEnter={() => prefetchRoute(item.to)}
+                      onTouchStart={() => prefetchRoute(item.to)}
+                      onClick={() => setOpen(false)}
+                      className={({ isActive }) =>
+                        `rounded-xl px-4 py-3 font-heading text-[15px] font-bold transition duration-hover ${isActive
+                          ? 'bg-white/15 text-white'
+                          : 'text-white hover:bg-white/10 hover:text-white'
+                        }`
+                      }
+                    >
+                      {item.label}
+                    </NavLink>
+                  )
                 ))}
                 <button
                   onClick={() => {

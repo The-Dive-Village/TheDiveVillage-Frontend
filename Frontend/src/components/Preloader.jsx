@@ -159,8 +159,8 @@ export default function Preloader({ onComplete }) {
   }, [])
 
   useEffect(() => {
-    const maxSafetyTimeout = 3000 // Extended safety cap ensuring high-res 4K frame renders before preloader dismisses
-    const baseTargetDuration = 1400 // Smooth progress duration (~1.4s)
+    const maxSafetyTimeout = 1800 // Safety cap ensuring page is accessible quickly without lingering
+    const baseTargetDuration = 1100 // Smooth progress duration (~1.1s)
     let animationFrameId
     let completed = false
     let firstFrameTime = null

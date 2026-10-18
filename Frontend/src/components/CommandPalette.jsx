@@ -31,7 +31,7 @@ export default function CommandPalette({ isOpen, onClose }) {
     // 1. Pages & Fast Navigation
     list.push(
       { id: 'page-home', type: 'page', title: 'Home Page', subtitle: 'Welcome to The Dive Village', url: '/', iconKey: 'home', category: 'Pages' },
-      { id: 'page-book', type: 'page', title: 'Book A Dive / Course', subtitle: 'Online Dive Booking Wizard', url: '/book-us', iconKey: 'globe', category: 'Pages' },
+      { id: 'page-book', type: 'page', title: 'Book A Dive / Course', subtitle: 'Book online at thedivevillage.com', url: 'https://thedivevillage.com/book-us', iconKey: 'globe', category: 'Pages' },
       { id: 'page-services', type: 'page', title: 'Services & Expeditions', subtitle: 'Scuba Diving, Freediving, Surfing', url: '/services', iconKey: 'services', category: 'Pages' },
       { id: 'page-shop', type: 'page', title: 'Shop & Merchandise', subtitle: 'Apparel, Dry Bags, Rashguards & Gear', url: '/shop', iconKey: 'shop', category: 'Pages' },
       { id: 'page-gallery', type: 'page', title: 'Visual Gallery & Lightbox', subtitle: 'Underwater wildlife photos & videos', url: '/gallery', iconKey: 'gallery', category: 'Pages' },
@@ -147,7 +147,11 @@ export default function CommandPalette({ isOpen, onClose }) {
           triggerHaptic(10)
           const target = filtered[selectedIndex]
           onClose()
-          navigate(target.url)
+          if (target.url && target.url.startsWith('http')) {
+            window.open(target.url, '_blank', 'noopener,noreferrer')
+          } else {
+            navigate(target.url)
+          }
         }
       }
     }
@@ -246,7 +250,11 @@ export default function CommandPalette({ isOpen, onClose }) {
                     onClick={() => {
                       triggerHaptic(10)
                       onClose()
-                      navigate(item.url)
+                      if (item.url && item.url.startsWith('http')) {
+                        window.open(item.url, '_blank', 'noopener,noreferrer')
+                      } else {
+                        navigate(item.url)
+                      }
                     }}
                     onMouseEnter={() => setSelectedIndex(index)}
                     className={`flex items-center justify-between p-2.5 sm:p-3 rounded-2xl cursor-pointer transition-all duration-150 ${

@@ -7,7 +7,7 @@ import ViberQRModal from './ViberQRModal'
 const QUICK = [
   { to: '/', label: 'Home' },
   { to: '/about', label: 'About Us' },
-  { to: '/book-us', label: 'Book Us' },
+  { to: 'https://thedivevillage.com/book-us', label: 'Book Us', external: true },
   { to: '/services', label: 'Services' },
   { to: '/gallery', label: 'Gallery' },
   { to: '/shop', label: 'Shop' },
@@ -146,20 +146,39 @@ export default function Footer() {
               <ul className="flex flex-col">
                 {QUICK.map((item) => (
                   <li key={item.label}>
-                    <Link
-                      to={item.to}
-                      className={`flex items-center justify-between py-1.5 text-[15px] ${isNightDive ? 'text-white hover:text-white' : 'text-white/85 hover:text-white active:text-accent'} transition-colors`}
-                    >
-                      <span>{item.label}</span>
-                      <svg
-                        className="w-3.5 h-3.5 text-white/50 shrink-0"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
+                    {item.external ? (
+                      <a
+                        href={item.to}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`flex items-center justify-between py-1.5 text-[15px] ${isNightDive ? 'text-white hover:text-white' : 'text-white/85 hover:text-white active:text-accent'} transition-colors`}
                       >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </Link>
+                        <span>{item.label}</span>
+                        <svg
+                          className="w-3.5 h-3.5 text-white/50 shrink-0"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </a>
+                    ) : (
+                      <Link
+                        to={item.to}
+                        className={`flex items-center justify-between py-1.5 text-[15px] ${isNightDive ? 'text-white hover:text-white' : 'text-white/85 hover:text-white active:text-accent'} transition-colors`}
+                      >
+                        <span>{item.label}</span>
+                        <svg
+                          className="w-3.5 h-3.5 text-white/50 shrink-0"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ul>

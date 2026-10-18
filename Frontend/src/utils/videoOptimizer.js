@@ -73,9 +73,11 @@ export function get360PosterUrl(url, { width = 1920, quality = 'best' } = {}) {
     .replace(/\.(mp4|m3u8)(\?.*)?$/i, '.webp')
 }
 
-// Active 360 Stream Constants
-export const OPTIMIZED_CLOWNFISH_360 = STREAM_CLOWNFISH.hls
-export const OPTIMIZED_BARRACUDA_360 = STREAM_BARRACUDA.hls
+// Active 360 Stream Constants (Selects existing lightweight 1080p R2 stream on mobile for zero-lag streaming)
+const isMobileDevice = typeof window !== 'undefined' && window.innerWidth < 640
+
+export const OPTIMIZED_CLOWNFISH_360 = isMobileDevice ? MASTER_1080P_CLOWNFISH : STREAM_CLOWNFISH.hls
+export const OPTIMIZED_BARRACUDA_360 = isMobileDevice ? MASTER_1080P_BARRACUDA : STREAM_BARRACUDA.hls
 export const OPTIMIZED_TURTLE_360 = STREAM_TURTLE.hls
 export const OPTIMIZED_NIGHT_DIVE_360 = STREAM_NIGHT_DIVE.hls
 
