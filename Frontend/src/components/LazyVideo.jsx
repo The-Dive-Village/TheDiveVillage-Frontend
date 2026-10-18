@@ -71,10 +71,12 @@ export default function LazyVideo({
   const isVisible = usePageVisibility()
   const wasPlayingBeforeHideRef = useRef(false)
 
-  // Clean Cloudinary/R2 video stream URL without #t=0.001 temporal seeking stall
+  // Optimized video stream URL with #t=0.001 standard media fragment for instant first-frame poster painting
   const optimizedVideoSrc = useMemo(() => {
     const raw = getOptimizedVideoUrl(src) || src
-    return raw || ''
+    if (!raw) return ''
+    if (raw.includes('#')) return raw
+    return `${raw}#t=0.001`
   }, [src])
 
   // Sharp WebP/JPG poster
@@ -97,8 +99,8 @@ export default function LazyVideo({
   const [hasFrame, setHasFrame] = useState(isVideoAlreadyCached)
   const [cachedBlur, setCachedBlur] = useState(() => getCachedVideoBlur(src))
 
-  // Lightweight metadata preloading until actively intersecting the viewport (vital for mobile data & CPU)
-  const effectivePreload = explicitPreload ?? (isInView ? 'auto' : 'metadata')
+  // If there is no poster image, we MUST preload auto when in view so browser fetches and paints the first frame
+  const effectivePreload = explicitPreload ?? (resolvedPoster ? (autoPlay ? 'metadata' : 'none') : 'auto')
 
   const alreadyCachedPoster = useMemo(() => isMediaLoaded(resolvedPoster), [resolvedPoster])
   const [posterLoaded, setPosterLoaded] = useState(alreadyCachedPoster || isVideoAlreadyCached)
@@ -170,9 +172,6 @@ export default function LazyVideo({
       return
     }
 
-    const isMobile = typeof window !== 'undefined' && window.innerWidth < 640
-    const rootMargin = isMobile ? '120px 20px' : '250px 80px'
-
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -193,7 +192,7 @@ export default function LazyVideo({
           }
         })
       },
-      { rootMargin, threshold: 0.01 }
+      { rootMargin: '350px 100px', threshold: 0.01 }
     )
 
     observer.observe(el)

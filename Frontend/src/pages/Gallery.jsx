@@ -526,7 +526,7 @@ export default function Gallery() {
                           {item.type === 'video' ? (
                             <div className="relative w-full h-full bg-[#00172b] flex items-center justify-center overflow-hidden">
                               <video
-                                src={item.src}
+                                src={`${item.src}#t=0.001`}
                                 muted
                                 playsInline
                                 preload="metadata"
