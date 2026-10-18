@@ -1,132 +1,135 @@
-// Helper to generate optimized Cloudinary video poster/thumbnail frame
-export const getVideoThumbnail = (_videoUrl) => {
-  return ''
-}
+// Helper for video thumbnails - returns empty string to allow instant video playback without random static images
+export const getVideoThumbnail = () => ''
 
 // Distinct High-Res Images
-const imgPhoto86440 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86448 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgIntroProg = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/ServicesThumbnails/Introductory%20Programs.webp'
-const imgPhoto86450 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86726 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgSnorkelingPng = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/ServicesThumbnails/Snorkeling.webp'
-const imgPhoto86451 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86454 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86476 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgScuba1Jpg = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgCertCourses = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/ServicesThumbnails/Certified%20Courses.webp'
-const imgScuba2Jpg = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgScuba3Jpg = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgStay = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AirportToAirport/Stay.webp'
-const imgScuba4Jpg = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgScuba5Jpg = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgScubadiving = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp';
-const imgPhoto86485 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86509 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgCrownOfThorns = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86561 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86567 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86573 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgNightDive = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86574 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86576 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgFlexFunDives = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86578 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgSeaFanJpg = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Sea_fan.webp';
-const imgPhoto86586 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86587 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86588 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86611 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86694 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86723 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgSky1 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86738 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgZero2Hero = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86739 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86742 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86760 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgFreeDivingPng = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/ServicesThumbnails/Free%20Diving.webp'
-const imgFreeDivingJpg = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86761 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86765 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
-const imgPhoto86771 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86440 = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86448 = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgIntroProg = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791691278/TDV-Media/ServicesThumbnails/Introductory%20Programs.webp'
+const imgPhoto86450 = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86726 = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgSnorkelingPng = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791691302/TDV-Media/ServicesThumbnails/Snorkeling.webp'
+const imgPhoto86451 = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86454 = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86476 = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgScuba1Jpg = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgCertCourses = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791691284/TDV-Media/ServicesThumbnails/Certified%20Courses.webp'
+const imgScuba2Jpg = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgScuba3Jpg = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgStay = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791691313/TDV-Media/AirportToAirport/Stay.webp'
+const imgScuba4Jpg = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgScuba5Jpg = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgScubadiving = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458191/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp';
+const imgPhoto86485 = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86509 = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgCrownOfThorns = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86561 = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86567 = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86573 = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgNightDive = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86574 = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86576 = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgFlexFunDives = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86578 = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgSeaFanJpg = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458192/TDV-Media/Extras%20for%20Gallery/Sea_fan.webp';
+const imgPhoto86586 = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86587 = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86588 = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86611 = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86694 = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86723 = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgSky1 = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86738 = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgZero2Hero = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86739 = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86742 = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86760 = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgFreeDivingPng = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791691291/TDV-Media/ServicesThumbnails/Free%20Diving.webp'
+const imgFreeDivingJpg = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86761 = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86765 = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
+const imgPhoto86771 = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp'
 
 // Extras for Gallery
-const extScubaDiving = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp';
-const extOpenWater = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Open_Water_Scuba_Diving.webp';
-const extScubaDiving2 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving_2.webp';
-const extScubadiving1 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp';
-const extSeaFan = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Sea_fan.webp';
-const extShoal = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Shoal.webp';
-const extSunset = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Sunset.jpg';
-const extBandedCoral = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Banded_Coral_Shrimp.webp';
-const extVaricose = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Varicose_Wart_Slug.webp';
-const extYellowback = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Yellowback_fusiliers.webp';
-const extGiantClam = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Giant_Clam.webp';
-const extLionfish = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Lionfish.webp';
-const extBubbleCoral = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Bubble_Coral.webp';
-const extBaitball = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/School_of_Baitball.webp';
-const extMantaRayVid = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Manta_Ray_2.mp4';
-const extBarracudasVid = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Silver_Barracudas.mp4';
-const extTurtleVid = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Hawksbill_Sea_Turtle_2.mp4';
-const extTrevallyVid = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Big_Eye_Trevally.mp4';
-const extStingrayVid = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Bluespotted_Stingray.mp4';
-const extScubaDiverVid = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Scuba_Diver.mp4';
-const extMorayEelVid = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/A_Moray_Eel_in_a_Giant_Barrel_Sponge.mp4';
-const extAnemoneVid = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Clownfish_and_Sea_Anemone.mp4';
-const extSeafanVid = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/A_Seafan.mp4';
+const extScubaDiving = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458188/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp';
+const extOpenWater = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458178/TDV-Media/Extras%20for%20Gallery/Open_Water_Scuba_Diving.webp';
+const extScubaDiving2 = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458189/TDV-Media/Extras%20for%20Gallery/Scubadiving_2.webp';
+const extScubadiving1 = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458191/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp';
+const extSeaFan = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458192/TDV-Media/Extras%20for%20Gallery/Sea_fan.webp';
+const extShoal = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458193/TDV-Media/Extras%20for%20Gallery/Shoal.webp';
+const extSunset = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458204/TDV-Media/Extras%20for%20Gallery/Sunset.jpg';
+const extBandedCoral = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791457833/TDV-Media/Extras%20for%20Gallery/Banded_Coral_Shrimp.webp';
+const extVaricose = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458209/TDV-Media/Extras%20for%20Gallery/Varicose_Wart_Slug.webp';
+const extYellowback = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458221/TDV-Media/Extras%20for%20Gallery/Yellowback_fusiliers.webp';
+const extGiantClam = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458100/TDV-Media/Extras%20for%20Gallery/Giant_Clam.webp';
+const extLionfish = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458123/TDV-Media/Extras%20for%20Gallery/Lionfish.webp';
+const extBubbleCoral = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458078/TDV-Media/Extras%20for%20Gallery/Bubble_Coral.webp';
+const extBaitball = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458179/TDV-Media/Extras%20for%20Gallery/School_of_Baitball.webp';
+const extMantaRayVid = '/media/TDV-Media/Extras for Gallery/Manta_Ray_2.mp4';
+const extBarracudasVid = '/media/TDV-Media/Extras for Gallery/Silver_Barracudas.mp4';
+const extTurtleVid = '/media/TDV-Media/Extras for Gallery/Hawksbill_Sea_Turtle_2.mp4';
+const extTrevallyVid = '/media/TDV-Media/Extras for Gallery/Big_Eye_Trevally.mp4';
+const extStingrayVid = '/media/TDV-Media/Extras for Gallery/Bluespotted_Stingray.mp4';
+const extScubaDiverVid = '/media/TDV-Media/Services/Scuba_Diver.mp4';
+const extMorayEelVid = '/media/TDV-Media/Extras for Gallery/A_Moray_Eel_in_a_Giant_Barrel_Sponge.mp4';
+const extAnemoneVid = '/media/TDV-Media/Extras for Gallery/Clownfish_and_Sea_Anemone.mp4';
+const extSeafanVid = '/media/TDV-Media/Extras for Gallery/A_Seafan.mp4';
 
 // Exact Service Media Video Imports from Assets/Media/Services
-const vidTryDive = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Try_Dive.mp4';
-const vidDSDLite = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Discover_Scuba_Dive_Lite.mp4';
-const vidDiscoverScuba = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Discover_Scuba_Dive.mp4';
-const vidDiscoverSnorkelling = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Discover_Snorkelling.mp4';
-const vidBubblemaker = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Bubblemaker.mp4';
-const vidAddDiveAfterDSD = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Additional_dive_ater_discover_scuba_dive.mp4';
-const vidSkinDiver = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Skin_Diver.mp4';
-const vidScubaDiver = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Scuba_Diver.mp4';
-const vidOpenWater = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Open_Water_Diver.mp4';
-const vidAdventureDiver = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/AdventureDiver.mp4';
-const vidAdvancedOpenWater = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Advanced_Open_Water.mp4';
-const vidEFR = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/EFR_Primary_Secondary_Care.mp4';
-const vidRescueDiver = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Rescue_Diver.mp4';
-const vidReactivate = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Reactivate_with_dive.mp4';
-const vidFullRefresher = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Full_Refresher_with_dive.mp4';
-const vidLiteRefresher = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Lite_Refresher.mp4';
-const vidBuoyancy = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Peak_Perormance_Buoyancy.mp4';
-const vidProjectAware = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Project_AWARE.mp4';
-const vidDeepDiver = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/DeepDiver.mp4';
-const vidWreckDiver = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Wreck_Diver.mp4';
-const vidNightDiveBackground = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Night_Diver.mp4';
-const vidNitrox = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Enriched_Air_Nitrox.mp4';
+const vidTryDive = '/media/TDV-Media/Services/Try_Dive.mp4';
+const vidTryDivePreview = '/media/TDV-Media/Services/previews/prog_try_dive_preview.mp4';
+const vidDSDLite = '/media/TDV-Media/Services/Discover_Scuba_Dive_Lite.mp4';
+const vidDSDLitePreview = '/media/TDV-Media/Services/previews/prog_dsd_lite_preview.mp4';
+const vidDiscoverScuba = '/media/TDV-Media/Services/Discover_Scuba_Dive.mp4';
+const vidDiscoverScubaPreview = '/media/TDV-Media/Services/previews/prog_dsd_preview.mp4';
+const vidDiscoverSnorkelling = '/media/TDV-Media/Services/Discover_Snorkelling.mp4';
+const vidBubblemaker = '/media/TDV-Media/Services/Bubblemaker.mp4';
+const vidBubblemakerPreview = '/media/TDV-Media/Services/previews/prog_bubblemaker_preview.mp4';
+const vidAddDiveAfterDSD = '/media/TDV-Media/Services/Additional_dive_ater_discover_scuba_dive.mp4';
+const vidAddDiveAfterDSDPreview = '/media/TDV-Media/Services/previews/prog_add_dive_preview.mp4';
+const vidSkinDiver = '/media/TDV-Media/Services/Skin_Diver.mp4';
+const vidScubaDiver = '/media/TDV-Media/Services/Scuba_Diver.mp4';
+const vidOpenWater = '/media/TDV-Media/Services/Open_Water_Diver.mp4';
+const vidAdventureDiver = '/media/TDV-Media/Services/AdventureDiver.mp4';
+const vidAdvancedOpenWater = '/media/TDV-Media/Services/Advanced_Open_Water.mp4';
+const vidEFR = '/media/TDV-Media/Services/EFR_Primary_Secondary_Care.mp4';
+const vidRescueDiver = '/media/TDV-Media/Services/Rescue_Diver.mp4';
+const vidReactivate = '/media/TDV-Media/Services/Reactivate_with_dive.mp4';
+const vidFullRefresher = '/media/TDV-Media/Services/Full_Refresher_with_dive.mp4';
+const vidLiteRefresher = '/media/TDV-Media/Services/Lite_Refresher.mp4';
+const vidBuoyancy = '/media/TDV-Media/Services/Peak_Perormance_Buoyancy.mp4';
+const vidProjectAware = '/media/TDV-Media/Services/Project_AWARE.mp4';
+const vidDeepDiver = '/media/TDV-Media/Services/DeepDiver.mp4';
+const vidWreckDiver = '/media/TDV-Media/Services/Wreck_Diver.mp4';
+const vidNightDiveBackground = '/media/TDV-Media/Services/Night_Diver.mp4';
+const vidNitrox = '/media/TDV-Media/Services/Enriched_Air_Nitrox.mp4';
 const vidFunDive = extTurtleVid;
-const vidDSDOpenWater = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Discover_Scuba_Dive_Open_Water.mp4';
-const vidOWAdvanced = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Open_water_Advanced_Openwater.mp4';
-const vidEFRRescue = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Emergency_First_Response_Rescue_Diver.mp4';
-const vidDivemaster = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/DiveMaster.mp4';
-const vidEFRRescueDM = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Emergency_First_Response_Rescue_DiveMaster.mp4';
-const vidEFRRescueDMPrereq = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Emergency_First_Response_Rescue_DiveMaster_Prequesites.mp4';
-const vidZeroToHero = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Zero_to_hero_-_Open_Water_to_Dive_Master.mp4';
-const vidBasicFreediver = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/BasicFreeDiver.mp4';
-const vidFreediver = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Freediver.mp4';
-const vidReefExplorer = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/reefexplorer.mp4';
-const vidOceanExplorer = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/oceanexplorer.mp4';
-const vidDriftDiver = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Drift_Dive.mp4';
-const vid3DaySurf = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/3_Day_Surf_Academy_Course.mp4';
-const vidDiscoverSurfing = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/discover_surfing.mp4';
-const vidCanoneering = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Other/Canoneering.mp4';
+const vidDSDOpenWater = '/media/TDV-Media/Services/Discover_Scuba_Dive_Open_Water.mp4';
+const vidOWAdvanced = '/media/TDV-Media/Services/Open_water_Advanced_Openwater.mp4';
+const vidEFRRescue = '/media/TDV-Media/Services/Emergency_First_Response_Rescue_Diver.mp4';
+const vidDivemaster = '/media/TDV-Media/Services/DiveMaster.mp4';
+const vidEFRRescueDM = '/media/TDV-Media/Services/Emergency_First_Response_Rescue_DiveMaster.mp4';
+const vidEFRRescueDMPrereq = '/media/TDV-Media/Services/Emergency_First_Response_Rescue_DiveMaster_Prequesites.mp4';
+const vidZeroToHero = '/media/TDV-Media/Services/Zero_to_hero_-_Open_Water_to_Dive_Master.mp4';
+const vidBasicFreediver = '/media/TDV-Media/Services/BasicFreeDiver.mp4';
+const vidFreediver = '/media/TDV-Media/Services/Freediver.mp4';
+const vidReefExplorer = '/media/TDV-Media/Services/reefexplorer.mp4';
+const vidOceanExplorer = '/media/TDV-Media/Services/oceanexplorer.mp4';
+const vidDriftDiver = '/media/TDV-Media/Services/Drift_Dive.mp4';
+const vid3DaySurf = '/media/TDV-Media/Services/3_Day_Surf_Academy_Course.mp4';
+const vidDiscoverSurfing = '/media/TDV-Media/Services/discover_surfing.mp4';
+const vidCanoneering = '/media/TDV-Media/Services/Other/Canoneering.mp4';
 
 // Add Ons Media (Cloudinary URLs)
-const vidTrekking = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOns/Trekking.mp4'
-const imgTrekking = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOns/trekking.webp'
-const vidSightseeing = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOns/sightseeing.mp4'
-const imgSightseeing = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOns/sightseeing.webp'
-const vidCampers = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOns/Campers.mp4'
-const imgCampers = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOns/campers.webp'
-const vidSafari = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AirportToAirport/gallery1.mp4'
-const imgSafari = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOns/safari.webp'
-const vidLiveaboard = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOnsLow/liveaboard_preview.mp4'
-const imgLiveaboard = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOns/liveaboard.webp'
+const vidTrekking = '/media/TDV-Media/AddOns/Trekking.mp4'
+const imgTrekking = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791685508/TDV-Media/AddOns/trekking.webp'
+const vidSightseeing = '/media/TDV-Media/AddOns/sightseeing.mp4'
+const imgSightseeing = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791685509/TDV-Media/AddOns/sightseeing.webp'
+const vidCampers = '/media/TDV-Media/AddOns/Campers.mp4'
+const imgCampers = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791685511/TDV-Media/AddOns/campers.webp'
+const vidSafari = '/media/TDV-Media/AirportToAirport/gallery1.mp4'
+const imgSafari = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791685504/TDV-Media/AddOns/safari.webp'
+const vidLiveaboard = '/media/TDV-Media/AddOns/liveaboard.mp4'
+const imgLiveaboard = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791685512/TDV-Media/AddOns/liveaboard.webp'
 
 export const CATEGORIES = [
   { key: 'all', label: 'All Services' },
@@ -150,7 +153,8 @@ export const SERVICES_DATA = [
     short_desc: 'A short introduction dives for beginners.',
     long_desc: 'Experience scuba safely in shallow water with a briefing, shallow water training and a guided dive upto 4 meters for 10 minutes.',
     video: vidTryDive,
-    image: getVideoThumbnail(vidTryDive),
+    previewVideo: vidTryDivePreview,
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792325158/TDV-Media/thumbnails/prog-1_thumb.webp',
     highlights: 'Max Depth: 4m | Dive Time: 10 mins | Total Time: 45 mins | Photos & videos included',
     min_age: 8.0,
     faqs: [
@@ -175,7 +179,8 @@ export const SERVICES_DATA = [
     short_desc: 'A lighter version of Discover Scuba Dive.',
     long_desc: 'Includes a briefing, shallow water training, and a guided dive upto 12 meters for a maximum of 20 minutes.',
     video: vidDSDLite,
-    image: getVideoThumbnail(vidDSDLite),
+    previewVideo: vidDSDLitePreview,
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792325161/TDV-Media/thumbnails/prog-2_thumb.webp',
     highlights: 'Max Depth: 12m (or 4m for kids/medical) | Dive Time: 20 mins | Total Time: 1 hr | Photos & videos included',
     min_age: 10.0,
     faqs: [
@@ -200,7 +205,8 @@ export const SERVICES_DATA = [
     short_desc: 'The official Certified Discover Scuba Diving program.',
     long_desc: "Our official introductory scuba diving program where you will learn the basics of scuba diving, practice skills in confined water, and do an open water dive under upto 12 meters for 45 mins under the close supervision of a Certified Instructor.",
     video: vidDiscoverScuba,
-    image: getVideoThumbnail(vidDiscoverScuba),
+    previewVideo: vidDiscoverScubaPreview,
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792325168/TDV-Media/thumbnails/prog-3_thumb.webp',
     highlights: 'Max Depth: 12m | Dive Time: 45 mins | Total Time: 3 hrs | Photos & videos included',
     faqs: [
       {
@@ -224,7 +230,8 @@ export const SERVICES_DATA = [
     short_desc: 'Extra guided dive after DSD.',
     long_desc: 'Extend your Discover Scuba Dive experience with a guided dive with a Certified Pro.',
     video: vidAddDiveAfterDSD,
-    image: getVideoThumbnail(vidAddDiveAfterDSD),
+    previewVideo: vidAddDiveAfterDSDPreview,
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792325170/TDV-Media/thumbnails/prog-4_thumb.webp',
     highlights: 'Dive Time: 45 mins | Photos & videos may be included',
     faqs: [
       {
@@ -244,7 +251,8 @@ export const SERVICES_DATA = [
     short_desc: 'Scuba fun for kids aged between 8 to 10.',
     long_desc: 'The Bubblemaker introduces children to scuba in a safe pool like environment.',
     video: vidBubblemaker,
-    image: getVideoThumbnail(vidBubblemaker),
+    previewVideo: vidBubblemakerPreview,
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792325172/TDV-Media/thumbnails/prog-5_thumb.webp',
     highlights: 'Max Depth: 2m | Dive Time: 30 mins | Course registration included',
     min_age: 8.0,
     faqs: [
@@ -271,7 +279,8 @@ export const SERVICES_DATA = [
     short_desc: 'Learn the basics of snorkeling in a safe, guided setting.',
     long_desc: 'Includes briefing, equipment use orientation, and a 1 hour open water snorkeling session with a professional leading you.',
     video: vidDiscoverSnorkelling,
-    image: imgSnorkelingPng,
+    previewVideo: '/media/TDV-Media/AddOns/previews/snorkeling_preview.mp4',
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792325173/TDV-Media/thumbnails/snork-1_thumb.webp',
     highlights: 'Total Time: 1 hr | Knowledge development + water session',
     faqs: [
       {
@@ -291,7 +300,8 @@ export const SERVICES_DATA = [
     short_desc: 'Guided reef snorkeling for beginners.',
     long_desc: 'Perfect shallow-water snorkel trip to see colorful reef fish, corals, and safe lagoon sites.',
     video: vidReefExplorer,
-    image: imgSnorkelingPng,
+    previewVideo: '/media/TDV-Media/Services/previews/reefexplorer_preview.mp4',
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792325177/TDV-Media/thumbnails/snork-2_thumb.webp',
     highlights: 'Total Time: 1–1.5 hrs | Suitable for all ages',
     faqs: [
       {
@@ -311,7 +321,8 @@ export const SERVICES_DATA = [
     short_desc: 'Snorkel further into the blue.',
     long_desc: 'Explore deeper reef areas, spot turtles and bigger marine life, with guided safety.',
     video: vidOceanExplorer,
-    image: imgSnorkelingPng,
+    previewVideo: '/media/TDV-Media/Services/previews/oceanexplorer_preview.mp4',
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792325178/TDV-Media/thumbnails/snork-3_thumb.webp',
     highlights: 'Total Time: 1.5–2 hrs | Includes equipment & guide',
     faqs: [
       {
@@ -333,7 +344,8 @@ export const SERVICES_DATA = [
     short_desc: 'Learn snorkeling & skin diving.',
     long_desc: 'Dive on a single breath upto 6 meters. Learn the basics of breath-hold diving, safety considerations and efficient technique.',
     video: vidSkinDiver,
-    image: getVideoThumbnail(vidSkinDiver),
+    previewVideo: '/media/TDV-Media/Services/previews/skindiver_preview.mp4',
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792325134/TDV-Media/thumbnails/course-1_thumb.webp',
     highlights: 'Duration: 1–2 days | Includes knowledge + water sessions',
     days_min: 1.0,
     days_max: 1.0,
@@ -355,7 +367,8 @@ export const SERVICES_DATA = [
     short_desc: 'Entry-level certification.',
     long_desc: 'The first step towards scuba certification for beginners with limited time. The certification will enable you to dive upto 12m under professional supervision. Upgrade to open water diver anytime by completing the remaining training sections. Includes theory, confined water skill development and 2 open water dives upto 12 meters.',
     video: vidScubaDiver,
-    image: getVideoThumbnail(vidScubaDiver),
+    previewVideo: '/media/TDV-Media/Services/previews/scubadiver_preview.mp4',
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792325136/TDV-Media/thumbnails/course-2_thumb.webp',
     highlights: 'Duration: 1–2 days | Credit toward Open Water',
     days_min: 1.0,
     days_max: 2.0,
@@ -382,7 +395,8 @@ export const SERVICES_DATA = [
     short_desc: "The world's most popular scuba certification.",
     long_desc: 'Learn essential dive theory, skills, and complete 4 open water dives. This certification lets you dive upto 18m without professional supervision.',
     video: vidOpenWater,
-    image: getVideoThumbnail(vidOpenWater),
+    previewVideo: '/media/TDV-Media/Services/previews/openwater_preview.mp4',
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792325138/TDV-Media/thumbnails/course-3_thumb.webp',
     highlights: 'Duration: 3–4 days | Certification to 18m',
     days_min: 3.0,
     days_max: 4.0,
@@ -409,11 +423,13 @@ export const SERVICES_DATA = [
     short_desc: 'Complete 3 adventure dives.',
     long_desc: 'Expand skills in areas like navigation, buoyancy, or night diving.',
     video: vidAdventureDiver,
-    image: getVideoThumbnail(vidAdventureDiver),
+    previewVideo: '/media/TDV-Media/Services/previews/adventurediver_preview.mp4',
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792325140/TDV-Media/thumbnails/course-4_thumb.webp',
     highlights: 'Duration: 1–2 days | Credit toward Advanced | Prequisites: Open Water Diver',
     days_min: 1.0,
     days_max: 2.0,
     min_age: 10.0,
+    zoom: 2.95,
     faqs: [
       {
         q: 'What are the prerequisites for Adventure Diver?',
@@ -436,7 +452,8 @@ export const SERVICES_DATA = [
     short_desc: 'Take your skills deeper.',
     long_desc: 'Includes 5 adventure dives: Deep + Navigation + 3 electives.',
     video: vidAdvancedOpenWater,
-    image: getVideoThumbnail(vidAdvancedOpenWater),
+    previewVideo: '/media/TDV-Media/Services/previews/advancedow_preview.mp4',
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792325141/TDV-Media/thumbnails/course-5_thumb.webp',
     highlights: 'Duration: 2–3 days | Certification to 30m | Prerequisites: Open water diver',
     days_min: 2.0,
     days_max: 3.0,
@@ -463,7 +480,8 @@ export const SERVICES_DATA = [
     short_desc: 'Learn CPR and first aid.',
     long_desc: 'Emergency First Responder course for divers and non-divers. Develop Skills to be able to respond in a medical emergency and make a difference in saving peoples lives.',
     video: vidEFR,
-    image: getVideoThumbnail(vidEFR),
+    previewVideo: '/media/TDV-Media/Services/previews/efr_preview.mp4',
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792325143/TDV-Media/thumbnails/course-6_thumb.webp',
     highlights: 'Duration: 1–2 days | Certification valid 2 years',
     days_min: 1.0,
     days_max: 2.0,
@@ -489,7 +507,8 @@ export const SERVICES_DATA = [
     short_desc: 'Expand your rescue skills and become a safer diver.',
     long_desc: 'Learn to manage dive emergencies and assist other divers.',
     video: vidRescueDiver,
-    image: getVideoThumbnail(vidRescueDiver),
+    previewVideo: '/media/TDV-Media/Services/previews/rescuediver_preview.mp4',
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792325143/TDV-Media/thumbnails/course-7_thumb.webp',
     highlights: 'Duration: 3–4 days | Prereq: Advanced + EFR',
     days_min: 3.0,
     days_max: 4.0,
@@ -516,7 +535,8 @@ export const SERVICES_DATA = [
     short_desc: 'Refresh your skills with certification credit.',
     long_desc: 'Includes theory review and 1 open water dive.',
     video: vidReactivate,
-    image: getVideoThumbnail(vidReactivate),
+    previewVideo: '/media/TDV-Media/Services/previews/reactivate_preview.mp4',
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792325145/TDV-Media/thumbnails/course-8_thumb.webp',
     highlights: 'Duration: 1 day | 1 Open Water Dive',
     days_min: 1.0,
     days_max: 1.0,
@@ -538,7 +558,8 @@ export const SERVICES_DATA = [
     short_desc: 'Refresher without certification credit.',
     long_desc: 'Skills practice and 1 open water dive.',
     video: vidFullRefresher,
-    image: getVideoThumbnail(vidFullRefresher),
+    previewVideo: '/media/TDV-Media/Services/previews/fullrefresher_preview.mp4',
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792325148/TDV-Media/thumbnails/course-9_thumb.webp',
     highlights: 'Duration: 1 day | 1 Open Water Dive',
     days_min: 1.0,
     days_max: 1.0,
@@ -560,7 +581,8 @@ export const SERVICES_DATA = [
     short_desc: 'Confined water refresher only.',
     long_desc: 'Quick skill refresh in pool or shallow water.',
     video: vidLiteRefresher,
-    image: getVideoThumbnail(vidLiteRefresher),
+    previewVideo: '/media/TDV-Media/Services/previews/literefresher_preview.mp4',
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792325133/TDV-Media/thumbnails/course-10_thumb.webp',
     highlights: 'Duration: 1 day | Confined water only',
     days_min: 1.0,
     days_max: 1.0,
@@ -584,7 +606,8 @@ export const SERVICES_DATA = [
     short_desc: 'Become a buoyancy master.',
     long_desc: 'Explore more and dive comfortably while improving air consumption, trim, finning and overall bouyancy skills.',
     video: vidBuoyancy,
-    image: getVideoThumbnail(vidBuoyancy),
+    previewVideo: '/media/TDV-Media/Services/previews/buoyancy_preview.mp4',
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792325181/TDV-Media/thumbnails/spec-1_thumb.webp',
     highlights: 'Duration: 1–2 days | Includes 2 dives | Preqeruisites: Open Water Diver',
     days_min: 1.0,
     days_max: 1.0,
@@ -606,7 +629,8 @@ export const SERVICES_DATA = [
     short_desc: 'Support ocean conservation.',
     long_desc: 'Knowledge-based specialty focused on marine protection.',
     video: vidProjectAware,
-    image: getVideoThumbnail(vidProjectAware),
+    previewVideo: '/media/TDV-Media/Services/previews/projectaware_preview.mp4',
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792325184/TDV-Media/thumbnails/spec-2_thumb.webp',
     highlights: 'Duration: 1–2 days | Non-diving course',
     days_min: 1.0,
     days_max: 1.0,
@@ -628,7 +652,8 @@ export const SERVICES_DATA = [
     short_desc: 'Dive deeper safely.',
     long_desc: 'Learn advanced deep diving by taking planning, techniques, and safety to the next level for 18–40m dives.',
     video: vidDeepDiver,
-    image: getVideoThumbnail(vidDeepDiver),
+    previewVideo: '/media/TDV-Media/Services/previews/deepdiver_preview.mp4',
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792325187/TDV-Media/thumbnails/spec-3_thumb.webp',
     highlights: 'Duration: 2 days | 4 dives | Preqeruisites: Open Water',
     days_min: 2.0,
     days_max: 3.0,
@@ -650,7 +675,8 @@ export const SERVICES_DATA = [
     short_desc: 'Explore underwater wrecks.',
     long_desc: 'Learn how to safely and effectively dive in wrecks.',
     video: vidWreckDiver,
-    image: getVideoThumbnail(vidWreckDiver),
+    previewVideo: '/media/TDV-Media/Services/previews/wreckdiver_preview.mp4',
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792325189/TDV-Media/thumbnails/spec-4_thumb.webp',
     highlights: 'Duration: 1–2 days | 4 dives',
     days_min: 2.0,
     days_max: 3.0,
@@ -672,7 +698,8 @@ export const SERVICES_DATA = [
     short_desc: 'Experience diving at night.',
     long_desc: 'Use torches, signals, and practice navigation in the dark.',
     video: vidNightDiveBackground,
-    image: getVideoThumbnail(vidNightDiveBackground),
+    previewVideo: '/media/TDV-Media/Services/previews/nightdiver_preview.mp4',
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792325190/TDV-Media/thumbnails/spec-5_thumb.webp',
     highlights: 'Duration: 2 days | 3 dives',
     days_min: 2.0,
     days_max: 3.0,
@@ -694,7 +721,8 @@ export const SERVICES_DATA = [
     short_desc: 'Extend your bottom time.',
     long_desc: 'Learn safe use of enriched air nitrox for longer no-decompression limits.',
     video: vidNitrox,
-    image: getVideoThumbnail(vidNitrox),
+    previewVideo: '/media/TDV-Media/Services/previews/nitrox_preview.mp4',
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792325192/TDV-Media/thumbnails/spec-6_thumb.webp',
     highlights: 'Duration: 1 day | Knowledge + practical session',
     days_min: 1.0,
     days_max: 1.0,
@@ -716,7 +744,8 @@ export const SERVICES_DATA = [
     short_desc: 'Go with the flow!',
     long_desc: 'Learn the techiques to be able to dive in moderate to strong current. Many of the world class diving sites are in areas of high current, so this certificaiton is very useful.',
     video: vidDriftDiver,
-    image: getVideoThumbnail(vidDriftDiver),
+    previewVideo: '/media/TDV-Media/Services/previews/driftdiver_preview.mp4',
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792325193/TDV-Media/thumbnails/spec-7_thumb.webp',
     highlights: 'Prerequisites: Open Water Diver',
     days_min: 2.0,
     days_max: 2.0,
@@ -740,7 +769,8 @@ export const SERVICES_DATA = [
     short_desc: 'Start with Discover Scuba Dive then complete Open Water.',
     long_desc: 'A progressive bundle for beginners to move into certification.',
     video: vidDSDOpenWater,
-    image: getVideoThumbnail(vidDSDOpenWater),
+    previewVideo: '/media/TDV-Media/Services/previews/dsdow_preview.mp4',
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792325123/TDV-Media/thumbnails/combo-1_thumb.webp',
     highlights: 'Duration: 3–4 days | Includes Course registration',
     days_min: 3.0,
     days_max: 4.0,
@@ -762,7 +792,8 @@ export const SERVICES_DATA = [
     short_desc: 'Bundle Open Water and Advanced courses.',
     long_desc: 'Go from beginner to advanced diver.',
     video: vidOWAdvanced,
-    image: getVideoThumbnail(vidOWAdvanced),
+    previewVideo: '/media/TDV-Media/Services/previews/owadvanced_preview.mp4',
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792325126/TDV-Media/thumbnails/combo-2_thumb.webp',
     highlights: 'Duration: 5–7 days | Max Depth: 30m',
     days_min: 5.0,
     days_max: 7.0,
@@ -784,7 +815,8 @@ export const SERVICES_DATA = [
     short_desc: 'Combine first aid with rescue training.',
     long_desc: 'Learn EFR then apply skills in Rescue Diver.',
     video: vidEFRRescue,
-    image: getVideoThumbnail(vidEFRRescue),
+    previewVideo: '/media/TDV-Media/Services/previews/efrrescue_preview.mp4',
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792325131/TDV-Media/thumbnails/combo-3_thumb.webp',
     highlights: 'Duration: 4–6 days | Prerequisite: Advanced OpenWater',
     days_min: 4.0,
     days_max: 6.0,
@@ -806,9 +838,12 @@ export const SERVICES_DATA = [
     short_desc: 'Flexible guided dive packages for certified divers. Choose from 1 to 12+ dives, night dives, and dawn dives.',
     long_desc: 'Explore reefs and walls with flexible guided dive packages tailored directly to your schedule. Choose from 1 to 12+ dives, specialized Night Dives, and Dawn Dives with certified Divemasters.',
     video: vidFunDive,
-    image: getVideoThumbnail(vidFunDive),
+    previewVideo: '/media/TDV-Media/Services/previews/fundives_preview.mp4',
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792325132/TDV-Media/thumbnails/combo-fundives_thumb.webp',
     highlights: 'Certified divers only | 1 to 12+ Dives | Custom Packages',
     isFunDivesContainer: true,
+    zoom: 2.95,
+    zoomOrigin: 'center 75%',
     faqs: [
       {
         q: 'Who can book Fun Dive packages?',
@@ -829,7 +864,8 @@ export const SERVICES_DATA = [
     short_desc: 'The first professional step.',
     long_desc: 'Learn to supervise dives, assist instructors, and lead certified divers.',
     video: vidDivemaster,
-    image: getVideoThumbnail(vidDivemaster),
+    previewVideo: '/media/TDV-Media/Services/previews/divemaster_preview.mp4',
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792325151/TDV-Media/thumbnails/pro-1_thumb.webp',
     highlights: 'Duration: 20–25 days | Excludes crewpak & Certification fee',
     days_min: 20.0,
     days_max: 25.0,
@@ -851,7 +887,8 @@ export const SERVICES_DATA = [
     short_desc: 'Complete pro-level bundle.',
     long_desc: 'Progress from EFR to Rescue Diver, then Divemaster.',
     video: vidEFRRescueDM,
-    image: getVideoThumbnail(vidEFRRescueDM),
+    previewVideo: '/media/TDV-Media/Services/previews/efrrescuedm_preview.mp4',
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792325153/TDV-Media/thumbnails/pro-2_thumb.webp',
     highlights: 'Duration: 24–31 days | Excludes crewpak & Certification fees',
     days_min: 24.0,
     days_max: 31.0,
@@ -873,7 +910,8 @@ export const SERVICES_DATA = [
     short_desc: 'Accelerated path with prerequisites.',
     long_desc: 'Skip prior modules and move into Divemaster.',
     video: vidEFRRescueDMPrereq,
-    image: getVideoThumbnail(vidEFRRescueDMPrereq),
+    previewVideo: '/media/TDV-Media/Services/previews/efrrescuedmprereq_preview.mp4',
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792325155/TDV-Media/thumbnails/pro-3_thumb.webp',
     highlights: 'Duration: varies | Excludes crewpak & Certification fees',
     faqs: [
       {
@@ -889,7 +927,8 @@ export const SERVICES_DATA = [
     short_desc: 'Pathway from beginner to Divemaster.',
     long_desc: 'Start at OW and continue to Divemaster certification.',
     video: vidZeroToHero,
-    image: getVideoThumbnail(vidZeroToHero),
+    previewVideo: '/media/TDV-Media/Services/previews/zerotohero_preview.mp4',
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792325156/TDV-Media/thumbnails/pro-4_thumb.webp',
     highlights: 'Duration: 90–120 days | Permit included | Food & stay extra',
     days_min: 90.0,
     days_max: 120.0,
@@ -913,7 +952,8 @@ export const SERVICES_DATA = [
     short_desc: 'Learn the basics of breath-hold diving.',
     long_desc: 'Focus on static apnea, dynamic apnea, and safety in confined water.',
     video: vidBasicFreediver,
-    image: getVideoThumbnail(vidBasicFreediver),
+    previewVideo: '/media/TDV-Media/Services/previews/basicfreediver_preview.mp4',
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792325149/TDV-Media/thumbnails/free-1_thumb.webp',
     highlights: 'Duration: 1–2 days | Confined water + theory',
     days_min: 1.0,
     days_max: 2.0,
@@ -935,7 +975,8 @@ export const SERVICES_DATA = [
     short_desc: 'Build strong freediving skills.',
     long_desc: 'Expand breath-hold time and depth techniques in open water.',
     video: vidFreediver,
-    image: getVideoThumbnail(vidFreediver),
+    previewVideo: '/media/TDV-Media/Services/previews/freediver_preview.mp4',
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792325150/TDV-Media/thumbnails/free-2_thumb.webp',
     highlights: 'Duration: 2–3 days | Includes confined + open water',
     days_min: 2.0,
     days_max: 3.0,
@@ -959,7 +1000,8 @@ export const SERVICES_DATA = [
     short_desc: 'Introductory surfboard lesson for beginners.',
     long_desc: 'Learn pop-up techniques, wave timing, board balance, and safety in shallow ocean breaks with an experienced instructor.',
     video: vidDiscoverSurfing,
-    image: 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp',
+    previewVideo: '/media/TDV-Media/AddOns/previews/surfing_preview.mp4',
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792325194/TDV-Media/thumbnails/surf-1_thumb.webp',
     highlights: 'Total Time: 2 hrs | Includes surfboard, rashguard & instructor',
     min_age: 8.0,
     faqs: [
@@ -980,7 +1022,8 @@ export const SERVICES_DATA = [
     short_desc: 'Master wave reading, paddling, and maneuvers.',
     long_desc: 'Comprehensive 3-day surfing course covering ocean currents, line-up positioning, turns, and riding green waves.',
     video: vid3DaySurf,
-    image: 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp',
+    previewVideo: '/media/TDV-Media/Services/previews/surfacademy_preview.mp4',
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792325195/TDV-Media/thumbnails/surf-3_thumb.webp',
     highlights: 'Duration: 3 Days | Video analysis & surf log included',
     days_min: 3.0,
     days_max: 3.0,
@@ -1001,11 +1044,12 @@ export const SERVICES_DATA = [
   {
     id: 'addon-1',
     category: 'addons',
-    title: 'Canoneering',
-    short_desc: 'An adventurous canoneering experience.',
-    long_desc: 'Explore the rugged terrains, rappel down waterfalls, and navigate through natural canyons in this thrilling canoneering adventure.',
+    title: 'Canyoneering',
+    short_desc: 'An adventurous canyoneering experience.',
+    long_desc: 'Explore the rugged terrains, rappel down waterfalls, and navigate through natural canyons in this thrilling canyoneering adventure.',
     video: vidCanoneering,
-    image: imgTrekking,
+    previewVideo: '/media/TDV-Media/AddOns/previews/canyoneering_preview.mp4',
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792325105/TDV-Media/thumbnails/addon-1_thumb.webp',
     highlights: 'Adventurous | Guided Tour',
     faqs: [
       {
@@ -1021,7 +1065,8 @@ export const SERVICES_DATA = [
     short_desc: 'Guided nature trails and scenic coastal mountain treks.',
     long_desc: 'Immerse yourself in lush rainforest trails, scenic ridges, and panoramic island viewpoints led by experienced backcountry guides.',
     video: vidTrekking,
-    image: imgTrekking,
+    previewVideo: '/media/TDV-Media/AddOns/previews/trekking_preview.mp4',
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792325122/TDV-Media/thumbnails/addon-trekking_thumb.webp',
     highlights: 'Scenic Trails | Guided Expeditions | Panoramic Views',
     faqs: [
       {
@@ -1041,7 +1086,8 @@ export const SERVICES_DATA = [
     short_desc: 'Discover historical landmarks, viewpoints, and hidden gems.',
     long_desc: 'Experience local culture, historical landmarks, pristine beaches, and breathtaking coastal lookouts on our curated island sightseeing tours.',
     video: vidSightseeing,
-    image: imgSightseeing,
+    previewVideo: '/media/TDV-Media/AddOns/previews/sightseeing_preview.mp4',
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792325118/TDV-Media/thumbnails/addon-sightseeing_thumb.webp',
     highlights: 'Cultural Landmarks | Island Heritage | Hidden Gems',
     faqs: [
       {
@@ -1061,7 +1107,8 @@ export const SERVICES_DATA = [
     short_desc: 'Overland adventure camper vans for nomadic island exploration.',
     long_desc: 'Hit the open road in fully equipped camper vehicles. Complete with sleeping quarters, outdoor cooking gear, and off-grid amenities for independent island living under the stars.',
     video: vidCampers,
-    image: imgCampers,
+    previewVideo: '/media/TDV-Media/AddOns/previews/campers_preview.mp4',
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792325109/TDV-Media/thumbnails/addon-campers_thumb.webp',
     highlights: 'Fully Equipped Vehicles | Off-Grid Freedom | Coastal Camping',
     faqs: [
       {
@@ -1081,7 +1128,8 @@ export const SERVICES_DATA = [
     short_desc: 'Thrilling wildlife safaris and pristine nature expeditions.',
     long_desc: 'Venture deep into protected habitats, mangrove waterways, and wilderness reserves to observe native wildlife, exotic birds, and marine fauna in their natural sanctuary.',
     video: vidSafari,
-    image: imgSafari,
+    previewVideo: '/media/TDV-Media/AddOns/previews/safari_preview.mp4',
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792325116/TDV-Media/thumbnails/addon-safari_thumb.webp',
     highlights: 'Wildlife Watching | Marine Sanctuaries | Nature Safari',
     faqs: [
       {
@@ -1101,7 +1149,8 @@ export const SERVICES_DATA = [
     short_desc: 'Multi-day offshore dive yacht excursions and remote reef expeditions.',
     long_desc: 'Sleep, eat, and dive aboard our dedicated expedition vessel. Reach untouched offshore pinnacles, pristine outer reefs, and nocturnal marine sites inaccessible on day trips.',
     video: vidLiveaboard,
-    image: imgLiveaboard,
+    previewVideo: '/media/TDV-Media/AddOns/previews/liveaboard_preview.mp4',
+    image: 'https://res.cloudinary.com/qvbunv8y/image/upload/v1792325111/TDV-Media/thumbnails/addon-liveaboard_thumb.webp',
     highlights: 'Remote Dive Sites | All-Inclusive Cabins | Night Diving',
     faqs: [
       {

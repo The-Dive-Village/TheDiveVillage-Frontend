@@ -6,8 +6,8 @@ import PhoneInput from 'react-phone-number-input'
 import flags from 'react-phone-number-input/flags'
 
 import { IMAGES, CAROUSEL_IMAGES, PANEL_IMAGES } from '../utils/images'
-const compiledNightDiveVideo = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Background/Night_Dive.mp4'
-const bookVideo = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Background/baracuda.mp4'
+const compiledNightDiveVideo = '/media/TDV-Media/Background/Night_Dive.mp4'
+const bookVideo = '/media/TDV-Media/Background/baracuda.mp4'
 import useNightDive from '../hooks/useNightDive'
 import SEOHead from '../components/SEOHead'
 import MerchBannerCTA from '../components/MerchBannerCTA'
@@ -283,13 +283,7 @@ export default function Contact() {
 
       {/* 1. HEADER VIDEO HERO (DYNAMIC COMPILED NIGHT DIVE VIDEO) */}
       <section className="relative h-[56vh] min-h-[420px] lg:h-[60vh] lg:min-h-[460px] w-full flex items-center justify-center overflow-hidden">
-        <div 
-          className="absolute inset-0 z-0 overflow-hidden"
-          style={{
-            maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 40%, rgba(0,0,0,0.5) 75%, rgba(0,0,0,0) 100%)',
-            WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 40%, rgba(0,0,0,0.5) 75%, rgba(0,0,0,0) 100%)'
-          }}
-        >
+        <div className="absolute inset-0 z-0 overflow-hidden">
           <LazyVideo
             key={isNightDive ? 'night-compiled' : 'day-book'}
             src={isNightDive ? compiledNightDiveVideo : bookVideo}
@@ -297,8 +291,7 @@ export default function Contact() {
             loop
             muted
             playsInline
-            onPlay={(e) => { e.currentTarget.playbackRate = 0.7 }}
-            className="w-full h-full object-cover scale-135 sm:scale-145 lg:scale-155 origin-center transition-all duration-700"
+            className="w-full h-full object-cover scale-105 origin-center transition-all duration-700"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-[#001428]/65 via-[#001428]/25 to-transparent pointer-events-none" />
         </div>
@@ -338,7 +331,7 @@ export default function Contact() {
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-16 sm:pb-24 w-full min-w-0">
 
         {/* Form Container - Wide 2-Column Side-by-Side (Half & Half) Layout */}
-        <div id="contact-form-container" className={`max-w-4xl lg:max-w-5xl mx-auto w-full ${isNightDive ? 'bg-[#001e3d] border-white/10 shadow-none' : 'bg-white border-navy/5 shadow-card'} rounded-2xl sm:rounded-[36px] p-5 xs:p-7 sm:p-10 border transition-all duration-300`}>
+        <div id="contact-form-container" data-day-panel="true" data-contact-form="true" className="max-w-4xl lg:max-w-5xl mx-auto w-full bg-white border-navy/5 shadow-card rounded-2xl sm:rounded-[36px] p-5 xs:p-7 sm:p-10 border transition-all duration-300">
           <div className="mb-6 sm:mb-8 text-left pb-4 border-b border-navy/10">
             <span className="text-accent font-bold tracking-widest uppercase text-[9px] sm:text-xs mb-1 block">Direct Inquiry</span>
             <h2 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-bold text-navy">Send Us a Message</h2>
@@ -729,12 +722,13 @@ export default function Contact() {
             href="tel:+917338257002"
             aria-label="Call Us at +91 7338257002"
             data-contact-box="true"
-            className={`flex flex-col items-center justify-center ${isNightDive ? 'bg-[#001e3d] border-white/10 shadow-none' : 'bg-white border-navy/5 shadow-card'} p-3 xs:p-4 sm:p-6 rounded-xl xs:rounded-2xl sm:rounded-3xl border hover:shadow-float hover:border-[#FFCD00]/50 hover:-translate-y-1 transition-all duration-300 group cursor-pointer active:scale-95 text-center min-w-0`}
+            data-day-panel="true"
+            className="flex flex-col items-center justify-center bg-white border-navy/5 shadow-card p-3 xs:p-4 sm:p-6 rounded-xl xs:rounded-2xl sm:rounded-3xl border hover:shadow-float hover:border-[#FFCD00]/50 hover:-translate-y-1 transition-all duration-300 group cursor-pointer active:scale-95 text-center min-w-0"
           >
-            <div className={`contact-box-icon w-8 h-8 xs:w-10 xs:h-10 sm:w-12 sm:h-12 rounded-full ${isNightDive ? 'bg-white/10 text-white' : 'bg-navy/5 text-navy'} group-hover:bg-[#FFCD00] group-hover:text-[#001e3d] flex items-center justify-center mb-1.5 sm:mb-2.5 transition-colors shrink-0`}>
+            <div className="contact-box-icon w-8 h-8 xs:w-10 xs:h-10 sm:w-12 sm:h-12 rounded-full bg-navy/5 text-navy group-hover:bg-[#FFCD00] group-hover:text-[#001e3d] flex items-center justify-center mb-1.5 sm:mb-2.5 transition-colors shrink-0">
               <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" /></svg>
             </div>
-            <h4 className={`font-bold ${isNightDive ? 'text-white' : 'text-navy'} text-[11px] xs:text-xs sm:text-base group-hover:text-[#FFCD00] transition-colors truncate max-w-full`}>Call Us</h4>
+            <h4 style={{ color: '#003865' }} className="font-bold text-navy text-[11px] xs:text-xs sm:text-base group-hover:!text-[#FFCD00] transition-colors truncate max-w-full">Call Us</h4>
           </a>
 
           {/* Box 2: Mail Us */}
@@ -742,12 +736,13 @@ export default function Contact() {
             href="mailto:sanjeev.bajaj@thedivevillage.com"
             aria-label="Email Us at sanjeev.bajaj@thedivevillage.com"
             data-contact-box="true"
-            className={`flex flex-col items-center justify-center ${isNightDive ? 'bg-[#001e3d] border-white/10 shadow-none' : 'bg-white border-navy/5 shadow-card'} p-3 xs:p-4 sm:p-6 rounded-xl xs:rounded-2xl sm:rounded-3xl border hover:shadow-float hover:border-[#FFCD00]/50 hover:-translate-y-1 transition-all duration-300 group cursor-pointer active:scale-95 text-center min-w-0`}
+            data-day-panel="true"
+            className="flex flex-col items-center justify-center bg-white border-navy/5 shadow-card p-3 xs:p-4 sm:p-6 rounded-xl xs:rounded-2xl sm:rounded-3xl border hover:shadow-float hover:border-[#FFCD00]/50 hover:-translate-y-1 transition-all duration-300 group cursor-pointer active:scale-95 text-center min-w-0"
           >
-            <div className={`contact-box-icon w-8 h-8 xs:w-10 xs:h-10 sm:w-12 sm:h-12 rounded-full ${isNightDive ? 'bg-white/10 text-white' : 'bg-navy/5 text-navy'} group-hover:bg-[#FFCD00] group-hover:text-[#001e3d] flex items-center justify-center mb-1.5 sm:mb-2.5 transition-colors shrink-0`}>
+            <div className="contact-box-icon w-8 h-8 xs:w-10 xs:h-10 sm:w-12 sm:h-12 rounded-full bg-navy/5 text-navy group-hover:bg-[#FFCD00] group-hover:text-[#001e3d] flex items-center justify-center mb-1.5 sm:mb-2.5 transition-colors shrink-0">
               <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><path d="M22 6l-10 7L2 6" /></svg>
             </div>
-            <h4 className={`font-bold ${isNightDive ? 'text-white' : 'text-navy'} text-[11px] xs:text-xs sm:text-base group-hover:text-[#FFCD00] transition-colors truncate max-w-full`}>Mail Us</h4>
+            <h4 style={{ color: '#003865' }} className="font-bold text-navy text-[11px] xs:text-xs sm:text-base group-hover:!text-[#FFCD00] transition-colors truncate max-w-full">Mail Us</h4>
           </a>
 
           {/* Box 3: Available 24/7 */}
@@ -757,12 +752,13 @@ export default function Contact() {
             rel="noopener noreferrer"
             aria-label="Available 24/7 on WhatsApp"
             data-contact-box="true"
-            className={`flex flex-col items-center justify-center ${isNightDive ? 'bg-[#001e3d] border-white/10 shadow-none' : 'bg-white border-navy/5 shadow-card'} p-3 xs:p-4 sm:p-6 rounded-xl xs:rounded-2xl sm:rounded-3xl border hover:shadow-float hover:border-[#FFCD00]/50 hover:-translate-y-1 transition-all duration-300 group cursor-pointer active:scale-95 text-center min-w-0`}
+            data-day-panel="true"
+            className="flex flex-col items-center justify-center bg-white border-navy/5 shadow-card p-3 xs:p-4 sm:p-6 rounded-xl xs:rounded-2xl sm:rounded-3xl border hover:shadow-float hover:border-[#FFCD00]/50 hover:-translate-y-1 transition-all duration-300 group cursor-pointer active:scale-95 text-center min-w-0"
           >
-            <div className={`contact-box-icon w-8 h-8 xs:w-10 xs:h-10 sm:w-12 sm:h-12 rounded-full ${isNightDive ? 'bg-white/10 text-white' : 'bg-navy/5 text-navy'} group-hover:bg-[#FFCD00] group-hover:text-[#001e3d] flex items-center justify-center mb-1.5 sm:mb-2.5 transition-colors shrink-0`}>
+            <div className="contact-box-icon w-8 h-8 xs:w-10 xs:h-10 sm:w-12 sm:h-12 rounded-full bg-navy/5 text-navy group-hover:bg-[#FFCD00] group-hover:text-[#001e3d] flex items-center justify-center mb-1.5 sm:mb-2.5 transition-colors shrink-0">
               <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z" /></svg>
             </div>
-            <h4 className={`font-bold ${isNightDive ? 'text-white' : 'text-navy'} text-[11px] xs:text-xs sm:text-base group-hover:text-[#FFCD00] transition-colors truncate max-w-full`}>Available 24/7</h4>
+            <h4 style={{ color: '#003865' }} className="font-bold text-navy text-[11px] xs:text-xs sm:text-base group-hover:!text-[#FFCD00] transition-colors truncate max-w-full">Available 24/7</h4>
           </a>
         </div>
 

@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useRef, useDeferredValue } from 'react'
+import { createPortal } from 'react-dom'
 import { Link, useNavigate } from 'react-router'
 import { motion, AnimatePresence } from 'framer-motion'
 import { SHOP_PRODUCTS, GROUP_PHOTOS } from '../utils/products'
@@ -10,14 +11,17 @@ import Button from '../components/Button'
 import SEOHead from '../components/SEOHead'
 import { useLenis } from '../utils/lenisReact'
 import useNightDive from '../hooks/useNightDive'
-import { getOptimizedImageUrl, getLqipUrl } from '../utils/mediaOptimizer'
 
 import { triggerHaptic, triggerSuccessHaptic } from '../utils/haptics'
-const bannerImg = getOptimizedImageUrl('https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Merch/banner.jpg', { width: 1600 })
-const pop1Local = getOptimizedImageUrl('https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Products/pop1.webp', { width: 600 })
-const pop2Local = getOptimizedImageUrl('https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Products/pop2.webp', { width: 600 })
-const pop1 = pop1Local
-const pop2 = pop2Local
+import { getOptimizedImageUrl } from '../utils/mediaOptimizer'
+
+const rawBannerImg = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791686007/TDV-Media/Merch/banner.jpg'
+const bannerImg = rawBannerImg
+
+const rawPop1Local = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458274/TDV-Media/Products/pop1.webp'
+const rawPop2Local = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458275/TDV-Media/Products/pop2.webp'
+const pop1 = rawPop1Local
+const pop2 = rawPop2Local
 
 const CATEGORIES = [
   { key: 'all', label: 'All Merchandise' },
@@ -162,7 +166,7 @@ export default function Shop() {
   }, [productsList, selectedCategory, deferredSearchQuery, sortBy, priceFilter, isMobile])
 
   return (
-    <div className={`min-h-screen font-body pt-20 md:pt-32 pb-24 overflow-x-hidden transition-colors duration-500 ${isNightDive ? 'bg-[#003865] text-white' : 'bg-[#FAFAFA] text-navy'}`}>
+    <div className={`min-h-screen font-body pt-20 md:pt-32 pb-24 overflow-x-hidden transition-colors duration-500 ${isNightDive ? 'bg-[#003865]' : 'bg-[#FAFAFA]'}`}>
       <SEOHead
         title="Dive Shop & Sustainable Marine Apparel | The Dive Village"
         description="Shop high-performance ocean gear, eco-friendly dive apparel, dive suits, and diving accessories. Designed for comfort, durability, and marine conservation."
@@ -220,7 +224,7 @@ export default function Shop() {
       </section>
 
       {/* 2. MOBILE STORE CONTROLS (md:hidden - Matches Reference UI) */}
-      <section className="md:hidden px-3.5 mb-3">
+      <section data-shop-controls="true" data-day-panel="true" className="md:hidden px-3.5 mb-3">
         {/* Search Bar */}
         <div className="relative w-full">
           <input
@@ -254,8 +258,8 @@ export default function Shop() {
               className="mobile-sort-select w-full appearance-none rounded-2xl border border-slate-300/80 bg-white pl-3 pr-7 h-[42px] font-semibold text-slate-800 shadow-sm focus:outline-none cursor-pointer truncate"
             >
               <option value="featured" style={{ fontSize: '11px' }}>Featured / Newest</option>
-              <option value="price-low" style={{ fontSize: '11px' }}>Price: Low to High</option>
-              <option value="price-high" style={{ fontSize: '11px' }}>Price: High to Low</option>
+              {/* <option value="price-low" style={{ fontSize: '11px' }}>Price: Low to High</option> */}
+              {/* <option value="price-high" style={{ fontSize: '11px' }}>Price: High to Low</option> */}
               <option value="rating" style={{ fontSize: '11px' }}>Highest Rated</option>
             </select>
             <svg className="pointer-events-none absolute right-2.5 top-3.5 h-4 w-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -306,6 +310,7 @@ export default function Shop() {
             return (
               <button
                 key={cat.key}
+                data-day-panel="true"
                 data-selected={isSelected ? 'true' : 'false'}
                 onClick={() => {
                   triggerHaptic(8)
@@ -313,12 +318,8 @@ export default function Shop() {
                 }}
                 className={`rounded-full px-4 py-2 text-xs font-bold whitespace-nowrap transition-all duration-200 cursor-pointer ${
                   isSelected
-                    ? isNightDive
-                      ? 'bg-[#FFCD00] text-slate-900 shadow-sm border-2 border-white ring-1 ring-white/50 font-extrabold'
-                      : 'bg-[#FFCD00] text-slate-900 shadow-sm border-2 border-transparent'
-                    : isNightDive
-                      ? 'bg-white/10 text-white border border-white/20 hover:bg-white/20'
-                      : 'bg-white text-slate-700 border border-slate-300/80 hover:bg-slate-50'
+                    ? 'bg-[#FFCD00] text-slate-900 shadow-sm border-2 border-transparent'
+                    : 'bg-white text-slate-700 border border-slate-300/80 hover:bg-slate-50'
                 }`}
               >
                 {cat.label}
@@ -329,11 +330,12 @@ export default function Shop() {
 
         {/* Product Count & Filter Button */}
         <div className="flex items-center justify-between mt-3.5 mb-1 px-0.5">
-          <span className="text-sm font-semibold text-slate-600">
+          <span className={`text-sm font-semibold transition-colors ${isNightDive ? 'text-white/80' : 'text-slate-600'}`}>
             Showing {filteredProducts.length} product{filteredProducts.length !== 1 ? 's' : ''}
           </span>
           <button
             type="button"
+            data-day-panel="true"
             onClick={() => setIsFilterDrawerOpen(true)}
             className="rounded-xl border border-slate-300/80 bg-white px-3.5 py-1.5 flex items-center gap-1.5 text-xs font-bold text-slate-800 shadow-sm active:scale-95 transition cursor-pointer"
           >
@@ -379,8 +381,8 @@ export default function Shop() {
               className="rounded-full border border-navy/15 md:border-white/20 bg-[#F0F2F5] md:bg-[#00223D]/80 pl-4 pr-10 py-2.5 text-xs sm:text-sm font-bold text-navy md:text-white focus:border-navy/15 md:focus:border-white/20 focus:outline-none focus:ring-0 transition cursor-pointer"
             >
               <option value="featured" className="text-navy bg-white md:bg-[#00223D] md:text-white">Featured / Newest</option>
-              <option value="price-low" className="text-navy bg-white md:bg-[#00223D] md:text-white">Price: Low to High</option>
-              <option value="price-high" className="text-navy bg-white md:bg-[#00223D] md:text-white">Price: High to Low</option>
+              {/* <option value="price-low" className="text-navy bg-white md:bg-[#00223D] md:text-white">Price: Low to High</option> */}
+              {/* <option value="price-high" className="text-navy bg-white md:bg-[#00223D] md:text-white">Price: High to Low</option> */}
               <option value="rating" className="text-navy bg-white md:bg-[#00223D] md:text-white">Highest Rated</option>
             </select>
 
@@ -424,6 +426,7 @@ export default function Shop() {
             return (
               <button
                 key={cat.key}
+                data-day-panel="true"
                 data-selected={isSelected ? 'true' : 'false'}
                 onClick={() => {
                   triggerHaptic(8)
@@ -431,12 +434,8 @@ export default function Shop() {
                 }}
                 className={`rounded-full px-5 py-2.5 text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 cursor-pointer ${
                   isSelected
-                    ? isNightDive
-                      ? 'bg-accent text-[#001e3d] shadow-md font-extrabold border-2 border-white ring-1 ring-white/50'
-                      : 'bg-accent text-[#001e3d] shadow-md font-extrabold border-2 border-transparent'
-                    : isNightDive
-                      ? 'bg-white/10 text-white border border-white/20 hover:bg-[#00223D] hover:border-white/40'
-                      : 'bg-white text-navy/70 border border-navy/10 hover:bg-[#003865] hover:text-white hover:border-[#003865]'
+                    ? 'bg-accent text-[#001e3d] shadow-md font-extrabold border-2 border-transparent'
+                    : 'bg-white text-navy/70 border border-navy/10 hover:bg-[#003865] hover:text-white hover:border-[#003865]'
                 }`}
               >
                 {cat.label}
@@ -448,7 +447,7 @@ export default function Shop() {
 
       {/* 3. PRODUCT LISTINGS */}
       <section className="mx-auto max-w-7xl px-3 sm:px-6 lg:px-8 py-2 md:py-8">
-        <div className="hidden md:flex mb-6 justify-between items-center text-xs font-bold text-navy/60">
+        <div className={`hidden md:flex mb-6 justify-between items-center text-xs font-bold transition-colors ${isNightDive ? 'text-white/80' : 'text-navy/60'}`}>
           <span>Showing {filteredProducts.length} product{filteredProducts.length !== 1 && 's'}</span>
           {selectedCategory !== 'all' && (
             <button onClick={() => { setSelectedCategory('all'); setSearchQuery('') }} className="text-accent hover:underline">Clear filters</button>
@@ -547,9 +546,7 @@ export default function Shop() {
                         }}
                         className={`rounded-full px-3.5 py-1.5 text-xs font-bold transition cursor-pointer ${
                           isSelected
-                            ? isNightDive
-                              ? 'bg-[#FFCD00] text-black shadow-sm border-2 border-white ring-1 ring-white/50'
-                              : 'bg-[#FFCD00] text-black shadow-sm border border-transparent'
+                            ? 'bg-[#FFCD00] text-black shadow-sm border border-transparent'
                             : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                         }`}
                       >
@@ -566,8 +563,8 @@ export default function Shop() {
                 <div className="grid grid-cols-2 gap-2">
                   {[
                     { val: 'featured', label: 'Featured / Newest' },
-                    { val: 'price-low', label: 'Price: Low to High' },
-                    { val: 'price-high', label: 'Price: High to Low' },
+                    // { val: 'price-low', label: 'Price: Low to High' },
+                    // { val: 'price-high', label: 'Price: High to Low' },
                     { val: 'rating', label: 'Highest Rated' },
                   ].map((opt) => {
                     const isSelected = sortBy === opt.val
@@ -582,9 +579,7 @@ export default function Shop() {
                         }}
                         className={`rounded-xl px-3 py-2 text-xs font-semibold text-left border transition cursor-pointer ${
                           isSelected
-                            ? isNightDive
-                              ? 'border-2 border-white bg-[#FFCD00]/25 text-slate-900 font-bold ring-1 ring-white/50'
-                              : 'border-[#FFCD00] bg-[#FFCD00]/20 text-slate-900 font-bold'
+                            ? 'border-[#FFCD00] bg-[#FFCD00]/20 text-slate-900 font-bold'
                             : 'border-slate-200 bg-white text-slate-700'
                         }`}
                       >
@@ -627,15 +622,13 @@ export default function Shop() {
 }
 
 function GroupGallerySection() {
+  const isNightDive = useNightDive()
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(null)
-  const [photoLoaded, setPhotoLoaded] = useState(false)
   const lenis = useLenis()
+  const activeThumbRef = useRef(null)
+  const thumbContainerRef = useRef(null)
 
   const selectedPhoto = selectedPhotoIndex !== null ? GROUP_PHOTOS[selectedPhotoIndex] : null
-
-  useEffect(() => {
-    setPhotoLoaded(false)
-  }, [selectedPhotoIndex])
 
   const nextPhoto = () => {
     triggerHaptic(8)
@@ -666,6 +659,17 @@ function GroupGallerySection() {
       }
     }
   }
+
+  // Smoothly scroll active thumbnail into view when selected media changes
+  useEffect(() => {
+    if (activeThumbRef.current) {
+      activeThumbRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'center',
+      })
+    }
+  }, [selectedPhotoIndex])
 
   // Lock background scroll and handle arrow keys when photo preview is open
   useEffect(() => {
@@ -704,10 +708,14 @@ function GroupGallerySection() {
         <span className="text-xs font-extrabold uppercase tracking-widest text-accent block mb-2">
           Community & Group Moments
         </span>
-        <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-navy tracking-tight mb-4">
+        <h2 className={`font-heading text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-4 transition-colors ${
+          isNightDive ? 'text-white' : 'text-navy'
+        }`}>
           The Dive Village Community
         </h2>
-        <p className="text-navy/70 text-sm sm:text-base leading-relaxed">
+        <p className={`text-sm sm:text-base leading-relaxed transition-colors ${
+          isNightDive ? 'text-white/80' : 'text-navy/70'
+        }`}>
           Behind every dive suit, expedition bag, and rash guard is a vibrant community of divers, ocean lovers, and adventurers exploring the deep blue together.
         </p>
       </div>
@@ -717,6 +725,7 @@ function GroupGallerySection() {
         {GROUP_PHOTOS.map((photo, idx) => (
           <div
             key={photo.id || idx}
+            data-day-panel="true"
             onClick={() => {
               triggerHaptic(8)
               setSelectedPhotoIndex(idx)
@@ -724,165 +733,153 @@ function GroupGallerySection() {
             className="group relative aspect-[4/3] rounded-2xl overflow-hidden bg-white cursor-pointer shadow-sm hover:shadow-float transition duration-300 border border-navy/5"
           >
             <img
-              src={getOptimizedImageUrl(photo.src, { width: 500 }) || photo.src}
+              src={photo.src}
               alt="Community Photo"
               className="w-full h-full object-cover object-top group-hover:scale-105 transition duration-500"
-              loading="lazy"
-              decoding="async"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-navy/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex items-end p-3" />
           </div>
         ))}
       </div>
 
-      {/* Lightbox Modal - Full uncropped photo & Arrow Navigation */}
-      <AnimatePresence>
-        {selectedPhoto && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            data-lenis-prevent="true"
-            style={{
-              overscrollBehavior: 'contain',
-              touchAction: 'none',
-            }}
-            onClick={() => setSelectedPhotoIndex(null)}
-            className="fixed inset-0 z-[9990] bg-black/90 backdrop-blur-md select-none overflow-hidden"
-          >
-            {/* Modal Content Wrapper - Strictly positioned below toolbar */}
-            <div
-              className="absolute inset-x-0 bottom-0 top-[64px] lg:top-[68px] flex items-center justify-center p-3 sm:p-5 lg:p-7"
-              style={{
-                top: 'var(--toolbar-bottom, 68px)',
-              }}
+      {/* Lightbox Modal - Shop Preview Box Style with Thumbnails Below (No Number, No Names) */}
+      {typeof document !== 'undefined' && createPortal(
+        <AnimatePresence>
+          {selectedPhoto && (
+            <motion.div
+              key="community-lightbox-overlay"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
               onClick={() => setSelectedPhotoIndex(null)}
+              data-lenis-prevent="true"
+              style={{
+                backdropFilter: 'blur(16px)',
+                WebkitBackdropFilter: 'blur(16px)',
+                overscrollBehavior: 'contain',
+                touchAction: 'none',
+              }}
+              className="fixed inset-0 z-[100000] bg-black/60 sm:bg-black/65 flex items-center justify-center p-2 sm:p-4 select-none overflow-hidden"
             >
-              {/* Previous Photo Arrow */}
-              {GROUP_PHOTOS.length > 1 && (
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    prevPhoto()
-                  }}
-                  className="absolute left-2 sm:left-4 lg:left-8 z-40 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-navy/85 hover:bg-[#FFCD00] text-white hover:text-[#001e3d] flex items-center justify-center transition shadow-2xl active:scale-90 cursor-pointer font-bold border border-white/20 backdrop-blur-md"
-                  aria-label="Previous photo (Left Arrow)"
-                  title="Previous photo (Left Arrow)"
-                >
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M15 19l-7-7 7-7" />
-                  </svg>
-                </button>
-              )}
-
-              {/* Next Photo Arrow */}
-              {GROUP_PHOTOS.length > 1 && (
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    nextPhoto()
-                  }}
-                  className="absolute right-2 sm:right-4 lg:right-8 z-40 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-navy/85 hover:bg-[#FFCD00] text-white hover:text-[#001e3d] flex items-center justify-center transition shadow-2xl active:scale-90 cursor-pointer font-bold border border-white/20 backdrop-blur-md"
-                  aria-label="Next photo (Right Arrow)"
-                  title="Next photo (Right Arrow)"
-                >
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M9 5l7 7-7 7" />
-                  </svg>
-                </button>
-              )}
-
+              {/* Modal Dialog Card Container: matches shop preview box */}
               <motion.div
                 initial={{ scale: 0.95, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.95, opacity: 0 }}
+                transition={{ type: 'spring', damping: 26, stiffness: 320 }}
                 onClick={(e) => e.stopPropagation()}
                 onTouchStart={handleTouchStart}
                 onTouchEnd={handleTouchEnd}
-                style={{
-                  maxHeight: 'calc(100vh - var(--toolbar-bottom, 68px) - 36px)',
-                  maxWidth: 'calc(100vw - 32px)',
-                }}
-                className="relative rounded-2xl sm:rounded-3xl bg-navy/95 border border-white/15 shadow-2xl flex flex-col items-center justify-center p-2.5 sm:p-4 cursor-default select-none"
+                data-community-modal-dialog="true"
+                style={{ backgroundColor: '#ffffff', color: '#111827' }}
+                className="relative bg-white rounded-lg sm:rounded-xl shadow-2xl w-[96vw] max-w-[1260px] h-[95vh] max-h-[96vh] flex flex-col items-center justify-between p-2 sm:p-3 sm:pb-3.5 overflow-hidden"
               >
+                {/* Circular Close Button 'X' in top-right corner of modal */}
                 <button
                   type="button"
-                  onClick={() => setSelectedPhotoIndex(null)}
-                  className="absolute top-3 right-3 sm:top-4 sm:right-4 z-40 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-black/60 text-white hover:bg-accent hover:text-navy flex items-center justify-center transition cursor-pointer font-bold shadow-lg border border-white/10 backdrop-blur-md"
-                  aria-label="Close photo"
+                  onClick={() => {
+                    triggerHaptic(8)
+                    setSelectedPhotoIndex(null)
+                  }}
+                  aria-label="Close dialog"
+                  className="absolute top-2.5 right-2.5 sm:top-3.5 sm:right-3.5 z-40 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-600/85 hover:bg-gray-800 text-white flex items-center justify-center transition shadow-md active:scale-90 cursor-pointer font-bold text-sm"
                 >
                   ✕
                 </button>
 
-                {/* Instant Low Quality Image Placeholder (Blur-up) */}
-                {selectedPhoto && !photoLoaded && (
-                  <img
-                    src={getLqipUrl(selectedPhoto.src)}
-                    alt=""
-                    aria-hidden="true"
-                    style={{
-                      objectFit: 'contain',
-                      maxHeight: 'calc(100vh - var(--toolbar-bottom, 68px) - 72px)',
-                      maxWidth: 'min(calc(100vw - 64px), 1100px)',
-                      width: 'auto',
-                      height: 'auto',
-                    }}
-                    className="rounded-xl sm:rounded-2xl filter blur-[14px] scale-105 select-none pointer-events-none absolute inset-0 m-auto z-10"
-                  />
-                )}
+                {/* Main Center Image Display Area */}
+                <div className="relative w-full flex-1 min-h-0 flex items-center justify-center overflow-hidden my-1">
+                  {/* Left Navigation Chevron Button */}
+                  {GROUP_PHOTOS.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        prevPhoto()
+                      }}
+                      aria-label="Previous photo"
+                      className="absolute left-2 sm:left-4 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white shadow-xl text-gray-800 flex items-center justify-center hover:bg-gray-100 active:scale-90 cursor-pointer transition border border-gray-150"
+                    >
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <polyline points="15 18 9 12 15 6" />
+                      </svg>
+                    </button>
+                  )}
 
-                {/* Sleek Oceanic Loader while high-res image is buffering */}
-                {!photoLoaded && (
-                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 pointer-events-none z-20">
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-3 border-white/20 border-t-[#FFCD00] animate-spin shadow-lg" />
-                    <span className="text-xs font-heading font-semibold text-white/80 tracking-widest uppercase drop-shadow">
-                      Loading...
-                    </span>
+                  {/* Right Navigation Chevron Button */}
+                  {GROUP_PHOTOS.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        nextPhoto()
+                      }}
+                      aria-label="Next photo"
+                      className="absolute right-2 sm:right-4 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white shadow-xl text-gray-800 flex items-center justify-center hover:bg-gray-100 active:scale-90 cursor-pointer transition border border-gray-150"
+                    >
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <polyline points="9 18 15 12 9 6" />
+                      </svg>
+                    </button>
+                  )}
+
+                  {/* The Full Uncropped Image */}
+                  <div className="relative h-full flex items-center justify-center">
+                    <img
+                      key={selectedPhoto.src}
+                      src={selectedPhoto.src}
+                      alt="Community Photo"
+                      className="h-full max-h-[77vh] sm:max-h-[81vh] w-auto max-w-full object-contain rounded-xs select-none shadow-xs"
+                      draggable={false}
+                    />
                   </div>
-                )}
+                </div>
 
-                <img
-                  key={selectedPhoto.src}
-                  src={getOptimizedImageUrl(selectedPhoto.src, { width: 1400 }) || selectedPhoto.src}
-                  alt={selectedPhoto.title || "Community Photo"}
-                  loading="eager"
-                  fetchPriority="high"
-                  decoding="async"
-                  onLoad={() => setPhotoLoaded(true)}
-                  style={{
-                    objectFit: 'contain',
-                    maxHeight: 'calc(100vh - var(--toolbar-bottom, 68px) - 72px)',
-                    maxWidth: 'min(calc(100vw - 64px), 1100px)',
-                    width: 'auto',
-                    height: 'auto',
-                  }}
-                  className={`rounded-xl sm:rounded-2xl shadow-inner select-none block transition-opacity duration-300 relative z-10 ${
-                    photoLoaded ? 'opacity-100' : 'opacity-0'
-                  }`}
-                  draggable={false}
-                />
-
-                {/* Bottom Image Counter & Title Badge */}
+                {/* Bottom Thumbnail Strip - matching shop preview box (No numbers, No names, just thumbnails) */}
                 {GROUP_PHOTOS.length > 1 && (
-                  <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-30 px-3 py-1 rounded-full bg-black/75 backdrop-blur-md text-white text-[11px] sm:text-xs font-semibold shadow-md border border-white/15 pointer-events-none flex items-center gap-2">
-                    <span className="text-[#FFCD00]">
-                      {selectedPhotoIndex + 1} / {GROUP_PHOTOS.length}
-                    </span>
-                    {selectedPhoto.title && (
-                      <>
-                        <span className="w-1 h-1 rounded-full bg-white/40" />
-                        <span className="text-white/90">{selectedPhoto.title}</span>
-                      </>
-                    )}
+                  <div 
+                    ref={thumbContainerRef}
+                    className="w-full pt-2 mt-1 border-t border-gray-150 flex items-center justify-center gap-1.5 sm:gap-2.5 overflow-x-auto scrollbar-none py-1 shrink-0 select-none"
+                    style={{
+                      scrollbarWidth: 'none',
+                      msOverflowStyle: 'none',
+                    }}
+                  >
+                    {GROUP_PHOTOS.map((photo, idx) => {
+                      const isSelected = selectedPhotoIndex === idx
+                      return (
+                        <button
+                          key={photo.id || idx}
+                          ref={isSelected ? activeThumbRef : null}
+                          type="button"
+                          onClick={() => {
+                            triggerHaptic(6)
+                            setSelectedPhotoIndex(idx)
+                          }}
+                          className={`relative w-14 h-11 sm:w-16 sm:h-12 rounded-xs overflow-hidden border-2 transition cursor-pointer shrink-0 bg-white ${
+                            isSelected
+                              ? 'border-gray-900 ring-1 ring-gray-900 shadow-xs scale-105'
+                              : 'border-gray-200 opacity-60 hover:opacity-100'
+                          }`}
+                        >
+                          <img
+                            src={photo.src}
+                            alt=""
+                            className="w-full h-full object-cover"
+                            loading="lazy"
+                          />
+                        </button>
+                      )
+                    })}
                   </div>
                 )}
               </motion.div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            </motion.div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </section>
   )
 }
@@ -890,6 +887,7 @@ function GroupGallerySection() {
 function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, isNightDive }) {
   const navigate = useNavigate()
   const [isHovered, setIsHovered] = useState(false)
+  const [hasHovered, setHasHovered] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)
   const [imgLoaded, setImgLoaded] = useState(false)
   const viewerRef = useRef(null)
@@ -915,12 +913,10 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, 
 
   useEffect(() => {
     if (typeof window !== 'undefined' && !customElements.get('model-viewer')) {
-      if (!document.querySelector('script[src*="model-viewer"]')) {
-        const script = document.createElement('script')
-        script.type = 'module'
-        script.src = 'https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js'
-        document.head.appendChild(script)
-      }
+      const script = document.createElement('script')
+      script.type = 'module'
+      script.src = 'https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js'
+      document.head.appendChild(script)
     }
   }, [])
 
@@ -972,36 +968,109 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, 
             })
           }
 
-          // Safe Three.js materials lookup without recursive DOM element traversal
+          // Safe traversal across Three.js materials
+          const visited = new Set()
           const threeMaterials = new Set()
-          const symbols = Object.getOwnPropertySymbols(el)
-          const sceneSymbol = symbols.find((s) => s.description === 'scene' || String(s).includes('scene'))
-          const threeScene = sceneSymbol ? el[sceneSymbol] : null
-          if (threeScene && typeof threeScene.traverse === 'function') {
-            threeScene.traverse((node) => {
-              if (node.isMesh && node.material) {
-                if (Array.isArray(node.material)) {
-                  node.material.forEach((m) => threeMaterials.add(m))
-                } else {
-                  threeMaterials.add(node.material)
-                }
-              }
-            })
+
+          const FORBIDDEN_KEYS = new Set([
+            'ref', 'key', '_owner', '_store', 'children',
+            'stateNode', 'memoizedProps', 'pendingProps', 'memoizedState',
+            'return', 'sibling', 'child', 'alternate',
+            'dependencies', 'current', '_debugOwner', '_debugSource',
+            'parentNode', 'parentElement', 'childNodes',
+            'firstChild', 'lastChild', 'previousSibling', 'nextSibling',
+            'ownerDocument', 'defaultView', 'style'
+          ])
+
+          const isForbiddenProp = (k) => {
+            if (typeof k !== 'string') return false
+            if (FORBIDDEN_KEYS.has(k)) return true
+            if (k.startsWith('__react') || k.startsWith('_react') || k.startsWith('__v_')) return true
+            return false
           }
-          if (el.model) {
-            const modelSymbols = Object.getOwnPropertySymbols(el.model)
-            const modelSceneSym = modelSymbols.find((s) => s.description === 'scene' || String(s).includes('scene'))
-            const modelScene = modelSceneSym ? el.model[modelSceneSym] : null
-            if (modelScene && typeof modelScene.traverse === 'function') {
-              modelScene.traverse((node) => {
-                if (node.isMesh && node.material) {
-                  if (Array.isArray(node.material)) {
-                    node.material.forEach((m) => threeMaterials.add(m))
-                  } else {
-                    threeMaterials.add(node.material)
+
+          const scan = (obj, depth = 0) => {
+            if (!obj || depth > 6 || typeof obj !== 'object' || visited.has(obj)) return
+            visited.add(obj)
+
+            // Never touch React virtual elements, Fibers, or Window
+            if (obj.$$typeof || obj._reactInternals || (obj.stateNode && obj.memoizedProps)) return
+            if (typeof Window !== 'undefined' && obj instanceof Window) return
+
+            // Three.js material found
+            if (obj.isMaterial) {
+              threeMaterials.add(obj)
+              return
+            }
+
+            // Three.js mesh with material
+            if (obj.isMesh && obj.material) {
+              if (Array.isArray(obj.material)) {
+                obj.material.forEach((m) => m && m.isMaterial && threeMaterials.add(m))
+              } else if (obj.material && obj.material.isMaterial) {
+                threeMaterials.add(obj.material)
+              }
+            }
+
+            // Three.js scene / Object3D: use native traverse for speed and safety
+            if (obj.isScene || obj.isObject3D) {
+              try {
+                obj.traverse((node) => {
+                  if (node && node.isMesh && node.material) {
+                    if (Array.isArray(node.material)) {
+                      node.material.forEach((m) => m && m.isMaterial && threeMaterials.add(m))
+                    } else if (node.material && node.material.isMaterial) {
+                      threeMaterials.add(node.material)
+                    }
                   }
+                })
+              } catch (e) {}
+              return
+            }
+
+            // If it is a DOM Node (like <model-viewer>), ONLY inspect its Symbols, never its DOM/React property names!
+            const isDomNode = typeof Node !== 'undefined' && obj instanceof Node
+            if (!isDomNode) {
+              if (Array.isArray(obj) || typeof obj.forEach === 'function') {
+                try {
+                  obj.forEach((item) => scan(item, depth + 1))
+                } catch (e) {}
+              }
+
+              try {
+                const names = Object.getOwnPropertyNames(obj)
+                for (let i = 0; i < names.length; i++) {
+                  const key = names[i]
+                  if (isForbiddenProp(key)) continue
+
+                  try {
+                    const descriptor = Object.getOwnPropertyDescriptor(obj, key)
+                    if (descriptor && descriptor.get && !descriptor.set) {
+                      continue
+                    }
+                    scan(obj[key], depth + 1)
+                  } catch (e) {}
                 }
-              })
+              } catch (e) {}
+            }
+
+            // Traverse Symbols (model-viewer stores scene, renderer, materials on symbols)
+            try {
+              const symbols = Object.getOwnPropertySymbols(obj)
+              for (let i = 0; i < symbols.length; i++) {
+                try {
+                  scan(obj[symbols[i]], depth + 1)
+                } catch (e) {}
+              }
+            } catch (e) {}
+          }
+
+          // Scan model-viewer symbols and model properties safely
+          scan(el)
+          if (el.model) {
+            scan(el.model)
+            if (el.model.materials && Array.isArray(el.model.materials)) {
+              el.model.materials.forEach((mat) => scan(mat, 1))
             }
           }
 
@@ -1052,6 +1121,7 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, 
         setIsLoaded(true)
         applyMatte()
         setTimeout(applyMatte, 150)
+        setTimeout(applyMatte, 600)
       }
 
       if (el.loaded) {
@@ -1075,9 +1145,9 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, 
       active = false
       clearTimeout(fallbackTimer)
     }
-  }, [product?.glb, isHovered])
+  }, [product?.glb, hasHovered])
 
-  const show3D = isHovered
+  const show3D = isHovered && hasHovered
 
   return (
     <>
@@ -1120,7 +1190,6 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, 
             src={product.image}
             alt={product.title || product.name}
             className="max-h-full max-w-full object-contain mx-auto"
-            loading="lazy"
           />
         </div>
 
@@ -1159,7 +1228,10 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, 
         data-product-card="true"
         data-white-bg="true"
         onClick={() => navigate(`/shop/${product.id}`)}
-        onMouseEnter={() => setIsHovered(true)}
+        onMouseEnter={() => {
+          setIsHovered(true)
+          setHasHovered(true)
+        }}
         onMouseLeave={() => setIsHovered(false)}
         style={{ backgroundColor: '#ffffff', background: '#ffffff', color: '#001e3d' }}
         className="hidden md:flex group rounded-2xl sm:rounded-[32px] bg-white border border-navy/10 text-[#001e3d] p-3 sm:p-6 shadow-card hover:shadow-float transition duration-300 flex-col justify-between cursor-pointer relative"
@@ -1172,16 +1244,14 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, 
                 <div className="absolute inset-0 skeleton-shimmer bg-navy/5 z-0" aria-hidden="true" />
               )}
               <img
-                src={getOptimizedImageUrl(product.image, { width: 500 }) || product.image}
+                src={product.image}
                 alt={product.title}
-                loading="lazy"
-                decoding="async"
                 onLoad={() => setImgLoaded(true)}
                 data-product-media="true"
                 style={{ backgroundColor: '#ffffff', background: '#ffffff' }}
                 className={`max-h-full max-w-full object-contain relative z-[1] transition-opacity duration-300 ${!imgLoaded ? 'opacity-0' : 'opacity-100'}`}
               />
-              {product.glb && isHovered && (
+              {product.glb && hasHovered && (
                 <div
                   data-product-media="true"
                   style={{ backgroundColor: '#ffffff', background: '#ffffff' }}
@@ -1192,8 +1262,6 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, 
                     data-product-media="true"
                     src={product.glb}
                     alt={product.title}
-                    poster={getOptimizedImageUrl(product.image, { width: 500 }) || product.image}
-                    loading="lazy"
                     reveal="auto"
                     auto-rotate
                     auto-rotate-delay="0"
@@ -1225,7 +1293,7 @@ function ProductCardItem({ product, onQuickAdd, isWishlisted, onToggleWishlist, 
                   >
                     <div slot="progress-bar" style={{ display: 'none' }} />
                     <div slot="poster" data-product-media="true" style={{ backgroundColor: '#ffffff', background: '#ffffff' }} className="w-full h-full flex items-center justify-center p-4 bg-white">
-                      <img src={getOptimizedImageUrl(product.image, { width: 500 }) || product.image} alt={product.title} data-product-media="true" loading="lazy" decoding="async" style={{ backgroundColor: '#ffffff', background: '#ffffff' }} className="max-h-full max-w-full object-contain bg-white" />
+                      <img src={product.image} alt={product.title} data-product-media="true" style={{ backgroundColor: '#ffffff', background: '#ffffff' }} className="max-h-full max-w-full object-contain bg-white" />
                     </div>
                   </model-viewer>
                 </div>

@@ -98,9 +98,9 @@
         document.addEventListener('DOMContentLoaded', startPlay, { once: true });
         window.addEventListener('load', startPlay, { once: true });
 
-        // Unmute on ANY micro-gesture (cursor movement, wheel, touch, scroll, focus, key) without needing a click
-        var microEvents = ['mousemove', 'pointermove', 'pointerdown', 'touchstart', 'mousedown', 'keydown', 'wheel', 'scroll', 'focus'];
-        var onMicroGesture = function () {
+        // Unmute on first user interaction gesture
+        var unlockEvents = ['pointerdown', 'touchstart', 'click'];
+        var onUserGesture = function () {
           if (localStorage.getItem('tdv_audio_muted') === 'true') return;
           if (document.hidden) return;
           if (audio.muted || audio.paused) {
@@ -121,17 +121,12 @@
                     });
                   } catch (e) {}
                 }
-                microEvents.forEach(function (e) {
-                  window.removeEventListener(e, onMicroGesture, true);
-                  document.removeEventListener(e, onMicroGesture, true);
-                });
               }).catch(function () {});
             }
           }
         };
-        microEvents.forEach(function (e) {
-          window.addEventListener(e, onMicroGesture, { capture: true, passive: true });
-          document.addEventListener(e, onMicroGesture, { capture: true, passive: true });
+        unlockEvents.forEach(function (e) {
+          window.addEventListener(e, onUserGesture, { once: true, passive: true });
         });
       } catch (e) {}
     })();

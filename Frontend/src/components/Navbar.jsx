@@ -3,7 +3,9 @@ import { createPortal } from 'react-dom'
 import { Link, NavLink, useLocation } from 'react-router'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import Logo from './Logo'
-const LogoImg = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/UI/Logo.png'
+import { getOptimizedImageUrl } from '../utils/mediaOptimizer'
+const rawLogoImg = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791691225/TDV-Media/UI/Logo.png'
+const LogoImg = rawLogoImg
 import ThemeToggle from './ThemeToggle'
 import { isNightModeDisabledRoute } from '../hooks/useNightDive'
 import ViberQRModal from './ViberQRModal'
@@ -18,13 +20,14 @@ const NAV = [
   { to: '/services', label: 'Services' },
   { to: '/gallery', label: 'Gallery' },
   { to: '/shop', label: 'Shop' },
-  { to: 'https://thedivevillage.com/book-us', label: 'Book Us', highlight: true, external: true },
+  { to: '/book-us', label: 'Book Us', highlight: true },
 ]
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
   const [isCallModalOpen, setIsCallModalOpen] = useState(false)
   const [isViberQrOpen, setIsViberQrOpen] = useState(false)
+  const [avatarError, setAvatarError] = useState(false)
   const { itemCount } = useCart()
   const { count: wishlistCount } = useWishlist()
   const { isAuthenticated, user } = useAuth()
@@ -42,11 +45,15 @@ export default function Navbar() {
         if (document.body.classList.contains('night-dive')) {
           document.body.classList.remove('night-dive')
         }
+        if (document.documentElement.classList.contains('night-dive')) {
+          document.documentElement.classList.remove('night-dive')
+        }
         return false
       }
       try {
         if (localStorage.getItem('tdv_night_dive') === 'true') {
           document.body.classList.add('night-dive')
+          document.documentElement.classList.add('night-dive')
           return true
         }
       } catch (e) {}
@@ -60,6 +67,9 @@ export default function Navbar() {
       if (document.body.classList.contains('night-dive')) {
         document.body.classList.remove('night-dive')
       }
+      if (document.documentElement.classList.contains('night-dive')) {
+        document.documentElement.classList.remove('night-dive')
+      }
       setIsNightDive(false)
       return
     }
@@ -68,9 +78,11 @@ export default function Navbar() {
       const stored = localStorage.getItem('tdv_night_dive')
       if (stored === 'true') {
         document.body.classList.add('night-dive')
+        document.documentElement.classList.add('night-dive')
         setIsNightDive(true)
       } else if (stored === 'false') {
         document.body.classList.remove('night-dive')
+        document.documentElement.classList.remove('night-dive')
         setIsNightDive(false)
       }
     } catch (e) {}
@@ -113,10 +125,12 @@ export default function Navbar() {
     const isNight = document.body.classList.contains('night-dive')
     if (isNight) {
       document.body.classList.remove('night-dive')
+      document.documentElement.classList.remove('night-dive')
       setIsNightDive(false)
       try { localStorage.setItem('tdv_night_dive', 'false') } catch (e) {}
     } else {
       document.body.classList.add('night-dive')
+      document.documentElement.classList.add('night-dive')
       setIsNightDive(true)
       try { localStorage.setItem('tdv_night_dive', 'true') } catch (e) {}
     }
@@ -164,6 +178,7 @@ export default function Navbar() {
         {!isNightModeDisabled ? (
           <button
             type="button"
+            id="mobile-theme-toggle-btn"
             onClick={toggleNightDive}
             className="flex flex-col items-center justify-center cursor-pointer transition active:scale-95 px-1 py-0.5 shrink-0 rounded-xl focus:outline-none"
             aria-label="Toggle Night Mode"
@@ -198,14 +213,19 @@ export default function Navbar() {
           >
             Home
           </NavLink>
-          <a
-            href="https://thedivevillage.com/book-us"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`relative whitespace-nowrap font-body text-[15px] sm:text-[15px] font-bold tracking-wide transition-all duration-300 focus:outline-none focus-visible:outline-none ${textColor} hover:text-[#FFCD00] after:content-[""] after:absolute after:-bottom-1.5 after:left-0 after:w-full after:h-[2.5px] after:bg-[#FFCD00] after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300`}
+          <NavLink
+            to="/book-us"
+            onMouseEnter={() => prefetchRoute('/book-us')}
+            onTouchStart={() => prefetchRoute('/book-us')}
+            className={({ isActive }) =>
+              `relative whitespace-nowrap font-body text-[15px] sm:text-[15px] font-bold tracking-wide transition-all duration-300 focus:outline-none focus-visible:outline-none ${isActive
+                ? 'text-[#FFCD00] after:content-[""] after:absolute after:-bottom-1.5 after:left-0 after:w-full after:h-[2.5px] after:bg-[#FFCD00]'
+                : `${textColor} hover:text-[#FFCD00] after:content-[""] after:absolute after:-bottom-1.5 after:left-0 after:w-full after:h-[2.5px] after:bg-[#FFCD00] after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300`
+              }`
+            }
           >
             Book Us
-          </a>
+          </NavLink>
           <NavLink
             to="/shop"
             onMouseEnter={() => prefetchRoute('/shop')}
@@ -247,6 +267,7 @@ export default function Navbar() {
           {!isNightModeDisabled && (
             <button
               type="button"
+              id="desktop-theme-toggle-btn"
               onClick={toggleNightDive}
               className={`hidden sm:flex h-8.5 w-8.5 sm:h-10 sm:w-auto items-center justify-center gap-1.5 rounded-xl border ${borderColor} ${btnBg} backdrop-blur-md px-2 sm:px-3 ${btnText} transition duration-300 hover:!bg-[#FFCD00] hover:!text-[#001e3d] hover:!border-[#FFCD00] shrink-0 cursor-pointer shadow-sm active:scale-95`}
               aria-label="Toggle Night Dive mode"
@@ -264,10 +285,12 @@ export default function Navbar() {
             aria-label={isAuthenticated ? 'Account' : 'Login'}
             title={user?.displayName || user?.email || 'Profile'}
           >
-            {user?.photoURL ? (
+            {user?.photoURL && !avatarError ? (
               <img
+                referrerPolicy="no-referrer"
                 src={user.photoURL}
                 alt={user.displayName || 'Profile'}
+                onError={() => setAvatarError(true)}
                 className="h-5 w-5 rounded-full object-cover shrink-0"
               />
             ) : (
@@ -336,35 +359,22 @@ export default function Navbar() {
 
               <nav className="flex flex-col gap-1" aria-label="Mobile">
                 {NAV.map((item) => (
-                  item.external ? (
-                    <a
-                      key={item.label}
-                      href={item.to}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={() => setOpen(false)}
-                      className="rounded-xl px-4 py-3 font-heading text-[15px] font-bold transition duration-hover text-white hover:bg-white/10 hover:text-white"
-                    >
-                      {item.label}
-                    </a>
-                  ) : (
-                    <NavLink
-                      key={item.to}
-                      to={item.to}
-                      end={item.end}
-                      onMouseEnter={() => prefetchRoute(item.to)}
-                      onTouchStart={() => prefetchRoute(item.to)}
-                      onClick={() => setOpen(false)}
-                      className={({ isActive }) =>
-                        `rounded-xl px-4 py-3 font-heading text-[15px] font-bold transition duration-hover ${isActive
-                          ? 'bg-white/15 text-white'
-                          : 'text-white hover:bg-white/10 hover:text-white'
-                        }`
-                      }
-                    >
-                      {item.label}
-                    </NavLink>
-                  )
+                  <NavLink
+                    key={item.to}
+                    to={item.to}
+                    end={item.end}
+                    onMouseEnter={() => prefetchRoute(item.to)}
+                    onTouchStart={() => prefetchRoute(item.to)}
+                    onClick={() => setOpen(false)}
+                    className={({ isActive }) =>
+                      `rounded-xl px-4 py-3 font-heading text-[15px] font-bold transition duration-hover ${isActive
+                        ? 'bg-white/15 text-white'
+                        : 'text-white hover:bg-white/10 hover:text-white'
+                      }`
+                    }
+                  >
+                    {item.label}
+                  </NavLink>
                 ))}
                 <button
                   onClick={() => {
@@ -393,8 +403,14 @@ export default function Navbar() {
                   onClick={() => setOpen(false)}
                   className="rounded-xl px-4 py-3 font-heading text-[15px] font-bold transition duration-hover text-left flex items-center gap-2.5 text-white hover:bg-white/10"
                 >
-                  {user?.photoURL ? (
-                    <img src={user.photoURL} alt="Profile" className="h-5 w-5 rounded-full object-cover shrink-0" />
+                  {user?.photoURL && !avatarError ? (
+                    <img
+                      referrerPolicy="no-referrer"
+                      src={user.photoURL}
+                      alt="Profile"
+                      onError={() => setAvatarError(true)}
+                      className="h-5 w-5 rounded-full object-cover shrink-0"
+                    />
                   ) : (
                     <UserIcon />
                   )}

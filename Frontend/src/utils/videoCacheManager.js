@@ -84,66 +84,25 @@ export function getCachedBlobUrl(url) {
 }
 
 /**
- * Caches a video asset once in CacheStorage ('cloudinary-videos-cache')
- * using full 200 OK responses to enable smooth Workbox Range Requests.
- * Only downloads once; subsequent calls return the existing cached entry.
+ * Records a video asset as cached in the session for instant repeat playback.
+ * Does NOT perform redundant full-file fetch() requests, allowing the browser's
+ * native HTML5 video engine to stream via HTTP Range requests without network contention.
  */
 export async function cacheVideoOnce(url) {
   const cleanUrl = normalizeVideoUrl(url)
-  if (!cleanUrl || typeof window === 'undefined' || !('caches' in window)) {
-    markVideoCached(cleanUrl)
-    return cleanUrl
-  }
-
-  // If already in-flight, return the existing promise to avoid duplicate downloads
-  if (inFlightRequests.has(cleanUrl)) {
-    return inFlightRequests.get(cleanUrl)
-  }
-
-  const promise = (async () => {
-    try {
-      const cache = await caches.open(CACHE_NAME)
-      const existing = await cache.match(cleanUrl)
-
-      if (existing && existing.ok) {
-        markVideoCached(cleanUrl)
-        return cleanUrl
-      }
-
-      // Fetch the full video (without Range header) to get a 200 OK response
-      const response = await fetch(cleanUrl, {
-        mode: 'cors',
-        credentials: 'omit',
-      })
-
-      if (response.ok && response.status === 200) {
-        await cache.put(cleanUrl, response.clone())
-        markVideoCached(cleanUrl)
-      } else if (response.ok) {
-        markVideoCached(cleanUrl)
-      }
-      return cleanUrl
-    } catch {
-      // Network failure or offline: mark as cached if video is currently playing
-      markVideoCached(cleanUrl)
-      return cleanUrl
-    } finally {
-      inFlightRequests.delete(cleanUrl)
-    }
-  })()
-
-  inFlightRequests.set(cleanUrl, promise)
-  return promise
+  if (!cleanUrl) return ''
+  markVideoCached(cleanUrl)
+  return cleanUrl
 }
 
 /**
- * Preloads and caches a list of critical video URLs in the background.
+ * Preloads and marks a list of critical video URLs in the session.
  */
 export function preloadVideos(urls = []) {
   if (typeof window === 'undefined') return
   urls.forEach((url) => {
     if (url && !isVideoCached(url)) {
-      cacheVideoOnce(url).catch(() => {})
+      markVideoCached(url)
     }
   })
 }

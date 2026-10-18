@@ -1,12 +1,19 @@
 import { useEffect, useRef, useState } from 'react'
-import { getOptimizedImageUrl } from '../utils/mediaOptimizer'
+import { precacheMediaAsset } from '../utils/mediaCache'
+import { markMediaLoaded } from '../utils/mediaOptimizer'
 
 export default function Product3DViewer({ src, alt = '3D Product Model', productId, poster }) {
   const [scriptLoaded, setScriptLoaded] = useState(false)
   const [autoRotate, setAutoRotate] = useState(true)
-  const [isInViewport, setIsInViewport] = useState(false)
   const modelRef = useRef(null)
   const containerRef = useRef(null)
+
+  useEffect(() => {
+    if (src) {
+      precacheMediaAsset(src)
+      markMediaLoaded(src)
+    }
+  }, [src])
 
   const isBag = Boolean(
     (src && (src.toLowerCase().includes('bag') || src.toLowerCase().includes('backpack'))) ||
@@ -29,53 +36,10 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
     (alt && (alt.toLowerCase().includes('bottom') && alt.toLowerCase().includes('compression')))
   )
 
-  // Viewport intersection observer to defer script injection and pause rotation when off-screen
+
+
   useEffect(() => {
-    const el = containerRef.current
-    if (!el || typeof IntersectionObserver === 'undefined') {
-      setIsInViewport(true)
-      return
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setIsInViewport(true)
-          }
-          setAutoRotate(entry.isIntersecting && !document.hidden)
-        })
-      },
-      { threshold: 0.05, rootMargin: '200px' }
-    )
-
-    const handleVisibility = () => {
-      if (document.hidden) {
-        setAutoRotate(false)
-      }
-    }
-
-    observer.observe(el)
-    document.addEventListener('visibilitychange', handleVisibility)
-
-    return () => {
-      observer.disconnect()
-      document.removeEventListener('visibilitychange', handleVisibility)
-    }
-  }, [])
-
-  // Lazy-load model-viewer script only when container nears viewport
-  useEffect(() => {
-    if (!isInViewport) return
-
     if (typeof window !== 'undefined' && !customElements.get('model-viewer')) {
-      const existingScript = document.querySelector('script[src*="model-viewer"]')
-      if (existingScript) {
-        existingScript.addEventListener('load', () => setScriptLoaded(true))
-        if (customElements.get('model-viewer')) setScriptLoaded(true)
-        return
-      }
-
       const script = document.createElement('script')
       script.type = 'module'
       script.src = 'https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js'
@@ -84,7 +48,9 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
     } else {
       setScriptLoaded(true)
     }
-  }, [isInViewport])
+  }, [])
+
+  const cameraDistance = isBag ? '108%' : isBottomsCompression ? '108%' : '102%'
 
   // Handle two-finger horizontal drag on mobile/touchscreens and trackpads
   useEffect(() => {
@@ -123,7 +89,7 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
 
         // Moving fingers right turns model right, moving left turns left
         thetaDeg -= dx * 0.8
-        viewer.cameraOrbit = `${thetaDeg}deg 75deg ${isBag ? '125%' : '110%'}`
+        viewer.cameraOrbit = `${thetaDeg}deg 75deg ${cameraDistance}`
         if (typeof viewer.jumpCameraToGoal === 'function') {
           viewer.jumpCameraToGoal()
         }
@@ -144,7 +110,7 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
       if (Math.abs(e.deltaX) > 1 || (e.shiftKey && Math.abs(e.deltaY) > 1)) {
         const delta = e.shiftKey ? e.deltaY : e.deltaX
         thetaDeg = readCurrentTheta() + delta * 0.45
-        viewer.cameraOrbit = `${thetaDeg}deg 75deg ${isBag ? '125%' : '110%'}`
+        viewer.cameraOrbit = `${thetaDeg}deg 75deg ${cameraDistance}`
         if (typeof viewer.jumpCameraToGoal === 'function') {
           viewer.jumpCameraToGoal()
         }
@@ -167,7 +133,7 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
       viewer.removeEventListener('touchcancel', handleTouchEnd)
       viewer.removeEventListener('wheel', handleWheel)
     }
-  }, [scriptLoaded, isBag])
+  }, [scriptLoaded, cameraDistance])
 
   // Apply non-glossy, soft matte finish, brighten dark tones, and double-sided rendering to 3D materials
   useEffect(() => {
@@ -221,36 +187,109 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
           })
         }
 
-        // 2. Safe Three.js materials lookup without recursive DOM element traversal
+        // 2. Safe traversal across Three.js materials in the scene
+        const visited = new Set()
         const threeMaterials = new Set()
-        const symbols = Object.getOwnPropertySymbols(viewer)
-        const sceneSymbol = symbols.find((s) => s.description === 'scene' || String(s).includes('scene'))
-        const threeScene = sceneSymbol ? viewer[sceneSymbol] : null
-        if (threeScene && typeof threeScene.traverse === 'function') {
-          threeScene.traverse((node) => {
-            if (node.isMesh && node.material) {
-              if (Array.isArray(node.material)) {
-                node.material.forEach((m) => threeMaterials.add(m))
-              } else {
-                threeMaterials.add(node.material)
-              }
-            }
-          })
+
+        const FORBIDDEN_KEYS = new Set([
+          'ref', 'key', '_owner', '_store', 'children',
+          'stateNode', 'memoizedProps', 'pendingProps', 'memoizedState',
+          'return', 'sibling', 'child', 'alternate',
+          'dependencies', 'current', '_debugOwner', '_debugSource',
+          'parentNode', 'parentElement', 'childNodes',
+          'firstChild', 'lastChild', 'previousSibling', 'nextSibling',
+          'ownerDocument', 'defaultView', 'style'
+        ])
+
+        const isForbiddenProp = (k) => {
+          if (typeof k !== 'string') return false
+          if (FORBIDDEN_KEYS.has(k)) return true
+          if (k.startsWith('__react') || k.startsWith('_react') || k.startsWith('__v_')) return true
+          return false
         }
-        if (viewer.model) {
-          const modelSymbols = Object.getOwnPropertySymbols(viewer.model)
-          const modelSceneSym = modelSymbols.find((s) => s.description === 'scene' || String(s).includes('scene'))
-          const modelScene = modelSceneSym ? viewer.model[modelSceneSym] : null
-          if (modelScene && typeof modelScene.traverse === 'function') {
-            modelScene.traverse((node) => {
-              if (node.isMesh && node.material) {
-                if (Array.isArray(node.material)) {
-                  node.material.forEach((m) => threeMaterials.add(m))
-                } else {
-                  threeMaterials.add(node.material)
+
+        const scan = (obj, depth = 0) => {
+          if (!obj || depth > 6 || typeof obj !== 'object' || visited.has(obj)) return
+          visited.add(obj)
+
+          // Never touch React virtual elements, Fibers, or Window
+          if (obj.$$typeof || obj._reactInternals || (obj.stateNode && obj.memoizedProps)) return
+          if (typeof Window !== 'undefined' && obj instanceof Window) return
+
+          // Three.js material found
+          if (obj.isMaterial) {
+            threeMaterials.add(obj)
+            return
+          }
+
+          // Three.js mesh with material
+          if (obj.isMesh && obj.material) {
+            if (Array.isArray(obj.material)) {
+              obj.material.forEach((m) => m && m.isMaterial && threeMaterials.add(m))
+            } else if (obj.material && obj.material.isMaterial) {
+              threeMaterials.add(obj.material)
+            }
+          }
+
+          // Three.js scene / Object3D: use native traverse for speed and safety
+          if (obj.isScene || obj.isObject3D) {
+            try {
+              obj.traverse((node) => {
+                if (node && node.isMesh && node.material) {
+                  if (Array.isArray(node.material)) {
+                    node.material.forEach((m) => m && m.isMaterial && threeMaterials.add(m))
+                  } else if (node.material && node.material.isMaterial) {
+                    threeMaterials.add(node.material)
+                  }
                 }
+              })
+            } catch (e) {}
+            return
+          }
+
+          // If it is a DOM Node (like <model-viewer>), ONLY inspect its Symbols, never its DOM/React property names!
+          const isDomNode = typeof Node !== 'undefined' && obj instanceof Node
+          if (!isDomNode) {
+            if (Array.isArray(obj) || typeof obj.forEach === 'function') {
+              try {
+                obj.forEach((item) => scan(item, depth + 1))
+              } catch (e) {}
+            }
+
+            try {
+              const names = Object.getOwnPropertyNames(obj)
+              for (let i = 0; i < names.length; i++) {
+                const key = names[i]
+                if (isForbiddenProp(key)) continue
+
+                try {
+                  const descriptor = Object.getOwnPropertyDescriptor(obj, key)
+                  if (descriptor && descriptor.get && !descriptor.set) {
+                    continue
+                  }
+                  scan(obj[key], depth + 1)
+                } catch (e) {}
               }
-            })
+            } catch (e) {}
+          }
+
+          // Traverse Symbols (model-viewer stores scene, renderer, materials on symbols)
+          try {
+            const symbols = Object.getOwnPropertySymbols(obj)
+            for (let i = 0; i < symbols.length; i++) {
+              try {
+                scan(obj[symbols[i]], depth + 1)
+              } catch (e) {}
+            }
+          } catch (e) {}
+        }
+
+        // Scan model-viewer symbols and model properties safely
+        scan(viewer)
+        if (viewer.model) {
+          scan(viewer.model)
+          if (viewer.model.materials && Array.isArray(viewer.model.materials)) {
+            viewer.model.materials.forEach((mat) => scan(mat, 1))
           }
         }
 
@@ -322,16 +361,15 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
     <div 
       ref={containerRef}
       data-product-media="true"
-      className="product-3d-wrapper relative w-full h-full min-h-[260px] bg-white rounded-[28px] overflow-hidden flex items-center justify-center select-none"
-      style={{ backgroundColor: '#ffffff', contentVisibility: 'auto', containIntrinsicSize: '100% 390px' }}
+      className="product-3d-wrapper relative w-full h-full min-h-[320px] bg-white rounded-lg overflow-hidden flex items-center justify-center select-none"
+      style={{ backgroundColor: '#ffffff' }}
     >
       <model-viewer
         ref={modelRef}
         data-product-media="true"
         src={src ? src : undefined}
         alt={alt}
-        poster={poster ? (getOptimizedImageUrl(poster, { width: 800 }) || poster) : undefined}
-        loading="lazy"
+        poster={poster || undefined}
         reveal="auto"
         auto-rotate={autoRotate ? true : undefined}
         rotation-per-second="25deg"
@@ -339,8 +377,8 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
         disable-zoom
         disable-pan
         touch-action="none"
-        interaction-prompt="auto"
-        camera-orbit={isBag ? "0deg 75deg 125%" : "0deg 75deg 110%"}
+        interaction-prompt="none"
+        camera-orbit={`0deg 75deg ${cameraDistance}`}
         camera-target="auto auto auto"
         min-camera-orbit="auto 75deg auto"
         max-camera-orbit="auto 75deg auto"
@@ -353,7 +391,7 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
         style={{
           width: '100%',
           height: '100%',
-          minHeight: '260px',
+          minHeight: '320px',
           backgroundColor: '#ffffff',
           background: '#ffffff',
           '--poster-color': '#ffffff',
@@ -365,15 +403,7 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
         <div slot="progress-bar" style={{ display: 'none' }} />
         <div slot="poster" data-product-media="true" style={{ backgroundColor: '#ffffff', background: '#ffffff' }} className="w-full h-full flex flex-col items-center justify-center bg-white p-4">
           {poster ? (
-            <img
-              src={getOptimizedImageUrl(poster, { width: 800 }) || poster}
-              alt={alt}
-              data-product-media="true"
-              loading="lazy"
-              decoding="async"
-              style={{ backgroundColor: '#ffffff' }}
-              className="max-h-full max-w-full object-contain bg-white"
-            />
+            <img src={poster} alt={alt} data-product-media="true" style={{ backgroundColor: '#ffffff' }} className="max-h-full max-w-full object-contain bg-white" />
           ) : (
             <>
               <div className="w-9 h-9 border-4 border-navy border-t-transparent rounded-full animate-spin mb-2" />
@@ -385,3 +415,5 @@ export default function Product3DViewer({ src, alt = '3D Product Model', product
     </div>
   )
 }
+
+export { default as OptimizedModelViewer } from './OptimizedModelViewer'

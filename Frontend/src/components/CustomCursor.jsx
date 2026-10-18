@@ -1,19 +1,31 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-const cursorVideo = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/UI/cursor.webm'
-const cursorPng = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/UI/Logo.png'
-const cursorHoverPng = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/UI/Logo.png'
+import { useLocation } from 'react-router'
+import { getOptimizedImageUrl } from '../utils/mediaOptimizer'
+const cursorVideo = '/media/TDV-Media/UI/cursor.webm'
+const rawCursorLogo = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791691225/TDV-Media/UI/Logo.png'
+const cursorPng = rawCursorLogo
+const cursorHoverPng = rawCursorLogo
 import useNightDive from '../hooks/useNightDive'
 
 export default function CustomCursor() {
   const cursorRef = useRef(null)
   const videoRef = useRef(null)
   const isNightDive = useNightDive()
+  const location = useLocation()
   const [isHovering, setIsHovering] = useState(false)
   const [videoError, setVideoError] = useState(false)
 
+  const isAuthPage = location?.pathname === '/login' || 
+    location?.pathname === '/signup' || 
+    location?.pathname?.startsWith('/login/') || 
+    location?.pathname?.startsWith('/signup/')
+
   useEffect(() => {
-    if (typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches) {
+    if (isAuthPage || (typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches)) {
+      if (typeof document !== 'undefined') {
+        document.body.classList.remove('hide-cursors')
+      }
       return
     }
 
@@ -21,20 +33,12 @@ export default function CustomCursor() {
 
     let latestX = -100
     let latestY = -100
-    let lastRenderX = -100
-    let lastRenderY = -100
-    let lastRadiusCheckX = -100
-    let lastRadiusCheckY = -100
     let currentTarget = null
     let rafId = null
     let isHidden = true
     let isHoveringInteractive = false
     let isOverNormalCursor = false
     let lastCheckTime = 0
-    let currentRotation = 0
-    let targetRotation = 0
-    let currentScaleX = 1
-    let targetScaleX = 1
 
     const isPointInsideGlobe = () => false
 
@@ -42,33 +46,23 @@ export default function CustomCursor() {
       if (!target) return false
       const el = target instanceof Element ? target : target.parentElement
       if (!el || !(el instanceof Element)) return false
-      return !!el.closest('input, textarea, select, [contenteditable="true"], .normal-cursor, [data-normal-cursor], .maplibregl-map, .maplibregl-canvas, .maplibregl-canvas-container, [data-dive-map]')
+      // Never hide custom cursor over product cards or product media
+      if (el.closest('[data-product-card], .product-card, [data-product-media], [data-product-subpage], .product-3d-wrapper')) {
+        return false
+      }
+      return !!el.closest('input, textarea, select, [contenteditable="true"], .normal-cursor, [data-normal-cursor], form, [data-auth-container], .maplibregl-map, .maplibregl-canvas, .maplibregl-canvas-container, [data-dive-map]')
     }
 
     const checkInteractive = (target) => {
       if (!target) return false
       const el = target instanceof Element ? target : target.parentElement
       if (!el || !(el instanceof Element)) return false
-      return !!el.closest('a, button, input, select, textarea, [role="button"], .cursor-pointer, [data-cursor-interactive], label, [data-360-toggle="clickable"], [data-gallery-close], [aria-label="Close Lightbox"]')
+      return !!el.closest('a, button, input, select, textarea, [role="button"], .cursor-pointer, [data-cursor-interactive], label, [data-product-card], .product-card, [data-360-toggle="clickable"], [data-gallery-close], [aria-label="Close Lightbox"]')
     }
 
-    const checkRadiusForInteractive = (x, y, target) => {
-      if (target && checkInteractive(target)) return true
-      if (typeof document === 'undefined') return false
-
-      const r = 36 // 36px wide radius
-      const points = [
-        [x + r, y], [x - r, y], [x, y + r], [x, y - r]
-      ]
-      
-      for (let i = 0; i < 4; i++) {
-        const [px, py] = points[i]
-        if (px >= 0 && py >= 0 && px <= window.innerWidth && py <= window.innerHeight) {
-          const pel = document.elementFromPoint(px, py)
-          if (pel && checkInteractive(pel)) return true
-        }
-      }
-      return false
+    const checkRadiusForInteractive = (x, y) => {
+      let el = document.elementFromPoint(x, y)
+      return el ? checkInteractive(el) : false
     }
 
     let cachedToggleCenter = null
@@ -90,7 +84,7 @@ export default function CustomCursor() {
       }
 
       const now = performance.now()
-      if (!cachedToggleCenter || now - lastToggleCheckTime > 150) {
+      if (!cachedToggleCenter || now - lastToggleCheckTime > 300) {
         lastToggleCheckTime = now
         const toggleEl = document.querySelector('[data-360-toggle="clickable"]') || document.querySelector('.joystick-container')
         if (toggleEl && toggleEl.offsetParent !== null) {
@@ -120,13 +114,8 @@ export default function CustomCursor() {
         return true
       }
 
-      // Fast bail: gallery close buttons are strictly top-right
-      if (x < window.innerWidth - 200 || y > 200) {
-        return false
-      }
-
       const now = performance.now()
-      if (!cachedGalleryCloseCenter || now - lastGalleryCloseCheckTime > 150) {
+      if (!cachedGalleryCloseCenter || now - lastGalleryCloseCheckTime > 300) {
         lastGalleryCloseCheckTime = now
         const closeBtn = document.querySelector('[data-gallery-close], [aria-label="Close Lightbox"], [data-cursor-static], #gallery-preview-close')
         if (closeBtn && closeBtn.offsetParent !== null) {
@@ -146,11 +135,12 @@ export default function CustomCursor() {
       return dist <= 140
     }
 
-    const applyTransform = (x, y, rot, scX) => {
-      if (cursorRef.current) {
-        cursorRef.current.style.transform = `translate3d(${x}px, ${y}px, 0) rotate(${rot}deg) scaleX(${scX})`
-      }
-    }
+    let lastRenderX = -100
+    let lastRenderY = -100
+    let currentRotation = 0
+    let targetRotation = 0
+    let currentScaleX = 1
+    let targetScaleX = 1
 
     const updateCursorPosition = () => {
       if (cursorRef.current) {
@@ -163,33 +153,24 @@ export default function CustomCursor() {
         const nearGalleryClose = isNearGalleryClose(latestX, latestY, currentTarget)
         const isNearStaticZone = near360 || nearGalleryClose
 
-        // Update target orientation - completely stop flipping and rotating when interactive or in vicinity of 360 toggle / gallery close button
+        // Smooth, natural orientation without wild spinning or erratic 90-degree glitching
         if (isHoveringInteractive || isNearStaticZone) {
           targetRotation = 0
           targetScaleX = 1
         } else {
-          const distSq = dx * dx + dy * dy
-          if (distSq > 9) { // At least 3px movement threshold prevents jitter
-            const absDx = Math.abs(dx)
-            const absDy = Math.abs(dy)
-            if (absDx > absDy * 1.25) {
-              targetRotation = 0
-              targetScaleX = dx > 0 ? -1 : 1
-            } else if (absDy > absDx * 1.25) {
-              targetRotation = dy < 0 ? 90 : -90
-              targetScaleX = 1
-            }
+          const speed = Math.hypot(dx, dy)
+          if (speed > 1.5) {
+            targetRotation = Math.max(-10, Math.min(10, dy * 0.6))
+            if (dx > 2) targetScaleX = 1
+            else if (dx < -2) targetScaleX = -1
           }
         }
 
-        const lerpFactor = isNearStaticZone ? 0.35 : 0.28
+        const lerpFactor = 0.35
         currentRotation += (targetRotation - currentRotation) * lerpFactor
         currentScaleX += (targetScaleX - currentScaleX) * lerpFactor
 
-        if (Math.abs(targetRotation - currentRotation) < 0.1) currentRotation = targetRotation
-        if (Math.abs(targetScaleX - currentScaleX) < 0.01) currentScaleX = targetScaleX
-
-        applyTransform(latestX, latestY, currentRotation, currentScaleX)
+        cursorRef.current.style.transform = `translate3d(${latestX}px, ${latestY}px, 0) rotate(${currentRotation}deg) scaleX(${currentScaleX})`
 
         if (isOverNormalCursor || isHidden) {
           cursorRef.current.style.opacity = '0'
@@ -201,13 +182,18 @@ export default function CustomCursor() {
       }
 
       const now = performance.now()
-      if (now - lastCheckTime >= 64 && latestX >= 0 && latestY >= 0) {
+      const isScrolling = typeof document !== 'undefined' && document.body.classList.contains('is-scrolling')
+      if (!isScrolling && now - lastCheckTime >= 64 && latestX >= 0 && latestY >= 0) { // Limit to ~15fps for radius checks, bypass during scroll
         lastCheckTime = now
-        if (latestX !== lastRadiusCheckX || latestY !== lastRadiusCheckY) {
-          lastRadiusCheckX = latestX
-          lastRadiusCheckY = latestY
-          const isDirectlyInteractive = currentTarget && checkInteractive(currentTarget)
-          const hovering = isDirectlyInteractive || checkRadiusForInteractive(latestX, latestY, currentTarget)
+        const elUnderPoint = document.elementFromPoint(latestX, latestY) || currentTarget
+        isOverNormalCursor = checkNormalCursor(elUnderPoint) || isPointInsideGlobe(latestX, latestY)
+        if (isOverNormalCursor) {
+          if (isHoveringInteractive) {
+            isHoveringInteractive = false
+            setIsHovering(false)
+          }
+        } else {
+          const hovering = checkRadiusForInteractive(latestX, latestY)
           if (hovering !== isHoveringInteractive) {
             isHoveringInteractive = hovering
             setIsHovering(hovering)
@@ -224,31 +210,25 @@ export default function CustomCursor() {
       latestX = e.clientX
       latestY = e.clientY
       currentTarget = e.target
+      isOverNormalCursor = checkNormalCursor(e.target) || isPointInsideGlobe(latestX, latestY)
 
-      const isNormal = checkNormalCursor(e.target) || isPointInsideGlobe(latestX, latestY)
-      if (isNormal !== isOverNormalCursor) {
-        isOverNormalCursor = isNormal
-        if (cursorRef.current) {
-          cursorRef.current.style.opacity = isNormal ? '0' : '1'
-          cursorRef.current.style.visibility = isNormal ? 'hidden' : 'visible'
-        }
-        if (isNormal && isHoveringInteractive) {
+      if (isOverNormalCursor) {
+        if (isHoveringInteractive) {
           isHoveringInteractive = false
           setIsHovering(false)
         }
-      }
-
-      if (!isNormal) {
+        if (cursorRef.current) {
+          cursorRef.current.style.opacity = '0'
+          cursorRef.current.style.visibility = 'hidden'
+        }
+      } else {
         if (isHidden) {
           isHidden = false
-          if (cursorRef.current) {
-            cursorRef.current.style.opacity = '1'
-            cursorRef.current.style.visibility = 'visible'
-          }
         }
-
-        // Direct instantaneous 0ms tracking for physical mouse responsiveness
-        applyTransform(latestX, latestY, currentRotation, currentScaleX)
+        if (cursorRef.current) {
+          cursorRef.current.style.opacity = '1'
+          cursorRef.current.style.visibility = 'visible'
+        }
 
         // 0ms Instant Response ONLY if directly on a button and not over globe/normal cursor
         if (e.target && checkInteractive(e.target)) {
@@ -303,28 +283,23 @@ export default function CustomCursor() {
       }
     }
 
+    // Listener setups with capture to ensure priority over canvas libraries
+    window.addEventListener('pointermove', onMouseMove, { capture: true, passive: true })
+    window.addEventListener('mousemove', onMouseMove, { capture: true, passive: true })
+    window.addEventListener('pointerdown', onMouseMove, { capture: true, passive: true })
+    window.addEventListener('pointerup', onMouseMove, { capture: true, passive: true })
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('mouseleave', onMouseLeave)
+    window.addEventListener('mouseenter', onMouseEnter)
+    window.addEventListener('focusin', onFocusIn)
+
     const ensureVideoPlaying = () => {
       if (videoRef.current && videoRef.current.paused) {
         videoRef.current.play().catch(() => {})
       }
     }
 
-    const onPointerDown = (e) => {
-      ensureVideoPlaying()
-      onMouseMove(e)
-    }
-
-    // Modern PointerEvent detection to eliminate duplicate event firing
-    const hasPointerEvents = typeof window !== 'undefined' && 'PointerEvent' in window
-    const primaryMoveEvent = hasPointerEvents ? 'pointermove' : 'mousemove'
-
-    window.addEventListener(primaryMoveEvent, onMouseMove, { capture: true, passive: true })
-    window.addEventListener('pointerdown', onPointerDown, { capture: true, passive: true })
-    window.addEventListener('pointerup', onMouseMove, { capture: true, passive: true })
-    window.addEventListener('scroll', onScroll, { passive: true })
-    window.addEventListener('mouseleave', onMouseLeave)
-    window.addEventListener('mouseenter', onMouseEnter)
-    window.addEventListener('focusin', onFocusIn)
+    window.addEventListener('pointerdown', ensureVideoPlaying, { passive: true })
     window.addEventListener('click', ensureVideoPlaying, { passive: true })
 
     if (videoRef.current) {
@@ -342,17 +317,19 @@ export default function CustomCursor() {
     return () => {
       if (rafId) cancelAnimationFrame(rafId)
       window.removeEventListener('resize', onResize)
-      window.removeEventListener(primaryMoveEvent, onMouseMove, { capture: true })
-      window.removeEventListener('pointerdown', onPointerDown, { capture: true })
+      window.removeEventListener('pointermove', onMouseMove, { capture: true })
+      window.removeEventListener('mousemove', onMouseMove, { capture: true })
+      window.removeEventListener('pointerdown', onMouseMove, { capture: true })
       window.removeEventListener('pointerup', onMouseMove, { capture: true })
       window.removeEventListener('scroll', onScroll)
       window.removeEventListener('mouseleave', onMouseLeave)
       window.removeEventListener('mouseenter', onMouseEnter)
       window.removeEventListener('focusin', onFocusIn)
+      window.removeEventListener('pointerdown', ensureVideoPlaying)
       window.removeEventListener('click', ensureVideoPlaying)
       document.body.classList.remove('hide-cursors')
     }
-  }, [])
+  }, [isAuthPage])
 
   // Keep video playing continuously across theme toggles and visibility changes
   useEffect(() => {
@@ -361,7 +338,7 @@ export default function CustomCursor() {
     }
   }, [isNightDive])
 
-  if (typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches) {
+  if (isAuthPage || (typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches)) {
     return null
   }
 
@@ -373,7 +350,6 @@ export default function CustomCursor() {
         transform: 'translate3d(-100px, -100px, 0)',
         opacity: 0,
         visibility: 'hidden',
-        contain: 'layout style paint',
       }}
     >
       {/* Night Dive Mode Underwater Flashlight Beam & Spotlight Aura (Subtle reduced halo) */}
