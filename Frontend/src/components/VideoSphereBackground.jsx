@@ -1,6 +1,5 @@
 import { useState, useEffect, Suspense, useRef } from 'react'
-import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { OrbitControls } from '@react-three/drei'
+import { Canvas, useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { useLocation } from 'react-router'
 import {
@@ -58,24 +57,22 @@ function getOrCreateDomVideoContainer() {
 }
 
 /**
- * Custom hook to generate and manage Three.js VideoTexture with HLS support and Page Visibility lifecycle.
+ * Custom hook to generate and manage Three.js VideoTexture with lifecycle and play state control.
  */
-function useDirectVideoTexture(src, fallbackMp4, playbackRate = 0.5, priority = false, isVisible = true) {
+function useDirectVideoTexture(src, fallbackMp4, playbackRate = 0.5, priority = false, isVisible = true, shouldPlay = true) {
   const [texture, setTexture] = useState(null)
-  const hasNewFrameRef = useRef(false)
-  const lastTimeRef = useRef(-1)
+  const videoRef = useRef(null)
   const hlsControllerRef = useRef(null)
 
   useEffect(() => {
     if (!src) {
       setTexture(null)
+      videoRef.current = null
       return
     }
 
     let isMounted = true
     let vidTexture = null
-    let rvfcId = null
-    let fallbackCleanup = null
     let video = null
     let hlsController = null
 
@@ -96,8 +93,8 @@ function useDirectVideoTexture(src, fallbackMp4, playbackRate = 0.5, priority = 
       video.setAttribute('playsinline', '')
       video.setAttribute('webkit-playsinline', '')
       video.loop = true
-      video.autoplay = true
-      video.preload = 'auto'
+      video.autoplay = false
+      video.preload = shouldPlay ? 'auto' : 'metadata'
       video.playbackRate = playbackRate
       domContainer.appendChild(video)
 
@@ -106,7 +103,7 @@ function useDirectVideoTexture(src, fallbackMp4, playbackRate = 0.5, priority = 
           video,
           hlsUrl: src,
           mp4FallbackUrl: fallbackMp4,
-          autoPlay: true,
+          autoPlay: shouldPlay,
           playbackRate,
         })
         hlsControllerRef.current = hlsController
@@ -116,37 +113,11 @@ function useDirectVideoTexture(src, fallbackMp4, playbackRate = 0.5, priority = 
     }
 
     if (!video) return
-
-    const checkReadiness = () => {
-      if (!isMounted) return false
-      return (video.readyState >= 1 && video.videoWidth > 0) || video.readyState >= 2
-    }
-
-    const registerFrameCallback = () => {
-      if (video.requestVideoFrameCallback) {
-        const onVideoFrame = () => {
-          if (!isMounted) return
-          hasNewFrameRef.current = true
-          rvfcId = video.requestVideoFrameCallback(onVideoFrame)
-        }
-        rvfcId = video.requestVideoFrameCallback(onVideoFrame)
-      } else {
-        const onTimeUpdate = () => {
-          if (!isMounted) return
-          hasNewFrameRef.current = true
-        }
-        video.addEventListener('timeupdate', onTimeUpdate)
-        video.addEventListener('playing', onTimeUpdate)
-        fallbackCleanup = () => {
-          video.removeEventListener('timeupdate', onTimeUpdate)
-          video.removeEventListener('playing', onTimeUpdate)
-        }
-      }
-    }
+    videoRef.current = video
 
     const tryActivateTexture = () => {
       if (!isMounted) return
-      if (checkReadiness()) {
+      if ((video.readyState >= 1 && video.videoWidth > 0) || video.readyState >= 2) {
         if (!vidTexture) {
           vidTexture = new THREE.VideoTexture(video)
           vidTexture.colorSpace = THREE.SRGBColorSpace
@@ -156,16 +127,13 @@ function useDirectVideoTexture(src, fallbackMp4, playbackRate = 0.5, priority = 
           if (isMounted) {
             setTexture(vidTexture)
           }
-          registerFrameCallback()
         }
-        hasNewFrameRef.current = true
-        vidTexture.needsUpdate = true
         if (priority) setHeroVideoReady(true)
       }
     }
 
     const startPlayback = () => {
-      if (!isMounted || !isVisible) return
+      if (!isMounted || !isVisible || !shouldPlay) return
       video.playbackRate = playbackRate
       tryActivateTexture()
       if (video.paused) {
@@ -178,21 +146,17 @@ function useDirectVideoTexture(src, fallbackMp4, playbackRate = 0.5, priority = 
                 tryActivateTexture()
               }
             })
-            .catch((err) => {
-              // Expected if user interaction is pending
-            })
+            .catch(() => {})
         }
       }
     }
 
     const handleEvent = () => {
       if (!isMounted) return
-      startPlayback()
-    }
-
-    const handleUserInteraction = () => {
-      if (!isMounted) return
-      startPlayback()
+      tryActivateTexture()
+      if (shouldPlay && isVisible) {
+        startPlayback()
+      }
     }
 
     const mediaEvents = [
@@ -201,32 +165,20 @@ function useDirectVideoTexture(src, fallbackMp4, playbackRate = 0.5, priority = 
       'loadeddata',
       'canplay',
       'canplaythrough',
-      'playing',
-      'timeupdate',
-      'resize',
     ]
 
     mediaEvents.forEach((evt) => {
       video.addEventListener(evt, handleEvent)
     })
 
-    if (isVisible) {
+    if (isVisible && shouldPlay) {
       startPlayback()
+    } else {
+      tryActivateTexture()
     }
-
-    window.addEventListener('pointerdown', handleUserInteraction, { passive: true })
-    window.addEventListener('touchstart', handleUserInteraction, { passive: true })
 
     return () => {
       isMounted = false
-      if (rvfcId && video.cancelVideoFrameCallback) {
-        video.cancelVideoFrameCallback(rvfcId)
-      }
-      if (fallbackCleanup) {
-        fallbackCleanup()
-      }
-      window.removeEventListener('pointerdown', handleUserInteraction)
-      window.removeEventListener('touchstart', handleUserInteraction)
       mediaEvents.forEach((evt) => {
         video.removeEventListener(evt, handleEvent)
       })
@@ -250,22 +202,35 @@ function useDirectVideoTexture(src, fallbackMp4, playbackRate = 0.5, priority = 
         vidTexture = null
       }
       setTexture(null)
+      videoRef.current = null
       hlsControllerRef.current = null
     }
   }, [src, fallbackMp4, playbackRate, priority])
 
-  // Stop/start HLS fragment downloading and video decoding when tab visibility toggles
+  // React to shouldPlay & isVisible changes
   useEffect(() => {
-    if (priority) return // Hero video handled globally by pauseHeroVideo/resumeHeroVideo
-    const controller = hlsControllerRef.current
-    if (!isVisible) {
-      if (controller) controller.stopLoad()
-    } else {
-      if (controller) controller.startLoad()
-    }
-  }, [isVisible, priority])
+    const video = videoRef.current
+    if (!video) return
 
-  return { texture, hasNewFrameRef, lastTimeRef }
+    if (shouldPlay && isVisible) {
+      video.playbackRate = playbackRate
+      if (video.paused) {
+        video.play().catch(() => {})
+      }
+      if (hlsControllerRef.current) {
+        hlsControllerRef.current.startLoad()
+      }
+    } else {
+      if (!video.paused) {
+        video.pause()
+      }
+      if (hlsControllerRef.current) {
+        hlsControllerRef.current.stopLoad()
+      }
+    }
+  }, [shouldPlay, isVisible, playbackRate])
+
+  return { texture }
 }
 
 function VideoSphere({ videoSrc, joystickVelocity, isNightSettled, isVisible }) {
@@ -277,8 +242,7 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightSettled, isVisible }) 
   const location = useLocation()
   const isHome = location.pathname === '/'
   const isAbout = location.pathname === '/about'
-  const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth < 640)
-  const { camera } = useThree()
+  const hasRenderedInitialFrameRef = useRef(false)
 
   const INITIAL_YAW = Math.PI / 2.65 - Math.PI * 1.1
   const INITIAL_PITCH = isAbout ? -(Math.PI / 6) : Math.PI / 17.1
@@ -286,57 +250,145 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightSettled, isVisible }) 
   const targetRotation = useRef({ x: INITIAL_PITCH, y: INITIAL_YAW })
   const targetOpacity2 = useRef(0)
   const targetOpacity3 = useRef(0)
-  const vid2PlayingRef = useRef(false)
-  const vid3PlayingRef = useRef(false)
-  const hasRenderedInitialFrameRef = useRef(false)
-  const [loadSecondary, setLoadSecondary] = useState(false)
 
+  // Section tracking state for Home page
+  const [activeSection, setActiveSection] = useState('hero')
+  const [loadBarracuda, setLoadBarracuda] = useState(false)
+  const [loadTurtle, setLoadTurtle] = useState(false)
+
+  // High performance IntersectionObserver for buttery smooth section detection (0 layout reflows!)
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 640)
-    }
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
-  }, [])
+    if (!isHome) return
 
-  // Primary playback rate is 0.5x for smooth ambient feel
+    const handleScrollPos = () => {
+      const sy = window.scrollY
+      if (sy < 150 && activeSection !== 'hero') {
+        setActiveSection('hero')
+      }
+      if (sy > 60 && !loadBarracuda) {
+        setLoadBarracuda(true)
+      }
+      if (sy > 800 && !loadTurtle) {
+        setLoadTurtle(true)
+      }
+    }
+
+    window.addEventListener('scroll', handleScrollPos, { passive: true })
+    if (window.lenis) {
+      window.lenis.on('scroll', handleScrollPos)
+    }
+
+    const sectionConfig = [
+      { id: 'customize-dive-section', section: 'customize' },
+      { id: 'who-can-dive-section', section: 'customize' },
+      { id: 'airport-to-airport-section', section: 'customize' },
+      { id: 'gallery-section', section: 'gallery' },
+      { id: 'testimonials-section', section: 'gallery' },
+      { id: 'customer-reviews', section: 'reviews' },
+      { id: 'closing-cta-section', section: 'reviews' },
+    ]
+
+    const observedEls = []
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            const match = sectionConfig.find((s) => s.id === entry.target.id)
+            if (match) {
+              setActiveSection(match.section)
+              if (match.section === 'customize') setLoadBarracuda(true)
+              if (match.section === 'gallery') setLoadTurtle(true)
+            }
+          }
+        }
+      },
+      { rootMargin: '-15% 0px -30% 0px', threshold: 0.1 }
+    )
+
+    sectionConfig.forEach(({ id }) => {
+      const el = document.getElementById(id)
+      if (el) {
+        observer.observe(el)
+        observedEls.push(el)
+      }
+    })
+
+    const retryTimer = setTimeout(() => {
+      sectionConfig.forEach(({ id }) => {
+        const el = document.getElementById(id)
+        if (el && !observedEls.includes(el)) {
+          observer.observe(el)
+          observedEls.push(el)
+        }
+      })
+    }, 1000)
+
+    handleScrollPos()
+
+    return () => {
+      clearTimeout(retryTimer)
+      window.removeEventListener('scroll', handleScrollPos)
+      if (window.lenis) {
+        window.lenis.off('scroll', handleScrollPos)
+      }
+      observer.disconnect()
+    }
+  }, [isHome, loadBarracuda, loadTurtle, activeSection])
+
+  // Set target opacities based on active section
+  useEffect(() => {
+    if (!isHome) return
+    if (activeSection === 'customize') {
+      targetOpacity2.current = 1
+      targetOpacity3.current = 0
+    } else if (activeSection === 'gallery') {
+      targetOpacity2.current = 0
+      targetOpacity3.current = 1
+    } else {
+      // hero or reviews
+      targetOpacity2.current = 0
+      targetOpacity3.current = 0
+    }
+  }, [activeSection, isHome])
+
+  // Determine which video decoders should be actively running
+  const isSphere1Active = !isHome || activeSection === 'hero' || activeSection === 'reviews' || (targetOpacity2.current < 0.95 && targetOpacity3.current < 0.95)
+  const isSphere2Active = isHome && (activeSection === 'customize' || targetOpacity2.current > 0.05)
+  const isSphere3Active = isHome && (activeSection === 'gallery' || targetOpacity3.current > 0.05)
+
   const primaryPlaybackRate = 0.5
   const isHeroSingleton = isHome
   const activeHeroSrc = videoSrc || (isAbout ? bookFile : videoFile)
   const heroFallbackMp4 = isAbout ? MASTER_1080P_BARRACUDA : MASTER_1080P_CLOWNFISH
 
-  const { texture, hasNewFrameRef: hasNewFrame1, lastTimeRef: lastTime1 } = useDirectVideoTexture(
+  // 1. Primary Hero Video (Clownfish)
+  const { texture } = useDirectVideoTexture(
     activeHeroSrc,
     heroFallbackMp4,
     primaryPlaybackRate,
     isHeroSingleton,
-    isVisible
+    isVisible,
+    isSphere1Active
   )
 
-  // Preload secondary videos on idle or scroll
-  useEffect(() => {
-    if (loadSecondary || !isHome) return
-    const timer = setTimeout(() => {
-      setLoadSecondary(true)
-    }, 2500)
-    return () => clearTimeout(timer)
-  }, [loadSecondary, isHome])
-
-  // Secondary videos are lazy-loaded when user scrolls or after short idle
-  const shouldLoadSecondary = isHome && !isNightSettled && loadSecondary
-  const { texture: texture2, hasNewFrameRef: hasNewFrame2, lastTimeRef: lastTime2 } = useDirectVideoTexture(
-    shouldLoadSecondary ? bookFile : null,
+  // 2. Secondary Video (Barracuda) - Loaded only on scroll towards Customize
+  const { texture: texture2 } = useDirectVideoTexture(
+    isHome && !isNightSettled && loadBarracuda ? bookFile : null,
     MASTER_1080P_BARRACUDA,
     0.5,
     false,
-    isVisible
+    isVisible,
+    isSphere2Active
   )
-  const { texture: texture3, hasNewFrameRef: hasNewFrame3, lastTimeRef: lastTime3 } = useDirectVideoTexture(
-    shouldLoadSecondary ? turtleVideo : null,
+
+  // 3. Tertiary Video (Turtle) - Loaded only on scroll towards Gallery
+  const { texture: texture3 } = useDirectVideoTexture(
+    isHome && !isNightSettled && loadTurtle ? turtleVideo : null,
     MASTER_1080P_TURTLE,
     0.5,
     false,
-    isVisible
+    isVisible,
+    isSphere3Active
   )
 
   // Flip turtle video texture horizontally so it displays correctly on the sphere
@@ -361,81 +413,7 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightSettled, isVisible }) 
     }
   }, [])
 
-  useEffect(() => {
-    let scrollRafId = null
-
-    const handleScroll = () => {
-      if (scrollRafId) return
-      scrollRafId = requestAnimationFrame(() => {
-        scrollRafId = null
-        const isMobileScreen = typeof window !== 'undefined' && window.innerWidth < 640
-        if (isMobileScreen) {
-          targetRotation.current.y = INITIAL_YAW
-          targetRotation.current.x = INITIAL_PITCH
-        }
-
-        const scrollY = window.scrollY
-
-        if (isHome) {
-          if (!loadSecondary && scrollY > 50) {
-            setLoadSecondary(true)
-          }
-
-          const triggerThreshold = window.innerHeight * 0.65
-          const isElementInView = (el) => {
-            if (!el) return false
-            const rect = el.getBoundingClientRect()
-            return rect.top < triggerThreshold && rect.bottom > 0
-          }
-
-          const customizeSectionEl = document.getElementById('customize-dive-section')
-          const diveSectionEl = document.getElementById('who-can-dive-section')
-          const airportEl = document.getElementById('airport-to-airport-section')
-          const galleryEl = document.getElementById('gallery-section') || document.getElementById('gallery')
-          const testimonialsEl = document.getElementById('testimonials-section')
-          const customerReviewsEl = document.getElementById('customer-reviews')
-          const closingCtaEl = document.getElementById('closing-cta-section')
-
-          if (isElementInView(customerReviewsEl) || isElementInView(closingCtaEl)) {
-            // 4. Review Section & Closing CTA -> Clownfish
-            targetOpacity2.current = 0
-            targetOpacity3.current = 0
-          } else if (isElementInView(galleryEl) || isElementInView(testimonialsEl)) {
-            // 3. Gallery & Testimonials -> Turtle
-            targetOpacity2.current = 0
-            targetOpacity3.current = 1
-          } else if (isElementInView(customizeSectionEl) || isElementInView(diveSectionEl) || isElementInView(airportEl)) {
-            // 2. Customize panel through Airport section -> Barracuda
-            targetOpacity2.current = 1
-            targetOpacity3.current = 0
-          } else {
-            // 1. Beginning until Customize Your Dive -> Clownfish
-            targetOpacity2.current = 0
-            targetOpacity3.current = 0
-          }
-        }
-
-        targetRotation.current.y = INITIAL_YAW
-        targetRotation.current.x = INITIAL_PITCH
-      })
-    }
-
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    if (window.lenis) {
-      window.lenis.on('scroll', handleScroll)
-    }
-    handleScroll()
-
-    return () => {
-      if (scrollRafId) cancelAnimationFrame(scrollRafId)
-      window.removeEventListener('scroll', handleScroll)
-      if (window.lenis) {
-        window.lenis.off('scroll', handleScroll)
-      }
-    }
-  }, [isAbout, isHome, loadSecondary, INITIAL_PITCH, INITIAL_YAW])
-
-  // --- DRAG LOGIC ---
+  // --- DRAG LOGIC (Unified, Butter-Smooth 360 Navigation) ---
   const isDragging = useRef(false)
   const previousPointer = useRef({ x: 0, y: 0 })
   const dragOffset = useRef({ x: 0, y: 0 })
@@ -446,8 +424,8 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightSettled, isVisible }) 
       const dx = e.clientX - previousPointer.current.x
       const dy = e.clientY - previousPointer.current.y
       previousPointer.current = { x: e.clientX, y: e.clientY }
-      dragOffset.current.y += dx * 0.005
-      dragOffset.current.x += dy * 0.005
+      dragOffset.current.y += dx * 0.004
+      dragOffset.current.x += dy * 0.004
     }
 
     const onPointerUp = () => {
@@ -485,113 +463,58 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightSettled, isVisible }) 
 
   useFrame((state, delta) => {
     if (isNightSettled || !isVisible) return
-    const safeDelta = Math.min(delta, 0.1)
+    const safeDelta = Math.min(delta, 0.05)
 
     if (meshRef.current) {
-      const op2 = meshRef2.current?.material?.opacity || 0
-      const op3 = meshRef3.current?.material?.opacity || 0
+      let op2 = 0
+      let op3 = 0
 
-      // When Barracuda or Turtle is fully opaque, Clownfish is completely occluded.
-      // Softly pause Clownfish to avoid decoding multiple 1080p videos simultaneously.
-      const isClownfishOccluded = (op2 > 0.98 || op3 > 0.98) && (targetOpacity2.current > 0.9 || targetOpacity3.current > 0.9)
-
-      // 1. Frame-driven texture 1 (Clownfish) update
-      if (texture && texture.image) {
-        const vid1 = texture.image
-        if (isClownfishOccluded) {
-          if (!vid1.paused) vid1.pause()
-        } else {
-          if (vid1.paused && isVisible) {
-            vid1.play().catch(() => {})
-          }
-          if (!vid1.paused && vid1.readyState >= 2 && vid1.videoWidth > 0) {
-            if (hasNewFrame1.current || vid1.currentTime !== lastTime1.current) {
-              lastTime1.current = vid1.currentTime
-              hasNewFrame1.current = false
-              texture.needsUpdate = true
-              if (!hasRenderedInitialFrameRef.current) {
-                hasRenderedInitialFrameRef.current = true
-                setHeroWebGLReady(true)
-              }
-            }
-          }
+      // Smoothly animate sphere 2 (Barracuda) opacity
+      if (meshRef2.current && meshRef2.current.material && isHome) {
+        meshRef2.current.material.opacity += (targetOpacity2.current - meshRef2.current.material.opacity) * safeDelta * 3.5
+        op2 = meshRef2.current.material.opacity
+        meshRef2.current.visible = Boolean(texture2) && op2 > 0.005
+        if (meshRef2.current.visible) {
+          meshRef2.current.rotation.y = meshRef.current.rotation.y - Math.PI / 2.5
+          meshRef2.current.rotation.x = meshRef.current.rotation.x - Math.PI / 6
         }
       }
 
-      // 2. Secondary texture 2 (Barracuda) update
-      if (texture2 && texture2.image) {
-        const vid2 = texture2.image
-        if (targetOpacity2.current > 0.01 && isVisible) {
-          if (vid2.paused) {
-            vid2PlayingRef.current = true
-            vid2.play().catch(() => {})
-          }
-          if (vid2.readyState >= 2 && vid2.videoWidth > 0 && vid2.videoHeight > 0) {
-            if (hasNewFrame2.current || vid2.currentTime !== lastTime2.current) {
-              lastTime2.current = vid2.currentTime
-              hasNewFrame2.current = false
-              texture2.needsUpdate = true
-            }
-          }
-        } else {
-          if (vid2PlayingRef.current || !vid2.paused) {
-            vid2PlayingRef.current = false
-            vid2.pause()
-          }
+      // Smoothly animate sphere 3 (Turtle) opacity
+      if (meshRef3.current && meshRef3.current.material && isHome) {
+        meshRef3.current.material.opacity += (targetOpacity3.current - meshRef3.current.material.opacity) * safeDelta * 3.5
+        op3 = meshRef3.current.material.opacity
+        meshRef3.current.visible = Boolean(texture3) && op3 > 0.005
+        if (meshRef3.current.visible) {
+          meshRef3.current.rotation.y = meshRef.current.rotation.y + Math.PI * 1.45
+          meshRef3.current.rotation.x = meshRef.current.rotation.x - Math.PI / 7
         }
       }
 
-      // 3. Secondary texture 3 (Turtle) update
-      if (texture3 && texture3.image) {
-        const vid3 = texture3.image
-        if (targetOpacity3.current > 0.01 && isVisible) {
-          if (vid3.paused) {
-            vid3PlayingRef.current = true
-            vid3.play().catch(() => {})
-          }
-          if (vid3.readyState >= 2 && vid3.videoWidth > 0 && vid3.videoHeight > 0) {
-            if (hasNewFrame3.current || vid3.currentTime !== lastTime3.current) {
-              lastTime3.current = vid3.currentTime
-              hasNewFrame3.current = false
-              texture3.needsUpdate = true
-            }
-          }
-        } else {
-          if (vid3PlayingRef.current || !vid3.paused) {
-            vid3PlayingRef.current = false
-            vid3.pause()
-          }
-        }
-      }
+      // Sphere 1 (Clownfish) is hidden when Barracuda or Turtle completely covers it
+      const isClownfishOccluded = op2 > 0.98 || op3 > 0.98
+      meshRef.current.visible = Boolean(texture) && !isClownfishOccluded
 
+      // Virtual Joystick navigation
       if (joystickVelocity && joystickVelocity.current) {
-        dragOffset.current.y += joystickVelocity.current.x * safeDelta * 0.4
-        dragOffset.current.x += joystickVelocity.current.y * safeDelta * 0.4
+        dragOffset.current.y += joystickVelocity.current.x * safeDelta * 0.45
+        dragOffset.current.x += joystickVelocity.current.y * safeDelta * 0.45
       }
+
+      // Clamp vertical tilt (-60 to +60 degrees) so the view never flips
+      dragOffset.current.x = Math.max(-Math.PI / 3, Math.min(Math.PI / 3, dragOffset.current.x))
 
       const finalTargetX = targetRotation.current.x + dragOffset.current.x
       const finalTargetY = targetRotation.current.y + dragOffset.current.y
 
-      meshRef.current.rotation.y += (finalTargetY - meshRef.current.rotation.y) * safeDelta * 5
-      meshRef.current.rotation.x += (finalTargetX - meshRef.current.rotation.x) * safeDelta * 5
+      // Slerp / Lerp rotation smoothly
+      const rotSpeed = safeDelta * 6
+      meshRef.current.rotation.y += (finalTargetY - meshRef.current.rotation.y) * rotSpeed
+      meshRef.current.rotation.x += (finalTargetX - meshRef.current.rotation.x) * rotSpeed
 
-      // Only draw Clownfish sphere when not 100% occluded
-      meshRef.current.visible = Boolean(texture) && !isClownfishOccluded
-
-      if (meshRef2.current && meshRef2.current.material && isHome) {
-        meshRef2.current.rotation.y = meshRef.current.rotation.y - Math.PI / 2.5
-        meshRef2.current.rotation.x = meshRef.current.rotation.x - Math.PI / 6
-        meshRef2.current.material.opacity += (targetOpacity2.current - meshRef2.current.material.opacity) * safeDelta * 2.5
-        // Skip Three.js draw call when opacity is 0
-        meshRef2.current.visible = Boolean(texture2) && meshRef2.current.material.opacity > 0.005
-      }
-
-      if (meshRef3.current && meshRef3.current.material && isHome) {
-        meshRef3.current.rotation.y = meshRef.current.rotation.y + Math.PI * 1.45
-        meshRef3.current.rotation.x = meshRef.current.rotation.x - Math.PI / 7
-        meshRef3.current.material.opacity += (targetOpacity3.current - meshRef3.current.material.opacity) * safeDelta * 2.5
-        // Skip Three.js draw call when opacity is 0
-        meshRef3.current.visible = Boolean(texture3) && meshRef3.current.material.opacity > 0.005
+      if (!hasRenderedInitialFrameRef.current && texture) {
+        hasRenderedInitialFrameRef.current = true
+        setHeroWebGLReady(true)
       }
     }
   })
@@ -599,7 +522,7 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightSettled, isVisible }) 
   return (
     <group>
       <mesh ref={meshRef} scale={[-1, 1, 1]} visible={Boolean(texture)}>
-        <sphereGeometry ref={geomRef} args={[500, 60, 40]} />
+        <sphereGeometry ref={geomRef} args={[500, 36, 24]} />
         <meshBasicMaterial
           ref={matRef}
           map={texture}
@@ -613,11 +536,11 @@ function VideoSphere({ videoSrc, joystickVelocity, isNightSettled, isVisible }) 
       {isHome && !isNightSettled && (
         <>
           <mesh ref={meshRef2} scale={[-0.99, 0.99, 0.99]} visible={Boolean(texture2)}>
-            <sphereGeometry args={[500, 60, 40]} />
+            <sphereGeometry args={[500, 36, 24]} />
             <meshBasicMaterial map={texture2} side={THREE.BackSide} transparent={true} opacity={0} depthWrite={false} />
           </mesh>
           <mesh ref={meshRef3} scale={[-0.98, 0.98, 0.98]} visible={Boolean(texture3)}>
-            <sphereGeometry args={[500, 60, 40]} />
+            <sphereGeometry args={[500, 36, 24]} />
             <meshBasicMaterial map={texture3} side={THREE.BackSide} transparent={true} opacity={0} depthWrite={false} />
           </mesh>
         </>
@@ -781,7 +704,7 @@ export default function VideoSphereBackground() {
             loop
             muted
             playsInline
-            preload="auto"
+            preload="none"
             disablePictureInPicture
             disableRemotePlayback
             style={{
@@ -817,9 +740,9 @@ export default function VideoSphereBackground() {
             >
               <Canvas
                 frameloop={shouldRenderCanvas ? 'always' : 'never'}
-                dpr={[1, 1.5]}
+                dpr={[1, 1.25]}
                 camera={{ position: [0, 0, 0.1], fov: 85 }}
-                gl={{ powerPreference: 'high-performance', antialias: false }}
+                gl={{ powerPreference: 'high-performance', antialias: false, depth: false, stencil: false }}
                 onCreated={({ gl, scene }) => {
                   scene.background = new THREE.Color('#001e3d')
                   gl.domElement.addEventListener(
@@ -848,14 +771,6 @@ export default function VideoSphereBackground() {
                     isVisible={isVisible}
                   />
                 </Suspense>
-                <OrbitControls
-                  enableZoom={false}
-                  enablePan={false}
-                  enableDamping={true}
-                  dampingFactor={0.05}
-                  autoRotate={false}
-                  rotateSpeed={-0.15}
-                />
               </Canvas>
             </div>
           )}

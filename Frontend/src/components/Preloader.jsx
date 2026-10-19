@@ -60,14 +60,14 @@ export default function Preloader({ onComplete }) {
   }, [])
 
   useEffect(() => {
-    // If the user already experienced the preloader in this session, don't block them again
-    if (typeof window !== 'undefined' && sessionStorage.getItem('tdv_preloaded')) {
+    // If the user already experienced the preloader in this session, don't block them again on internal navigation
+    if (typeof window !== 'undefined' && !import.meta.env.DEV && sessionStorage.getItem('tdv_preloaded')) {
       if (onComplete) onComplete()
       return
     }
 
-    const maxSafetyTimeout = 1400 // Snappy safety cap
-    const baseTargetDuration = 800 // Fast, polished progress (~0.8s)
+    const minDisplayDuration = 2200 // Minimum viewing time (~2.2s)
+    const baseTargetDuration = 2500 // Comfortable, smooth progress duration (~2.5s)
     let animationFrameId
     let completed = false
     let firstFrameTime = null
@@ -83,21 +83,27 @@ export default function Preloader({ onComplete }) {
 
       const elapsed = currentTime - firstFrameTime
       const isVideoLoaded = isVideoReadyRef.current
-      const isQuickReady = isVideoLoaded && isWebGLReadyRef.current
+      const isWebGLReady = isWebGLReadyRef.current
+      const isReady = isVideoLoaded && isWebGLReady
 
-      // Steadily advance progress to 100% over baseTargetDuration (~800ms)
-      // Never stall at 88% waiting on network video download since WebP poster is rendered
-      let targetProgress
-      if (isQuickReady) {
+      // Smooth progress curve: starts responsive, climbs steadily, settles cleanly
+      const t = Math.min(1, elapsed / baseTargetDuration)
+      const curveProgress = (1 - Math.pow(1 - t, 2)) * 100
+
+      let targetProgress = curveProgress
+
+      // If background WebGL/video is still booting, hold gracefully near 90%
+      if (!isReady && targetProgress > 90) {
+        targetProgress = 90
+      } else if (isReady && elapsed >= minDisplayDuration) {
         targetProgress = 100
-      } else {
-        targetProgress = Math.min(100, (elapsed / baseTargetDuration) * 100)
       }
 
-      const maxStepPerFrame = 4.0
+      // Smooth percentage ticking (max ~0.95% per frame at 60fps)
+      const maxStepPerFrame = 0.95
       currentProgress = Math.min(targetProgress, currentProgress + maxStepPerFrame)
 
-      if (currentProgress >= 98 || elapsed >= baseTargetDuration + 150) {
+      if ((elapsed >= minDisplayDuration && isReady && currentProgress >= 98) || elapsed >= 4000) {
         currentProgress = 100
       }
 
@@ -111,7 +117,7 @@ export default function Preloader({ onComplete }) {
         } catch (_) {}
         setTimeout(() => {
           if (onComplete) onComplete()
-        }, 120)
+        }, 250)
         return
       }
 

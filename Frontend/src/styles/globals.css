@@ -191,9 +191,9 @@
     pointer-events: none;
   }
 
-  /* Hover-jank suppression: disable hover style recalculations during active scrolling */
-  body.is-scrolling,
-  body.is-scrolling * {
+  /* Hover-jank suppression: disable pointer events on heavy interactive elements during active scrolling */
+  body.is-scrolling canvas,
+  body.is-scrolling iframe {
     pointer-events: none !important;
   }
 

@@ -670,13 +670,14 @@ export default function Gallery() {
                           >
                             {item.type === 'video' ? (
                               <div className="relative w-full h-full bg-neutral-900 flex items-center justify-center">
-                                <video
-                                  src={item.src}
-                                  muted
-                                  preload="metadata"
+                                <img
+                                  src={item.poster || item.thumbnail || item.image || item.src}
+                                  alt=""
+                                  loading="lazy"
+                                  decoding="async"
                                   className="w-full h-full object-cover pointer-events-none"
                                 />
-                                <div className="absolute inset-0 bg-black/25 flex items-center justify-center">
+                                <div className="absolute inset-0 bg-black/35 flex items-center justify-center">
                                   <div className="w-4 h-4 rounded-full bg-black/70 text-white flex items-center justify-center text-[7px] pl-0.5">
                                     ▶
                                   </div>
@@ -706,20 +707,150 @@ export default function Gallery() {
   )
 }
 
+function GalleryHoverVideo({ item, isHovered, priority }) {
+  const [previewActive, setPreviewActive] = useState(false)
+  const [masterActive, setMasterActive] = useState(false)
+  const previewRef = useRef(null)
+  const masterRef = useRef(null)
+  const previewPlayPromise = useRef(null)
+  const masterPlayPromise = useRef(null)
+
+  const posterSrc = item.poster || item.thumbnail || item.image || item.src
+  const previewSrc = item.previewVideo || item.lowResSrc
+  const masterSrc = item.src
+  const playbackRate = item.playbackRate || (item.title?.toLowerCase().includes('clownfish and sea anemone') || item.src?.includes('Clownfish_and_Sea_Anemone') ? 0.7 : 1)
+
+  useEffect(() => {
+    const prev = previewRef.current
+    const master = masterRef.current
+
+    if (isHovered) {
+      // 1. Instant 0ms response: Play lightweight preview (<150KB) immediately on hover
+      if (prev && previewSrc) {
+        if (!prev.src || prev.src === '' || prev.src === window.location.href) {
+          prev.src = previewSrc
+        }
+        prev.playbackRate = playbackRate
+        const p1 = prev.play()
+        if (p1 !== undefined) {
+          previewPlayPromise.current = p1
+          p1.then(() => setPreviewActive(true)).catch(() => {})
+        }
+      }
+
+      // 2. High-Quality Upgrade: Load and play full 1080p master video in parallel
+      if (master && masterSrc) {
+        if (!master.src || master.src === '' || master.src === window.location.href) {
+          master.src = masterSrc
+        }
+        master.playbackRate = playbackRate
+        const p2 = master.play()
+        if (p2 !== undefined) {
+          masterPlayPromise.current = p2
+          p2.then(() => {
+            setMasterActive(true)
+            if (prev) prev.pause()
+          }).catch(() => {})
+        }
+      }
+    } else {
+      // Hover away: Immediately pause and completely unload both videos to stop background data streaming
+      setPreviewActive(false)
+      setMasterActive(false)
+
+      const cleanupVideo = (v, promiseRef) => {
+        if (!v) return
+        const stop = () => {
+          try {
+            v.pause()
+            v.currentTime = 0
+            v.removeAttribute('src')
+            v.load()
+          } catch (_) {}
+        }
+        if (promiseRef && promiseRef.current) {
+          promiseRef.current.then(stop).catch(stop)
+        } else {
+          stop()
+        }
+      }
+
+      cleanupVideo(prev, previewPlayPromise)
+      cleanupVideo(master, masterPlayPromise)
+    }
+  }, [isHovered, previewSrc, masterSrc, playbackRate])
+
+  return (
+    <div className="relative w-full h-full overflow-hidden bg-black/10">
+      {/* Layer 0: Static WebP Poster Image — always present as instant visual base */}
+      <SafeImage
+        src={posterSrc}
+        alt={item.title || 'Gallery video'}
+        priority={priority}
+        className="w-full h-full object-cover"
+      />
+
+      {/* Layer 1: Instant Fast Micro-Preview Video (<150KB) — instant 0ms motion on hover */}
+      {previewSrc && (
+        <video
+          ref={previewRef}
+          muted
+          playsInline
+          loop
+          preload="none"
+          onPlaying={() => setPreviewActive(true)}
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 pointer-events-none z-[1] ${
+            previewActive && !masterActive ? 'opacity-100' : 'opacity-0'
+          }`}
+        />
+      )}
+
+      {/* Layer 2: Crystal-Clear 1080p Master Video — crossfades in smoothly as quality upgrades */}
+      <video
+        ref={masterRef}
+        muted
+        playsInline
+        loop
+        preload="none"
+        onPlaying={() => {
+          setMasterActive(true)
+          if (previewRef.current) previewRef.current.pause()
+        }}
+        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 pointer-events-none z-[2] ${
+          masterActive ? 'opacity-100' : 'opacity-0'
+        }`}
+      />
+
+      {/* Video Indicator Badge */}
+      <div
+        className={`absolute bottom-2 left-2 sm:bottom-3 sm:left-3 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-black/60 backdrop-blur-md text-white flex items-center gap-1.5 shadow-md pointer-events-none transition-opacity duration-300 z-[3] ${
+          masterActive || previewActive ? 'opacity-0' : 'opacity-100'
+        }`}
+      >
+        <span className="text-[9px] sm:text-[11px] text-[#FFCD00]">▶</span>
+        <span className="text-[8px] sm:text-[10px] font-bold tracking-wider uppercase text-white/90">Video</span>
+      </div>
+    </div>
+  )
+}
+
 function GalleryGridCard({ item, idx, priority, reduce, onClick, isHighlighted, isNightDive }) {
   const cardRef = useRef(null)
+  const [isHovered, setIsHovered] = useState(false)
 
-  const isPillarboxed = Boolean(
-    item.isPillarboxed ||
-    (item.filename === 'Giant Barrel Sponge.mp4' ||
-     item.src?.includes('Giant_Barrel_Sponge.mp4') ||
-     item.title === 'Giant Barrel Sponge') ||
-    (item.filename?.includes('Whale Shark') ||
-     item.src?.includes('Whale_Shark') ||
-     item.title?.includes('Whale Shark'))
+  // Use natural portrait framing for vertical videos and portrait photos so they are never over-zoomed
+  const isVertical = Boolean(
+    item.type === 'video' ||
+    item.isVertical ||
+    [
+      'A Seafan', 'Beach View', 'Big Eye Trevally', 'Clownfish and Sea Anemone',
+      'Hawksbill Sea Turtle', 'Magnificent Sea Anemone', 'Manta Ray', 'Marbled Stingray',
+      'Silver Barracudas', 'A Moray Eel in a Giant Barrel Sponge', 'Free Diving',
+      'Giant Barrel Sponge', 'Whale Shark', 'Whitetip Reef Shark'
+    ].some((t) => item.title?.includes(t))
   )
 
-  const effectiveVideoZoom = item.videoZoom || (isPillarboxed ? 3.16 : (item.zoom || 1))
+  const cardAspect = isVertical ? 'aspect-[4/5]' : 'aspect-[4/3] sm:aspect-[16/11]'
 
   return (
     <motion.div
@@ -728,30 +859,22 @@ function GalleryGridCard({ item, idx, priority, reduce, onClick, isHighlighted, 
       initial={reduce ? false : { opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: Math.min(idx * 0.02, 0.25) }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       className={`scroll-mt-28 group flex flex-col rounded-2xl sm:rounded-[24px] overflow-hidden ${
         isNightDive ? 'bg-[#001e3d] border-white/15' : 'bg-white border-navy/10'
       } shadow-sm hover:shadow-xl hover:border-cyan-500/30 transition-all duration-500 cursor-pointer active:scale-[0.99] transform-gpu hover:will-change-transform`}
       style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 350px', contain: 'layout paint' }}
       onClick={onClick}
     >
-      {/* Media Container */}
-      <div className={`relative aspect-[4/3] sm:aspect-[16/11] w-full overflow-hidden ${isNightDive ? 'bg-[#001428]' : 'bg-white'}`}>
+      {/* Media Container with natural framing (no over-zoomed cropping) */}
+      <div className={`relative ${cardAspect} w-full overflow-hidden ${isNightDive ? 'bg-[#001428]' : 'bg-white'}`}>
         {item.type === 'video' ? (
-          <div className="w-full h-full transition-transform duration-700 ease-out group-hover:scale-105">
-            <LazyVideo
-              src={item.src}
-              lowResSrc={item.lowResSrc || item.previewVideo || item.preview}
-              poster={item.poster || item.thumbnail || item.image}
+          <div className="w-full h-full">
+            <GalleryHoverVideo
+              item={item}
+              isHovered={isHovered}
               priority={priority}
-              muted={true}
-              defaultMuted={true}
-              loop
-              playsInline
-              autoPlay={true}
-              playbackRate={item.playbackRate || (item.title?.toLowerCase().includes('clownfish and sea anemone') || item.src?.includes('Clownfish_and_Sea_Anemone') ? 0.7 : 1)}
-              zoom={item.zoom || 1}
-              videoZoom={effectiveVideoZoom}
-              className="w-full h-full object-cover"
             />
           </div>
         ) : (

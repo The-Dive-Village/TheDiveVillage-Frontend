@@ -133,75 +133,23 @@ export function preloadNightDiveFirst5Seconds() {
 
   const src = NIGHT_DIVE_VIDEO_SRC // '/media/TDV-Media/Background/Night_Dive.mp4'
 
-  // Step A: Range request on idle to avoid network contention with active page assets
-  const idleRun = window.requestIdleCallback || ((cb) => setTimeout(cb, 3500))
+  // Gentle range request on deep idle to prime browser cache with first 512KB
+  const idleRun = window.requestIdleCallback || ((cb) => setTimeout(cb, 4000))
   idleRun(() => {
     try {
       fetch(src, {
-        headers: { range: 'bytes=0-1048576' }
-      }).catch(() => {})
-    } catch (e) {}
-  })
-
-  // Step B: Warm video element initialized in background to prime hardware media decoders
-  let container = document.getElementById('hero-360-video-dom-root')
-  if (!container) {
-    container = document.createElement('div')
-    container.id = 'hero-360-video-dom-root'
-    container.style.cssText =
-      'position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;opacity:0.001;pointer-events:none;overflow:hidden;z-index:-99999;'
-    document.body.appendChild(container)
-  }
-
-  let video = warmNightDiveVideo || document.getElementById('night-dive-dom-video')
-  if (!video) {
-    video = document.createElement('video')
-    video.id = 'night-dive-dom-video'
-    video.muted = true
-    video.defaultMuted = true
-    video.volume = 0
-    video.playsInline = true
-    video.setAttribute('muted', '')
-    video.setAttribute('playsinline', '')
-    video.setAttribute('webkit-playsinline', '')
-    video.loop = true
-    video.autoplay = false
-    video.preload = 'auto'
-    container.appendChild(video)
-  }
-
-  warmNightDiveVideo = video
-
-  const evaluateNightDiveReadiness = () => {
-    if (video.readyState >= 2 && video.videoWidth > 0) {
-      let bufferedEnd = 0
-      if (video.buffered && video.buffered.length > 0) {
-        bufferedEnd = video.buffered.end(0)
-      }
-      // If 4.5+ seconds buffered or video is ready to play through
-      if (bufferedEnd >= 4.5 || video.readyState >= 3) {
-        setNightDiveReady(true)
-      }
+        headers: { range: 'bytes=0-524288' }
+      })
+        .then(() => setNightDiveReady(true))
+        .catch(() => setNightDiveReady(true))
+    } catch (e) {
+      setNightDiveReady(true)
     }
-  }
-
-  const events = ['loadedmetadata', 'loadeddata', 'canplay', 'canplaythrough', 'progress']
-  events.forEach((evt) => video.addEventListener(evt, evaluateNightDiveReadiness))
-
-  if (!video.src || !video.src.includes(src)) {
-    video.src = src
-    video.load()
-  }
-
-  evaluateNightDiveReadiness()
+  })
 }
 
 export function getOrCreateNightDiveVideoElement() {
-  if (typeof window === 'undefined') return null
-  if (!warmNightDiveVideo) {
-    preloadNightDiveFirst5Seconds()
-  }
-  return warmNightDiveVideo
+  return null
 }
 
 export function getOrCreateHeroVideoElement(src = HERO_VIDEO_SRC, playbackRate = 0.5) {
