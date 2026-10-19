@@ -2,10 +2,10 @@ import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { getOptimizedImageUrl } from '../utils/mediaOptimizer'
 
-const certifiedCoursesImg = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/ServicesThumbnails/Certified%20Courses.webp'
-const introProgImg = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/ServicesThumbnails/Introductory%20Programs.webp'
-const freeDivingImg = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/ServicesThumbnails/Free%20Diving.webp'
-const flexibleFunDivesImg = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/ServicesThumbnails/Flexible%20Fun%20Dives.webp'
+const certifiedCoursesImg = '/media/TDV-Media/ServicesThumbnails/Certified%20Courses.webp'
+const introProgImg = '/media/TDV-Media/ServicesThumbnails/Introductory%20Programs.webp'
+const freeDivingImg = '/media/TDV-Media/ServicesThumbnails/Free%20Diving.webp'
+const flexibleFunDivesImg = '/media/TDV-Media/ServicesThumbnails/Flexible%20Fun%20Dives.webp'
 
 const SAFETY_PROMISES = [
   {

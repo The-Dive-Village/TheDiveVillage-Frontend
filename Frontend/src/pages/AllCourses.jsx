@@ -5,9 +5,9 @@ import { IMAGES } from '../utils/images'
 import Button from '../components/Button'
 import { getOptimizedImageUrl } from '../utils/mediaOptimizer'
 
-const scubaVid = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Open_Water_Diver.mp4';
-const snorkelingVid = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Discover_Snorkelling.mp4';
-const freedivingVid = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Freediver.mp4';
+const scubaVid = '/media/TDV-Media/Services/Open_Water_Diver.mp4';
+const snorkelingVid = '/media/TDV-Media/Services/Discover_Snorkelling.mp4';
+const freedivingVid = '/media/TDV-Media/Services/Freediver.mp4';
 
 export default function AllCourses() {
   const reduce = useReducedMotion()

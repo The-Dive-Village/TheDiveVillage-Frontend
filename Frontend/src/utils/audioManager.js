@@ -1,5 +1,5 @@
 // Production CDN Audio URLs:
-const CLOUDINARY_AUDIO_URL = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Audio/Audio.mp3'
+const CLOUDINARY_AUDIO_URL = '/media/TDV-Media/Audio/Audio.mp3'
 
 const AUDIO_SOURCES = [
   CLOUDINARY_AUDIO_URL,
@@ -394,7 +394,7 @@ class AudioManager {
           album: "It's a Community",
           artwork: [
             {
-              src: 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/UI/Logo.png',
+              src: '/media/TDV-Media/UI/Logo.png',
               sizes: '512x512',
               type: 'image/png'
             }

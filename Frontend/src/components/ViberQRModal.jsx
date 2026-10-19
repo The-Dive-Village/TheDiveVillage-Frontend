@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { AnimatePresence, motion } from 'framer-motion'
-const tdvViberQr = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/UI/tdv_viber_qr.webp'
+const tdvViberQr = '/media/TDV-Media/UI/tdv_viber_qr.webp'
 
 export default function ViberQRModal({ isOpen, onClose }) {
   useEffect(() => {

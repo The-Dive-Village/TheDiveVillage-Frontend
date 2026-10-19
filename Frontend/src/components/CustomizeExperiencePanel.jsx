@@ -6,25 +6,25 @@ import FloatingVideoPip from './FloatingVideoPip'
 import { isVideoCached, markVideoCached, cacheVideoOnce } from '../utils/videoCacheManager'
 
 // Activity Media (High-Performance Low-Resolution Preview & Poster URLs)
-const vidSafari = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOnsLow/safari_preview.mp4'
-const imgSafari = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOns/safari.webp'
+const vidSafari = '/media/TDV-Media/AddOnsLow/safari_preview.mp4'
+const imgSafari = '/media/TDV-Media/AddOns/safari.webp'
 
-const vidTrekking = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOnsLow/trekking_preview.mp4'
-const imgTrekking = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOns/trekking.webp'
+const vidTrekking = '/media/TDV-Media/AddOnsLow/trekking_preview.mp4'
+const imgTrekking = '/media/TDV-Media/AddOns/trekking.webp'
 
-const vidSightseeing = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOnsLow/sightseeing_preview.mp4'
-const imgSightseeing = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOns/sightseeing.webp'
+const vidSightseeing = '/media/TDV-Media/AddOnsLow/sightseeing_preview.mp4'
+const imgSightseeing = '/media/TDV-Media/AddOns/sightseeing.webp'
 
-const vidCampers = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOnsLow/camping_camper_preview.mp4'
-const imgCampers = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOns/campers.webp'
+const vidCampers = '/media/TDV-Media/AddOnsLow/camping_camper_preview.mp4'
+const imgCampers = '/media/TDV-Media/AddOns/campers.webp'
 
-const vidLiveaboard = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOnsLow/liveaboard_preview.mp4'
-const imgLiveaboard = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOns/liveaboard.webp'
+const vidLiveaboard = '/media/TDV-Media/AddOnsLow/liveaboard_preview.mp4'
+const imgLiveaboard = '/media/TDV-Media/AddOns/liveaboard.webp'
 
-const vidCanoneering = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOnsLow/canyoneering_preview.mp4'
-const vidSurfing = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOnsLow/surfing_preview.mp4'
-const vidSnorkeling = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOnsLow/snorkeling_preview.mp4'
-const imgSnorkeling = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/ServicesThumbnails/Snorkeling.webp'
+const vidCanoneering = '/media/TDV-Media/AddOnsLow/canyoneering_preview.mp4'
+const vidSurfing = '/media/TDV-Media/AddOnsLow/surfing_preview.mp4'
+const vidSnorkeling = '/media/TDV-Media/AddOnsLow/snorkeling_preview.mp4'
+const imgSnorkeling = '/media/TDV-Media/ServicesThumbnails/Snorkeling.webp'
 
 // Pre-warmed video pool: keeps video elements in memory with buffered ranges across hovers
 const previewVideoPool = new Map()
@@ -204,7 +204,7 @@ const CUSTOM_ACTIVITIES = [
     name: 'Surfing',
     video: vidSurfing,
     fallbackVideo: '/videos/customize/surfing.mp4',
-    poster: 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp',
+    poster: '/media/TDV-Media/Extras%20for%20Gallery/Scubadiving.webp',
   },
   {
     id: 'sightseeing',

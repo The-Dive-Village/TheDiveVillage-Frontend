@@ -1,10 +1,10 @@
 import { useNavigate } from 'react-router'
 import { motion } from 'framer-motion'
 import useNightDive from '../hooks/useNightDive'
-const bannerImg = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Merch/banner.jpg';
+const bannerImg = '/media/TDV-Media/Merch/banner.jpg';
 
-const pop1 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Products/pop1.webp';
-const pop2 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Products/pop2.webp';
+const pop1 = '/media/TDV-Media/Products/pop1.webp';
+const pop2 = '/media/TDV-Media/Products/pop2.webp';
 
 export default function MerchBannerCTA({ className = '' }) {
   const isNightDive = useNightDive()

@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-const merch0 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Products/Group/4M7A5516.jpg'
-const merch1 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Products/Group/4M7A5935.jpg'
-const merch2 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Products/Group/4M7A6095.jpg'
-const merch3 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Products/Group/4M7A6124.jpg'
-const merch4 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Products/Group/4M7A6629.jpg'
-const merch5 = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Scuba_Diver.mp4'
+const merch0 = '/media/TDV-Media/Products/Group/4M7A5516.jpg'
+const merch1 = '/media/TDV-Media/Products/Group/4M7A5935.jpg'
+const merch2 = '/media/TDV-Media/Products/Group/4M7A6095.jpg'
+const merch3 = '/media/TDV-Media/Products/Group/4M7A6124.jpg'
+const merch4 = '/media/TDV-Media/Products/Group/4M7A6629.jpg'
+const merch5 = '/media/TDV-Media/Services/Scuba_Diver.mp4'
 import LazyVideo from './LazyVideo'
 
 export const MERCH_MEDIA_ITEMS = [

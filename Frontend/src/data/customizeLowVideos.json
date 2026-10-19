@@ -1,10 +1,10 @@
 {
-  "canyoneering": "https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOnsLow/canyoneering_preview.mp4",
-  "safari": "https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOnsLow/safari_preview.mp4",
-  "trekking": "https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOnsLow/trekking_preview.mp4",
-  "surfing": "https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOnsLow/surfing_preview.mp4",
-  "sightseeing": "https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOnsLow/sightseeing_preview.mp4",
-  "camping_camper": "https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOnsLow/camping_camper_preview.mp4",
-  "snorkeling": "https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOnsLow/snorkeling_preview.mp4",
-  "liveaboard": "https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/AddOnsLow/liveaboard_preview.mp4"
+  "canyoneering": "/media/TDV-Media/AddOnsLow/canyoneering_preview.mp4",
+  "safari": "/media/TDV-Media/AddOnsLow/safari_preview.mp4",
+  "trekking": "/media/TDV-Media/AddOnsLow/trekking_preview.mp4",
+  "surfing": "/media/TDV-Media/AddOnsLow/surfing_preview.mp4",
+  "sightseeing": "/media/TDV-Media/AddOnsLow/sightseeing_preview.mp4",
+  "camping_camper": "/media/TDV-Media/AddOnsLow/camping_camper_preview.mp4",
+  "snorkeling": "/media/TDV-Media/AddOnsLow/snorkeling_preview.mp4",
+  "liveaboard": "/media/TDV-Media/AddOnsLow/liveaboard_preview.mp4"
 }

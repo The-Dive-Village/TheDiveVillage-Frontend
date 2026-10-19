@@ -596,39 +596,79 @@ export default function VideoSphereBackground() {
 
   // Seamless crossfade blending when user switches between Day Dive and Night Dive
   useEffect(() => {
-    setIsNightTransitioning(true)
     const video = nightVideoRef.current
+    if (!video) return
+
+    let transitionTimer = null
+    let hasSettled = false
+
+    const doSettle = () => {
+      if (hasSettled) return
+      hasSettled = true
+      setIsNightTransitioning(false)
+      setIsNightSettled(true)
+      pauseHeroVideo()
+    }
 
     if (isNightDive) {
       // 1. Day Dive -> Night Dive:
-      // Instantly start preloaded Night Dive video at millisecond 0
-      if (video) {
-        video.playbackRate = 1.0
+      setIsNightTransitioning(true)
+      video.playbackRate = 1.0
+
+      const startPlay = () => {
         const playPromise = video.play()
         if (playPromise !== undefined) {
-          playPromise.catch(() => {})
+          playPromise
+            .then(() => {
+              // Video is actively rendering; complete crossfade and gently pause background hero
+              transitionTimer = setTimeout(doSettle, 850)
+            })
+            .catch((err) => {
+              console.warn('[NightDive] Play deferred/prevented:', err)
+              // If browser deferred play, still allow transition without hard lock
+              transitionTimer = setTimeout(doSettle, 1000)
+            })
+        } else {
+          transitionTimer = setTimeout(doSettle, 850)
         }
       }
-      // 2. Day Dive sphere keeps animating beneath during the 800ms crossfade
-      // 3. Once fully blended into Night Dive, softly pause Day Dive video to save GPU
-      const timer = setTimeout(() => {
-        setIsNightTransitioning(false)
-        setIsNightSettled(true)
-        pauseHeroVideo()
-      }, 850)
-      return () => clearTimeout(timer)
+
+      if (video.readyState >= 2) {
+        startPlay()
+      } else {
+        const onCanPlay = () => {
+          video.removeEventListener('canplay', onCanPlay)
+          video.removeEventListener('loadeddata', onCanPlay)
+          startPlay()
+        }
+        video.addEventListener('canplay', onCanPlay, { once: true })
+        video.addEventListener('loadeddata', onCanPlay, { once: true })
+        // Kick off loading immediately
+        video.load()
+        startPlay()
+      }
+
+      return () => {
+        if (transitionTimer) clearTimeout(transitionTimer)
+      }
     } else {
       // 1. Night Dive -> Day Dive:
       // Immediately wake up Day Dive video so it's live beneath the fade
       setIsNightSettled(false)
+      setIsNightTransitioning(true)
       resumeHeroVideo()
+
       // 2. Night dive video dissolves away over 800ms
       // 3. Pause Night dive video once completely hidden
-      const timer = setTimeout(() => {
+      transitionTimer = setTimeout(() => {
         setIsNightTransitioning(false)
-        if (video) video.pause()
+        if (video && !video.paused) {
+          video.pause()
+        }
       }, 850)
-      return () => clearTimeout(timer)
+      return () => {
+        if (transitionTimer) clearTimeout(transitionTimer)
+      }
     }
   }, [isNightDive])
 
@@ -704,7 +744,7 @@ export default function VideoSphereBackground() {
             loop
             muted
             playsInline
-            preload="none"
+            preload="auto"
             disablePictureInPicture
             disableRemotePlayback
             style={{

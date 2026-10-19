@@ -9,15 +9,15 @@ import SEOHead from '../components/SEOHead'
 import MerchBannerCTA from '../components/MerchBannerCTA'
 import { CAROUSEL_IMAGES } from '../utils/images'
 import { useReviews } from '../contexts/ReviewsContext'
-const backgroundVideo = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Background/About.mp4'
-const nightDiveVideo = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Background/Night_Dive.mp4'
-const founderVideo = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/About/Founder.mp4'
+const backgroundVideo = '/media/TDV-Media/Background/About.mp4'
+const nightDiveVideo = '/media/TDV-Media/Background/Night_Dive.mp4'
+const founderVideo = '/media/TDV-Media/About/Founder.mp4'
 import useNightDive from '../hooks/useNightDive'
 
-const certifiedCoursesImg = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/ServicesThumbnails/Certified%20Courses.webp'
-const introProgImg = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/ServicesThumbnails/Introductory%20Programs.webp'
-const freeDivingImg = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/ServicesThumbnails/Free%20Diving.webp'
-const flexibleFunDivesImg = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/ServicesThumbnails/Flexible%20Fun%20Dives.webp'
+const certifiedCoursesImg = '/media/TDV-Media/ServicesThumbnails/Certified%20Courses.webp'
+const introProgImg = '/media/TDV-Media/ServicesThumbnails/Introductory%20Programs.webp'
+const freeDivingImg = '/media/TDV-Media/ServicesThumbnails/Free%20Diving.webp'
+const flexibleFunDivesImg = '/media/TDV-Media/ServicesThumbnails/Flexible%20Fun%20Dives.webp'
 
 const SAFETY_PROMISES = [
   {

@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router'
 import { useAuth } from '../hooks/useAuth'
 import LazyVideo from '../components/LazyVideo'
 import { IMAGES } from '../utils/images'
-const vidDiscoverScuba = 'https://pub-4163c0b42ded4a0a9b4f34a1460da643.r2.dev/TDV-Media/Services/Discover_Scuba_Dive.mp4'
+const vidDiscoverScuba = '/media/TDV-Media/Services/Discover_Scuba_Dive.mp4'
 
 export default function Signup() {
   const navigate = useNavigate()
