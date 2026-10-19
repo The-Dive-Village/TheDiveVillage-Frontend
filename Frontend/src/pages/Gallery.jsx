@@ -11,6 +11,7 @@ import { triggerHaptic } from '../utils/haptics'
 import { shareContent } from '../utils/share'
 import { useLenis } from '../utils/lenisReact'
 import { getOptimizedImageUrl, getOptimizedVideoPoster } from '../utils/mediaOptimizer'
+import { useNightDive } from '../hooks/useNightDive'
 
 const rawDiversBg = 'https://res.cloudinary.com/q7b4kjd9/image/upload/v1791458258/TDV-Media/Products/Group/4M7A6732.jpg'
 const diversBg = rawDiversBg
@@ -29,6 +30,7 @@ export default function Gallery() {
   const [searchParams] = useSearchParams()
   const reduce = useReducedMotion()
   const lenis = useLenis()
+  const isNightDive = useNightDive()
 
   const touchStartX = useRef(0)
   const touchStartY = useRef(0)
@@ -252,28 +254,45 @@ export default function Gallery() {
     setVideoNaturalRatio(null)
   }, [selectedMediaIndex])
 
+  // Pillarboxed vertical videos (16:9 MP4 files containing active 9:16 center content with black sidebars)
+  const isPillarboxedVerticalVideo = Boolean(
+    currentItem && (
+      currentItem.isPillarboxed ||
+      (currentItem.filename === 'Giant Barrel Sponge.mp4' ||
+       currentItem.src?.includes('Giant_Barrel_Sponge.mp4') ||
+       currentItem.title === 'Giant Barrel Sponge') ||
+      (currentItem.filename?.includes('Whale Shark') ||
+       currentItem.src?.includes('Whale_Shark') ||
+       currentItem.title?.includes('Whale Shark'))
+    )
+  )
+
   // Vertical media detection (all 9:16 portrait videos)
   const isKnownVerticalVideo = Boolean(
-    currentItem && [
-      'A Seafan',
-      'Beach View',
-      'Big Eye Trevally',
-      'Clownfish and Sea Anemone',
-      'Hawksbill Sea Turtle',
-      'Magnificent Sea Anemone',
-      'Manta Ray',
-      'Marbled Stingray',
-      'Silver Barracudas',
-      'A Moray Eel in a Giant Barrel Sponge',
-      'Free Diving',
-      'Giant Barrel Sponge',
-      'Whale Shark',
-      'Whitetip Reef Shark',
-    ].some((t) => currentItem.title?.includes(t))
+    currentItem && (
+      isPillarboxedVerticalVideo ||
+      [
+        'A Seafan',
+        'Beach View',
+        'Big Eye Trevally',
+        'Clownfish and Sea Anemone',
+        'Hawksbill Sea Turtle',
+        'Magnificent Sea Anemone',
+        'Manta Ray',
+        'Marbled Stingray',
+        'Silver Barracudas',
+        'A Moray Eel in a Giant Barrel Sponge',
+        'Free Diving',
+        'Giant Barrel Sponge',
+        'Whale Shark',
+        'Whitetip Reef Shark',
+      ].some((t) => currentItem.title?.includes(t))
+    )
   )
 
   const isVerticalVideo = Boolean(
     currentItem?.type === 'video' && (
+      isPillarboxedVerticalVideo ||
       isKnownVerticalVideo ||
       (videoNaturalRatio !== null && videoNaturalRatio < 0.95)
     )
@@ -330,7 +349,7 @@ export default function Gallery() {
   }
 
   return (
-    <div className="bg-[#FAFAFA] min-h-screen text-navy font-body pt-24 sm:pt-32 pb-24 overflow-x-hidden" style={{ textShadow: 'none' }}>
+    <div className={`min-h-screen text-navy font-body pt-24 sm:pt-32 pb-24 overflow-x-hidden transition-colors duration-500 ${isNightDive ? 'bg-[#003865]' : 'bg-[#FAFAFA]'}`} style={{ textShadow: 'none' }}>
       <SEOHead
         title="Underwater Photography & Scuba Gallery | The Dive Village"
         description="Explore our visual gallery of underwater expeditions, vibrant coral reefs, sea turtle encounters, and diving moments captured at The Dive Village."
@@ -342,14 +361,20 @@ export default function Gallery() {
         {/* 1. HEADER */}
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-4 sm:gap-6 mb-8 sm:mb-12">
           <div>
-            <span className="inline-block bg-black/5 rounded-full px-3.5 py-1 text-[11px] sm:text-xs font-bold text-navy/60 uppercase tracking-widest mb-3 sm:mb-4">
+            <span className={`inline-block rounded-full px-3.5 py-1 text-[11px] sm:text-xs font-bold uppercase tracking-widest mb-3 sm:mb-4 transition-colors ${
+              isNightDive ? 'bg-white/10 text-white/90' : 'bg-black/5 text-navy/60'
+            }`}>
               Underwater Moments
             </span>
-            <h1 className="font-heading text-4xl sm:text-7xl lg:text-8xl font-bold tracking-tight text-navy leading-none">
+            <h1 className={`font-heading text-4xl sm:text-7xl lg:text-8xl font-bold tracking-tight leading-none transition-colors ${
+              isNightDive ? 'text-white' : 'text-navy'
+            }`}>
               Gallery
             </h1>
           </div>
-          <p className="max-w-md text-sm sm:text-base lg:text-lg font-medium text-navy/70 leading-relaxed lg:pb-4">
+          <p className={`max-w-md text-sm sm:text-base lg:text-lg font-medium leading-relaxed lg:pb-4 transition-colors ${
+            isNightDive ? 'text-white/80' : 'text-navy/70'
+          }`}>
             Moments frozen in time beneath the waves. Explore our underwater expeditions, marine encounters, species identification, and village life.
           </p>
         </div>
@@ -365,6 +390,7 @@ export default function Gallery() {
               reduce={reduce}
               onClick={() => openLightbox(idx)}
               isHighlighted={highlightedItemId === item.id}
+              isNightDive={isNightDive}
             />
           ))}
         </div>
@@ -523,7 +549,9 @@ export default function Gallery() {
                           <div 
                             className="h-full max-h-full max-w-full flex items-center justify-center relative rounded-xl sm:rounded-2xl overflow-hidden shadow-sm bg-white"
                             style={{
-                              aspectRatio: videoNaturalRatio ? `${videoNaturalRatio}` : '9 / 16',
+                              aspectRatio: isPillarboxedVerticalVideo
+                                ? '9 / 16'
+                                : (videoNaturalRatio && videoNaturalRatio < 0.95 ? `${videoNaturalRatio}` : '9 / 16'),
                               maxHeight: '100%',
                             }}
                           >
@@ -545,11 +573,22 @@ export default function Gallery() {
                               onLoadedMetadata={(e) => {
                                 const vid = e.target
                                 if (vid && vid.videoWidth && vid.videoHeight) {
-                                  setVideoNaturalRatio(vid.videoWidth / vid.videoHeight)
+                                  if (!isPillarboxedVerticalVideo) {
+                                    setVideoNaturalRatio(vid.videoWidth / vid.videoHeight)
+                                  } else {
+                                    setVideoNaturalRatio(9 / 16)
+                                  }
                                 }
                               }}
-                              style={{ objectFit: 'contain', maxHeight: '100%', maxWidth: '100%', backgroundColor: '#ffffff' }}
-                              className="w-full h-full max-w-full max-h-full bg-white flex items-center justify-center gallery-preview-video object-contain"
+                              style={{ 
+                                objectFit: isPillarboxedVerticalVideo ? 'cover' : 'contain', 
+                                maxHeight: '100%', 
+                                maxWidth: '100%', 
+                                backgroundColor: '#ffffff' 
+                              }}
+                              className={`w-full h-full max-w-full max-h-full bg-white flex items-center justify-center gallery-preview-video ${
+                                isPillarboxedVerticalVideo ? 'object-cover' : 'object-contain'
+                              }`}
                               videoClassName="gallery-preview-video-element bg-white"
                             />
                           </div>
@@ -667,8 +706,20 @@ export default function Gallery() {
   )
 }
 
-function GalleryGridCard({ item, idx, priority, reduce, onClick, isHighlighted }) {
+function GalleryGridCard({ item, idx, priority, reduce, onClick, isHighlighted, isNightDive }) {
   const cardRef = useRef(null)
+
+  const isPillarboxed = Boolean(
+    item.isPillarboxed ||
+    (item.filename === 'Giant Barrel Sponge.mp4' ||
+     item.src?.includes('Giant_Barrel_Sponge.mp4') ||
+     item.title === 'Giant Barrel Sponge') ||
+    (item.filename?.includes('Whale Shark') ||
+     item.src?.includes('Whale_Shark') ||
+     item.title?.includes('Whale Shark'))
+  )
+
+  const effectiveVideoZoom = item.videoZoom || (isPillarboxed ? 3.16 : (item.zoom || 1))
 
   return (
     <motion.div
@@ -677,12 +728,14 @@ function GalleryGridCard({ item, idx, priority, reduce, onClick, isHighlighted }
       initial={reduce ? false : { opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: Math.min(idx * 0.02, 0.25) }}
-      className={`scroll-mt-28 group flex flex-col rounded-2xl sm:rounded-[24px] overflow-hidden bg-white border border-navy/10 shadow-sm hover:shadow-xl hover:border-cyan-500/30 transition-all duration-500 cursor-pointer active:scale-[0.99] transform-gpu hover:will-change-transform`}
+      className={`scroll-mt-28 group flex flex-col rounded-2xl sm:rounded-[24px] overflow-hidden ${
+        isNightDive ? 'bg-[#001e3d] border-white/15' : 'bg-white border-navy/10'
+      } shadow-sm hover:shadow-xl hover:border-cyan-500/30 transition-all duration-500 cursor-pointer active:scale-[0.99] transform-gpu hover:will-change-transform`}
       style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 350px', contain: 'layout paint' }}
       onClick={onClick}
     >
       {/* Media Container */}
-      <div className="relative aspect-[4/3] sm:aspect-[16/11] w-full overflow-hidden bg-white">
+      <div className={`relative aspect-[4/3] sm:aspect-[16/11] w-full overflow-hidden ${isNightDive ? 'bg-[#001428]' : 'bg-white'}`}>
         {item.type === 'video' ? (
           <div className="w-full h-full transition-transform duration-700 ease-out group-hover:scale-105">
             <LazyVideo
@@ -697,6 +750,7 @@ function GalleryGridCard({ item, idx, priority, reduce, onClick, isHighlighted }
               autoPlay={true}
               playbackRate={item.playbackRate || (item.title?.toLowerCase().includes('clownfish and sea anemone') || item.src?.includes('Clownfish_and_Sea_Anemone') ? 0.7 : 1)}
               zoom={item.zoom || 1}
+              videoZoom={effectiveVideoZoom}
               className="w-full h-full object-cover"
             />
           </div>
@@ -721,9 +775,11 @@ function GalleryGridCard({ item, idx, priority, reduce, onClick, isHighlighted }
       </div>
 
       {/* Information Panel Below Media - Title */}
-      <div className="p-2 sm:p-5 bg-white flex items-center justify-between gap-2">
+      <div className={`p-2 sm:p-5 flex items-center justify-between gap-2 transition-colors duration-300 ${
+        isNightDive ? 'bg-[#001e3d]' : 'bg-white'
+      }`}>
         <h3 className={`font-heading text-xs sm:text-lg font-bold group-hover:text-accent transition duration-200 line-clamp-1 leading-tight ${
-          isHighlighted ? 'text-accent font-extrabold' : 'text-navy'
+          isHighlighted ? 'text-accent font-extrabold' : (isNightDive ? 'text-white' : 'text-navy')
         }`}>
           {item.title}
         </h3>

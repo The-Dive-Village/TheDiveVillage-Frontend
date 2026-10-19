@@ -33,12 +33,25 @@ export default function CustomCursor() {
 
     let latestX = -100
     let latestY = -100
+    let prevMoveX = -100
+    let prevMoveY = -100
+    let lastMoveTime = 0
+    let velX = 0
+    let velY = 0
     let currentTarget = null
     let rafId = null
     let isHidden = true
     let isHoveringInteractive = false
     let isOverNormalCursor = false
     let lastCheckTime = 0
+
+    let currentRotation = 12
+    let targetRotation = 12
+    let currentScaleX = 1
+    let targetScaleX = 1
+    let currentFacing = 1 // 1 for Left, -1 for Right
+    const RESTING_ROTATION = 12
+    const MAX_TILT = 80
 
     const isPointInsideGlobe = () => false
 
@@ -135,42 +148,61 @@ export default function CustomCursor() {
       return dist <= 140
     }
 
-    let lastRenderX = -100
-    let lastRenderY = -100
-    let currentRotation = 0
-    let targetRotation = 0
-    let currentScaleX = 1
-    let targetScaleX = 1
-
     const updateCursorPosition = () => {
-      if (cursorRef.current) {
-        const dx = latestX - lastRenderX
-        const dy = latestY - lastRenderY
-        lastRenderX = latestX
-        lastRenderY = latestY
+      if (cursorRef.current && latestX >= 0 && latestY >= 0) {
+        // Natural hydrodynamic velocity decay when mouse movement halts
+        const now = performance.now()
+        const timeSinceMove = now - lastMoveTime
+        if (timeSinceMove > 35) {
+          velX *= 0.82
+          velY *= 0.82
+        }
 
+        const speed = Math.hypot(velX, velY)
         const near360 = isNear360Toggle(latestX, latestY, currentTarget)
         const nearGalleryClose = isNearGalleryClose(latestX, latestY, currentTarget)
         const isNearStaticZone = near360 || nearGalleryClose
 
-        // Smooth, natural orientation without wild spinning or erratic 90-degree glitching
         if (isHoveringInteractive || isNearStaticZone) {
-          targetRotation = 0
-          targetScaleX = 1
-        } else {
-          const speed = Math.hypot(dx, dy)
-          if (speed > 1.5) {
-            targetRotation = Math.max(-10, Math.min(10, dy * 0.6))
-            if (dx > 2) targetScaleX = 1
-            else if (dx < -2) targetScaleX = -1
+          // Precise, calm alignment over interactive controls
+          targetRotation = RESTING_ROTATION
+          targetScaleX = currentFacing
+        } else if (speed > 1.2) {
+          // 1. Horizontal direction: turn Left when moving left, turn Right when moving right
+          if (velX > 1.5) {
+            currentFacing = -1 // Moving rightwards -> turn Right
+          } else if (velX < -1.5) {
+            currentFacing = 1  // Moving leftwards -> turn Left
           }
+          targetScaleX = currentFacing
+
+          // 2. Vertical direction: turn Top (upwards) or Down (downwards) depending on direction
+          // Project forward component along current facing direction (guaranteed >= 0)
+          const rawForwardX = currentFacing === -1 ? velX : -velX
+          const forwardX = Math.max(0, rawForwardX)
+          const pitchRad = Math.atan2(velY, forwardX)
+          const pitchDeg = (pitchRad * 180) / Math.PI
+
+          // velY < 0 (moving towards top) -> pitchDeg < 0 -> targetRotation > 0 (tilts UP)
+          // velY > 0 (moving towards down) -> pitchDeg > 0 -> targetRotation < 0 (tilts DOWN)
+          const rawTargetRot = -pitchDeg
+          targetRotation = Math.max(-MAX_TILT, Math.min(MAX_TILT, rawTargetRot))
+        } else {
+          // Neutral buoyant resting float angle when stopped
+          targetRotation = RESTING_ROTATION
+          targetScaleX = currentFacing
         }
 
-        const lerpFactor = 0.35
-        currentRotation += (targetRotation - currentRotation) * lerpFactor
-        currentScaleX += (targetScaleX - currentScaleX) * lerpFactor
+        // Fluid hydrodynamic lerping
+        const rotLerpFactor = 0.22
+        const scaleLerpFactor = 0.38
+        currentRotation += (targetRotation - currentRotation) * rotLerpFactor
+        currentScaleX += (targetScaleX - currentScaleX) * scaleLerpFactor
 
-        cursorRef.current.style.transform = `translate3d(${latestX}px, ${latestY}px, 0) rotate(${currentRotation}deg) scaleX(${currentScaleX})`
+        if (Math.abs(targetScaleX - currentScaleX) < 0.02) currentScaleX = targetScaleX
+        if (Math.abs(targetRotation - currentRotation) < 0.05) currentRotation = targetRotation
+
+        cursorRef.current.style.transform = `translate3d(${latestX}px, ${latestY}px, 0) scaleX(${currentScaleX}) rotate(${currentRotation}deg)`
 
         if (isOverNormalCursor || isHidden) {
           cursorRef.current.style.opacity = '0'
@@ -207,8 +239,30 @@ export default function CustomCursor() {
     rafId = requestAnimationFrame(updateCursorPosition)
 
     const onMouseMove = (e) => {
-      latestX = e.clientX
-      latestY = e.clientY
+      const x = e.clientX
+      const y = e.clientY
+      if (x === latestX && y === latestY) {
+        currentTarget = e.target
+        return
+      }
+
+      const now = performance.now()
+      if (prevMoveX >= 0 && prevMoveY >= 0) {
+        const instantDx = x - prevMoveX
+        const instantDy = y - prevMoveY
+        const alpha = 0.6
+        velX = velX * (1 - alpha) + instantDx * alpha
+        velY = velY * (1 - alpha) + instantDy * alpha
+      } else {
+        velX = 0
+        velY = 0
+      }
+      prevMoveX = x
+      prevMoveY = y
+      lastMoveTime = now
+
+      latestX = x
+      latestY = y
       currentTarget = e.target
       isOverNormalCursor = checkNormalCursor(e.target) || isPointInsideGlobe(latestX, latestY)
 
@@ -254,6 +308,10 @@ export default function CustomCursor() {
 
     const onMouseLeave = () => {
       isHidden = true
+      prevMoveX = -100
+      prevMoveY = -100
+      velX = 0
+      velY = 0
       if (cursorRef.current) {
         cursorRef.current.style.opacity = '0'
         cursorRef.current.style.visibility = 'hidden'
@@ -263,7 +321,15 @@ export default function CustomCursor() {
 
     const onMouseEnter = (e) => {
       isHidden = false
-      const target = e?.target || document.elementFromPoint(latestX, latestY)
+      if (e?.clientX != null && e?.clientY != null) {
+        latestX = e.clientX
+        latestY = e.clientY
+        prevMoveX = e.clientX
+        prevMoveY = e.clientY
+        velX = 0
+        velY = 0
+      }
+      const target = e?.target || (latestX >= 0 ? document.elementFromPoint(latestX, latestY) : null)
       isOverNormalCursor = checkNormalCursor(target) || isPointInsideGlobe(latestX, latestY)
       if (cursorRef.current) {
         if (isOverNormalCursor) {
@@ -347,6 +413,7 @@ export default function CustomCursor() {
       ref={cursorRef}
       className="pointer-events-none fixed top-0 left-0 z-[99999999] will-change-transform select-none"
       style={{
+        transformOrigin: '0 0',
         transform: 'translate3d(-100px, -100px, 0)',
         opacity: 0,
         visibility: 'hidden',
@@ -375,7 +442,7 @@ export default function CustomCursor() {
         className="will-change-transform transition-transform duration-100 ease-out"
         style={{
           transformOrigin: '4.6% 57.5%',
-          transform: `translate(-4.6%, -57.5%) rotate(20deg) scale(${isHovering ? 1.15 : 1.0})`,
+          transform: `translate(-4.6%, -57.5%) scale(${isHovering ? 1.15 : 1.0})`,
           filter: isNightDive
             ? (isHovering
                 ? 'drop-shadow(0 0 6px rgba(0, 242, 254, 0.6)) brightness(1.15) contrast(1.05)'

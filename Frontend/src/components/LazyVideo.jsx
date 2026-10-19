@@ -64,6 +64,7 @@ const LazyVideo = forwardRef(function LazyVideo({
   preload = 'auto',
   playbackRate = 1,
   zoom = 1,
+  videoZoom,
   zoomOrigin = 'center center',
   priority = false,
   ...props
@@ -209,7 +210,9 @@ const LazyVideo = forwardRef(function LazyVideo({
   }, [muted, defaultMuted, playbackRate])
 
   const fitClass = className.includes('object-cover') ? 'object-cover' : (className.includes('object-contain') ? 'object-contain' : 'object-cover')
-  const zoomStyle = zoom && zoom !== 1 ? { transform: `scale(${zoom})`, transformOrigin: zoomOrigin || 'center center' } : {}
+  const posterZoomStyle = zoom && zoom !== 1 ? { transform: `scale(${zoom})`, transformOrigin: zoomOrigin || 'center center' } : {}
+  const effectiveVideoZoom = videoZoom !== undefined ? videoZoom : zoom
+  const videoZoomStyle = effectiveVideoZoom && effectiveVideoZoom !== 1 ? { transform: `scale(${effectiveVideoZoom})`, transformOrigin: zoomOrigin || 'center center' } : {}
 
   const handleMasterCanPlay = (e) => {
     setMasterReady(true)
@@ -249,7 +252,7 @@ const LazyVideo = forwardRef(function LazyVideo({
           style={{
             objectFit: fitClass === 'object-contain' ? 'contain' : 'cover',
             backgroundColor: className.includes('bg-white') ? '#ffffff' : undefined,
-            ...zoomStyle
+            ...posterZoomStyle
           }}
         />
       )}
@@ -278,7 +281,7 @@ const LazyVideo = forwardRef(function LazyVideo({
           style={{
             objectFit: fitClass === 'object-contain' ? 'contain' : 'cover',
             backgroundColor: className.includes('bg-white') ? '#ffffff' : undefined,
-            ...zoomStyle,
+            ...videoZoomStyle,
           }}
         />
       )}
@@ -317,7 +320,7 @@ const LazyVideo = forwardRef(function LazyVideo({
         style={{
           objectFit: fitClass === 'object-contain' ? 'contain' : 'cover',
           backgroundColor: className.includes('bg-white') ? '#ffffff' : undefined,
-          ...zoomStyle,
+          ...videoZoomStyle,
           ...(props.style || {}),
         }}
         {...props}

@@ -64,7 +64,9 @@ const RAW_GALLERY_ITEMS = [
     "src": "/media/TDV-Media/Extras for Gallery/Giant_Barrel_Sponge.mp4",
     "title": "Giant Barrel Sponge",
     "category": "marine",
-    "filename": "Giant Barrel Sponge.mp4"
+    "filename": "Giant Barrel Sponge.mp4",
+    "isPillarboxed": true,
+    "videoZoom": 3.16
   },
   {
     "id": "gallery-item-8",
@@ -129,7 +131,9 @@ const RAW_GALLERY_ITEMS = [
     "src": "/media/TDV-Media/Extras for Gallery/Whale_Shark_2.mp4",
     "title": "Whale Shark",
     "category": "marine",
-    "filename": "Whale Shark (2).mp4"
+    "filename": "Whale Shark (2).mp4",
+    "isPillarboxed": true,
+    "videoZoom": 3.16
   },
   {
     "id": "gallery-item-19",
@@ -137,7 +141,9 @@ const RAW_GALLERY_ITEMS = [
     "src": "/media/TDV-Media/Extras for Gallery/Whale_Shark.mp4",
     "title": "Whale Shark",
     "category": "marine",
-    "filename": "Whale Shark.mp4"
+    "filename": "Whale Shark.mp4",
+    "isPillarboxed": true,
+    "videoZoom": 3.16
   },
   {
     "id": "gallery-item-20",
